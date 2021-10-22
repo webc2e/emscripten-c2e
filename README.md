@@ -2,7 +2,7 @@
 
 Emscripten compiled version of the Creatures Evolution Engine
 
-TODO: Implement SDL Soundlib from the c3-source
+TODO: Implement SDL Soundlib from the c3-source  
 TODO: Get it running in the emscripten browser runner without javascript complaing about unreachable code after compilation
 
 Currently the code compiles with no errors. There are still some warnings and issues.
