@@ -56,8 +56,8 @@ TAG "app_error"
 "Creatures 3 lijkt al te draaien.\nAls dit niet duidelijk het geval is, wacht dan even en probeer het opnieuw.\nAls dat niet werkt, start dan opnieuw op."
 "Fout bij het schrijven van het bestand dat door de CAOS-tool wordt gebruikt\n%s"
 
-TAG "app_cd_needed"
-"De CD van Creatures 3 moet in het CD-ROM-station zitten om te kunnen spelen.\nPlaats de CD-ROM voor Creatures en probeer het opnieuw."
+# TAG "app_cd_needed"
+# "De CD van Creatures 3 moet in het CD-ROM-station zitten om te kunnen spelen.\nPlaats de CD-ROM voor Creatures en probeer het opnieuw."
 
 TAG "app_insufficient_disk_space"
 "Waarschuwing!\n\nEr is onvoldoende vrije schijfruimte om Creatures 3 veilig uit te voeren.\nEr moet 75Mb vrij zijn op het hoofdstation van het systeem en op het\nstation waar u het spel geïnstalleerd heeft.\n\nWilt u het spel toch uitvoeren?"
@@ -173,13 +173,6 @@ TAG "agent_profiler_columns"
 
 TAG "invalid_map_error"
 "Ongeldige kaartpositie vanwege wijziging afbeeldingsvak...\nAfbeeldingsvak voorheen:\t%d x %d\nAfbeeldingsvak nu:\t\t%d x %d\n"
-
-TAG "Pray System File Extensions"
-"creature"
-"agent"
-"agents"
-"blueprint"
-"family"
 
 TAG "creature_head_sprite_out_of_range"
 "Probeerde hoofdsprite-index %d te laden terwijl alleen %d was ingelezen.\nUitdrukking normaal."

@@ -34,6 +34,7 @@ public:
 	static void Command_FRMT( CAOSMachine& vm );
 	static int IntegerRV_NPGS( CAOSMachine& vm );
 	static int IntegerRV_PAGE( CAOSMachine& vm );
+	static int IntegerRV_PART( CAOSMachine& vm );
 	static void Command_PAGE( CAOSMachine& vm );
 
 private:
@@ -44,6 +45,7 @@ private:
 	static void SubCommand_PAT_CMRA( CAOSMachine& vm );
 	static void SubCommand_PAT_GRPH( CAOSMachine& vm );
 	static void SubCommand_PAT_KILL( CAOSMachine& vm );
+	static void SubCommand_PAT_MOVE( CAOSMachine& vm );
 };
 
 

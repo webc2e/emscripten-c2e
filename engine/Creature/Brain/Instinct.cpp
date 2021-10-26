@@ -13,6 +13,29 @@ CREATURES_IMPLEMENT_SERIAL(Instinct)
 const float REINFORCEMENT_MODIFIER = 0.5f;
 
 
+
+
+Instinct::Instinct(int verb, int noun, float qualifier, int drive, Brain* brain)
+{
+	myBrain = brain;
+
+	// blank other inputs
+	for	(int i=1; i<MAX_INSTINCT_INPUTS; i++)
+		myInputs[i].name = "****";
+
+	// apart from noun one given:
+	myInputs[0].name = "noun";
+	myInputs[0].neuronId = noun;
+
+	myDecisionId = verb;
+	myReinforcement.driveId = drive;
+	myReinforcement.amount = qualifier;
+
+	myInstinctTick = 0;
+}
+
+
+
 // ------------------------------------------------------------------------
 // Function:    (constructor)
 // Class:       Instinct
@@ -173,3 +196,4 @@ bool Instinct::Read(CreaturesArchive &archive)
 	}
 	return true;
 }
+

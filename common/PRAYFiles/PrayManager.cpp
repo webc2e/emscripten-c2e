@@ -12,22 +12,63 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-
 #include "PrayManager.h"
 #include "PrayChunk.h"
 #include "../FileLocaliser.h"
 #include "PrayStructs.h"
 #include "PrayException.h"
 
-#ifdef _WIN32
-#include "../zlib113/zlib.h"
-#else
+#include "../../engine/C2eServices.h"
+#include "../FileFuncs.h"
+
+#include <algorithm>
+
 // on real OSes, zlib is a system lib :-)
+// If you're using DevStudio, you need to configure
+// it as one - Tools|Options|Directories needs to
+// set include and lib to point to an appropriate
+// version
 #include <zlib.h>
-#endif
 
 #include <stdio.h>
 
+PrayManager PrayManager::ourPrayManager;
+// ****************************************************************************
+void PrayManager::IntegrityViolation(const std::string& file, const std::string& message)
+{
+	if (file.empty())
+		return;
+
+#ifdef PRAY_BUILDER
+	printf("Pray file violation: %s, inside filename %s, renaming .detected_broken",
+		message.c_str(), file.c_str());
+#else
+	// File is bad - zap it!
+	GetFlightRecorder().Log(FLIGHT_NETBABEL,
+		"Pray file violation: %s, inside filename %s, renaming .detected_broken",
+		message.c_str(), file.c_str());
+
+	std::string newName = file + ".detected_broken";
+	if (FileExists(file.c_str()))
+		MoveFile(file.c_str(), newName.c_str());
+	if (FileExists(file.c_str()))
+	{
+		GetFlightRecorder().Log(FLIGHT_NETBABEL,
+			"Couldn't rename, had to try delete %s",
+			file.c_str());
+		DeleteFile(file.c_str());
+	}
+#endif
+}
+// ****************************************************************************
+void PrayManager::ThrowPrayException(std::string msg, int code, std::string prayFile)
+{
+	if (!prayFile.empty())
+		IntegrityViolation(prayFile, msg);
+
+	throw PrayException(msg, code, prayFile);
+}
+// ****************************************************************************
 void PrayManager::GarbageCollect(bool force)
 {
 	if (force)
@@ -49,60 +90,114 @@ void PrayManager::GarbageCollect(bool force)
 		}
 	}
 }
-
-
-void PrayManager::RescanFolders()
+// ****************************************************************************
+void PrayManager::InternalRefillCache(const std::vector<std::string>& files)
 {
 	myFileToChunkMap.clear();
 	myChunkFlags.clear();
 	GarbageCollect(true);
+
 	// Next we scan each file in turn, adding it to the lists :)
+	std::vector<std::string>::const_iterator fit;
+	for(fit = files.begin(); fit != files.end(); fit++)
+	{
+		if (!AddFile(*fit))
+		{
+			IntegrityViolation(*fit, "Incoming pray file fails basic checks");
+		}
+	}
+
+	// Store list for next time
+	myScannedFiles = files;
+}
+// ****************************************************************************
+void PrayManager::RescanFolders()
+{
+	// Get list of files
+	std::vector<std::string> fullFileSet;
+
 	FileLocaliser f;
 	std::vector<std::string>::iterator it;
 	std::list<std::string>::iterator eit;
 	for(eit = myChunkFileExtensions.begin(); eit != myChunkFileExtensions.end(); eit++)
-	for(it = dirnames.begin(); it != dirnames.end(); it++)
 	{
-		//Scan folder it :)
-		std::vector<std::string> files;
-		f.LocaliseDirContents(*it,langid,files,"*." + *eit);
-		std::vector<std::string>::iterator fit;
-		for(fit = files.begin(); fit != files.end(); fit++)
+		for(it = dirnames.begin(); it != dirnames.end(); it++)
 		{
-			AddFile(*fit);
+			// Scan folder it :)
+			std::vector<std::string> files;
+			f.LocaliseDirContents(*it,langid,files,"*." + *eit);
+			fullFileSet.insert(fullFileSet.end(), files.begin(), files.end());
 		}
 	}
-}
+	std::sort(fullFileSet.begin(), fullFileSet.end());
 
-void PrayManager::AddFile(std::string filename)
+	// See if it differs from what we have now...
+
+	// Definitely different if size differs
+	if (myScannedFiles.size() != fullFileSet.size())
+	{
+		InternalRefillCache(fullFileSet);
+		return;
+	}
+
+	// Otherwise check each element
+	int n = fullFileSet.size();
+	for (int i = 0; i < n; ++i)
+	{
+		if (myScannedFiles[i] != fullFileSet[i])
+		{
+			InternalRefillCache(fullFileSet);
+			return;
+		}
+	}
+
+	// Same set of files, so don't refresh
+}
+// ****************************************************************************
+bool PrayManager::AddFile(std::string filename)
 {
 	std::map<std::string,FileOffset> localmap;
 	std::map<std::string, FlagsType> localflags;
 	FILE* f;
 	if ((f = fopen(filename.c_str(),"rb")) == NULL)
 	{
-		return;
+		return false;
 	}
 	PrayFileHeader p;
 	if (fread(&p,1,sizeof(p),f) != sizeof(p))
 	{
 		fclose(f);
-		return;
+		return false;
 	}
 
 	// Check that it is a pray file
-
 	if ((p.majik[0] != 'P') ||
 		(p.majik[1] != 'R') ||
 		(p.majik[2] != 'A') ||
 		(p.majik[3] != 'Y'))
 	{
 		fclose(f);
-		return;
+		return false;
 	}
 
-	// Read all the chunks one by one and index them in the maps
+	// Read in list of allowed chunks for this extension
+	std::string blockListTag = "pray_allow_chunks " + FileExtension(filename);
+	std::vector<std::string> blockees;
+	bool block = false;
+#ifndef PRAY_BUILDER
+	if (theCatalogue.TagPresent(blockListTag))
+	{
+		block = true;
+		int n = theCatalogue.GetArrayCountForTag(blockListTag);
+		for (int i = 0; i < n; ++i)
+		{
+			std::string block = theCatalogue.Get(blockListTag, i);
+			blockees.push_back(block);
+		}
+	}
+#endif
 
+	// Read all the chunks one by one and index them in the maps
 	while (!feof(f))
 	{
 		int ofs = ftell(f);
@@ -111,6 +206,7 @@ void PrayManager::AddFile(std::string filename)
 		{
 			break;		
 		}
+
 		FileOffset fo(filename,ofs);
 		localmap[ch.name] = fo;
 		std::string type;
@@ -119,11 +215,25 @@ void PrayManager::AddFile(std::string filename)
 		type.at(1) = ch.type[1];
 		type.at(2) = ch.type[2];
 		type.at(3) = ch.type[3];
+
+		// Check we are an allowed chunk type for our extension
+		if (block)
+		{
+			if (std::find(blockees.begin(), blockees.end(), std::string(type))
+				== blockees.end())
+			{
+				fclose(f);
+				IntegrityViolation(filename, "Chunk type " + std::string(type) +
+					" blocked for file extension " + FileExtension(filename));
+				return true;
+			}
+		}
+
 		localflags[ch.name] = std::make_pair(ch.flags,type);
 		if (fseek(f,ch.size,SEEK_CUR))
 		{
 			fclose(f);
-			return;
+			return false;
 		}
 	}
 	fclose(f);
@@ -137,6 +247,7 @@ void PrayManager::AddFile(std::string filename)
 	for(fit = localflags.begin(); fit != localflags.end(); fit++)
 		myChunkFlags[(*fit).first] = (*fit).second;
 
+	return true;
 }
 
 int PrayManager::CheckChunk(std::string thisChunk)
@@ -171,64 +282,17 @@ std::string PrayManager::GetChunkParentFile(std::string chunkName)
 {
 	if (CheckChunk(chunkName) == 0)
 	{
-		throw PrayException("Chunk not found in PrayManager::GetChunkParentFile - "+chunkName, PrayException::eidChunkNotFound);
+		ThrowPrayException("Chunk not found in PrayManager::GetChunkParentFile - "+chunkName, PrayException::eidChunkNotFound, "");
 	}
 	FileOffset locationOfChunk = myFileToChunkMap[chunkName];
 	return (locationOfChunk.first);
-}
-
-int PrayManager::GetChunkSize(std::string name)
-{
-	if (CheckChunk(name) == 0)
-	{
-		throw PrayException("Chunk not found in PrayManager::GetChunk - "+name, PrayException::eidChunkNotFound);
-	}
-	std::map<std::string,PrayChunkPtr>::iterator it;
-	it = myChunkList.find(name);
-	if (it != myChunkList.end())
-	{
-		// Woohoo we found it :)
-		return (*it).second->GetSize();
-	}
-
-	// Hmm, not in memory, let's get its headers from disk...
-
-	FileOffset locationOfChunk = myFileToChunkMap[name];
-
-	FILE* f;
-	if ((f = fopen(locationOfChunk.first.c_str(),"rb")) == NULL)
-	{
-		// Boohoo, the file got pulled out from under us :(
-		throw PrayException("Error Opening file in PrayManager::GetChunk - "+name+" @ "+locationOfChunk.first,
-			PrayException::eidFilePulledOut);
-	}
-	if (fseek(f,locationOfChunk.second,SEEK_CUR))
-	{
-		// Aww, we can't seek to that chunk :(
-		fclose(f);
-		throw PrayException("File seek failed in PrayManager::GetChunk - "+name+" @ "+locationOfChunk.first,
-			PrayException::eidFileTooShortInSeek);
-	}
-	PrayChunkHeader ch;
-	if (fread(&ch,1,sizeof(ch),f) != sizeof(ch))
-	{
-		fclose(f);
-		// Aww, we couldn't read the header :(
-		fclose(f);
-		throw PrayException("File too short in PrayManager::GetChunk (Reading Chunk Header) - "+name + " @ " + locationOfChunk.first,
-			PrayException::eidFileTooShortForHeader);
-	}
-	// We now know the size of the Chunk's data and its compressed data.
-	fclose(f);
-	// And now we know the size of the chunk (usize);
-	return ch.usize;
 }
 
 PrayChunkPtr PrayManager::GetChunk(std::string thisChunk)
 {
 	if (CheckChunk(thisChunk) == 0)
 	{
-		throw PrayException("Chunk not found in PrayManager::GetChunk - "+thisChunk, PrayException::eidChunkNotFound);
+		ThrowPrayException("Chunk not found in PrayManager::GetChunk - "+thisChunk, PrayException::eidChunkNotFound, "");
 	}
 	std::map<std::string,PrayChunkPtr>::iterator it;
 	it = myChunkList.find(thisChunk);
@@ -244,38 +308,55 @@ PrayChunkPtr PrayManager::GetChunk(std::string thisChunk)
 	FileOffset locationOfChunk = myFileToChunkMap[thisChunk];
 
 	FILE* f;
+	int fsize = FileSize(locationOfChunk.first.c_str());
 	if ((f = fopen(locationOfChunk.first.c_str(),"rb")) == NULL)
 	{
 		// Boohoo, the file got pulled out from under us :(
-		throw PrayException("Error Opening file in PrayManager::GetChunk - "+thisChunk+" @ "+locationOfChunk.first,
-			PrayException::eidFilePulledOut);
+		ThrowPrayException("Error Opening file in PrayManager::GetChunk - "+thisChunk+" @ "+locationOfChunk.first,
+			PrayException::eidFilePulledOut, locationOfChunk.first);
 	}
 	if (fseek(f,locationOfChunk.second,SEEK_CUR))
 	{
 		// Aww, we can't seek to that chunk :(
 		fclose(f);
-		throw PrayException("File seek failed in PrayManager::GetChunk - "+thisChunk+" @ "+locationOfChunk.first,
-			PrayException::eidFileTooShortInSeek);
+		ThrowPrayException("File seek failed in PrayManager::GetChunk - "+thisChunk+" @ "+locationOfChunk.first,
+			PrayException::eidFileTooShortInSeek, locationOfChunk.first);
 	}
 	PrayChunkHeader ch;
 	if (fread(&ch,1,sizeof(ch),f) != sizeof(ch))
 	{
 		// Aww, we couldn't read the header :(
 		fclose(f);
-		throw PrayException("File too short in PrayManager::GetChunk (Reading Chunk Header) - "+thisChunk + " @ " + locationOfChunk.first,
-			PrayException::eidFileTooShortForHeader);
+		ThrowPrayException("File too short in PrayManager::GetChunk (Reading Chunk Header) - "+thisChunk + " @ " + locationOfChunk.first,
+			PrayException::eidFileTooShortForHeader, locationOfChunk.first);
 	}
 	// We now know the size of the Chunk's data and its compressed data.
 	if ((ch.flags & 1) == 0)
 	{
+		if (ch.size != ch.usize)
+		{
+			fclose(f);
+			ThrowPrayException("size doesn't match usize (reading uncompressed data) - "+thisChunk + " @ " + locationOfChunk.first,
+				PrayException::eidDataMismatch, locationOfChunk.first);
+		}
+
+		// Check the size isn't bigger than the whole file (stops the
+		// engine crashing by allocating huge amounts of memory)
+		if (ch.size > fsize || ch.size < 0)
+		{
+			fclose(f);
+			ThrowPrayException("Size told is bigger than file or is negative (reading uncompressed data) - "+thisChunk + " @ " + locationOfChunk.first,
+				PrayException::eidSizeMismatch, locationOfChunk.first);
+		}
+
 		// We can simply instantiate a pointer, and put our data in :)
 		PrayChunkPtr retVal(ch.usize,this);
 		if (fread(retVal->myPtr,1,ch.size,f) != ch.size)
 		{
 			// Aww the file didn't have enough data in it :(
 			fclose(f);
-			throw PrayException("File to short in PrayManager::GetChunk (Reading uncompressed Data) - "+thisChunk + " @ " + locationOfChunk.first,
-				PrayException::eidFileTooShortForUData);
+			ThrowPrayException("File too short in PrayManager::GetChunk (Reading uncompressed Data) - "+thisChunk + " @ " + locationOfChunk.first,
+				PrayException::eidFileTooShortForUData, locationOfChunk.first);
 		}
 		// Hurrah - we had enough data - let's return :)
 		// After making an entry into our nice cachemap
@@ -284,22 +365,57 @@ PrayChunkPtr PrayManager::GetChunk(std::string thisChunk)
 		return retVal;
 	}
 	// Hmm, we have found the chunk, but we have to uncompress it :(
-	uint8_t* compressedData = new uint8_t[ ch.size ];
+
+	// Check the size isn't bigger than the whole file (stops the
+	// engine crashing by allocating huge amounts of memory)
+	if (ch.size > fsize || ch.size < 0)
+	{
+		fclose(f);
+		ThrowPrayException("Compressed size told is bigger than file or is negative (reading compressed data) - "+thisChunk + " @ " + locationOfChunk.first,
+			PrayException::eidSizeMismatch, locationOfChunk.first);
+	}
+	// Check for suspiciously large uncompressed sizes, that would
+	// just eat memory up.  Can happen if someone is deliberately
+	// trying to crash your world with a duff creature file.
+	std::string uncompressCheckTag = "pray_uncompress_sanity_check " +
+		FileExtension(locationOfChunk.first);
+#ifndef PRAY_BUILDER
+	if (theCatalogue.TagPresent(uncompressCheckTag))
+	{
+		int maxu = atoi(theCatalogue.Get(uncompressCheckTag, 0));
+		if (ch.usize > maxu || ch.usize < 0)
+		{
+			fclose(f);
+			ThrowPrayException("Uncompressed size suspiciously big or is negative "
+				"(see catalogue entry \"pray_uncompress_sanity_check " +
+				FileExtension(locationOfChunk.first) + "\") for extension " +
+				FileExtension(locationOfChunk.first) + " - "+thisChunk + " @ " + locationOfChunk.first,
+				PrayException::eidSizeMismatch, locationOfChunk.first);
+		}
+	}
+#endif
+
+	uint8* compressedData = new uint8[ ch.size ];
 	if (fread(compressedData,1,ch.size,f) != ch.size)
 	{
 		fclose(f);
 		delete [] compressedData;
 		// Aww, we pooped on the load compressed data :(
-		throw PrayException("File to short in PrayManager::GetChunk (Reading compressed Data) - "+thisChunk + " @ " + locationOfChunk.first,
-				PrayException::eidFileTooShortForCData);
+		ThrowPrayException("File to short in PrayManager::GetChunk (Reading compressed Data) - "+thisChunk + " @ " + locationOfChunk.first,
+				PrayException::eidFileTooShortForCData, locationOfChunk.first);
 	}
 	fclose(f);
+
 	PrayChunkPtr returnVal(ch.usize,this);
 	//Let's decompress the data straight into the chunk :)
 
 	unsigned long s,us;
 	s = ch.size; us = ch.usize;
 
+	// Hey, we trust gzip, it's well written :-)
+	// (certainly, bogues data shouldn't make it crash
+	// the machine, and it can't allocate excessive amounts
+	// of memory, as we made the buffer for it)
 	uncompress(returnVal->myPtr,&us,compressedData,s);
 
 	delete [] compressedData;
@@ -307,8 +423,8 @@ PrayChunkPtr PrayManager::GetChunk(std::string thisChunk)
 	if (us != ch.usize)
 	{
 		// Aww, the uncompressed data is the wrong size :(
-		throw PrayException("Data size mismatch after decompress in PrayManager::GetChunk (Checking uncompressed data) - "+thisChunk + " @ "+ locationOfChunk.first,
-			PrayException::eidDataMismatch);
+		ThrowPrayException("Data size mismatch after decompress in PrayManager::GetChunk (Checking uncompressed data) - "+thisChunk + " @ "+ locationOfChunk.first,
+			PrayException::eidDataMismatch, locationOfChunk.first);
 	}
 	// Yay, decompression successful :)
 
@@ -329,12 +445,22 @@ void PrayManager::GetChunks(std::string thisType, std::vector<std::string>& this
 	}
 }
 
+std::string PrayManager::GetChunkType(std::string thisChunk)
+{
+	std::map<std::string,FlagsType>::iterator it;
+	it = myChunkFlags.find(thisChunk);
+	if (it == myChunkFlags.end())
+		return "";
+	else
+		return it->second.second;
+}
+
 void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std::string thisFile,
-									int thisSize, uint8_t* thisData, bool doCompress)
+									int thisSize, uint8* thisData, bool doCompress)
 {
 	//If Chunk exists, Throw
 	if (CheckChunk(thisName))
-		throw PrayException("Chunk already exists in PrayManager::AddChunkToFile - "+thisName, PrayException::eidChunkExists);
+		ThrowPrayException("Chunk already exists in PrayManager::AddChunkToFile - "+thisName, PrayException::eidChunkExists, "");
 
 	//Next check if the file we want exists.
 	FILE* f;
@@ -346,7 +472,8 @@ void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std
 		{
 			// Erk - not a prayfile by far...
 			fclose(f);
-			throw PrayException("File "+thisFile+" is _not_ a prayfile in PrayManager::AddChunkToFile", PrayException::eidFileTooShort);
+			ThrowPrayException("File "+thisFile+" is _not_ a prayfile in PrayManager::AddChunkToFile", PrayException::eidFileTooShort,
+				thisFile);
 		}
 		if ((ph.majik[0] != 'P') ||
 			(ph.majik[1] != 'R') ||
@@ -355,8 +482,8 @@ void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std
 		{
 			// Erk - not praymajik :(
 			fclose(f);
-			throw PrayException("File "+thisFile+" does not look like a prayfile to me. (PrayManager::AddChunkToFile)", 
-				PrayException::eidNotPrayFile);
+			ThrowPrayException("File "+thisFile+" does not look like a prayfile to me. (PrayManager::AddChunkToFile)", 
+				PrayException::eidNotPrayFile, thisFile);
 		}
 		//Okay - it's a prayfile...
 		fclose(f);
@@ -366,7 +493,8 @@ void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std
 	{
 		// Aah - the file exists not, so let us create it :)
 		if ((f = fopen(thisFile.c_str(),"wb")) == NULL)
-			throw PrayException("File "+thisFile+" could not be opened in PrayManager::AddChunkToFile",PrayException::eidFileNotOpen);
+			ThrowPrayException("File "+thisFile+" could not be opened in PrayManager::AddChunkToFile",PrayException::eidFileNotOpen,
+				thisFile);
 		PrayFileHeader ph;
 		ph.majik[0] = 'P'; ph.majik[1] = 'R'; ph.majik[2] = 'A'; ph.majik[3] = 'Y'; 
 		fwrite(&ph,1,sizeof(ph),f);
@@ -397,7 +525,7 @@ void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std
 	}
 	else
 	{
-		uint8_t* cData = new uint8_t[ ch.usize + 4096 ];
+		uint8* cData = new uint8[ ch.usize + 4096 ];
 		unsigned long len,ulen;
 		len = ch.usize + 4096; ulen = ch.usize;
 		if (compress(cData,&len,thisData,ulen) != Z_OK)
@@ -405,7 +533,8 @@ void PrayManager::AddChunkToFile(std::string thisName, std::string thisType, std
 			// oh blast :( - Failed compress :(
 			delete [] cData;
 			fclose(f);
-			throw PrayException("Oh Pants! The compress failed!!!! (PrayManager::AddChunkToFile)", PrayException::eidCompressError);
+			ThrowPrayException("Oh Pants! The compress failed!!!! (PrayManager::AddChunkToFile)", PrayException::eidCompressError,
+				thisFile);
 		}
 		// Hurrah - data compressed okay :)
 		ch.size = len;
@@ -426,3 +555,9 @@ void PrayManager::DeleteChunk(std::string chunkName)
 }
 
   */
+
+PrayManager& PrayManager::GetPrayManager()
+{
+	return ourPrayManager;
+}
+

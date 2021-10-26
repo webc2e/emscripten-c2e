@@ -11,13 +11,54 @@
 #include "RoomCA.h"
 #include <fstream>
 #include <algorithm>
+#include "../AgentManager.h"
 
-
-const float caMultiplier = 10.0f;
-const int caDistance = 30;
+const float CA_MULTIPLIER = 10.0f;
+const int MAX_CA_DIST = 30;
 
 
 CREATURES_IMPLEMENT_SERIAL( Link );
+
+
+
+
+
+
+
+void Map::RecalculateAllNavigationalCAs()
+{
+	// loop through all rooms blanking their nav CAs:
+	for (int k=0; k<=myMaxRoomID; ++k) 
+	{
+		if (myRoomCollection[k]==NULL)
+			continue;
+
+		Room& r = *(myRoomCollection[k]);
+
+		// blank current values for all navigable CAs in this room:
+		for (int i=0; i<CA_PROPERTY_COUNT; ++i) 
+		{
+			if( IsCANavigable( i ) )
+				r.caValues[i] = 0.0f;
+		}
+	}
+
+	for (AgentListIterator a=theAgentManager.GetAgentIteratorStart(); !theAgentManager.IsEnd(a); a++)
+	{
+		AgentHandle& agent = (*a);
+
+		if (agent.IsValid())
+		{
+			agent.GetAgentReference().ForceCaAddition();
+		}
+	}
+}
+
+
+
+
+
+
 
 // ---------------------------------------------------------------------
 // Method:		SetRoomType
@@ -36,44 +77,6 @@ bool Map::SetRoomType( int roomID, int type )
 		return false;
 
 	room->type = type;
-
-	// Copy any navigable (by creatures) doors into navigable door collection
-	DoorIterator doorIterator;
-	std::set<int> const &caSet = GetNavigableCAIndices();
-	std::set<int>::const_iterator caIndex;
-	for( doorIterator = room->leftCollection.begin();
-		doorIterator != room->leftCollection.end(); ++doorIterator )
-	{
-		bool navDoor = false;
-		if( (*doorIterator)->parentCount == 2 &&
-			(myRoomCollection[ (*doorIterator)->parent1 ]->endFloor -
-			myRoomCollection[ (*doorIterator)->parent2 ]->startFloor).SquareLength() < 4.0f )
-		{
-			navDoor = true;
-		}
-		myNavigableDoorCollection.remove( *doorIterator );
-		if( navDoor )
-		{
-			myNavigableDoorCollection.push_back(*doorIterator);
-		}
-	}
-
-	for( doorIterator = room->rightCollection.begin();
-		doorIterator != room->rightCollection.end(); ++doorIterator )
-	{
-		bool navDoor = false;
-		if( (*doorIterator)->parentCount == 2 &&
-			(myRoomCollection[ (*doorIterator)->parent1 ]->endFloor -
-			myRoomCollection[ (*doorIterator)->parent2 ]->startFloor).SquareLength() < 4.0f )
-		{
-			navDoor = true;
-		}
-		myNavigableDoorCollection.remove( *doorIterator );
-		if( navDoor )
-		{
-			myNavigableDoorCollection.push_back(*doorIterator);
-		}
-	}
 	return true;
 }
 
@@ -165,7 +168,7 @@ bool Map::GetRoomPropertyMinusMyContribution( AgentHandle const &handle, float &
 		return false;
 
 	value = room->caValues[ caIndex ];
-	value -= caMultiplier * agent.GetCAIncrease();
+	value -= CA_MULTIPLIER * agent.GetCAIncrease();
 
 	if( value < 0 )
 		value = 0;
@@ -199,40 +202,6 @@ bool Map::GetRoomPropertyChange( int roomID, int caIndex, float &value )
 	return true;
 }
 
-bool Map::GetProjectedRoomProperty( int roomID, int caIndex, float &value )
-{
-	return GetRoomProperty( roomID, caIndex, value );
-/*
-	Room *room;
-
-	// Check that the room exists
-	if (!GetValidRoomPointer(roomID, room))
-		return false;
-
-	if( caIndex < 0 || caIndex >= CA_PROPERTY_COUNT )
-		return false;
-
-
-	double a = room->caOlderValues[ caIndex ];
-	double b = room->caOldValues[ caIndex ];
-	double c = room->caValues[ caIndex ];
-	double mid = ( a + c ) / 2.0f;
-	if( ( c > a && b < mid ) ||
-		( c < a && b > mid ) ||
-		( fabs( mid - b ) < 0.000001 ) )
-	{
-		value = c;
-		return true;
-	}
-		
-	value = ( a * c - b * b ) / ( a + c - 2.0f * b );
-	if( value > 1.0f ) value = 1.0f;
-	if( value < 0.0f ) value = 0.0f;
-
-	value = room->caValues[ caIndex ];
-	return true;
-*/
-}
 
 bool Map::SetCARates( int roomType, int caIndex, CARates const &rates )
 {
@@ -429,6 +398,12 @@ bool Map::SetLinkPermiability(const int roomID1, const int roomID2,
 	CalculateRoomPermiabilityAndDoorage(room1);
 	CalculateRoomPermiabilityAndDoorage(room2);
 
+	// gtb
+	// when links change we need to blank and
+	// recalculate all the nav CAs just in case:
+	// but removed because too slow
+//	RecalculateAllNavigationalCAs();
+
 	return true;
 }
 
@@ -477,16 +452,8 @@ void Map::UpdateCurrentCAProperty()
 
 		int doorCount;
 		DoorIterator doorIterator;
-		if( IsCANavigable( myNextCAProperty ) )
-		{
-			doorCount = myNavigableDoorCollection.size();
-			doorIterator = myNavigableDoorCollection.begin();
-		}
-		else
-		{
-			doorCount = myDoorCollection.size();
-			doorIterator = myDoorCollection.begin();
-		}
+		doorCount = myDoorCollection.size();
+		doorIterator = myDoorCollection.begin();
 
 		while (doorCount--)
 		{
@@ -503,7 +470,7 @@ void Map::UpdateCurrentCAProperty()
 			if( myNextCAProperty == 7 )
 			{
 				float projectedValue;
-				GetProjectedRoomProperty( room->roomID, myNextCAProperty, projectedValue );
+				GetRoomProperty( room->roomID, myNextCAProperty, projectedValue );
 			}
 		}
 
@@ -528,6 +495,35 @@ bool Map::WhichDirectionToFollowCA(int currentRoomID, int caIndex, int &mapDirec
 	IntegerCollection neighbours;
 
 	// Add LINK collection:
+	int count = currentRoom->linkCollection.size();
+	LinkIterator linkIterator = currentRoom->linkCollection.begin();
+	while( count-- )
+	{
+		Link& l = *(*linkIterator++);
+
+		if(l.parent1==currentRoom->leftFloorRoomID 
+			|| l.parent2==currentRoom->rightFloorRoomID)
+		{
+			int perm = 0;
+			GetDoorPermiability(l.parent1 , l.parent2, perm);
+			if(perm == 0)
+			{
+				// only add if has 0 permiability else will be added 
+				// as left or right neighbour
+				neighbours.push_back(
+					l.parent2==currentRoomID ? l.parent1 :l.parent2);
+			}
+		}
+		else
+		{
+			// meta link or up/down link
+			neighbours.push_back(
+				l.parent2==currentRoomID ? l.parent1 :l.parent2);
+		}
+	}
+
+
+/*	// gtb! TODO:  Change this to use the room->linkCollection instead of the global map one:
 	LinkIterator i;
 	for (i = myLinkCollection.begin(); i != myLinkCollection.end(); ++i)
 	{
@@ -555,7 +551,7 @@ bool Map::WhichDirectionToFollowCA(int currentRoomID, int caIndex, int &mapDirec
 					l.parent2==currentRoomID ? l.parent1 :l.parent2);
 			}
 		}
-	}
+	}*/
 
 	// Add left and right neighbours if permiable 
 	// (else not traverable or door shut and will already be included in links list)
@@ -574,13 +570,13 @@ bool Map::WhichDirectionToFollowCA(int currentRoomID, int caIndex, int &mapDirec
 	// Work out highest CA room:
 	int roomIDHighest = currentRoomID;
 	float bestValue;
-	GetProjectedRoomProperty( currentRoomID, caIndex, bestValue );
+	GetRoomProperty( currentRoomID, caIndex, bestValue );
 	IntegerIterator itor;
 
 	for( itor = neighbours.begin(); itor != neighbours.end(); ++itor )
 	{
 		float value;
-		GetProjectedRoomProperty( *itor, caIndex, value );
+		GetRoomProperty( *itor, caIndex, value );
 		if( approachNotRetreat ? value>bestValue : value<bestValue )
 		{
 			bestValue = value;
@@ -636,6 +632,9 @@ bool Map::WhichDirectionToFollowCA(int currentRoomID, int caIndex, int &mapDirec
 
 	// handle vehicle movement lifts cable cars etc
 	Vector2D deltaToHighestRoom = highestRoom->centre - currentRoom->centre;
+	// gtb (01/11/00), bias coordinates so that up/down is heavily favoured over left/right
+	// (i.e. coordinates look more up/down than they actually are)
+	deltaToHighestRoom.y *= 2.0f;
 
 	float sideOfForwardSlashLine = deltaToHighestRoom.x + deltaToHighestRoom.y;	// up-left is neg, right-down is pos
 	float sideOfBackSlashLine = deltaToHighestRoom.x - deltaToHighestRoom.y;	// down-left is neg, up-right is pos
@@ -653,17 +652,21 @@ bool Map::WhichDirectionToFollowCA(int currentRoomID, int caIndex, int &mapDirec
 ////////////////////////////////////
 
 
-bool Map::GetRoomIDWithHighestCA( int roomID, int caIndex, bool includeUpDown, int &roomIDHighest )
+
+
+template<class T>
+CaRoomCategoryFound GetRoomIDWithCA(T& t, Map& map, int roomID, int caIndex, CaRoomSearchCriteria includeUpDownOrLinks, int &roomIdBest)
 {
 	Room* room;
 
-	if (!GetValidRoomPointer(roomID, room))
-		return false;
+	if (!map.GetValidRoomPointer(roomID, room))
+		return NONE_FOUND;
 
+	// Get the immediate neighbours:
 	IntegerCollection neighbours;
-	if( includeUpDown )
+	if( includeUpDownOrLinks )
 	{
-		GetNeighbours( roomID, DIRECTION_ALL, neighbours );
+		map.GetNeighbours( roomID, DIRECTION_ALL, neighbours );
 	}
 	else
 	{
@@ -672,59 +675,117 @@ bool Map::GetRoomIDWithHighestCA( int roomID, int caIndex, bool includeUpDown, i
 		if (room->rightFloorRoomID != -1)
 			neighbours.push_back(room->rightFloorRoomID);
 	}
-	roomIDHighest = roomID;
-	float highestValue;
-	GetRoomProperty( roomID, caIndex, highestValue );
+	int noOfImmediateNeighbours = neighbours.size();
 
-	IntegerIterator itor;
-	for( itor = neighbours.begin(); itor != neighbours.end(); ++itor )
+	// Add links if asked to:
+	if( includeUpDownOrLinks==ALL_DOORS_AND_LINKS )
 	{
-		float value;
-		GetRoomProperty( *itor, caIndex, value );
-		if( value > highestValue )
+		// Add links:
+		int count = room->linkCollection.size();
+		LinkIterator linkIterator = room->linkCollection.begin();
+		Link *link;
+		while( count-- )
 		{
-			highestValue = value;
-			roomIDHighest = *itor;
+			link = (*linkIterator++);
+
+			int otherRoomID;
+			if( link->parent1 == roomID )
+				otherRoomID = link->parent2;
+			else
+				otherRoomID = link->parent1;
+
+			// add room ID (who cares if we add it twice, we'll still find it as the highest one):
+			neighbours.push_back(otherRoomID);
 		}
 	}
-	return true;
-}
 
-bool Map::GetRoomIDWithLowestCA( int roomID, int caIndex, bool includeUpDown, int &roomIDLowest )
-{
-	Room *room;
-	if (!GetValidRoomPointer(roomID, room))
-		return false;
+	// Init search with current room:
+	roomIdBest = roomID;
+	float bestSoFar;
+	int bestIdSoFar = -1;
+	map.GetRoomProperty( roomID, caIndex, bestSoFar );
 
-	IntegerCollection neighbours;
-	if( includeUpDown )
+	// Find best room:
+	IntegerIterator itor;
+	int i;
+	for (itor=neighbours.begin(), i=0; itor!=neighbours.end(); ++itor, ++i)
 	{
-		GetNeighbours( roomID, DIRECTION_ALL, neighbours );
+		float value;
+		map.GetRoomProperty( *itor, caIndex, value );
+		if( T::BetterThan(value, bestSoFar) )
+		{
+			bestIdSoFar = i;
+			bestSoFar = value;
+			roomIdBest = *itor;
+		}
+	}
+
+	// Return what kind of room we found:
+	if (roomIdBest==roomID)
+	{
+		ASSERT(bestIdSoFar==-1);
+		return CURRENT_ROOM_FOUND;
+	}
+
+	if (bestIdSoFar<noOfImmediateNeighbours)
+	{
+		return NEIGHBOUR_FOUND;
 	}
 	else
 	{
-		if (room->leftFloorRoomID != -1)
-			neighbours.push_back(room->leftFloorRoomID);
-		if (room->rightFloorRoomID != -1)
-			neighbours.push_back(room->rightFloorRoomID);
+		return LINK_FOUND;
 	}
-	roomIDLowest = roomID;
-	float lowestValue;
-	GetRoomProperty( roomID, caIndex, lowestValue );
+}
 
-	IntegerIterator itor;
-	for( itor = neighbours.begin(); itor != neighbours.end(); ++itor )
+namespace MapCA
+{
+	class Lowest{	public:	static bool BetterThan(float a, float b){return a<b;}	} theLowestOne;
+	class Highest{	public:	static bool BetterThan(float a, float b){return a>b;}	} theHighestOne;
+}
+
+CaRoomCategoryFound Map::GetRoomIDWithHighestCA( int roomID, int caIndex, CaRoomSearchCriteria includeUpDownOrLinks, int &roomIDHighest )
+{
+	return GetRoomIDWithCA(MapCA::theHighestOne, *this, roomID, caIndex, includeUpDownOrLinks, roomIDHighest );
+}
+
+CaRoomCategoryFound Map::GetRoomIDWithLowestCA( int roomID, int caIndex, CaRoomSearchCriteria includeUpDownOrLinks, int &roomIDLowest )
+{
+	return GetRoomIDWithCA(MapCA::theLowestOne, *this, roomID, caIndex, includeUpDownOrLinks, roomIDLowest );
+}
+
+
+
+
+
+// Added by gtb for Sea Monkey's navigation CAs which need to
+// go in all directions, not just along floors:
+std::set<int> const &Map::GetSuperNavigableCAIndices()
+{
+	static bool cached = false;
+	static std::set<int> indices;
+	if( !cached )
 	{
-		float value;
-		GetRoomProperty( *itor, caIndex, value );
-		if( value < lowestValue )
+		if (theCatalogue.TagPresent("Super-Navigable CA Indices"))
 		{
-			lowestValue = value;
-			roomIDLowest = *itor;
+			int n = theCatalogue.GetArrayCountForTag( "Super-Navigable CA Indices" );
+			for( int i = 0; i < n; ++i )
+				indices.insert( atoi( theCatalogue.Get( "Super-Navigable CA Indices", i ) ) );
+			cached = true;
 		}
 	}
-	return true;
+	return indices;
 }
+
+bool Map::IsCASuperNavigable( int index )
+{
+	std::set<int> const &set = GetSuperNavigableCAIndices();
+	return set.find( index ) != set.end();
+}
+
+
+
+
+
 
 std::set<int> const &Map::GetNavigableCAIndices()
 {
@@ -733,8 +794,18 @@ std::set<int> const &Map::GetNavigableCAIndices()
 	if( !cached )
 	{
 		int n = theCatalogue.GetArrayCountForTag( "Navigable CA Indices" );
-		for( int i = 0; i < n; ++i )
+		int i;
+		for( i = 0; i < n; ++i )
 			indices.insert( atoi( theCatalogue.Get( "Navigable CA Indices", i ) ) );
+
+		// n.b. super-navigable CAs are navigable too:
+		if (theCatalogue.TagPresent("Super-Navigable CA Indices"))
+		{
+			n = theCatalogue.GetArrayCountForTag( "Super-Navigable CA Indices" );
+			for( i = 0; i < n; ++i )
+				indices.insert( atoi( theCatalogue.Get( "Super-Navigable CA Indices", i ) ) );
+		}
+
 		cached = true;
 	}
 	return indices;
@@ -746,21 +817,128 @@ bool Map::IsCANavigable( int index )
 	return set.find( index ) != set.end();
 }
 
+
+
+
+int caTock = 0;
+
+// n.b. this is only called for navigable CAs:
 void Map::AlterCAEmission( int roomID, int caIndex, float difference )
 {
+	caTock++;
+
 	Room *room;
 	if ( !GetValidRoomPointer( roomID, room ) )
 		return;
 	CARates const &rates = GetCARates( room->type, caIndex );
 	difference *= rates.GetGain();
-	AlterCAEmission( room, caIndex, difference * caMultiplier, caDistance, -1, NULL );
-
+	if (IsCASuperNavigable( caIndex ))
+	{
+		AlterSuperCAEmission( room, caIndex, difference * CA_MULTIPLIER, MAX_CA_DIST);
+	}else
+	{
+		AlterCAEmission( room, caIndex, difference * CA_MULTIPLIER, MAX_CA_DIST, -1, NULL );
+	}
 }
 
+
+
+
+
+#include <deque>
+
+void Map::AlterSuperCAEmission(Room *firstRoom, int caIndex, float difference, int distance)
+{
+	std::deque<Room*> roomQueue, otherRoomQueue;
+
+	roomQueue.push_back(firstRoom);
+	// mark as visited:
+	firstRoom->visitedOnTock = caTock;
+
+	firstRoom->amountToAdd = difference;
+
+
+	// PROCESS ROOMS ON QUEUE:
+
+	while (distance--)
+	{
+		while (!roomQueue.empty())
+		{
+			Room* r = roomQueue.back();
+			roomQueue.pop_back();
+
+			// add CA difference:
+			r->caValues[ caIndex ] += r->amountToAdd;
+
+			// If we're not at max dist don't add any more rooms:
+			if (!distance)
+				continue;
+
+			// Current room CA rates:
+			CARates const &rates = GetCARates( r->type, caIndex );
+
+			int count;
+			// Recurse through links:
+			count = r->linkCollection.size();
+			LinkIterator linkIterator = r->linkCollection.begin();
+			while( count-- )
+			{
+				Link* link = (*linkIterator++);
+
+				int otherRoomID;
+				if( link->parent1 == r->roomID )
+					otherRoomID = link->parent2;
+				else
+					otherRoomID = link->parent1;
+				Room *otherRoom;
+				if (GetValidRoomPointer(otherRoomID, otherRoom) && otherRoom->visitedOnTock!=caTock)
+				{
+					CARates const &otherRates = GetCARates( otherRoom->type, caIndex );
+					float reduce = rates.GetDiffusion() * otherRates.GetDiffusion();
+
+					otherRoom->amountToAdd = r->amountToAdd*reduce*link->permiability*0.01f,
+					// mark as visited:
+					otherRoom->visitedOnTock = caTock;
+					otherRoomQueue.push_back(otherRoom);
+				}
+			}
+
+			// Recurse through doors:
+			DoorIterator doorIterator=r->doorCollection.begin();
+			count = r->doorCollection.size();
+			while( count-- )
+			{
+				Door* door = (*doorIterator++);
+
+				int otherRoomID;
+				if( door->parent1 == r->roomID )
+					otherRoomID = door->parent2;
+				else
+					otherRoomID = door->parent1;
+				Room *otherRoom;
+				if (GetValidRoomPointer(otherRoomID, otherRoom) && otherRoom->visitedOnTock!=caTock)
+				{
+					CARates const &otherRates = GetCARates( otherRoom->type, caIndex );
+					float reduce = rates.GetDiffusion() * otherRates.GetDiffusion();
+
+					otherRoom->amountToAdd = r->amountToAdd*reduce*door->permiability*0.01f,
+					// mark as visited:
+					otherRoom->visitedOnTock = caTock;
+					otherRoomQueue.push_back(otherRoom);
+				}
+			}
+		}
+
+		otherRoomQueue.swap(roomQueue);
+	}
+}
+
+// n.b. this is only called for navigable CAs:
 void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 						  int distance, int roomIDFrom, Link *linkFrom )
 {
 	Room *otherRoom;
+
 
 	// Terminate the recursion
 	room->caValues[ caIndex ] += difference;
@@ -768,6 +946,8 @@ void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 	if( !distance-- )
 		return;
 
+
+	// Recurse through links:
 	int count = room->linkCollection.size();
 	LinkIterator linkIterator = room->linkCollection.begin();
 	Link *link;
@@ -795,7 +975,7 @@ void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 		}
 	}
 
-
+	// Recurse through left navigation exits:
 	int leftDistance = distance+1;
 	float leftDifference = difference;
 	Room *leftRoom = room;
@@ -813,6 +993,7 @@ void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 
 			leftRoom = otherRoom;
 
+			// add influence to room left of current:
 			leftRoom->caValues[ caIndex ] += leftDifference;
 
 			int count = leftRoom->linkCollection.size();
@@ -846,6 +1027,7 @@ void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 			break;
 	}
 
+	// Recurse through right navigation exits:
 	int rightDistance = distance + 1;
 	float rightDifference = difference;
 	Room *rightRoom = room;
@@ -897,3 +1079,4 @@ void Map::AlterCAEmission( Room *room, int caIndex, float difference,
 			break;
 	}
 }
+

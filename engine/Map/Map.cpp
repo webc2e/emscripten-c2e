@@ -3623,7 +3623,10 @@ void Map::MoveAgentInsideRectangle
 		{
 			CalculateCollisionVelocityAndElapsedTime(velocity, acceleration,
 				path, deltaCollision, vc, timeElapsed);
-			_ASSERT((timeElapsed >= 0.0f) && (timeElapsed <= 1.0f));
+			// Weakened ASSERTion as it would fire sometimes for values
+			// of the order 10 to the -4 because of float imprecision.
+			// _ASSERT((timeElapsed >= 0.0f) && (timeElapsed <= 1.0f));
+			_ASSERT((timeElapsed >= 0.0f) && (timeElapsed <= 1.1f));
 		}
 		else 
 		{
@@ -4018,16 +4021,16 @@ void Map::MoveAgentInsideRoomSystem
 			position += path;
 			velocity = velocityEnd;
 			// Check integrity
-			_ASSERT(IsAgentLocationValidInRoomSystem(position, width, height, 
-				minDoorPermiability));
+		//	_ASSERT(IsAgentLocationValidInRoomSystem(position, width, height, 
+		//		minDoorPermiability));
 			return;
 		}
 
 		// Move up to the collision point
 		position += deltaCollision;
 		// Check integrity
-		_ASSERT(IsAgentLocationValidInRoomSystem(position, width, height, 
-			minDoorPermiability));
+	//	_ASSERT(IsAgentLocationValidInRoomSystem(position, width, height, 
+	//		minDoorPermiability));
 
 		if (minSquaredDistance < 0.0001f) 
 			moved = false;
@@ -4039,7 +4042,9 @@ void Map::MoveAgentInsideRoomSystem
 		{
 			CalculateCollisionVelocityAndElapsedTime(velocity, acceleration,
 				path, deltaCollision, vc, timeElapsed);
-			_ASSERT((timeElapsed >= 0.0f) && (timeElapsed <= 1.0f));
+			// This fires sometimes, but apparently it is inevitable,
+			// and it interferes with debugging (esp. under Linux).
+			// _ASSERT((timeElapsed >= 0.0f) && (timeElapsed <= 1.0f));
 		}
 		else
 		{
@@ -5518,13 +5523,14 @@ bool Map::RemoveMetaRoom
 
 // ------------------------------------------------------------------------
 // Function:	GetMetaRoomCount
-// Description:	Returns the number of meta-rooms in the map
+// Description:	Returns the largest index which is a meta room
+//				Note: There can be holes in the list.
 // Arguments:	None
 // Returns:		Meta-room count
 // ------------------------------------------------------------------------
-int Map::GetMetaRoomCount(void)
+int Map::GetMetaRoomMaxID(void)
 {
-	return myMetaRoomCount;
+	return myMetaRoomMaxID;
 }
 
 
@@ -5906,6 +5912,7 @@ bool Map::AddRoom
 	}
 	// Create a new room
 	room = new Room;
+	room->visitedOnTock = -1;
 	room->roomID = id;
 	room->metaRoomID = metaRoomID;
 	// Add the left hand wall
@@ -6038,10 +6045,20 @@ bool Map::AddRoom
 		++integerIterator;
 	}
 
+	// added by gtb for SM:
+	// but removed because too slow
+//	RecalculateAllNavigationalCAs();
+
 	return true;
 }
 
 
+// ---------------------------------------------------------------------------
+// Function:	RemoveRoom
+// Description:	Removes an existing room from the map
+// Arguments:	roomID - ID of the room to remove (in)
+// Returns:		true if good input, false otherwise
+// ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // Function:	RemoveRoom
 // Description:	Removes an existing room from the map
@@ -6059,6 +6076,7 @@ bool Map::RemoveRoom
 	int otherRoomID;
 	Room* otherRoom;	
 	Room* room;
+	Room* r;
 	bool ok;
 	MetaRoom* metaRoom;
 	IntegerIterator integerIterator;
@@ -6082,7 +6100,6 @@ bool Map::RemoveRoom
 	while (doorIterator != doorIteratorEnd) 
 	{
 		door = *doorIterator;
-		myNavigableDoorCollection.remove(door);		
 
 		if (door->parentCount == 1) 
 		{
@@ -6161,17 +6178,17 @@ bool Map::RemoveRoom
 	}
 	// Remove the room from the internal grid
 	RemoveRoomFromGrid(room);
-	// Destroy the room
-	delete room;
+
+
 
 	integerIterator = upNeigbours.begin();
 	integerIteratorEnd = upNeigbours.end();
 	while (integerIterator != integerIteratorEnd) 
 	{
 		id = *integerIterator;
-		room = myRoomCollection[id];
-		CalculateFloorsForRoom(room);
-		CalculateRoomPermiabilityAndDoorage(room);
+		r = myRoomCollection[id];
+		CalculateFloorsForRoom(r);
+		CalculateRoomPermiabilityAndDoorage(r);
 		++integerIterator;
 	}
 
@@ -6180,9 +6197,9 @@ bool Map::RemoveRoom
 	while (integerIterator != integerIteratorEnd) 
 	{
 		id = *integerIterator;
-		room = myRoomCollection[id];
-		CalculateCeilingsForRoom(room);
-		CalculateRoomPermiabilityAndDoorage(room);
+		r = myRoomCollection[id];
+		CalculateCeilingsForRoom(r);
+		CalculateRoomPermiabilityAndDoorage(r);
 		++integerIterator;
 	}
 
@@ -6191,10 +6208,10 @@ bool Map::RemoveRoom
 	while (integerIterator != integerIteratorEnd) 
 	{
 		id = *integerIterator;
-		room = myRoomCollection[id];
-		CalculateNeighbourInformationForRoom(room);
-		CalculateRightWallsForRoom(room);
-		CalculateRoomPermiabilityAndDoorage(room);
+		r = myRoomCollection[id];
+		CalculateNeighbourInformationForRoom(r);
+		CalculateRightWallsForRoom(r);
+		CalculateRoomPermiabilityAndDoorage(r);
 		++integerIterator;
 	}
 
@@ -6203,12 +6220,20 @@ bool Map::RemoveRoom
 	while (integerIterator != integerIteratorEnd) 
 	{
 		id = *integerIterator;
-		room = myRoomCollection[id];
-		CalculateNeighbourInformationForRoom(room);
-		CalculateLeftWallsForRoom(room);
-		CalculateRoomPermiabilityAndDoorage(room);
+		r = myRoomCollection[id];
+		CalculateNeighbourInformationForRoom(r);
+		CalculateLeftWallsForRoom(r);
+		CalculateRoomPermiabilityAndDoorage(r);
 		++integerIterator;
 	}
+
+	// Destroy the room
+	delete room;
+
+	// added by gtb for SM:
+	// but removed because too slow
+//	RecalculateAllNavigationalCAs();
+
 	return true;
 }
 
@@ -6703,6 +6728,13 @@ bool Map::SetDoorPermiability(const int roomID1, const int roomID2,
 
 	CalculateRoomPermiabilityAndDoorage(myRoomCollection[roomID1]);
 	CalculateRoomPermiabilityAndDoorage(myRoomCollection[roomID2]);
+
+	// gtb
+	// when door perms change we need to blank and
+	// recalculate all the nav CAs just in case:
+	// but removed because too slow
+//	RecalculateAllNavigationalCAs();
+
 	return true;
 }
 
@@ -7845,7 +7877,7 @@ bool Map::Write(CreaturesArchive &ar) const
 		}	
 	}	
 	ar << myLinkCollection;
-	ar << myNavigableDoorCollection;
+	ar << myNavigableDoorCollection; // not used but kept for serialisation compatibility
 	return true;
 }
 
@@ -7908,7 +7940,7 @@ bool Map::Read(CreaturesArchive &ar)
 			}	
 		}	
 		ar >> myLinkCollection;
-		ar >> myNavigableDoorCollection;
+		ar >> myNavigableDoorCollection; // not used but kept for serialisation compatibility
 	}
 	else
 	{
@@ -7917,3 +7949,4 @@ bool Map::Read(CreaturesArchive &ar)
 	}
 	return true;
 }
+

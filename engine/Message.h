@@ -44,7 +44,7 @@ class Message
 public:
 	Message() : myTime( 0 ) {}
 
-	Message( AgentHandle const& from, AgentHandle const& to, int msg,
+	Message( CAOSVar const& from, AgentHandle const& to, int msg,
 		CAOSVar const &p1, CAOSVar const & p2, unsigned time )
 		:
 		myFrom( from ), myTo( to ),
@@ -53,7 +53,7 @@ public:
 		myTime( time )
 		{}
 
-	AgentHandle GetFrom() const {return myFrom;}
+	CAOSVar GetFrom() const {return myFrom;}
 	AgentHandle GetTo() const {return myTo;}
 	uint32 GetTime() const {return myTime;}
 	CAOSVar GetP1() const {return myP1;}
@@ -64,7 +64,7 @@ public:
 	friend CreaturesArchive &operator>>( CreaturesArchive &ar, Message &message );
 
 private:
-	AgentHandle	myFrom;					// who it's from
+	CAOSVar myFrom;					// who it's from
 	AgentHandle	myTo;					// who it's for
 
 	int myMsg;							// message number
@@ -79,3 +79,4 @@ CreaturesArchive &operator>>( CreaturesArchive &ar, Message &message );
 
 
 #endif // MESSAGE_H
+

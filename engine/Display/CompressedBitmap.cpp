@@ -67,7 +67,7 @@ void CompressedBitmap::Save(File& file)
 //				data begins.
 //			
 // ----------------------------------------------------------------------
-	void CompressedBitmap::SetData(uint8_t*& dataPtr)
+	void CompressedBitmap::SetData(uint8*& dataPtr)
 	{
 		myDataFlag = false;
 
@@ -87,7 +87,7 @@ void CompressedBitmap::Save(File& file)
 
 		myDataFlag = false;
 
-		uint8_t* data;
+		uint8* data;
 
 		file.ReadUINT8Ptr(data);
 
@@ -116,7 +116,7 @@ void CompressedBitmap::Save(File& file)
 //
 //			
 // ----------------------------------------------------------------------
-uint32 CompressedBitmap::SaveData(uint8_t*& data)
+uint32 CompressedBitmap::SaveData(uint8*& data)
 {
 	// if we use this again we need to update to 16bit tag format
 	// but it may be obsolete now
@@ -161,7 +161,7 @@ uint32 CompressedBitmap::SaveData(MemoryMappedFile& file)
 			{
 				bytes = count << 1;
 				bytesWritten+=bytes;
-				file.Blast(bytes,(uint8_t*)compressedData);
+				file.Blast(bytes,(uint8*)compressedData);
 				compressedData+=count;
 			}
 			else
@@ -195,7 +195,7 @@ uint32 CompressedBitmap::SaveData(MemoryMappedFile& file)
 //
 //			
 // ----------------------------------------------------------------------
-uint32 CompressedBitmap::SaveOffsetData(uint8_t*& data)
+uint32 CompressedBitmap::SaveOffsetData(uint8*& data)
 {
 	// if we use this again we need to update to 16bit tag format
 	// but it may be obsolete now
@@ -247,10 +247,8 @@ void CompressedBitmap::LoadFromC16(MemoryMappedFile& file)
 	// this will be far too much space but at least it is
 	// guaranteed to cover the whole set of data
 	myData = new uint16[myWidth*myHeight];
-	// Alima, maybe we had better allocate the right space later?
+	// allocate the right space later
 	// Done below
-
-	// big oops! sorry folks
 
 	if (myData)
 	{
@@ -269,7 +267,7 @@ void CompressedBitmap::LoadFromC16(MemoryMappedFile& file)
 				if (tag & 0x01)
 				{
 					uint32 count = tag >> 1;
-					uint8_t* data = (uint8_t*)pixels;
+					uint8* data = (uint8*)pixels;
 					file.BlockCopy(count * sizeof(uint16),data);
 					pixels += count;
 				}
@@ -295,6 +293,45 @@ void CompressedBitmap::LoadFromC16(MemoryMappedFile& file)
 		myData = myMovingData;
 		myMovingData = NULL;
 	}
+}
+
+void CompressedBitmap::DummyLoadFromC16(MemoryMappedFile& file)
+{
+#ifdef _DEBUG
+		myAlreadyRecolouredFlag = false;
+#endif
+
+	// you can only do this if you already have your own data
+	if(myDataFlag == false)
+		return;
+
+	file.Seek(myOffset,File::Start);
+	
+
+	const int bitsPerPixel = 2;
+		
+
+	uint32 posAtStart = file.GetPosition();
+
+	// read in all the pixels but don't do anything with the information
+	uint16 tag = file.ReadUINT16();
+
+	for (uint32 i = 0; i < myHeight; i++)
+	{
+		while(tag)
+		{				
+			if (tag & 0x01)
+			{
+				uint32 count = tag >> 1;
+				file.Seek(count * sizeof(uint16), File::Current);
+			}
+
+			tag = file.ReadUINT16();
+		}
+		// add the zero that we just found
+		tag = file.ReadUINT16();
+	}
+
 }
 
 // ----------------------------------------------------------------------
@@ -332,35 +369,6 @@ void CompressedBitmap::StoreLineLengths()
 	
 	myLineLengths.push_back(myOffsetValues[i] - myOffsetValues[i-1]);
 
-	}
-}
-// ----------------------------------------------------------------------
-// Method:      SetScanLines 
-// Arguments:   file - file to read from.  MUST be atposition containing
-//						compressed bitmaps line offsets
-//			
-// Returns:     None
-//
-// Description: Stores a pointer to each line in the compressed bitmap.
-//				The first line's offset value is stored in myOffset
-//				which is the original S16 header member.  The other
-//				scanline offset values are stored in a block directly after
-//				the formal header.
-//
-//			
-// ----------------------------------------------------------------------
-void CompressedBitmap::SetScanLines(File& file)
-{
-	uint32 scanValue = 0;
-	// do one less scan line because we have the first offset
-	// value in myOffset in the header
-	for(int h = myHeight-1; h--;)
-	{
-		file.Read(&scanValue,sizeof(scanValue));
-		myOffsetValues.push_back(scanValue);
-		// We will need the line pointers
-		// in the heap memory created by the bitmap
-		// this will be done as we get the pixel data
 	}
 }
 
@@ -617,9 +625,83 @@ void CompressedBitmap::InitHeader(MemoryMappedFile& file)
 	SetScanLines(file);
 }
 
-uint8_t* CompressedBitmap::GetScanLine(uint32 index)
+uint8* CompressedBitmap::GetScanLine(uint32 index)
 {
 	if (index >= myScanLines.size())
 		return NULL;
 	return myScanLines[index];
 }
+
+uint32 CompressedBitmap::SaveHeaderAndOffsetData(File& file)
+{
+	uint32 bytesWritten = 0;
+	
+	file.Write(&myOffset,sizeof(myOffset));
+	bytesWritten += sizeof(uint32);
+
+	file.Write(&myWidth,sizeof(uint16));
+	bytesWritten += sizeof(uint16);
+
+	file.Write(&myHeight,sizeof(uint16));
+	bytesWritten += sizeof(uint16);
+
+	std::vector<uint32>::iterator it;
+
+	for(it = myOffsetValues.begin(); it !=myOffsetValues.end();it++ )
+	{	
+		file.Write(&(*it),sizeof(uint32));
+		bytesWritten+=sizeof(uint32);
+	}
+
+	return bytesWritten;
+}
+
+uint32 CompressedBitmap::SaveData(File& file)
+{
+	uint32 bytesWritten = 0;
+	uint16* compressedData = myData;
+	uint32 count =0;
+	uint32 bytes =0;
+	uint16 tag =0;
+
+	for(int32 i = 0; i< myHeight; i++)
+	{
+		tag = *compressedData++;
+		
+
+		while( tag != 0)	
+		{	
+			// write the tag
+			file.Write(&tag, sizeof(tag));
+			bytesWritten+=sizeof(uint16);
+			// find the number of colours to plot
+			count = tag >>1;
+				
+			// check whether the run is transparent or colour
+			if(tag & 0x1)
+			{
+				bytes = count << 1;
+				bytesWritten+=bytes;
+				file.Write(compressedData,bytes);
+				compressedData+=count;
+			}
+			else
+			{
+			//do nothing
+			}
+
+			tag = *compressedData++;
+		}
+
+		//write the zero at the end of the line 
+			bytesWritten+=2;
+		file.Write(&tag,sizeof(tag));
+	}
+	
+	// now write the zero byte
+	file.Write(compressedData,sizeof(uint16));
+	bytesWritten+=2;
+	
+	return bytesWritten;
+}
+

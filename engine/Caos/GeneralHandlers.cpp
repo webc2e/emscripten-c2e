@@ -17,16 +17,12 @@
 #include <string>
 #include <fstream>
 
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#else
 #include <sstream>
-#endif
 
 #include <math.h>	// for trig functions
 
 #include "../App.h"
-#include "../Display/MainCamera.h"
+#include "../Camera/MainCamera.h"
 #include "CAOSMachine.h"
 #include "GeneralHandlers.h"
 #include "DebugInfo.h"
@@ -44,9 +40,30 @@
 #include "../General.h"
 #include "../C2eServices.h"
 #include <time.h>
-#ifndef _WIN32
-#include "../unix/FileFuncs.h"
+#include "../../common/FileFuncs.h"
+#include "../../common/StringFuncs.h"
+#include "../DirectoryManager.h"
+
+#ifdef _WIN32
+	#include "../../common/FileScanner.h"
+	#include "shellapi.h"
+#else
+	#include "../../common/launchurl/launchurl.h"
+	#include <glob.h>
 #endif
+
+#include "../CosInstaller.h"
+#include <stdlib.h>
+
+void GeneralHandlers::StringRV_MODU( CAOSMachine& vm, std::string& str )
+{
+	str = DisplayAndModuleString();
+}
+
+void GeneralHandlers::StringRV_UFOS( CAOSMachine& vm, std::string& str )
+{
+	str = OperatingSystemString();
+}
 
 void GeneralHandlers::Command_ADDV( CAOSMachine& vm )
 {
@@ -260,6 +277,17 @@ void GeneralHandlers::Command_ORRV( CAOSMachine& vm )
 
 	int i = var.GetInteger();
 	i |= vm.FetchIntegerRV();
+	var.SetInteger( i );
+}
+
+void GeneralHandlers::Command_NOTV( CAOSMachine& vm )
+{
+	// new version
+	CAOSVar& var = vm.FetchVariable();
+	if( var.GetType() != CAOSVar::typeInteger )
+		vm.ThrowRunError( CAOSMachine::sidNotAnInt );
+
+	int i = ~var.GetInteger();
 	var.SetInteger( i );
 }
 
@@ -557,12 +585,11 @@ void GeneralHandlers::Command_SCRX( CAOSMachine& vm )
 	}
 }
 
+
 void GeneralHandlers::Command_RGAM(CAOSMachine& vm)
 {
-
-	theApp.RefreshGameVariables();
+	theApp.RefreshFromGameVariables();
 }
-
 
 
 int GeneralHandlers::IntegerRV_RAND( CAOSMachine& vm )
@@ -825,7 +852,7 @@ float GeneralHandlers::FloatRV_INNF( CAOSMachine& vm )
 void GeneralHandlers::StringRV_INNL( CAOSMachine& vm, std::string& str )
 {
 	std::istream* in = vm.GetInStream();
-	std::getline(*in, str);
+	GetLineCompatible(*in, str);
 }
 
 
@@ -1075,6 +1102,13 @@ void GeneralHandlers::Command_DELG( CAOSMachine& vm )
 	theApp.GetWorld().DeleteGameVar( var );
 }
 
+void GeneralHandlers::Command_DELE( CAOSMachine& vm )
+{
+	std::string var;
+	vm.FetchStringRV( var );
+	theApp.DeleteEameVar( var );
+}
+
 void GeneralHandlers::StringRV_GAMN( CAOSMachine& vm , std::string& str)
 {
 	std::string from;
@@ -1083,11 +1117,26 @@ void GeneralHandlers::StringRV_GAMN( CAOSMachine& vm , std::string& str)
 	str = theApp.GetWorld().GetNextGameVar( from );
 }
 
+void GeneralHandlers::StringRV_EAMN( CAOSMachine& vm , std::string& str)
+{
+	std::string from;
+	vm.FetchStringRV(from);
+
+	str = theApp.GetNextEameVar( from );
+}
+
 CAOSVar& GeneralHandlers::Variable_GAME( CAOSMachine& vm )
 {
 	std::string var;
 	vm.FetchStringRV( var );
 	return theApp.GetWorld().GetGameVar( var );
+}
+
+CAOSVar& GeneralHandlers::Variable_EAME( CAOSMachine& vm )
+{
+	std::string var;
+	vm.FetchStringRV( var );
+	return theApp.GetEameVar( var );
 }
 
 void GeneralHandlers::Command_SAVE( CAOSMachine& vm )
@@ -1122,7 +1171,7 @@ int GeneralHandlers::IntegerRV_WNTI( CAOSMachine& vm )
 	{
 		std::string wname;
 		if ( !theApp.GetWorld().WorldName( i, wname ) )
-			ErrorMessageHandler::Show("archive_error", 9, "GeneralHandlers::StringRV_WRLD");
+			throw BasicException(ErrorMessageHandler::Format("archive_error", 9, "GeneralHandlers::StringRV_WRLD").c_str());
 		if (wname == str)
 		{
 			return i;
@@ -1141,7 +1190,7 @@ void GeneralHandlers::StringRV_WRLD( CAOSMachine& vm, std::string& str )
 {
 	int index = vm.FetchIntegerRV();
 	if( !theApp.GetWorld().WorldName( index, str ) )
-		ErrorMessageHandler::Show("archive_error", 9, "GeneralHandlers::StringRV_WRLD");
+		throw BasicException(ErrorMessageHandler::Format("archive_error", 9, "GeneralHandlers::StringRV_WRLD").c_str());
 }
 
 void GeneralHandlers::Command_WRLD(CAOSMachine& vm)
@@ -1172,12 +1221,7 @@ void GeneralHandlers::Command_DELW( CAOSMachine& vm  )
 
 void GeneralHandlers::Command_QUIT( CAOSMachine& vm )
 {
-#ifdef C2E_OLD_CPP_LIB
-	char buf[512];
-	std::ostrstream ss(buf,sizeof(buf));
-#else
-	std::stringstream ss;	// should be ostringstream?
-#endif
+	std::ostringstream ss;
 	if (vm.GetOwner().IsInvalid())
 		ss << "CAOS Command Quit has activated from install script" << std::endl;
 	else
@@ -1190,12 +1234,8 @@ void GeneralHandlers::Command_QUIT( CAOSMachine& vm )
 			". The agent was running script " << running.Family() << " " << running.Genus() <<
 			" " << running.Species() << " " << running.Event() << std::endl;
 	}
-#ifdef C2E_OLD_CPP_LIB
-	theFlightRecorder.Log(16,buf);
-#else
 	std::string str = ss.str();
-	theFlightRecorder.Log(16,str.c_str());
-#endif
+	theFlightRecorder.Log(FLIGHT_SHUTDOWN,str.c_str());
 
 	theApp.myQuitNextTick = true;
 }
@@ -1252,11 +1292,6 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 			(posit<(command.length()));
 			posit++)
 			{
-				/*if (command.at(posit) == '\\')
-				{
-					posit++;
-					continue;
-				}*/
 				if (command.at(posit) == '\"')
 				{
 					int backcount = 0;
@@ -1301,12 +1336,7 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 	}
 	//Okay, we have split up the string nicely...
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[65536];
-	std::ostrstream outstream( hackbuf, sizeof(hackbuf) );
-#else
 	std::ostringstream outstream;
-#endif
 
 	//Prepare the vm...
 	for(std::vector<std::string>::iterator it = cmds.begin(); it!= cmds.end(); it++)
@@ -1317,11 +1347,7 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 		{
 			//Right, we have a scrp script.....
 			//Stage One, Decode fgse....
-#ifdef C2E_OLD_CPP_LIB
-			std::istrstream scrpstream( (*it).c_str() );
-#else
 			std::istringstream scrpstream((*it));
-#endif
 			Classifier cls(0, 0, 0, 0);
 			try {
 				char tempstuff[1024];
@@ -1427,7 +1453,11 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 			if (state_trans)
 				newVM.StartScriptExecuting(m,vm.GetOwner(),vm.GetFrom(),p1,p2);
 			else
-				newVM.StartScriptExecuting(m,NULLHANDLE, NULLHANDLE, p1, p2);
+			{
+				CAOSVar from;
+				from.SetAgent(NULLHANDLE);
+				newVM.StartScriptExecuting(m,NULLHANDLE, from, p1, p2);
+			}
 
 			if (inlining)
 				vm.CopyBasicState(newVM);
@@ -1437,7 +1467,7 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 			{
 				newVM.UpdateVM(-1);
 			}
-			catch (CAOSMachine::RunError& e)
+			catch (CAOSMachineRunError& e)
 			{
 				if (catches)
 				{
@@ -1463,11 +1493,7 @@ void GeneralHandlers::StringRV_CAOS( CAOSMachine& vm, std::string& str )
 			delete m;
 		}
 	}
-#ifdef C2E_OLD_CPP_LIB
-	str = hackbuf;
-#else
 	str.assign(outstream.str());
-#endif
 }
 
 // BenC: Need these trig functions for my Scumotron game :-)
@@ -1595,6 +1621,7 @@ void GeneralHandlers::Command_FILE( CAOSMachine& vm)
 		SubCommand_FILE_IOPE,
 		SubCommand_FILE_ICLO,
 		SubCommand_FILE_JDEL,
+		SubCommand_FILE_GLOB,
 	};
 	int subcmd;
 
@@ -1603,22 +1630,51 @@ void GeneralHandlers::Command_FILE( CAOSMachine& vm)
 
 }
 
-void GeneralHandlers::MakeFilenameSafe(std::string& filename)
+void GeneralHandlers::SubCommand_FILE_GLOB(CAOSMachine& vm)
 {
-    for(int index = 0; index < filename.length(); index++)
-        switch(filename.at(index))
-        {
-        case '\\':
-        case '/':
-        case '?':
-        case '*':
-        case '\"':
-        case '<':
-        case '>':
-        case '|':
-        case ':':
-            filename.at(index) = '_';
-        }
+	// Globbing function for getting directory listings
+	// As IOPE only works on main and world journals, we only glob there also.
+	int where = vm.FetchIntegerRV();
+	std::string filespec,basepath;
+	vm.FetchStringRV(filespec);
+	if (where == 0)
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+	else // 1
+		basepath = theDirectoryManager.GetDirectory(JOURNAL_DIR);
+	std::vector<std::string> files;
+	// Begin OS specific globbing
+	basepath = basepath + filespec;
+#ifdef _WIN32
+	DirectoryScanner f(basepath.c_str());
+	const char* aFile;
+	do
+	{
+		aFile = f.getNextFile();
+		if (aFile != NULL)
+		{
+			std::string temp = aFile;
+			files.push_back(temp);
+		}
+	} while (aFile != NULL);
+#else
+	glob_t aGlobberific;
+	aGlobberific.gl_offs=0;
+	aGlobberific.gl_pathc=0;
+	aGlobberific.gl_pathv=NULL;
+	glob(basepath.c_str(),0,NULL,&aGlobberific);
+	for(int loopV=0;loopV<aGlobberific.gl_pathc;loopV++)
+	{
+		std::string temp = aGlobberific.gl_pathv[loopV];
+		files.push_back(temp);
+	}
+	globfree(&aGlobberific);
+#endif
+
+	std::ostringstream output;
+	output << files.size() << std::endl;
+	for(int i=0; i < files.size(); i++)
+		output << files[i] << std::endl;
+	vm.SetInputStream(new std::istringstream(output.str()));
 }
 
 void GeneralHandlers::SubCommand_FILE_JDEL( CAOSMachine& vm )
@@ -1629,9 +1685,9 @@ void GeneralHandlers::SubCommand_FILE_JDEL( CAOSMachine& vm )
 	MakeFilenameSafe(filename);
 	std::string basepath;
 	if (directory == 0)
-		theApp.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
 	else // 1
-		basepath = theApp.GetDirectory(JOURNAL_DIR);
+		basepath = theDirectoryManager.GetDirectory(JOURNAL_DIR);
 
 	filename = basepath + filename;
 
@@ -1651,9 +1707,21 @@ void GeneralHandlers::SubCommand_FILE_OOPE( CAOSMachine& vm )
 
 	std::string basepath;
 	if (directory == 0)
-		theApp.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+	{
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+	}
+	else if (directory == 2)
+	{
+		CAOSVar& otherWorldVar = theApp.GetWorld().GetGameVar("engine_other_world");
+		std::string otherWorld;
+		if (otherWorldVar.GetType() == CAOSVar::typeString)
+			otherWorldVar.GetString(otherWorld);
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true, otherWorld);
+	}
 	else // 1
-		basepath = theApp.GetDirectory(JOURNAL_DIR);
+	{
+		basepath = theDirectoryManager.GetDirectory(JOURNAL_DIR);
+	}
 
 	filename = basepath + filename;
 	vm.SetOutputStream(new std::ofstream(filename.c_str(), mode), true);
@@ -1680,9 +1748,21 @@ void GeneralHandlers::SubCommand_FILE_IOPE( CAOSMachine& vm )
 
 	std::string basepath;
 	if (directory == 0)
-		theApp.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+	{
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true);
+	}
+	else if (directory == 2)
+	{
+		CAOSVar& otherWorldVar = theApp.GetWorld().GetGameVar("engine_other_world");
+		std::string otherWorld;
+		if (otherWorldVar.GetType() == CAOSVar::typeString)
+			otherWorldVar.GetString(otherWorld);
+		theDirectoryManager.GetWorldDirectoryVersion(JOURNAL_DIR, basepath, true, otherWorld);
+	}
 	else // 1
-		basepath = theApp.GetDirectory(JOURNAL_DIR);
+	{
+		basepath = theDirectoryManager.GetDirectory(JOURNAL_DIR);
+	}
 
 	filename = basepath + filename;
 	vm.SetInputStream(new std::ifstream(filename.c_str(), std::ios::in));
@@ -1698,11 +1778,7 @@ float GeneralHandlers::FloatRV_STOF( CAOSMachine& vm )
 	std::string value;
 	vm.FetchStringRV(value);
 
-#ifdef C2E_OLD_CPP_LIB
-	std::istrstream in( value.c_str() );
-#else
 	std::istringstream in(value);
-#endif
 	float asFloat = 0.0f;
 	in >> asFloat;
 	
@@ -1714,11 +1790,7 @@ int GeneralHandlers::IntegerRV_STOI( CAOSMachine& vm )
 	std::string value;
 	vm.FetchStringRV(value);
 
-#ifdef C2E_OLD_CPP_LIB
-	std::istrstream in( value.c_str() );
-#else
 	std::istringstream in(value);
-#endif
 	int asInteger = 0;
 	in >> asInteger;
 	
@@ -1812,5 +1884,243 @@ int GeneralHandlers::IntegerRV_SCOL(CAOSMachine& vm)
 int GeneralHandlers::IntegerRV_MSEC(CAOSMachine& vm)
 {
 	return GetTimeStamp();
+}
+
+
+int GeneralHandlers::IntegerRV_SINS(CAOSMachine& vm)
+{
+	std::string main;
+	vm.FetchStringRV(main);
+	int index = vm.FetchIntegerRV() - 1; // CAOS strings begin at 1
+	std::string search;
+	vm.FetchStringRV(search);
+
+	int found = main.find(search, index);
+
+	int ret;
+	if (found == std::string::npos)
+		ret = -1;
+	else
+		ret = found + 1;
+
+	return ret;
+}
+
+void GeneralHandlers::StringRV_LOWA(CAOSMachine& vm, std::string& str)
+{
+	vm.FetchStringRV(str);
+	LowerCase(str);
+}
+
+void GeneralHandlers::StringRV_UPPA(CAOSMachine& vm, std::string& str)
+{
+	vm.FetchStringRV(str);
+	UpperCase(str);
+}
+
+// This is for testing what happens when a processor exception is thrown
+float GeneralHandlers::ExceptionTestDivide(int a, int b)
+{
+	return a / b;
+}
+int GeneralHandlers::ExceptionMetaDivide()
+{
+	return (int)ExceptionTestDivide(7, 0);
+}
+void GeneralHandlers::Command_BANG( CAOSMachine& vm )
+{
+	int x = ExceptionMetaDivide();
+	srand(x);  // force a use, so optimiser doesn't eliminate all the code
+
+// This is for testing what happens when a std::basic_exception is thrown:
+//	std::string crash = "foo";
+//	std::string sub = crash.substr(10, 1);
+}
+
+int GeneralHandlers::IntegerRV_BUZZ(CAOSMachine& vm)
+{
+	return theApp.GetWorldTickInterval();
+}
+
+void GeneralHandlers::Command_BUZZ(CAOSMachine& vm)
+{
+	int tickInterval = vm.FetchIntegerRV();
+	theApp.SetWorldTickInterval(tickInterval);
+}
+
+void GeneralHandlers::Command_BOOT(CAOSMachine& vm)
+{
+	int subboot_number_sum = vm.FetchIntegerRV();
+	int folder_number_sum = vm.FetchIntegerRV();
+	int clear_world = vm.FetchIntegerRV();
+
+	theApp.GetWorld().LoadSpecifiedBootstraps(subboot_number_sum,
+											folder_number_sum,
+											clear_world != 0);
+}
+// ****************************************************************************
+void GeneralHandlers::Command_WEBB(CAOSMachine& vm)
+{
+	std::string url;
+	vm.FetchStringRV(url);
+
+	// Make slashes go the right way for compatibility, and convert spaces and
+	// other characters in case people can do hackerish things with them
+	std::string processed = "http://";
+	for (int i = 0; i < url.size(); ++i)
+	{
+		char c = url[i];
+		if (c == '\\')
+			processed += '/';
+		else if (c == ' ')
+			processed += "%20";
+		else if (c == '"')
+			processed += "%22";
+		else if (c == '\'')
+			processed += "%27";
+		else if (c == '`')
+			processed += "%60";
+		else if (c == '|')
+			processed += "%7c";
+		else
+			processed += c;
+	}
+
+#ifdef _WIN32
+	// SPARKY Balls, just opening a URL is failing on Win2K and I imagine XP
+	// Let's write out a temp URL instead
+
+//[InternetShortcut]
+//URL=http://exodus.creatures.net/dsnl-index.htm
+/*
+	std::string urlstring;
+	urlstring="[InternetShortcut]\nURL=";
+	urlstring+=processed;
+	std::string urlfile;
+	urlfile=theApp.MyDocuments;
+	urlfile+="temp.url";
+	unsigned long bytes_written;
+
+	HANDLE output_handle=CreateFile(urlfile.c_str(),GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+	WriteFile(output_handle, urlstring.c_str(), urlstring.size(), &bytes_written, NULL);
+	CloseHandle(output_handle);
+
+	
+	urlfile="temp.url";
+  */
+/*
+	WORD Status = (DWORD)ShellExecute(		NULL,//theMainWindow,
+											"open", 
+											urlfile.c_str(),	//processed.c_str(), 
+											//processed.c_str(), 
+											NULL, 
+											 (char*)&theApp.MyDocuments,		//""
+											SW_SHOWNORMAL);
+
+
+*/	  
+
+	// this one gives access denied
+	WORD Status = (DWORD)ShellExecute(theMainWindow,NULL, processed.c_str(), NULL, "", SW_SHOWNORMAL);
+	//WORD Status = (DWORD)ShellExecute(theMainWindow,NULL, "http://www.theregister.co.uk", NULL, "", SW_SHOWNORMAL);
+	//WORD Status = (DWORD)ShellExecute(GetDesktopWindow(),NULL, "http://www.theregister.co.uk", NULL, "", SW_SHOWNORMAL);
+	#define WM_LAUNCH_URL (WM_USER+3)
+	//PostMessage(theMainWindow, WM_LAUNCH_URL, 0, 0);	
+
+#ifdef NETTY
+	theApp.Netty->TextOut("#################");	
+	theApp.Netty->TextOut(processed.c_str());	
+	theApp.Netty->TextOut(urlfile.c_str());	
+	theApp.Netty->TextOut((char*)&theApp.MyDocuments);	
+	char xxx[100];
+	//sprintf((char*)&xxx,"%d",Status);
+	theApp.Netty->TextOut((char*)&xxx);	
+//"shellapi.h"
+#endif
+
+#else // Linux
+	std::cout << "Launching " << processed << std::endl;
+	launchurl(processed.c_str());	
+#endif
+
+	// You can throw this for platforms where you haven't implemented it yet:
+	// vm.ThrowRunError(CAOSMachine::sidNotImplementedYet);
+}
+// ****************************************************************************
+// Find a body part filename from all the bits of data
+void GeneralHandlers::StringRV_LIMB( CAOSMachine& vm, std::string& str )
+{
+	int part = vm.FetchIntegerRV();
+	int genus = vm.FetchIntegerRV() - 1;
+	int sex = vm.FetchIntegerRV();
+	int age = vm.FetchIntegerRV();
+	int breed = vm.FetchIntegerRV();
+
+#ifdef NETTY
+	//theApp.Netty->TextOut("StringRV_LIMB");
+#endif
+
+
+	uint32 fsp = ValidFsp(	part,
+							genus,
+							sex,
+							age,
+							breed,
+							"c16",
+							IMAGES_DIR);
+
+	std::string filename;
+	if (fsp)
+	{
+		filename = BuildFsp(fsp, "");
+		int x = filename.find_last_of(".");
+		filename = filename.substr(0, x);
+	}
+
+	str = filename;
+}
+
+void GeneralHandlers::Command_JECT( CAOSMachine& vm)
+{
+	std::string cosFile;
+	vm.FetchStringRV(cosFile);
+	int flags = vm.FetchIntegerRV();
+	std::ostream* out = vm.GetUnvalidatedOutStream();
+
+	bool injectUninstallScript = (flags & 1);
+	bool dontInjectEventScripts = !(flags & 2);
+	bool dontInjectInstallScript = !(flags & 4);
+
+	// Find where the cos file is
+	std::string absoluteCosFile;
+	LowerCase(cosFile);
+	for (int i = 0; i < theDirectoryManager.GetAuxDirCount(BOOTSTRAP_DIR); ++i)
+	{
+		std::vector<std::string> dirs;
+		std::string auxDir = theDirectoryManager.GetAuxDir(BOOTSTRAP_DIR, i);
+		GetDirsInDirectory(auxDir, dirs);
+		std::sort(dirs.begin(), dirs.end());
+		for (int j = 0; j < dirs.size(); ++j)
+		{
+			std::vector<std::string> files;
+			std::string dir = auxDir + dirs[j] + "/";
+			GetFilesInDirectory(dir, files, "*");
+			for (int k = 0; k < files.size(); ++k)
+			{
+				std::string file = files[k];
+				LowerCase(file);
+				if (file == cosFile)
+				{
+					absoluteCosFile = dir + files[k];
+					goto tripleBreak;
+				}
+			}
+		}
+	}
+	tripleBreak:
+
+	// install it
+	if (!absoluteCosFile.empty())
+		CosInstaller cos(absoluteCosFile, dontInjectInstallScript, injectUninstallScript, dontInjectEventScripts, out);
 }
 

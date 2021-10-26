@@ -32,6 +32,7 @@ public:
 	static void Command_ABSV( CAOSMachine& vm );
 	static void Command_ANDV( CAOSMachine& vm );
 	static void Command_ORRV( CAOSMachine& vm );
+	static void Command_NOTV( CAOSMachine& vm );
 	static void Command_SETV( CAOSMachine& vm );
 	static void Command_PSWD( CAOSMachine& vm);
 
@@ -68,6 +69,7 @@ public:
 	static void Command_SETA( CAOSMachine& vm );
 	static void Command_CHAR( CAOSMachine& vm );
 	static void Command_DELG( CAOSMachine& vm );
+	static void Command_DELE( CAOSMachine& vm );
 	static void Command_SAVE( CAOSMachine& vm );
 	static void Command_LOAD( CAOSMachine& vm );
 	static void Command_COPY( CAOSMachine& vm );
@@ -79,6 +81,13 @@ public:
 	static void Command_RGAM( CAOSMachine& vm );
 	static void Command_REAF( CAOSMachine& vm );
 	static void Command_STRK( CAOSMachine& vm );
+	
+	static void Command_BANG( CAOSMachine& vm );
+	static void Command_BUZZ( CAOSMachine& vm );
+	static void Command_BOOT( CAOSMachine& vm );
+	static void Command_WEBB(CAOSMachine& vm);
+	static void Command_JECT( CAOSMachine& vm);
+
 	// Integer r-values
 	static int IntegerRV_RAND( CAOSMachine& vm );
 	static int IntegerRV_KEYD( CAOSMachine& vm );
@@ -116,6 +125,8 @@ public:
 	static int IntegerRV_SORQ( CAOSMachine& vm );
 	static int IntegerRV_MSEC( CAOSMachine& vm );
 	static int IntegerRV_WNTI( CAOSMachine& vm );
+	static int IntegerRV_SINS( CAOSMachine& vm );
+	static int IntegerRV_BUZZ( CAOSMachine& vm );
 
 	// Float r-values
 	static float FloatRV_MOVX( CAOSMachine& vm );
@@ -148,10 +159,17 @@ public:
 	static void StringRV_RTIF( CAOSMachine& vm, std::string& str );
 	static void StringRV_INNL( CAOSMachine& vm, std::string& str );
 	static void StringRV_GAMN( CAOSMachine& vm, std::string& str );
+	static void StringRV_EAMN( CAOSMachine& vm, std::string& str );
 	static void StringRV_FVWM( CAOSMachine& vm, std::string& str );
+	static void StringRV_LOWA( CAOSMachine& vm, std::string& str );
+	static void StringRV_UPPA( CAOSMachine& vm, std::string& str );
+	static void StringRV_UFOS( CAOSMachine& vm, std::string& str );
+	static void StringRV_MODU( CAOSMachine& vm, std::string& str );
+	static void StringRV_LIMB( CAOSMachine& vm, std::string& str );
 
 	// Variables
 	static CAOSVar& Variable_GAME( CAOSMachine& vm );
+	static CAOSVar& Variable_EAME( CAOSMachine& vm );
 
 private:
 	// Subcommands
@@ -166,10 +184,12 @@ private:
 	static void SubCommand_FILE_IOPE( CAOSMachine& vm );
 	static void SubCommand_FILE_ICLO( CAOSMachine& vm );
 	static void SubCommand_FILE_JDEL( CAOSMachine& vm );
+	static void SubCommand_FILE_GLOB( CAOSMachine& vm );
 
+public:
 	// Helpers
-	static void MakeFilenameSafe(std::string& filename);
-
+	static float ExceptionTestDivide(int a, int b);
+	static int ExceptionMetaDivide();
 };
 
 

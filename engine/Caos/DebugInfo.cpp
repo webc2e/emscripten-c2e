@@ -79,3 +79,4 @@ bool DebugInfo::Read(CreaturesArchive &ar)
 
 	return true;
 }
+

@@ -16,8 +16,13 @@
 
 #include "MusicTimer.h"
 #include "../../common/C2eTypes.h"
+
+#ifdef C2E_SDL
+#include <SDL/SDL.h>
+#else
 #ifdef _WIN32
 #include <mmsystem.h>
+#endif
 #endif
 
 // ----------------------------------------------------------------------
@@ -29,10 +34,15 @@
 //				Windows was started. 
 // ----------------------------------------------------------------------
 int MusicGetTime()
-	{
-#ifdef _WIN32
-	return timeGetTime();
+{
+#ifdef C2E_SDL
+	return (int)SDL_GetTicks();
 #else
-	#warning // TODO: need millisecond-resolution timestamp here!
+	#ifdef _WIN32
+		return timeGetTime();
+	#else
+		#error Need timer function
+	#endif
 #endif
-	}
+}
+

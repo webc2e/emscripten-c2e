@@ -25,7 +25,11 @@
 typedef std::pair<std::string,int> FileOffset;
 typedef std::pair<int,std::string> FlagsType;
 
-class PrayManager
+#include "../../modules/ModuleAPI.h"
+
+#define thePrayManager PrayManager::GetPrayManager()
+
+class C2E_MODULE_API PrayManager
 {
 public:
 	// ----------------------------------------------------------------------------------
@@ -36,6 +40,7 @@ public:
 	// Costs:		Immediate: Light, Later: Light to Medium
 	// ----------------------------------------------------------------------------------
 	inline void AddDir(std::string dirname) { dirnames.push_back(dirname); }
+	inline void ClearDirList() { dirnames.clear(); }
 
 	// ----------------------------------------------------------------------------------
 	// Method:		RescanFolders
@@ -50,13 +55,13 @@ public:
 	void RescanFolders();
 
 	// ----------------------------------------------------------------------------------
-	// Constructor
+	// Method:		SetLang
 	// Arguments:	thisLang - std::string - the Language ID we are working with
 	// Returns:		(None)
-	// Description: This constructs a manager, with the given language ID - PrayFiles
-	//				loaded by this manager will first be localised with the filelocaliser
+	// Description: PrayFiles will first be localised with the filelocaliser using
+	//              the language id.
 	// ----------------------------------------------------------------------------------
-	PrayManager(std::string thisLang) { langid = thisLang; }
+	void SetLanguage(std::string thisLang) { langid = thisLang; }
 
 	// ----------------------------------------------------------------------------------
 	// Method:		CheckChunk
@@ -71,6 +76,16 @@ public:
 	// Costs:		Immediate: Light, Later: (None)
 	// ----------------------------------------------------------------------------------
 	int CheckChunk(std::string thisChunk);
+
+
+	// ----------------------------------------------------------------------------------
+	// Method:		CheckChunk
+	// Arguments:	thisChunk - std::string - The Chunk name to scan for
+	// Returns:		empty string if chunk doesn't exist, otherwise the chunk type
+	// Description:	Finds out the type of a chunk given its name
+	// Costs:		Immediate: Light, Later: (None)
+	// ----------------------------------------------------------------------------------
+	std::string GetChunkType(std::string thisChunk);
 
 	// ----------------------------------------------------------------------------------
 	// Method:		GetChunk
@@ -98,7 +113,7 @@ public:
 	//				thisType - std::string - The type for the chunk.
 	//				thisFile - std::string - The file to put the chunk in.
 	//				thisSize - int         - The size for the chunk
-	//				thisData - uint8_t*      - A pointer to the data to copy
+	//				thisData - uint8*      - A pointer to the data to copy
 	//              doCompress - bool      - Whether or not to compress the data
 	// Returns:     (None)
 	// Description: This method takes the data, and creates a new chunk on file for it.
@@ -107,7 +122,7 @@ public:
 	// Costs:		Immediate: Heavy, Later, Medium
 	// ----------------------------------------------------------------------------------
 	void AddChunkToFile(std::string thisName, std::string thisType, std::string thisFile,
-						int thisSize, uint8_t* thisData, bool doCompress);
+						int thisSize, uint8* thisData, bool doCompress);
 
 	// ----------------------------------------------------------------------------------
 	// Method:		GarbageCollect
@@ -123,15 +138,6 @@ public:
 	void GarbageCollect(bool force);
 
 	// ----------------------------------------------------------------------------------
-	// Method:		GetChunkSize
-	// Arguments:	name - std::string - The name of the chunk to return the size of
-	// Returns:     The size of the chunk
-	// Description: If the chunk is compressed, it returns the uncompressed size.
-	// Costs:		Immediate: Low, Later: None
-	// ----------------------------------------------------------------------------------
-	int GetChunkSize(std::string name);
-
-	// ----------------------------------------------------------------------------------
 	// Method:		GetChunkParentFile
 	// Arguments:	chunkName - std::string - The name of the chunk to find
 	// Returns:		std::string - the name of the file (including full path)
@@ -142,7 +148,7 @@ public:
 	std::string GetChunkParentFile(std::string chunkName);
 
 	// Adds an extension.
-	void AddChunkFileExtension(std::string& chunkExtension)
+	void AddChunkFileExtension(const std::string& chunkExtension)
 	{
 		myChunkFileExtensions.push_back(chunkExtension);
 	}
@@ -151,12 +157,26 @@ public:
 	void ClearChunkFileExtensionList() { myChunkFileExtensions.clear(); }
 
 	~PrayManager() { dirnames.clear(); myChunkList.clear(); myFileToChunkMap.clear(); myChunkFlags.clear(); }
+
+	// Global pray manager
+	static PrayManager& GetPrayManager();
+
+	// Called when there is a format error in a file
+	void IntegrityViolation(const std::string& file, const std::string& message);
+
 private:
 
-	void AddFile(std::string filename);
+	bool AddFile(std::string filename);
+	void ThrowPrayException(std::string msg, int code, std::string prayFile);
+	void InternalRefillCache(const std::vector<std::string>& files);
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
 	std::string langid;
 	std::vector<std::string> dirnames;
+
+	std::vector<std::string> myScannedFiles;
 
 	// These are the Chunks we know already
 	std::map<std::string,PrayChunkPtr> myChunkList;
@@ -168,6 +188,11 @@ private:
 
 	std::list<std::string> myChunkFileExtensions;
 
+	// Global pray manager
+	static PrayManager ourPrayManager;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 };
 
 #endif //PRAYMANAGER_H

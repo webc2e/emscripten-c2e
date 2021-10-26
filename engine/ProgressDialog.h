@@ -24,7 +24,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include	"../engine/Display/System.h"
+#include "../common/C2eTypes.h"
 
 
 #ifdef _WIN32
@@ -66,3 +66,4 @@ private:
 
 
 #endif //PROGRESS_DIALOG_H
+

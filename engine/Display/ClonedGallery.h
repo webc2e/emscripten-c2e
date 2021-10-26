@@ -16,6 +16,9 @@
 // History:
 // -------  
 // 11Nov98	Alima			Created
+//
+//
+//			Note that this file is only here for backward compatiblity now
 // --------------------------------------------------------------------------
 #ifndef		CLONED_GALLERY_H
 #define		CLONED_GALLERY_H
@@ -24,10 +27,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-//#include	"Bitmap.h"
-//#include	"../File.h"
 #include	<string>
-#include	"../PersistentObject.h"
 #include	"Gallery.h"
 
 class Bitmap;
@@ -54,49 +54,10 @@ public:
 // ----------------------------------------------------------------------
 	ClonedGallery(){;}
 
-	ClonedGallery(FilePath const &name,
+	ClonedGallery(std::string const &name,
 					uint32 baseimage,
 					uint32 numImages);
 
-	ClonedGallery(FilePath const &name,
-							 uint32 baseimage,
-							 uint32 numImages,
-							 uint32 defaultBitmapWidth,
-							 uint32 defaultBitmapHeight);
-
-#ifdef THIS_FUNCTION_IS_NOT_USED
-// ----------------------------------------------------------------------
-// Method:      Constructor 
-// Arguments:   name - the gallery file to read from
-//				width - of each tile
-//				height - of each tile
-//
-// Description: We could load the background straight from a bit map file
-//				on disk. (No memory mapping)
-//				In this case we need to know how many tiles we wish to
-//				split the background into using width (in tiles) and height
-//				in tiles
-//						
-// ----------------------------------------------------------------------
-	ClonedGallery(char* name,uint32 width,uint32 height)
-	{
-	//	InitAll();
-		LoadFromBmp(name,width,height);
-	}
-#endif // THIS_FUNCTION_IS_NOT_USED
-
-// ----------------------------------------------------------------------
-// Method:      Constructor 
-// Arguments:   name - the gallery file to read from
-//
-// Description: We could load the background straight from a sprite file 
-//				on disk in which case the gallery comes
-//				in tiles which know their individual sizes.
-//						
-// ----------------------------------------------------------------------
-//	ClonedGallery(char* name,
-//				uint32 baseimage,
-//				uint32 numImages);
 
 // ----------------------------------------------------------------------
 // Method:      Destructor 
@@ -108,33 +69,6 @@ public:
 // ----------------------------------------------------------------------
 	virtual ~ClonedGallery();
 
-	void Recolour(const uint16* tintTable);
-
-
-////////////////////////////////////////////////////////////////////////////
-// Get and Set Methods...
-////////////////////////////////////////////////////////////////////////////
-
-	uint32  GetCount()
-	{
-		return myCount;
-	}
-
-// ----------------------------------------------------------------------
-// Method:      InitBitmaps 
-// Arguments:   None
-//			
-// Returns:     None
-//
-// Description: Creates all the bitmaps from the given sprite file
-//				
-//			
-//			
-// ----------------------------------------------------------------------
-	virtual bool InitBitmaps();
-	bool DecompressC16(File& file);
-
-	virtual bool ConvertTo(uint32 format){return false;}
 
 // ----------------------------------------------------------------------
 // Method:		Write
@@ -154,10 +88,6 @@ public:
 // ----------------------------------------------------------------------
 	virtual bool Read(CreaturesArchive &archive);
 
-	Sprite* CreateSprite(EntityImage* owner);
-
-//	virtual void CreateBitmaps();
-
 private:
 
 	// Copy constructor and assignment operator
@@ -165,9 +95,7 @@ private:
 	ClonedGallery (const ClonedGallery&);
 	ClonedGallery& operator= (const ClonedGallery&);
 
-	// cloned galleries should only keep their own data
-	uint32 myBaseImage;
-
 };
 
 #endif		// CLONED_GALLERY_H
+

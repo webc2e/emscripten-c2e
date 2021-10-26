@@ -1,0 +1,3 @@
+// GtkAdapter implementation
+
+

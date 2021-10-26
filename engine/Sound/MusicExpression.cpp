@@ -443,7 +443,7 @@ MusicExpression::MusicOperator MusicExpression::ParseOperator(MusicScript &scrip
 	for ( i=0; i< 14; i++)
 		{
 		// Is this a match?
-		if (strcmp(name.data(),table[i].name)==0)
+		if (strcmp(name.c_str(),table[i].name)==0)
 			{
 			return table[i].op;
 			}
@@ -523,12 +523,12 @@ MusicValue *MusicExpression::ParseRValue(MusicScript &script,
 		// a variable
 
 		// See if the named layer existed
-		MusicLayer *namedLayer = track -> GetLayer(layerName.data());
+		MusicLayer *namedLayer = track -> GetLayer(layerName.c_str());
 
 		if (namedLayer)
 			{
 			// Try and find the named variable within this layer
-			return namedLayer -> GetVariable ( varName.data() );
+			return namedLayer -> GetVariable ( varName.c_str() );
 			}
 		else
 			{
@@ -554,7 +554,7 @@ MusicValue *MusicExpression::ParseRValue(MusicScript &script,
 		// Does the layer have a variable with this name ?
 		if (layer)
 			{
-			MusicValue *variable = layer -> GetVariable ( varName.data() );
+			MusicValue *variable = layer -> GetVariable ( varName.c_str() );
 			if (variable)
 				{
 				return variable;
@@ -563,7 +563,7 @@ MusicValue *MusicExpression::ParseRValue(MusicScript &script,
 		// Now try the track
 		if (track)
 			{
-			MusicValue *variable = track -> GetVariable ( varName.data() );
+			MusicValue *variable = track -> GetVariable ( varName.c_str() );
 			if (variable)
 				{
 				return variable;
@@ -571,7 +571,7 @@ MusicValue *MusicExpression::ParseRValue(MusicScript &script,
 			}
 		
 		// Failing that, look in the manager itself
-		return manager->GetVariable( varName.data() );
+		return manager->GetVariable( varName.c_str() );
 		}
 
 	// Must have been a constant

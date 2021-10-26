@@ -6,9 +6,9 @@
 #endif
 
 #include "Agent.h"
-#include "../Display/EntityImage.h"
-#include "CompoundPart.h"
+#include "../AgentDisplay/EntityImage.h"
 
+class CompoundPart;
 
 #ifdef _MSC_VER
 // turn off warning about symbols too long for debugger
@@ -35,7 +35,6 @@ class CompoundAgent : public Agent
 
 
 public:
-
 	//-- constructors
 	CompoundAgent();							// serialisation constr
 	CompoundAgent(
@@ -47,8 +46,6 @@ public:
 
 	virtual void Trash();
 	virtual ~CompoundAgent();				// destruct an obj & remove frm objlib
-
-
 
 
   
@@ -73,32 +70,36 @@ public:
 		else
 			return (myParts[partid] != NULL);
 	}
+	int NextPart(int previous);
 
 	virtual EntityImage* GetPrimaryEntity();
 
 	// virtual helper functions for macro commands
-	virtual bool SetAnim(const uint8_t* anim, int length,int partid);
-	virtual bool SetFrameRate(const uint8_t rate,int partid);
+	virtual bool SetAnim(const uint8* anim, int length,int partid);
+	virtual bool SetFrameRate(const uint8 rate,int partid);
 	virtual bool AnimOver(int partid);					// helper fn for OVER macro
 	virtual bool ShowPose(int pose,int partid=0);		// helper fn for POSE macro
 	virtual int GetPose(int partid);					// helper function for POSE
 	virtual bool SetBaseImage(int image,int partid=0);	// default helper fn for BASE macro
 	virtual int GetBaseImage(int part);
+	virtual int GetAbsoluteBase(int part);
 	virtual void SetPlane(int plane, int part = 0);
 	virtual bool ValidatePart(int partid);
-
+	virtual int GetPartOver( const Vector2D& absolutePosition );
 
 	virtual int GetPlane(int part = 0);			// return *principal* plot plane
 	virtual void SetNormalPlane(int plane, int part = 0);
 	virtual int ClickAction(int x, int y);
 
 	virtual void SetGallery(FilePath const& galleryName, int baseimage, int part = 0);
-	virtual bool HitTest(Vector2D& point);
+	virtual void GetGallery(std::string& str, int part =0);
+	virtual bool HitTest(const Vector2D& point,bool alwaysTestPixelPerfectly  = false);
 
 	virtual void DrawMirrored(bool mirror);
 
 	//-- master update routines - called from clock tick
 	virtual void Update();
+	void OwnUpdate();
 	virtual void HandleUI(Message* Msg);
 
 
@@ -106,11 +107,11 @@ public:
 					int32 y1,
 					int32 x2,
 					int32 y2 ,	 
-					uint8_t lineColourRed = 0,
-					uint8_t lineColourGreen = 0,
-					uint8_t lineColourBlue = 0,
-					uint8_t stippleon =0,
-					uint8_t stippleoff = 0,
+					uint8 lineColourRed = 0,
+					uint8 lineColourGreen = 0,
+					uint8 lineColourBlue = 0,
+					uint8 stippleon =0,
+					uint8 stippleoff = 0,
 					uint32 stippleStart =0);
 
 	virtual void ResetLines();
@@ -147,7 +148,35 @@ public:
 
 	virtual void ChangePhysicalPlane(int plane);
 
-	virtual void Tint(const uint16* tintTable, int part = 0);
+	virtual void Tint(const uint16* tintTable, int part = 0, bool oneImage = false);
+	virtual void UnClone(int part = 0);
+
+	virtual void Scale(float scaleby, bool onOrOff);
+	virtual void DrawAlphaBlended(int alphamask, bool onOrOff , int part = 0);
+	virtual void DrawShadowed(int shadowvalue, int x, int y, bool onOrOff);
+	virtual void DrawToNewWidthAndHeight(int stretchedWidth, int stretchedHeight, bool onOrOff);
+
+	void MovePart(int part, Vector2D position);
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	virtual void CreateAnimStrip(int blockwidth, int blockheight, int part =0);
+
+	virtual void RememberTintInformation(int worldIndex, 
+								int part = 0,
+								int red =-1,
+								int green =-1, 
+								int blue =-1, 
+								int rot=-1, 
+								int swp=-1);
+
+	virtual void RestoreTint(int part =0);
+
+	virtual void DrawFlippedVertically(bool flip);
+
+	virtual uint16 GetSpriteRotationAngle();
+	virtual void SetSpriteRotationAngle(uint16 angle);
+
+#endif
 
 protected:
 	void Init();					// Basic initialisation used by constructors
@@ -159,3 +188,4 @@ protected:
 };
 
 #endif // COMPOUNDAGENT_H
+

@@ -1,0 +1,655 @@
+Changes since 2-286:
+
+Francis: Added EAME engine_decouple_mouse, which lets you detach
+the physical mouse from the agent mouse PNTR.
+
+-------------------------------------------------------------------------------
+Changes since 2-285:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-283:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-282:
+
+Francis: Screensaver mode now quits game if you move the
+mouse during startup/loading (no keyboard detection yet).
+
+Francis: Other screensaver mode tweaks, to make it 
+possible to use it with Docking Station as well.
+
+-------------------------------------------------------------------------------
+Changes since 2-281:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-280:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-279:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-278:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-276:
+
+Francis: Fixed bug in JECT, so it now works if there is no output
+stream.
+
+-------------------------------------------------------------------------------
+Changes since 2-275:
+
+Francis: Added JECT command, to inject files from Bootstrap.
+
+Francis: Fixed minimum volume for MUTE, so ds bug #709 fixed
+
+-------------------------------------------------------------------------------
+Changes since 2-274:
+
+Francis: Fixed up body part algorithm to be more compatible with Wafuru's
+sprites, and our incomplete sets of attachment points.  It now prefers 
+files of opposite sex to ones of different breed.
+
+Francis: Made PRAY REFR quicker.  It doesn't rescan if the directories
+haven't changed, which is the case most of the time.  A consequence of
+this is that it won't notice if the contents of a file change.  That isn't a
+problem though, I hope - you can always use PRAY KILL to delete a file
+before making the new one, and this will force a refresh.
+
+Gavin:  New commands:
+
+SOUL <facultyId>
+	Returns whether the creature faculty of the type specified
+	is being processed or not.
+
+SOUL <facultyId> <on=1 or 0>
+	Enable (1) or disable (0) the update on the creature's faculty
+	as given by type id is follows: Sensory Faculty (0), Brain (1),
+	Motor Faculty (2), Linguistic Faculty (3), Biochemistry (4),
+	Reproductive Faculty (5), Expressive Faculty (6), 
+	Music Faculty (7), Life Faculty (8)
+
+STEP <facultyId>
+Does one update of the specified faculty (for faculty id see SOUL).
+
+-------------------------------------------------------------------------------
+Changes since 2-273:
+
+Francis: Disabled frame pointer optimisation, as it could crash the stack
+back tracing.  That was invaluable error reporting, and the speed improvement
+is only maybe 3%.  Could be turned on if we had fewer bugs, but then you should
+turn off stack back tracing in CStyleException, just trace the top level item.
+
+Hopefully the new checking hasn't slowed it down at all noticeably.  I avoided
+putting in really thorough checking; I suspect what we have is good enough.
+More can be added, but there is more risk of slowing things down.
+
+-------------------------------------------------------------------------------
+Changes since 2-272:
+
+Francis: Improved loading progress bar so it is smooth (it is now based on 
+number of bytes loaded, rather than agents being serialised in).  This
+is particularly noticeable if you have lots of creatures in your world.
+
+Francis: Added creature location validation, so if one does get in an 
+invalid location it is beamed to safety.  A message is written to the
+log file saying where it happened.
+
+"Emergency escape for creature from down foot 2817.000000, 879.515381.
+The map is too tight for the skeletal creatures to properly fit in."
+
+This is necessarily the fault of the map, as to be honest we've never
+managed to make maps that satisfy the requirements of the physics 
+system.  However, the message is written to the log file so that we are
+encouraged to at least try and do so.  A bad map where a Norn constantly
+has to be beamed to safety would slow the game down a lot.
+
+-------------------------------------------------------------------------------
+Changes since 2-271:
+
+Francis: Considerable speedup to body part finding algorithm, rewriting 
+completely the existing brute force code.  Importing is now a lot quicker,
+but still not quick enough, I suspect. Growl.
+
+-------------------------------------------------------------------------------
+Changes since 2-270:
+
+Francis: PRAY IMPO could cause an unhandled exception in the case where
+the file was removed from under its feet.  Fixed to it correctly returns an error.
+
+-------------------------------------------------------------------------------
+Changes since 2-269:
+
+Francis: Startup logging for debugging startup crashes.  You can't specify
+this in the config file, as it hasn't been read when the logging starts.  To set
+it, make a file called "logtastic" in the same directory as the engine.  The
+log is written to creatures_engine_logfile.txt.
+
+-------------------------------------------------------------------------------
+Changes since 2-268:
+
+Francis: Filename safety checker improved to strip initial and trailing dots and
+initial spaces.
+
+Francis: Build number added to title bar
+
+-------------------------------------------------------------------------------
+Changes since 2-267:
+
+Francis: NEWC now works.
+
+-------------------------------------------------------------------------------
+Changes since 2-266:
+
+Francis: Security fixes courtesy of Theo.  PRAY MAKE was like a sieve.  You could
+read and write arbtiary files from CAOS.  Now fixed.  This may have broken some
+pray stuff - you have to PRAY MAKE entirely in the current directory, you can't
+refer to other files.  Also, you can't inject files in the MAIN directory any 
+more.
+
+Francis: WEBB now works with spaces in URLs (converts to %20 for you and possible
+security reasons)
+
+-------------------------------------------------------------------------------
+Changes since 2-265:
+
+Francis: Now just deletes pray files in PRAY KILL (previously they were porched,
+which was hopeless).
+
+-------------------------------------------------------------------------------
+Changes since 2-264:
+
+Francis: Speed up compressed bitmap loading by sizing vector in advance.
+
+Francis: EAME and GAME variables now throw an error for ones named "" (empty
+string).  This was causing trouble with enumerations over GAME variables
+in the DS contact book.
+
+Francis: Cache for body part finding code.  Norn importing, creating, warping,
+loading worlds and ageing should all now be quicker.  The first Norn made or
+loaded may still make a slight pause, but ones after that should be quicker.
+
+
+-------------------------------------------------------------------------------
+Changes since 2-262:
+
+Francis: Hopefully fixed alpha sprites in 555 mode when clipped.
+
+Francis: Spaces at end of world names removed.
+
+Francis: Turned a compiler optimisation back on, might be slightly
+quicker (less good stack traces on CStyleException though - we haven't
+had many of those recently, the class A bugs are straight lockups).
+
+-------------------------------------------------------------------------------
+Changes since 2-261:
+
+-------------------------------------------------------------------------------
+Changes since 2-260:
+
+Francis: Maximize now works (this being missing has been 
+annoying me for a while!)
+
+Francis: Fixed photo deleting problems with history reconciliation.
+
+-------------------------------------------------------------------------------
+Changes since 2-259:
+
+Gavin: Added commands as follows:
+
+MOTR (state):
+Enable (1) or disable (0) the creature TARG's motor faculty.
+(Also an R-Value)
+
+DCOR (state):
+Enable (1) or disable (0) the creature TARG's core being shown graphically.
+
+(returns 1 or 0) TCOR (topY bottomY leftX rightX):
+Tests whether it's safe to change the bounding box of the physical core
+of the object TARG (a kind of test CORE command).
+
+DSEE (state):
+Enable (1) or disable (0) agents being highlighted when they can be seen
+by any creature.
+
+
+-------------------------------------------------------------------------------
+Changes since 2-257:
+
+
+Gavin: Added commands as follows:
+
+MIND (state):
+Enable (1) or disable (0) the creature's brain (unlike @#ZOMB#@ in that the brain 
+actually stops processing and it's output is frozen onto the one noun and verb).
+(Also an R-Value)
+
+CORE (topY bottomY leftX rightX):
+Sets the bounding box of the physical core of the object TARG.  May be set to 
+smaller (or larger) than the sprite's rectangle.
+
+SEEN (category):
+Returns the agent which the creature TARG has currently in mind for the category specified.
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-255:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-254:
+
+Francis: Last page scroll option added to FRMT.  This is useful for chat 
+windows and other scrolling windows (the CAOS command line could have done
+with it rather than the hack it uses!)
+
+Francis: You can now move around text entry fields with the cursor keys,
+insert text, and delete it with Backspace or Delete.
+
+Francis: Specify multiple colours within text parts with <tint> tags.
+See the help on PTXT for more information.
+
+Francis: Primitive Copy and Paste with Ctrl+C and Ctrl+V.  Paste pastes
+into the active text entry part, copy copies either from that part, or
+from the text part that the mouse is over. The text part is search for
+as with HOTP.
+
+Francis: Fixed PRAY INJT so it returns error codes and messages better
+
+Francis: You can now set message_id -1 for text entry parts, and then you
+can insert carriage returns in them.
+
+-------------------------------------------------------------------------------
+Changes since 2-253:
+
+
+-------------------------------------------------------------------------------
+Changes since 2-252:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-251:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-250:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-249:
+
+Francis: Fixed problem with importing breed A/B/C creatures into a game
+with only breed D sprites available.  This was a general problem - it assumed
+breed A was always installed as a fallback.
+
+Francis: Customise which .mng file is precached.
+
+Francis: Added NET: ERRA and NET: RAWE for login connection failure error
+reporting.
+
+-------------------------------------------------------------------------------
+Changes since 2-248:
+
+Francis: Added LIMB command (which calculates a creature body part filename
+from creature attributes), and made FACE work over serialisation with
+files missing.
+
+-------------------------------------------------------------------------------
+Changes since 2-247:
+
+Francis: Moved password saving variable to be GAME rather than EAME,
+as that is more logical!  Made it so password is actively deleted
+if the "keep password" variable isn't set.
+
+-------------------------------------------------------------------------------
+Changes since 2-246:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-243:
+
+Francis: Fixed image conversion code, so 555 mode will work now.
+
+-------------------------------------------------------------------------------
+Changes since 2-241:
+
+Francis: Changed VOLM command and added a VOLM rvalue.  You can now set the volume
+for effects, MIDI and ambient music independently.
+
+Francis: Added HOTP which returns the compound part under the pointer. (It
+might not do this exactly as you expect - see the documentation).  Useful for
+tooltips and the like.
+
+-------------------------------------------------------------------------------
+Changes since 2-237:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-235:
+
+Francis: Fixed bug in catalogue error messages (when over 512 bytes).
+
+Francis: Tidied up camera panning code, making it reset properly when a new
+pan is resumed, and making it default to overshooting (cut off) rather
+than undershooting and moving slowly.
+
+Francis: Apostrophe fixed in pray messaging
+
+-------------------------------------------------------------------------------
+Changes since 2-234:
+
+Francis: No, really, PRAY MAKE and NET: MAKE will work again now!
+
+Francis: Swear word filtering.  Applies to anything displayed using PTXT, which
+means everything displayed as text by games.  If someone wants
+to write a violent swearing motherfucker game with c2e, they'll have to add
+some kind of EAME variable to allow you to turn the filter off...
+
+Francis: Simplify the way the auxiliary bootstrap specifying game variables
+work - they are saved in each world's directory, so only apply when LOADing
+a brand new shiny world.
+
+Francis: Added facility to load/save to the Journal folder of _other_ worlds.
+See FILE IOPE, FILE OOPE help for more info.
+
+-------------------------------------------------------------------------------
+Changes since 2-233:
+
+Francis: PRAY MAKE and NET: EXPO should work again (relative directories problem).
+
+-------------------------------------------------------------------------------
+Changes since 2-231:
+
+Francis: More support for user directories.
+
+Francis: EAME "engine_clone_upon_import" will make all Norns clone upon import.
+
+Francis: You can add custom meta-data from CAOS to creature export files, including
+warp files.  This is done by setting NAME variables on the creature before export -
+for example 
+	TARG NORN
+	SETV NAME "Pray Extra Rebound" 1
+
+Francis: Default metaroom now 800 by 600 rather than 8000 by 8000 (avoids confusion and
+makes GMAP work better!)
+
+-------------------------------------------------------------------------------
+Changes since 2-230:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-229:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 2-225:
+
+Francis: Added PRAY FORE and PRAY BACK.  They're like PRAY PREV and PRAY NEXT
+except they don't loop at the end, instead returning empty string.
+
+Gavin:  Fixed a problem with CALL where it would accidentally execute some
+of the caller script even when in the middle of the callee script.  Also,
+caller or callee scripts are free to set their own INSTness independently
+and CALL will never change your INSTness.
+
+Francis:  Fixed some issues with the auxiliary directory migration - Worlds
+were getting mixed up.
+
+-------------------------------------------------------------------------------
+Changes since 2-222:
+
+Francis: PAT: MOVE to move compound parts.
+
+Francis: WEBB command to launch a URL in the user's browser.  It's very slow 
+on my machine, but that might be because it is in the debugger and because
+my machine doesn't work very well, so let me know if you have any problems!
+
+Francis: EAME variables which are similar to GAME variables.  They
+aren't saved with the world, but they do persist between different worlds
+within one session.
+
+Francis: EAME variables to choose which auxiliary bootstrap directories are
+actually loaded in when you next LOAD a world.  engine_no_auxiliary_bootstrap_nnn. 
+This can be used to choose whether to have a docked or non-docked world
+in Docking Station, but no doubt other things.
+
+Francis: New catalogue identifier "OVERRIDE" can go after either ARRAY
+or TAG.  This says that that catalogue entry can replace an existing
+one.  The catalogues are read in alphabetical order, and the override must
+come after the actual one.  Catalogues between auxiliary directories can
+also override each other.
+
+Gavin:  Fixed ZOMB command so that it doesn't stop the current script if you're
+calling it from the creature's VM.
+
+Francis: Alpha channels (in old display engine) now work for nom-compressed
+sprites and hence text and hopefully all cloned galleries (e.g. camera views).
+
+Francis: CATO overrides the category of a particular agent.  Normally category
+is specified entirely by classifier (based on the catalogue entry
+"Agent Classifiers").  CATA returns the category of a particular agent, using
+either its override value if it has one, or else based on its classifier.
+
+-------------------------------------------------------------------------------
+Changes since 2-221:
+
+Alima: Made ALPH work for docking station.
+
+Alima: Added BOOT command to enable mini games to load specified bootstrap folders.
+These bootstrap folders are outside of the regular game system.
+
+Francis: You can now do FLTO/MVTO/MVBY on the mouse.
+
+Francis: TINT rvalue to return the current genetically specified pigmentation of a
+Skeletal Creature.
+
+Francis: Fixed debug meta room change keys when the meta rooms don't have
+contiguous IDs.
+
+Francis: Guttering when metaroom smaller than display should work now.  Sends
+a resize event as well so the floating UI controls move correctly.
+
+---------------------------------------------------------------------------
+Changes since 2-220:
+
+Francis: Added ABBA which returns the absolute base.  This is the number passed into
+the NEW: SIMP comand etc., different from BASE
+
+Francis: Added PNXT to enumerate through the compound parts of an agent.
+
+-------------------------------------------------------------------------------
+Changes since 2-212:
+
+Francis: Added MODU to tell you which display engine you're using and which
+modules are loaded.  Added extra lines to error dialog to say the exact 
+version of the operating system you're using, and the display engine / modules.
+
+Alima: Remote cameras and line command now work fully.
+
+Francis: New configuration keys in machine.cfg.  ""Win32 Auxiliary Game Name 1" "Creatures 3"
+specifies a game name whose directories are used as "auxiliary directories".  This means
+that images, sounds and so on are read from those directories if they can't be found in 
+the main directory.  You can also individually specify auxiliary directories with 
+"Auxiliary 1 Body Data Directory" and so on.  The Bootstrap directories are also
+shared.
+
+
+-------------------------------------------------------------------------------
+Changes since 2-208:
+
+Gavin:  Debug builds now look for "engineDebug-*.dll"
+		Anything else looks for "engine-*.dll" as before.
+
+Francis: HIST WVET - is/was that Norn a warp hole veteran.
+
+Francis: Various bug fixes.
+
+-------------------------------------------------------------------------------
+Changes since 2-207:
+
+Gavin:  There is now an ATTRibute (1024) for agents which specifies whether
+they use the new rotation stuff or not.
+
+-------------------------------------------------------------------------------
+Changes since 2-206:
+
+Gavin:  Support for auto-rotating agents (with sprites) as follows
+
+Added SPIN, AVEL, FVEL, SVEL, ADMP, AFMP, SDMP (all r-values to read and commands
+to set) which are:
+
+SPIN:  Your current angle specified as a float from 0.0 to 1.0 (where 0.0 means 
+North, 0.25 East, 0.5 South and 0.75 West).
+AVEL:  Your current angular velocity (0.0 as 1.0 as above) which adjusts the SPIN
+of the agent each tick.
+FVEL, SVEL:  Your current forwards/sideways velocities, i.e. velocity in the direction
+of your facing (SPIN) and perpendicular to your facing (SPIN+0.25).  Note that setting
+these values will result in VELX and VELY changing appropriately and vice versa.
+
+ADMP:  Your angular damping (0.0 to 1.0) which says how quickly you stop spinning.
+FDMP, SDMP:  Your forwards and sideways damping (0.0 to 1.0) which dictate how
+quickly you stop travelling in those directions.
+
+ANGL:  Returns the angle (0.0 to 1.0 as above) from TARG to the map coordinate given.
+VECX, VECY:  Returns the X and Y coordinates of the unit vector in the direction of
+the angle given.
+
+ROTN:  This is the command that sets up how the engine automatically chooses the right
+base image for the sea monkey based on what rotation it is.  There are two arguments:
+"no_of_sprites_for_each_rotation" and "no_of_rotations".  The engine assumes that the
+sprite file is stored with all the sprites for one rotation together starting with 
+pointing north.  By default these values are 8 and 12 respectively which are correct
+for the seam-cartoon sprites I have anyway.
+
+
+-------------------------------------------------------------------------------
+Changes since 2-204:
+
+Francis: Added NAME and MAME.  These are named variables local to a specific
+agent.  They are a kind of cross between GAME and MVxx/OVxx.
+
+Francis: Added DELN and NAMN to delete and enumerate name variables.
+
+Gavin:  Fixed a couple of problems with the 2D CAs:  some rooms were getting 
+diffused into twice by mistake, also the code failed to send out the right script
+for links versus neighbours.
+
+Daniel: Added UFOs (Uname For Operating System) - basically tells you what OS
+you are running on at the moment
+
+Daniel: Adapted NAME, MAME, DELN and NAMN to work with any index type (m)
+
+-------------------------------------------------------------------------------
+Changes since 2-203:
+
+Gavin:  Fixed up category selection so that it works in XY, not just the X direction.
+
+Gavin:  CALG now sets/reads the category representative algorithm for creatures.
+This allows you to say whether it always chooses the closest bit of (say) food,
+or a random on screen, etc.
+
+Francis: FROM is now a variable, rather than an agent rvalue.  This is so messages
+sent over the network can have FROM set to the user, a string.  Hopefully it 
+hasn't broken anything :-)  As an extra side effect you can now change FROM, although
+I'm not sure why you'd want to.
+
+Francis: BUZZ lets you change the interval between ticks.  This is by default
+50 milliseconds (20 frames per second).  There might be some parts of the 
+game that don't respect this properly, or calculate things from it properly, so
+watch out!
+
+Daniel: Ported FastFloatToInt to gcc for Intel platforms on Linux. Also, Fixed FILE_GLOB
+for non WIN32 platform
+
+-------------------------------------------------------------------------------
+Changes since 2-202:
+
+Francis: Added NOTV (amazed it wasn't there already, only NEGV!) which does
+bitwise nots.  You can use this to turn off an attribute in a more forwards
+compatible way than we did in C3:
+	setv va10 attr
+	setv va11 64
+	notv va11
+	andv va10 va11 
+
+Alima + Francis: Bug fixes for map drawing, lines and the window being
+the right size.
+
+Gavin:  Added some more callback navigation scripts for Creature Agents so that
+they now know when they're going towards a LINK or a regular neighbouring room,
+etc.  Also, the ageing callback has changed script number.
+
+Gavin:  Navigational CAs can now be made to diffuse properly in 2 dimensions by
+flagging them as Super-Navigable in the "Creatures 3" catalogue file.
+
+-------------------------------------------------------------------------------
+Changes since 2-200:
+
+
+Gavin:  Agents can now have more than one virtual machine.  The "CALL" command
+pushes the current VM on the stack, runs a script on a new one, then returns to
+the old VM to finish off processing.  No variables are shared between the two
+scripts (except OVs through OWNR of course) except that arguments can be passed
+to the 'subroutine' through _P1_ and _P2_.
+
+Gavin:  The "NEW: CRAG" now creates a CReature AGent, which is basically a
+regular creature minus skeletal graphics but plus compound agent functionality.
+
+Creature Agents currently callback two scripts, 150 and 151.  150 is for navigation,
+151 is called just before ageing.  Check the CAOS help on script numbers for
+details.
+
+
+Francis: Can now have modular extensions, which are DLLs that if present
+add CAOS commands to the engine.  These DLLs will all have names of the
+form engine-*.dll.  They are searched for in the current directory when
+the game is launched.  The NET: Babel commands are in such a separate
+DLL.
+
+Francis: Various bug fixes - in particular, importing a creature into a
+world where the map position it comes in at is invalid.
+
+-------------------------------------------------------------------------------
+
+Changes since unification:
+
+Welcome to the new unified Creatures 2D Engine!
+
+This engine contains the changes to the Creatures 3 engine made
+for the patches, the additions for Docking Station, and the more
+portable code base that Ben has been working on.
+
+Hopefully everything still works, but there is bound to be something
+that we've broken!  So please watch out...
+
+Francis: UPPA and LOWA now work with accented characters, as appropriate
+to the locale set in the registry.  Other locale settings are now more
+general - so you can have explicit accented characters in strings from CAOS, 
+for example.
+
+Francis: C-style exceptions give better error reporting (still not
+great in release mode, as Frame-Pointer Omission optimisation reduces
+its usefulness).
+
+-------------------------------------------------------------------------------

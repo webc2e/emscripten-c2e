@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=engine - Win32 Debug
+CFG=engine - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=engine - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "engine.mak" CFG="engine - Win32 Debug"
+!MESSAGE NMAKE /f "engine.mak" CFG="engine - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -21,12 +21,17 @@ CFG=engine - Win32 Debug
 !MESSAGE "engine - Win32 Debug" (based on "Win32 (x86) Application")
 !MESSAGE "engine - Win32 Release with Debug Symbols" (based on "Win32 (x86) Application")
 !MESSAGE "engine - Win32 No optimize debug symbols" (based on "Win32 (x86) Application")
+!MESSAGE "engine - Win32 SDL Debug" (based on "Win32 (x86) Application")
+!MESSAGE "engine - Win32 Direct Display Debug" (based on "Win32 (x86) Application")
+!MESSAGE "engine - Win32 SDL Release" (based on "Win32 (x86) Application")
+!MESSAGE "engine - Win32 Direct Display Release" (based on "Win32 (x86) Application")
+!MESSAGE "engine - Win32 Direct Display Release for profiling" (based on "Win32 (x86) Application")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""$/C2e/Code/engine", MGAAAAAA"
-# PROP Scc_LocalPath "."
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -45,7 +50,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GX /O2 /I "c:/mssdk/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /Zl /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -55,7 +60,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /profile /machine:I386
+# ADD LINK32 zdll.lib dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib imagehlp.lib msvcrt.lib msvcprt.lib /nologo /subsystem:windows /profile /map /machine:I386 /nodefaultlib:"libc.lib" /out:"r:\Creatures Exodus\Docking Station\engine.exe" /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+# SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Debug"
 
@@ -71,7 +77,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FD /GZ /c
+# SUBTRACT CPP /YX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -81,7 +88,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /map /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zdll.lib imagehlp.lib /nologo /subsystem:windows /map /debug /machine:I386 /nodefaultlib:"libc.lib" /out:"r:\Creatures Exodus\Docking Station\engine.exe" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
 
@@ -98,7 +106,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gi /GR /GX /O2 /I "c:/mssdk/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /FR /YX /FD /c
-# ADD CPP /nologo /MT /W3 /Gm /Gi /GR /GX /Zi /O2 /Ob2 /I "c:/mssdk/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gm /Gi /GR /GX /Zi /O2 /Ob2 /I "c:/mssdk/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -109,7 +117,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /profile /machine:I386
-# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /profile /map /debug /machine:I386
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zdll.lib imagehlp.lib /nologo /subsystem:windows /profile /map /debug /machine:I386 /out:"r:\Creatures Exodus\Docking Station\engine.exe"
 # SUBTRACT LINK32 /verbose
 
 !ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
@@ -128,7 +136,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /Gm /Gi /GR /GX /Zi /O2 /Ob2 /I "c:/mssdk/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /c
 # SUBTRACT BASE CPP /Fr
-# ADD CPP /nologo /MT /W3 /Gm /Gi /GR /GX /Zi /Od /Ob2 /I "c:/mssdk/include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gm /Gi /GR /GX /Zi /Od /Ob2 /I "c:/mssdk/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -140,8 +148,147 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /profile /map /debug /machine:I386
 # SUBTRACT BASE LINK32 /verbose
-# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /profile /map /debug /machine:I386
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /subsystem:windows /profile /map /debug /machine:I386
 # SUBTRACT LINK32 /verbose
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "engine___Win32_SDL_Debug"
+# PROP BASE Intermediate_Dir "engine___Win32_SDL_Debug"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "engine___Win32_SDL_Debug"
+# PROP Intermediate_Dir "engine___Win32_SDL_Debug"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /D "C2E_SDL" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FD /GZ /c
+# SUBTRACT CPP /YX
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "_DEBUG"
+# ADD RSC /l 0x809 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib /nologo /subsystem:windows /map /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 SDL_mixer.lib sdl.lib sdlmain.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /subsystem:windows /map /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "engine___Win32_Direct_Display_Debug"
+# PROP BASE Intermediate_Dir "engine___Win32_Direct_Display_Debug"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "engine___Win32_Direct_Display_Debug"
+# PROP Intermediate_Dir "engine___Win32_Direct_Display_Debug"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "c:/mssdk/include" /I "../DisplayLibrary/Direct Display Engine/" /D "C2D_DIRECT_DISPLAY_LIB" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "_DEBUG"
+# ADD RSC /l 0x809 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib /nologo /subsystem:windows /map /debug /machine:I386 /nodefaultlib:"libc" /pdbtype:sept
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /stack:0x3d0900 /subsystem:windows /map /debug /machine:I386 /nodefaultlib:"libc" /pdbtype:sept /FIXED:No
+# SUBTRACT LINK32 /pdb:none
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "engine___Win32_SDL_Release"
+# PROP BASE Intermediate_Dir "engine___Win32_SDL_Release"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "engine___Win32_SDL_Release"
+# PROP Intermediate_Dir "engine___Win32_SDL_Release"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /D "C2E_SDL" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /Zl /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /subsystem:windows /profile /map /machine:I386 /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+# ADD LINK32 msvcrt.lib SDL_mixer.lib sdl.lib sdlmain.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /subsystem:windows /profile /map /machine:I386 /nodefaultlib:"libc.lib" /out:"engine___Win32_SDL_Release/engineSDL.exe" /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "engine___Win32_Direct_Display_Release0"
+# PROP BASE Intermediate_Dir "engine___Win32_Direct_Display_Release0"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "engine___Win32_Direct_Display_Release0"
+# PROP Intermediate_Dir "engine___Win32_Direct_Display_Release0"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /I "../DisplayLibrary/Direct Display Engine/" /D "C2D_DIRECT_DISPLAY_LIB" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /Zl /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib /nologo /subsystem:windows /profile /map /machine:I386 /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib msvcrt.lib msvcprt.lib /nologo /stack:0x3d0900 /subsystem:windows /profile /map /machine:I386 /nodefaultlib:"libc.lib" /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "engine___Win32_Direct_Display_Release_for_profiling"
+# PROP BASE Intermediate_Dir "engine___Win32_Direct_Display_Release_for_profiling"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "engine___Win32_Direct_Display_Release_for_profiling"
+# PROP Intermediate_Dir "engine___Win32_Direct_Display_Release_for_profiling"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Oy- /I "c:/mssdk/include" /I "../DisplayLibrary/Direct Display Engine/" /D "C2D_DIRECT_DISPLAY_LIB" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /Zl /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /Zi /O2 /Oy- /I "c:/mssdk/include" /I "../DisplayLibrary/Direct Display Engine/" /D "C2D_DIRECT_DISPLAY_LIB" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "AGENT_PROFILER" /D "PRAY_INTEGRITY_CHECK" /FR /YX /Zl /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x809 /d "NDEBUG"
+# ADD RSC /l 0x809 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib msvcrt.lib msvcprt.lib /nologo /stack:0x3d0900 /subsystem:windows /profile /map /machine:I386 /nodefaultlib:"libc.lib" /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS
+# ADD LINK32 dsound.lib dinput.lib winmm.lib ddraw.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib COMCTL32.LIB rpcrt4.lib zlib.lib imagehlp.lib msvcrt.lib msvcprt.lib /nologo /stack:0x3d0900 /subsystem:windows /profile /map /debug /machine:I386 /nodefaultlib:"libc.lib" /MAPINFO:EXPORTS /MAPINFO:LINES /MAPINFO:FIXUPS /FIXED:No
+# SUBTRACT LINK32 /force
 
 !ENDIF 
 
@@ -151,6 +298,11 @@ LINK32=link.exe
 # Name "engine - Win32 Debug"
 # Name "engine - Win32 Release with Debug Symbols"
 # Name "engine - Win32 No optimize debug symbols"
+# Name "engine - Win32 SDL Debug"
+# Name "engine - Win32 Direct Display Debug"
+# Name "engine - Win32 SDL Release"
+# Name "engine - Win32 Direct Display Release"
+# Name "engine - Win32 Direct Display Release for profiling"
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
@@ -177,10 +329,6 @@ SOURCE=.\Catalogues\Brain.catalogue
 # Begin Source File
 
 SOURCE=.\Catalogues\CAOS.catalogue
-# End Source File
-# Begin Source File
-
-SOURCE=.\Catalogues\ChemicalNames.catalogue
 # End Source File
 # Begin Source File
 
@@ -350,7 +498,7 @@ SOURCE=.\Creature\Biochemistry\Receptor.cpp
 SOURCE=.\Creature\Biochemistry\Receptor.h
 # End Source File
 # End Group
-# Begin Group "Other"
+# Begin Group "Agents"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -368,6 +516,14 @@ SOURCE=.\creature\Creature.cpp
 # Begin Source File
 
 SOURCE=.\creature\Creature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\CreatureAgent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\CreatureAgent.h
 # End Source File
 # Begin Source File
 
@@ -395,14 +551,6 @@ SOURCE=.\Entity.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\creature\Faculty.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\creature\Faculty.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Creature\Genome.cpp
 # End Source File
 # Begin Source File
@@ -419,11 +567,11 @@ SOURCE=.\Creature\GenomeStore.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\creature\Skeleton.cpp
+SOURCE=.\Creature\SkeletalCreature.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\creature\Skeleton.h
+SOURCE=.\Creature\SkeletalCreature.h
 # End Source File
 # Begin Source File
 
@@ -455,11 +603,35 @@ SOURCE=.\Creature\Vocab.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\Creature\AgentFacultyInterface.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\AgentFacultyInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\CreatureFacultyInterface.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\CreatureFacultyInterface.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\creature\ExpressiveFaculty.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\creature\ExpressiveFaculty.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Creature\Faculty.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\creature\Faculty.h
 # End Source File
 # Begin Source File
 
@@ -626,6 +798,322 @@ SOURCE=.\Caos\SoundHandlers.h
 # Begin Group "Display"
 
 # PROP Default_Filter ""
+# Begin Group "SDL"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Display\Sdl\SDL_DisplayEngine.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\Sdl\SDL_DisplayEngine.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\Sdl\SDL_Main.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\Sdl\SDL_Main.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "DirectX"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Display\DirectX\DisplayEngine.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DirectX\DisplayEngine.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DirectX\ErrorDialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DirectX\ErrorDialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DirectX\Window.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DirectX\Window.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Display\Background.cpp
@@ -633,14 +1121,6 @@ SOURCE=.\Display\Background.cpp
 # Begin Source File
 
 SOURCE=.\Display\Background.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\BackgroundGallery.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\BackGroundGallery.h
 # End Source File
 # Begin Source File
 
@@ -652,27 +1132,11 @@ SOURCE=.\Display\Bitmap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\Camera.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\Camera.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Display\ClonedGallery.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Display\ClonedGallery.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\ClonedSprite.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\ClonedSprite.h
 # End Source File
 # Begin Source File
 
@@ -684,22 +1148,6 @@ SOURCE=.\Display\CompressedBitmap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\CompressedGallery.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\CompressedGallery.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\CompressedSprite.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\CompressedSprite.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Display\CreatureGallery.cpp
 # End Source File
 # Begin Source File
@@ -708,15 +1156,15 @@ SOURCE=.\Display\CreatureGallery.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\DisplayEngine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\DisplayEngine.h
+SOURCE=.\Display\DisplayEnginePlotFunctions.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\display\DisplayEnginePlotFunctions.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\DisplayErrorConstants.h
 # End Source File
 # Begin Source File
 
@@ -736,35 +1184,11 @@ SOURCE=.\Display\DrawableObjectHandler.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\EntityImage.cpp
+SOURCE=.\Display\EasterEgg.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\EntityImage.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\EntityImageClone.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\EntityImageClone.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\display\EntityImageWithEmbeddedCamera.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\display\EntityImageWithEmbeddedCamera.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\ErrorDialog.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\ErrorDialog.h
+SOURCE=.\Display\EasterEgg.h
 # End Source File
 # Begin Source File
 
@@ -773,22 +1197,6 @@ SOURCE=.\Display\ErrorMessageHandler.cpp
 # Begin Source File
 
 SOURCE=.\Display\ErrorMessageHandler.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\FastDrawingObject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\FastDrawingObject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\FastEntityImage.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\FastEntityImage.h
 # End Source File
 # Begin Source File
 
@@ -808,35 +1216,11 @@ SOURCE=.\Display\Line.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\MainCamera.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\MainCamera.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Display\MemoryMappedFile.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Display\MemoryMappedFile.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\NormalGallery.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\NormalGallery.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\display\RemoteCamera.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\display\RemoteCamera.h
 # End Source File
 # Begin Source File
 
@@ -868,11 +1252,11 @@ SOURCE=.\Display\TintManager.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\Window.cpp
+SOURCE=.\Display\Win32ScreenKiller.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Display\Window.h
+SOURCE=.\Display\Win32ScreenKiller.h
 # End Source File
 # End Group
 # Begin Group "Agent"
@@ -1056,6 +1440,10 @@ SOURCE=.\caos\AutoDocumentationTable.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Caos\CAOSConstants.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Caos\CAOSDescription.cpp
 # End Source File
 # Begin Source File
@@ -1081,10 +1469,6 @@ SOURCE=.\Caos\CAOSMachine.h
 # Begin Source File
 
 SOURCE=.\Caos\CAOSTables.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Caos\CAOSTables.h
 # End Source File
 # Begin Source File
 
@@ -1158,6 +1542,14 @@ SOURCE=.\caos\TableSpec.cpp
 
 SOURCE=.\caos\TableSpec.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\Caos\Win32Server.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Caos\Win32Server.h
+# End Source File
 # End Group
 # Begin Group "Map"
 
@@ -1181,14 +1573,6 @@ SOURCE=.\Map\Map.h
 # Begin Source File
 
 SOURCE=.\Map\MapCA.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\MapImage.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Display\MapImage.h
 # End Source File
 # Begin Source File
 
@@ -1228,6 +1612,16 @@ SOURCE=.\World.cpp
 
 # ADD CPP /O2
 
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
 !ENDIF 
 
 # End Source File
@@ -1239,13 +1633,473 @@ SOURCE=.\World.h
 # Begin Group "Sound"
 
 # PROP Default_Filter ""
+# Begin Group "stub"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_CDRomDevice.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_CDRomDevice.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_MidiModule.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_MidiModule.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_Soundlib.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\stub\stub_Soundlib.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "SDL_Sound"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Sound\Sdl\SDL_Soundlib.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\Sdl\SDL_Soundlib.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\Sound\CDRomDevice.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\CDRomDevice.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
 # Begin Source File
 
 SOURCE=.\sound\midimodule.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\sound\midimodule.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1382,23 +2236,121 @@ SOURCE=.\Sound\MusicWave.h
 # Begin Source File
 
 SOURCE=.\Sound\Soundlib.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\Sound\Soundlib.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\Win95SpecificMCIDeviceHandles.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sound\Win95SpecificMCIDeviceHandles.h
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Util"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\common\C2eDebug.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\C2eDebug.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\C2eServices.cpp
@@ -1421,11 +2373,11 @@ SOURCE=..\common\Catalogue.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\CStyleException.cpp
+SOURCE=..\common\Configurator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\CStyleException.h
+SOURCE=..\common\Configurator.h
 # End Source File
 # Begin Source File
 
@@ -1437,19 +2389,19 @@ SOURCE=.\General.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\MapScanner.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\MapScanner.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Maths.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Maths.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\ProfanityFilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\ProfanityFilter.h
 # End Source File
 # Begin Source File
 
@@ -1461,11 +2413,19 @@ SOURCE=.\ProgressDialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\RegistryHandler.cpp
+SOURCE=.\QuickFsp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\RegistryHandler.h
+SOURCE=.\QuickFsp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\RegistryHandler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\RegistryHandler.h
 # End Source File
 # Begin Source File
 
@@ -1482,6 +2442,22 @@ SOURCE=..\common\SimpleLexer.cpp
 # Begin Source File
 
 SOURCE=..\common\SimpleLexer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\StringFuncs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\StringFuncs.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\UniqueIdentifier.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\UniqueIdentifier.h
 # End Source File
 # End Group
 # Begin Group "File"
@@ -1505,6 +2481,14 @@ SOURCE=.\File.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\common\FileFuncs.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\FileFuncs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\common\FileLocaliser.cpp
 # End Source File
 # Begin Source File
@@ -1518,6 +2502,14 @@ SOURCE=.\FilePath.cpp
 # Begin Source File
 
 SOURCE=.\FilePath.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\FileScanner.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\FileScanner.h
 # End Source File
 # Begin Source File
 
@@ -1549,10 +2541,6 @@ SOURCE=.\App.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\AppConstants.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\common\BasicException.cpp
 # End Source File
 # Begin Source File
@@ -1573,11 +2561,11 @@ SOURCE=.\CosInstaller.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\CPUID.cpp
+SOURCE=.\DirectoryManager.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\CPUID.h
+SOURCE=.\DirectoryManager.h
 # End Source File
 # Begin Source File
 
@@ -1636,6 +2624,7 @@ SOURCE=.\Caos\RuntimeErrorDialog.h
 # Begin Source File
 
 SOURCE=..\common\ServerSide.cpp
+# SUBTRACT CPP /YX
 # End Source File
 # Begin Source File
 
@@ -1652,6 +2641,39 @@ SOURCE=.\ServerThread.h
 # Begin Source File
 
 SOURCE=.\Display\System.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\NettyMessage\thenetty.cpp
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\TimeFuncs.cpp
 # End Source File
 # End Group
 # Begin Group "Pray System Files"
@@ -1706,113 +2728,24 @@ SOURCE=..\common\PRAYFiles\StringIntGroup.cpp
 SOURCE=..\common\PRAYFiles\StringIntGroup.h
 # End Source File
 # End Group
-# Begin Group "Zlib Files"
+# Begin Group "Debugging"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\common\zlib113\adler32.c
+SOURCE=..\common\C2eDebug.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\zlib113\compress.c
+SOURCE=..\common\C2eDebug.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\zlib113\crc32.c
+SOURCE=..\common\CStyleException.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\common\zlib113\deflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\deflate.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\gzio.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infblock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infblock.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infcodes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infcodes.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inffast.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inffast.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inffixed.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inftrees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\inftrees.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infutil.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\infutil.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\trees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\trees.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\uncompr.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\zconf.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\zlib.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\zutil.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\common\zlib113\zutil.h
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=.\ChangesSinceLastVersion.txt
+SOURCE=..\common\CStyleException.h
 # End Source File
 # Begin Source File
 
@@ -1821,6 +2754,352 @@ SOURCE=.\CustomHeap.cpp
 # Begin Source File
 
 SOURCE=.\CustomHeap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\MapScanner.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\common\MapScanner.h
+# End Source File
+# End Group
+# Begin Group "Module"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\modules\ModuleAPI.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModuleImporter.cpp
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModuleImporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\modules\ModuleInterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\modules\NetworkInterface.h
+# End Source File
+# End Group
+# Begin Group "Agent Display"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImageClone.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImageClone.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImageWithEmbeddedCamera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\AgentDisplay\EntityImageWithEmbeddedCamera.h
+# End Source File
+# End Group
+# Begin Group "Camera"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Camera\Camera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\Camera.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\CameraSprite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\CameraSprite.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\MainCamera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\MainCamera.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\MapImage.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\MapImage.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\RemoteCamera.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Camera\RemoteCamera.h
+# End Source File
+# End Group
+# Begin Group "Rotation"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Angle.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Angle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Circle.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Circle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Presence.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Presence.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ChangeLog.txt
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\Sdl\SDLStretch\SDLStretch___Win32_SDL_Release\SDLStretch.lib
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Display\SDL\SDLStretch\SDLStretch___Win32_SDL_Debug\SDLStretch.lib
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE="..\DisplayLibrary\Direct Display Engine\Debug\Direct Display Engine_d.lib"
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE="..\DisplayLibrary\Direct Display Engine\Release\Direct Display Engine.lib"
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE="..\DisplayLibrary\Direct Display Engine\Direct_Display_Engine___Win32_Release_for_profiling\Direct Display Engine_p.lib"
+
+!IF  "$(CFG)" == "engine - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Release with Debug Symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 No optimize debug symbols"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 SDL Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "engine - Win32 Direct Display Release for profiling"
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

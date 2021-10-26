@@ -13,10 +13,6 @@
 
 #include "SVRule.h"
 
-#include <vector>
-class BrainComponent;
-typedef std::vector<BrainComponent*> BrainComponents;
-
 class BrainComponent : public PersistentObject {
 	CREATURES_DECLARE_SERIAL(BrainComponent)
 public:
@@ -60,3 +56,4 @@ protected:
 
 
 #endif//BrainComponent_H
+

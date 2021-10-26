@@ -8,9 +8,9 @@
 
 #include "ExpressiveFaculty.h"
 #include "Genome.h"
-#include "Creature.h"
+#include "CreatureFacultyInterface.h"
 #include "LifeFaculty.h"
-
+#include "../Maths.h"
 
 const int SCRIPT_ILL_FACE = 199;
 
@@ -67,20 +67,25 @@ void ExpressiveFaculty::ReadFromGenome(Genome& g) {
 			myDriveWeightingsForExpressions[expressionId][d] = 0.0f;
 
 		// get drive weightings for this expression:
+		int noOfDrivesWeightedUp = 0;
 		for (int i=0; i<4; i++) {
 			int driveId = g.GetByte();
+			float driveWeight = g.GetSignedFloat();
+
 			if (driveId<0 || driveId>=NUMDRIVES)
 				continue;
-
-			float driveWeight = g.GetSignedFloat();
-			myDriveWeightingsForExpressions[expressionId][driveId]
-				= driveWeight;
+			noOfDrivesWeightedUp++;
+			myDriveWeightingsForExpressions[expressionId][driveId] = driveWeight;
 		}
+
+		// adjust general weight depending on the number of drives weighted up:
+		if (noOfDrivesWeightedUp>0)
+			myExpressionWeightings[expressionId] /= noOfDrivesWeightedUp;
 	}
 }
 
 
-const int BLINKRATE = 32;			// probability (rnd(n) that a creature
+const int BLINKRATE = 16;			// probability (rnd(n) that a creature
 									// will blink this frame
 
 // ------------------------------------------------------------------------
@@ -91,28 +96,28 @@ const int BLINKRATE = 32;			// probability (rnd(n) that a creature
 void ExpressiveFaculty::Update() {
 	// Blinking, smiling etc:
     int iBlinkRate = (BLINKRATE + 1) - 
-		Map::FastFloatToInteger((myCreature.GetCreatureReference().GetDriveLevel(SLEEPINESS) / 8.0f));
+		FastFloatToInteger((myCreature->GetDriveLevel(SLEEPINESS) * 16.0f));
 
     // Set eyes closed if sleeping or blinking or dead, else eyes are open:
 	int newEyeState = 
-		!(myCreature.GetCreatureReference().Life()->GetWhetherAlert() || myCreature.GetCreatureReference().Life()->GetWhetherZombie()) || 
+		!(myCreature->Life()->GetWhetherAlert() || myCreature->Life()->GetWhetherZombie()) || 
 		!Rnd(iBlinkRate) ? 0 : 1;
     ASSERT(newEyeState==0 || newEyeState==1);
-	myCreature.GetCreatureReference().SetEyeState(newEyeState);
+	myCreature->SetEyeState(newEyeState);
 
 
 	// Change expressions (was updated only slowly):
 	int newExpressionId = CalculateExpressionFromDrives();
-    if (newExpressionId != myCreature.GetCreatureReference().GetFacialExpression()) {
+    if (newExpressionId != myCreature->GetFacialExpression()) {
 
 		// change expressions via Normal:
 		newExpressionId = 
-			myCreature.GetCreatureReference().GetFacialExpression()!=EXPR_NORMAL ?
+			myCreature->GetFacialExpression()!=EXPR_NORMAL ?
             EXPR_NORMAL : newExpressionId;
 
-        myCreature.GetCreatureReference().SetFacialExpression(newExpressionId);
+        myCreature->SetFacialExpression(newExpressionId);
 /*		if (newExpressionId==EXPR_ILL)
-			myCreature.GetCreatureReference().ExecuteScriptForEvent(SCRIPT_ILL_FACE, myCreature,
+			myCreature->ExecuteScriptForEvent(SCRIPT_ILL_FACE, myCreature,
 			INTEGERZERO, INTEGERZERO);*/
     }
 }
@@ -127,18 +132,32 @@ void ExpressiveFaculty::Update() {
 int ExpressiveFaculty::CalculateExpressionFromDrives() 
 {
 	int bestExpressionIdSoFar = EXPR_NORMAL;
-	float bestRecommendationSoFar = -999.0f;
+	float bestRecommendationSoFar = 0.1f;
 
+//	OutputDebugString("\n");
 	for (int e=EXPR_NORMAL; e<EXPR_COUNT; e++) 
 	{
 		float recommendationForThisExpression = 0.0f;
 		for (int d=0; d<NUMDRIVES; d++) 
 		{
-			recommendationForThisExpression +=
-				myDriveWeightingsForExpressions[e][d] *
-				(myCreature.GetCreatureReference().GetDriveLevel(d)-0.5f);
+			if (myDriveWeightingsForExpressions[e][d] >= 0.0f)
+			{
+				recommendationForThisExpression +=
+					myDriveWeightingsForExpressions[e][d] *
+					myCreature->GetDriveLevel(d);
+			}
+			else
+			{
+				recommendationForThisExpression +=
+					-myDriveWeightingsForExpressions[e][d] *
+					(1.0f - myCreature->GetDriveLevel(d));
+			}
 		}
 		recommendationForThisExpression *= myExpressionWeightings[e];
+
+//		OutputFormattedDebugString("Expression %d (%s) has %f weight.\n", e, 
+//			e==0 ? "normal" : e==1 ? "happy" : e==2 ? "sad" : e==3 ? "angry" : e==4 ? "scared" : e==5 ? "sleepy" : "?", 
+//			recommendationForThisExpression);
 
 		if (recommendationForThisExpression>bestRecommendationSoFar) 
 		{
@@ -200,3 +219,4 @@ bool ExpressiveFaculty::Read(CreaturesArchive &archive)
 
 	return true;
 }
+

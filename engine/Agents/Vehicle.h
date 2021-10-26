@@ -28,7 +28,6 @@ class Vehicle : public CompoundAgent
 	CREATURES_DECLARE_SERIAL( Vehicle )
 
 public:
-
 	Vehicle();							// serialisation constr
 	Vehicle(	int family, int genus, int species,uint32 id,
 		FilePath const& gallery,	
@@ -165,3 +164,4 @@ protected:
 
 
 #endif // VEHICLE_H
+

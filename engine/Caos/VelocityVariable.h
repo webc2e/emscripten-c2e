@@ -33,3 +33,4 @@ private:
 };
 
 #endif // VELOCITY_VARIABLE_H
+

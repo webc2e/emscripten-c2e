@@ -4,10 +4,16 @@
 
 #include "HistoryStore.h"
 #include "../../CreaturesArchive.h"
+#include "../../Caos/HistoryHandlers.h"
+
+#ifndef ISOLATED_HISTORY
 #include "../../App.h"
 #include "../../World.h"
 #include "../Creature.h"
 #include "../LifeFaculty.h"
+#include "../../AgentManager.h"
+#include "../../Maths.h"
+#endif
 
 CreatureHistory& HistoryStore::GetCreatureHistory(const std::string& moniker)
 {
@@ -86,12 +92,14 @@ void HistoryStore::WipeCreatureHistory(const std::string& moniker)
 		myCreatureHistories.erase(it);
 }
 
+#ifndef ISOLATED_HISTORY
 bool HistoryStore::ReconcileImportedHistory(const std::string& moniker, CreatureHistory& importedHistory, bool performReconciliation)
 {
 #ifdef _DEBUG
 	// Last event in imported file should always be an export event
 	LifeEvent* lastImportedEvent = importedHistory.GetLifeEvent(importedHistory.Count() - 1);
-	ASSERT(lastImportedEvent->myEventType == LifeEvent::typeExported);
+	ASSERT((lastImportedEvent->myEventType == LifeEvent::typeExported) ||
+		(lastImportedEvent->myEventType == LifeEvent::typeWarpedOut));
 #endif
 
 	int ooww = GetOutOfWorldState(moniker);
@@ -122,9 +130,14 @@ bool HistoryStore::ReconcileImportedHistory(const std::string& moniker, Creature
 	// Either way, the resulting history would become inconsistent, and
 	// forever young Norns would be allowed by continually exporting, and 
 	// reimporting younger versions.
-	int lastExportedFromThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeExported, -1);
+	int lastFromThisWorld;
+	{
+		int lastExportedFromThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeExported, -1);
+		int lastWarpedOutFromThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeWarpedOut, -1);
+		lastFromThisWorld = OUR_MAX(lastExportedFromThisWorld, lastWarpedOutFromThisWorld);
+	}
 
-	if (lastExportedFromThisWorld == -1)
+	if (lastFromThisWorld == -1)
 	{
 		// but ooww says we've been exported, so we _must_ have
 		// an export event - this ASSERT shows an internal logic error
@@ -133,19 +146,25 @@ bool HistoryStore::ReconcileImportedHistory(const std::string& moniker, Creature
 	}
 #ifdef _DEBUG
 	// just a quick check that we really are exported, as ooww says we are
-	int lastImportedFromThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeImported, -1);
-	ASSERT(lastImportedFromThisWorld < lastExportedFromThisWorld);
+	int lastToThisWorld;
+	{
+		int lastImportedToThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeImported, -1);
+		int lastWarpedInToThisWorld = worldsHistory.FindLifeEventReverse(LifeEvent::typeWarpedIn, -1);
+		lastToThisWorld = OUR_MAX(lastImportedToThisWorld, lastWarpedInToThisWorld);
+	}
+	ASSERT(lastToThisWorld < lastFromThisWorld);
+
 	// world identifier of last world export event will match ours
-	ASSERT(worldsHistory.GetLifeEvent(lastExportedFromThisWorld)->myWorldUniqueIdentifier == theApp.GetWorld().GetUniqueIdentifier());
+	ASSERT(worldsHistory.GetLifeEvent(lastFromThisWorld)->myWorldUniqueIdentifier == theApp.GetWorld().GetUniqueIdentifier());
 #endif
 
 	// If there are more events up to export than there are in the imported history,
 	// then we have a mismatch
-	if (lastExportedFromThisWorld >= importedHistory.Count())
+	if (lastFromThisWorld >= importedHistory.Count())
 		return false;
 
 	// If _any_ life event is different up to our export, then fail
-	for (int i = 0; i <= lastExportedFromThisWorld; ++i)
+	for (int i = 0; i <= lastFromThisWorld; ++i)
 	{
 		if (!((*worldsHistory.GetLifeEvent(i)) == (*importedHistory.GetLifeEvent(i))))
 			return false;
@@ -169,18 +188,20 @@ bool HistoryStore::ReconcileImportedHistory(const std::string& moniker, Creature
 		CreatureHistory newHistory;
 
 		// Add matching events before we went away
+		// - we use the imported history, so photo files correspond
+		// to those which have been imported
 		newHistory.myLifeEvents.insert(newHistory.myLifeEvents.end(),
-			worldsHistory.myLifeEvents.begin(),
-			worldsHistory.myLifeEvents.begin() + lastExportedFromThisWorld + 1);
+			importedHistory.myLifeEvents.begin(),
+			importedHistory.myLifeEvents.begin() + lastFromThisWorld + 1);
 		
 		// Add events from import file while we were on holiday
 		newHistory.myLifeEvents.insert(newHistory.myLifeEvents.end(),
-			importedHistory.myLifeEvents.begin() + lastExportedFromThisWorld + 1,
+			importedHistory.myLifeEvents.begin() + lastFromThisWorld + 1,
 			importedHistory.myLifeEvents.end());
 
 		// Events that happened back at home while we were away
 		newHistory.myLifeEvents.insert(newHistory.myLifeEvents.end(),
-			worldsHistory.myLifeEvents.begin() + lastExportedFromThisWorld + 1,
+			worldsHistory.myLifeEvents.begin() + lastFromThisWorld + 1,
 			worldsHistory.myLifeEvents.end());
 
 		// Transfer name and other globals
@@ -189,22 +210,39 @@ bool HistoryStore::ReconcileImportedHistory(const std::string& moniker, Creature
 		newHistory.myGender = importedHistory.myGender;
 		newHistory.myGenus = importedHistory.myGenus;
 		newHistory.myVariant = importedHistory.myVariant;
+		newHistory.myCrossoverMutationCount = importedHistory.myCrossoverMutationCount;
+		newHistory.myCrossoverCrossCount = importedHistory.myCrossoverCrossCount;
+		
+		// only need to upload global history for tracking if 
+		// neither existing history has been uploaded
+		newHistory.myNetworkNeedUploading = 
+			worldsHistory.myNetworkNeedUploading && importedHistory.myNetworkNeedUploading;
+		// a veteran in either history is a veteran here
+		newHistory.myWarpHoleVeteran = worldsHistory.myWarpHoleVeteran || newHistory.myWarpHoleVeteran;
 
+		newHistory.myUploadedName = importedHistory.myUploadedName;
+
+		// Wipe existing history, so photos are properly cleared out
+		if (!HistoryHandlers::WipeHistoryHelper(*this, moniker))
+			throw BasicException("Photo in use during history reconciliation");
 		GetCreatureHistory(moniker) = newHistory;
 	}
 
 	return true;
 }
 
+#endif
+
 // Returns for a moniker:
 // 0 - never existed, or purged from history
 // 1 - referenced genome
 // 2 - creature agent made
 // 3 - properly @#BORN@
-// 4 - out of world, exported
+// 4 - out of world, exported / warped out
 // 5 - dead, agent still exists
 // 6 - dead, no agent
 // 7 - unreferenced genome
+#ifndef ISOLATED_HISTORY
 int HistoryStore::GetOutOfWorldState(const std::string& moniker)
 {
 	if (!IsThereCreatureHistory(moniker))
@@ -218,12 +256,14 @@ int HistoryStore::GetOutOfWorldState(const std::string& moniker)
 	{
 		LifeEvent* event = history.GetLifeEvent(i);
 		ASSERT(event);
-		if (!foundExpInp && (event->myEventType == LifeEvent::typeExported))
+		if (!foundExpInp && ((event->myEventType == LifeEvent::typeExported) ||
+							 (event->myEventType == LifeEvent::typeWarpedOut))  )
 		{
 			foundExpInp = true;
 			exported = true;
 		}
-		else if (!foundExpInp && (event->myEventType == LifeEvent::typeImported))
+		else if (!foundExpInp && ((event->myEventType == LifeEvent::typeImported) ||
+								(event->myEventType == LifeEvent::typeWarpedIn))  )
 		{
 			foundExpInp = true;
 			exported = false;
@@ -279,3 +319,5 @@ int HistoryStore::GetOutOfWorldState(const std::string& moniker)
 	ASSERT(false);
 	return -1;
 }
+#endif
+

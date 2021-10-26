@@ -24,6 +24,7 @@
 #endif
 
 #include "../PersistentObject.h"
+#include <cstring>
 #include <string>
 
 class MusicNamedItem : public PersistentObject {
@@ -67,12 +68,9 @@ public:
   // Description:	Compares given string with name of variable
   // ----------------------------------------------------------------------
   bool MatchName(LPCTSTR compare) const {
-    // standard gnu c lib has strcasecmp not strcasecmp...
-    // #ifdef __GLIBC__
-    return (strcasecmp(name.data(), compare) == 0);
-    // #else
-    // return (strcasecmp(name.data(), compare) == 0);
-    // #endif
+    // standard gnu c lib has strcasecmp not stricmp...
+
+    return (strcasecmp(name.c_str(), compare) == 0); // SPARKY was stricmp
   }
 
   // ----------------------------------------------------------------------
@@ -81,7 +79,7 @@ public:
   // Returns:		Pointer to name of string
   // Description:	Returns variable name
   // ----------------------------------------------------------------------
-  LPCTSTR GetName() const { return name.data(); }
+  LPCTSTR GetName() const { return name.c_str(); }
 
 private:
   // ----------------------------------------------------------------------

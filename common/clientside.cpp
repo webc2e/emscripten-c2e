@@ -13,7 +13,7 @@
 // --------------------------------------------------------------------------
 
 #include "clientside.h"
-#include "basicexception.h"
+#include "BasicException.h"
 
 ClientSide::ClientSide()
 {
@@ -218,3 +218,4 @@ void ClientSide::EndTransaction()
 {
 	ReleaseMutex( myMutex );
 }
+

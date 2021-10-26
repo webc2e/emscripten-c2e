@@ -5,19 +5,32 @@
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
+
 #include "Brain.h"
 #include <algorithm>
 #include "../Genome.h"
 
-#ifdef _DEBUG
-// TODO: should move timers out of window.h...
-//#include "../../display/window.h" // high performance timer
-//#include <sstream>
-#endif // _DEBUG
+
+#include "BrainComponent.h"
+#include "Lobe.h"
+#include "Tract.h"
+#include "Instinct.h"
+
+
+
+
+#ifdef BRAIN_PERFORMANCE_TIMING
+	#include "../../display/window.h" // high performance timer
+	#include <sstream>
+#endif
+
+
 
 CREATURES_IMPLEMENT_SERIAL(Brain)
 
-
+#include "BrainIO.h"
+// for version dump compatibility
+float BrainAccess::ourBrainDumpVersion = BrainAccess::DefaultDumpVersion();
 
 Lobe Brain::ourDummyLobe;
 
@@ -29,6 +42,18 @@ enum Brain_Parameters
 	INSTINCT_CHEMICAL_NUMBER = 0,
 	PREINSTINCT_CHEMICAL_NUMBER
 };
+
+
+
+
+void Brain::AddInstinct(int verb, int noun, float qualifier, int drive)
+{
+	if (myInstincts.size()<MAX_INSTINCTS)
+	{
+		myInstincts.push_back(new Instinct(verb, noun, qualifier, drive, this));
+	}
+}
+
 
 
 
@@ -55,12 +80,11 @@ Brain::Brain()
 Brain::~Brain()
 {
 	int i;
-
-	for ( i=0; i<myBrainComponents.size(); i++)
+	for (i=0; i<myBrainComponents.size(); i++)
 	{
 		delete myBrainComponents[i];
 	}
-	for	(i=0; i<myInstincts.size(); i++)
+	for (i=0; i<myInstincts.size(); i++)
 	{
 		 delete myInstincts[i];
 	}
@@ -74,7 +98,7 @@ Brain::~Brain()
 // Description: Creates lobes, tracts and instincts as appropriate from the genome.
 // Arguments:   Genome &genome = C2e genome flagged as a certain age level.
 // ------------------------------------------------------------------------
-void Brain::ReadFromGenome(Genome &genome)
+void Brain::ReadFromGenome(Genome &genome) throw(GenomeInitFailedException)
 {
 	ASSERT(myPointerToChemicals!=NULL);
 
@@ -194,7 +218,7 @@ bool Brain::GetWhetherToProcessInstincts()
 // Arguments:   std::istream &in = game input stream
 // Returns:     bool = true for success
 // ------------------------------------------------------------------------
-bool Brain::InitLobeFromDescription(std::istream &in)
+bool Brain::InitLobeFromDescription(std::istream &in) throw(GenomeInitFailedException)
 {
 	try {
 		Lobe* lobe = new Lobe(in);
@@ -242,7 +266,7 @@ bool Brain::InitLobeFromDescription(std::istream &in)
 // Arguments:   std::istream &in = game input stream
 // Returns:     bool = true for success
 // ------------------------------------------------------------------------
-bool Brain::InitTractFromDescription(std::istream &in)
+bool Brain::InitTractFromDescription(std::istream &in) throw(GenomeInitFailedException)
 {
 
 	try {
@@ -362,20 +386,22 @@ void Brain::ClearActivity()
 // ------------------------------------------------------------------------
 void Brain::UpdateComponents() 
 {
-#ifdef _DEBUG
-//	int64 stamp = GetHighPerformanceTimeStamp();
+#ifdef BRAIN_PERFORMANCE_TIMING
+	int64 stamp = GetHighPerformanceTimeStamp();
 #endif
 	for (int i=0; i<myBrainComponents.size(); i++)
 	{
 		myBrainComponents[i]->DoUpdate();
 	}
-#ifdef _DEBUG
-//	int64 stampDelta = GetHighPerformanceTimeStamp() - stamp;
-//	std::ostringstream time;
-//	time << "SVRules time: " << (int)stampDelta << std::endl;
+#ifdef BRAIN_PERFORMANCE_TIMING
+	int64 stampDelta = GetHighPerformanceTimeStamp() - stamp;
+	std::ostringstream time;
+	time << "SVRules time: " << (int)stampDelta << std::endl;
 //	OutputDebugString(time.str().c_str());
 #endif
 }
+
+
 
 
 // ------------------------------------------------------------------------
@@ -528,18 +554,6 @@ void Brain::SetInput(const char* lobeTokenString, int whichNeuron, float toWhat)
 	GetLobeFromTokenString(lobeTokenString)->SetNeuronInput(whichNeuron, toWhat);
 }
 
-// ------------------------------------------------------------------------
-// Function:    SetLobeWideInput
-// Class:       Brain
-// Description: Just like SetInput only it sets the input of all neurons in a lobe
-//				instead of one particular one.
-// Arguments:   const char* lobeTokenString = 
-//              float toWhat = 
-// ------------------------------------------------------------------------
-void Brain::SetLobeWideInput(const char* lobeTokenString, float toWhat)
-{
-	GetLobeFromTokenString(lobeTokenString)->SetLobeWideInput(toWhat);
-}
 
 
 // ------------------------------------------------------------------------
@@ -638,7 +652,7 @@ int Brain::GetLobeSize(const char* lobeTokenString)
 // ------------------------------------------------------------------------
 bool Brain::SetNeuronState(const int lobe, const int neuron, const int state, const float value)
 {
-	if(lobe < 0 || lobe > myLobes.size()-1)
+	if(lobe < 0 || lobe >= myLobes.size())
 		return false;
 
 	return myLobes[lobe]->SetNeuronState(neuron, state, value);
@@ -657,7 +671,7 @@ bool Brain::SetNeuronState(const int lobe, const int neuron, const int state, co
 // ------------------------------------------------------------------------
 bool Brain::SetDendriteWeight(const int tract, const int dendrite, const int weight, const float value)
 {
-	if(tract < 0 || tract > myTracts.size()-1)
+	if(tract < 0 || tract >= myTracts.size())
 		return false;
 
 	return myTracts[tract]->SetDendriteWeight(dendrite, weight, value);
@@ -675,7 +689,7 @@ bool Brain::SetDendriteWeight(const int tract, const int dendrite, const int wei
 // ------------------------------------------------------------------------
 bool Brain::SetLobeSVFloat(const int lobe, const int entryNo, const float value)
 {
-	if(lobe < 0 || lobe > myLobes.size()-1)
+	if(lobe < 0 || lobe >= myLobes.size())
 		return false;
 
 	return myLobes[lobe]->SetSVFloat(entryNo, value);
@@ -694,7 +708,7 @@ bool Brain::SetLobeSVFloat(const int lobe, const int entryNo, const float value)
 // ------------------------------------------------------------------------
 bool Brain::SetTractSVFloat(const int tract, const int entryNo, const float value)
 {
-	if(tract < 0 || tract > myTracts.size()-1)
+	if(tract < 0 || tract >= myTracts.size())
 		return false;
 
 	return myTracts[tract]->SetSVFloat(entryNo, value);
@@ -719,7 +733,7 @@ bool Brain::SetTractSVFloat(const int tract, const int entryNo, const float valu
 // ------------------------------------------------------------------------
 Brain::KnowledgeAction Brain::GetKnowledge(int drive)
 {
-	if(drive < 0 || drive > myAssistanceKnowledge.size()-1)
+	if(drive < 0 || drive >= myAssistanceKnowledge.size())
 	{
 		KnowledgeAction defaultKA = {-1,-1,0.0f};
 		return defaultKA;
@@ -763,6 +777,8 @@ bool Brain::Write(CreaturesArchive &archive) const
 		archive << myAssistanceKnowledge[i].decisionId;
 		archive << myAssistanceKnowledge[i].strength;
 	}
+
+	archive << myActiveFlag;
 	return true;
 }
 
@@ -792,12 +808,18 @@ bool Brain::Read(CreaturesArchive &archive)
 		archive >> myLastKnowledgeUpdated;
 		int size;
 		archive >> size;
+		CreaturesArchive::ForceOpenRangeException(size, 0, 1000);
 		myAssistanceKnowledge.resize(size);
 		for(int i = 0; i != myAssistanceKnowledge.size(); i++)
 		{
 			archive >> myAssistanceKnowledge[i].attentionId;
 			archive >> myAssistanceKnowledge[i].decisionId;
 			archive >> myAssistanceKnowledge[i].strength;
+		}
+
+		if (version>=36)
+		{
+			archive >> myActiveFlag;
 		}
 	}
 	else
@@ -835,7 +857,7 @@ void Brain::DumpSpec(std::ostream& out)
 	for(int t = 0; t != myTracts.size(); t++)
 		out << myTracts[t]->DumpSize() << (char)0;
 
-	out << "END DUMP";
+	out << "END DUMP V1.1";
 };
 
 
@@ -850,7 +872,7 @@ void Brain::DumpSpec(std::ostream& out)
 // ------------------------------------------------------------------------
 bool Brain::DumpLobe(int l, std::ostream& out)
 {
-	if(l < 0 || l > myLobes.size()-1)
+	if(l < 0 || l >= myLobes.size())
 		return false;
 
 	myLobes[l]->DumpLobe(out);
@@ -869,7 +891,7 @@ bool Brain::DumpLobe(int l, std::ostream& out)
 // ------------------------------------------------------------------------
 bool Brain::DumpTract(int t, std::ostream& out)
 {
-	if(t < 0 || t > myTracts.size()-1)
+	if(t < 0 || t >= myTracts.size())
 		return false;
 
 	myTracts[t]->DumpTract(out);
@@ -889,7 +911,7 @@ bool Brain::DumpTract(int t, std::ostream& out)
 // ------------------------------------------------------------------------
 bool Brain::DumpNeuron(int l, int n, std::ostream& out)
 {
-	if(l < 0 || l > myLobes.size()-1)
+	if(l < 0 || l >= myLobes.size())
 		return false;
 
 	if(!myLobes[l]->DumpNeuron(n, out))
@@ -911,7 +933,7 @@ bool Brain::DumpNeuron(int l, int n, std::ostream& out)
 // ------------------------------------------------------------------------
 bool Brain::DumpDendrite(int t, int d, std::ostream& out)
 {
-	if(t < 0 || t > myLobes.size()-1)
+	if(t < 0 || t >= myLobes.size())
 		return false;
 	if(!myTracts[t]->DumpDendrite(d, out))
 		return false;
@@ -919,3 +941,51 @@ bool Brain::DumpDendrite(int t, int d, std::ostream& out)
 	out << (char)0 << "END DUMP";
 	return true;
 };
+
+// ------------------------------------------------------------------------
+// Function:    DumpAllDendrites
+// Class:       Brain
+// Description: Used in the game to dump out binary details of dendrites for
+//				export to Palm. This function is called through a CAOS command.
+// Arguments:   int t = tract number
+//              std::ostream& out = 
+// Returns:     bool = 
+// ------------------------------------------------------------------------
+bool Brain::DumpAllDendrites(int t, std::ostream& out)
+{
+	if(t < 0 || t >= myTracts.size())
+		return false;
+
+	if(!myTracts[t]->DumpAllDendrites(out))
+		return false;
+
+	// Stick with the other DUMP formats
+	out << (char)0 << "END DUMP";
+	return true;
+};
+
+// ------------------------------------------------------------------------
+// Function:    UnDumpAllDendrites
+// Class:       Brain
+// Description: Used in the game to dump out binary details of dendrites for
+//				export to Palm. This function is called through a CAOS command.
+// Arguments:   int t = tract number
+//              std::istream& in = 
+// Returns:     bool = 
+// ------------------------------------------------------------------------
+bool Brain::UnDumpAllDendrites(int t, std::istream& in)
+{
+	if(t < 0 || t >= myTracts.size())
+		return false;
+
+	if(!myTracts[t]->UnDumpAllDendrites(in))
+		return false;
+
+	static char endDump[9];
+	in.read(endDump, 9);
+	if (strncmp(endDump+1, "END DUMP", 8))
+		return false;
+
+	return true;
+};
+

@@ -1,8 +1,13 @@
+#ifndef _WIN32
+	#error For Win32 IPC protocol only
+#endif
+
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
 
 #include "RequestManager.h"
+#include "../../common/ServerSide.h"
 
 #include "Orderiser.h"
 #include "CAOSMachine.h"
@@ -54,13 +59,8 @@ void RequestManager::HandleIncoming( ServerSide& server )
 		if( *p == '\n' )
 			++p;
 
-#ifdef C2E_OLD_CPP_LIB
 		std::ostrstream out( (char*)server.GetBuffer(),
 			server.GetMaxBufferSize()-1, std::ios::out | std::ios::binary );
-#else
-		std::ostrstream out( (char*)server.GetBuffer(),
-			server.GetMaxBufferSize()-1, std::ios_base::out | std::ios_base::binary );
-#endif
 		ASSERT(args.size() > 0);
 
 		if( args[0] == "execute" || args[0] == "iscr" )
@@ -73,11 +73,13 @@ void RequestManager::HandleIncoming( ServerSide& server )
 			if( m )
 			{
 				try {
-					vm.StartScriptExecuting(m, NULLHANDLE, NULLHANDLE, INTEGERZERO, INTEGERZERO);
+					CAOSVar from;
+					from.SetAgent(NULLHANDLE);
+					vm.StartScriptExecuting(m, NULLHANDLE, from, INTEGERZERO, INTEGERZERO);
 					vm.SetOutputStream(&out);
 					vm.UpdateVM(-1);
 				}
-				catch( CAOSMachine::RunError& e )
+				catch( CAOSMachineRunError& e )
 				{
 					// return vm error message
 					out.seekp( 0 );
@@ -158,25 +160,16 @@ void RequestManager::HandleIncoming( ServerSide& server )
 
 		out.put( '\0' );	// terminate the string
 
-/*		OutputFormattedDebugString("strlen: %ld, outblah: %ld\n", 
-			strlen( (char*)server.GetBuffer() ) + 1,
-			out.pcount()
-		);
-*/
-
-//		server.Respond( strlen( (char*)server.GetBuffer() ) + 1, errorcode );
 		server.Respond( out.pcount(), errorcode );
 		noOfTimesEntered--;
 
-#ifdef _WIN32
-		// why is this here?  -BenC
+		// This is here to give time for another request to come
+		// before the next tick.  Otherwise the engine can only
+		// process one request per tick.
 		Sleep(5);
-#endif
 	}
-	// We catch all exceptions in release mode for robustness.
-	// In debug mode it is more useful to see what line of code
-	// the error was caused by.
-	catch(BasicException& e) {
+	// We catch all exceptions for robustness.
+	catch(std::exception& e) {
 		server.GetBuffer()[0] = 0;
 		server.Respond( 0, 1 );
 		noOfTimesEntered--;

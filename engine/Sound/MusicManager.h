@@ -57,7 +57,7 @@ class MusicManager : public MusicUpdatable
 
 		// ----------------------------------------------------------------------
 		// Method:		MusicManager
-		// Arguments:	None
+		// Arguments:	Default music file, when not overriden
 		// Returns:		Nothing
 		// Description:	Default Constructor
 		// ----------------------------------------------------------------------
@@ -489,3 +489,4 @@ class MusicManager : public MusicUpdatable
 	};
 
 #endif
+

@@ -10,8 +10,10 @@
 #include "AgentHandle.h"
 #include "Agent.h"
 
+#include "../Creature/AgentFacultyInterface.h"
+#include "../Creature/CreatureFacultyInterface.h"
 
-AgentHandle NULLHANDLE;
+C2E_MODULE_API AgentHandle NULLHANDLE;
 
 // Default constructor
 AgentHandle::AgentHandle() 
@@ -171,6 +173,13 @@ bool AgentHandle::operator!=(const AgentHandle& handle) const
 	return (myAgentPointer != handle.myAgentPointer);
 }
 
+// Arbitary comparison - for containers
+bool AgentHandle::operator<(const AgentHandle& handle) const
+{
+	return (myAgentPointer < handle.myAgentPointer);
+}
+
+
 Agent& AgentHandle::GetAgentReference() const 
 {
 	if (myAgentPointer == NULL)
@@ -179,7 +188,7 @@ Agent& AgentHandle::GetAgentReference() const
 		throw AgentHandleException("AHE0002: Attempt to access garbaged handle");
 	if (!(myAgentPointer->GetAgentType() & agentNormal))
 		throw AgentHandleException("AHE0003: Attempt to access incorrect type (raw agent expected)");
-	return *myAgentPointer;
+	return *((Agent *)(myAgentPointer));
 }
 
 SimpleAgent& AgentHandle::GetSimpleAgentReference() const 
@@ -190,9 +199,7 @@ SimpleAgent& AgentHandle::GetSimpleAgentReference() const
 		throw AgentHandleException("AHE0005: Attempt to access garbaged handle");
 	if (!(myAgentPointer->GetAgentType() & agentSimple))
 		throw AgentHandleException("AHE0006: Attempt to access incorrect type (simple agent expected)");
-	SimpleAgent *a;
-	a = (SimpleAgent*)(myAgentPointer);	
-	return *a;
+	return *((SimpleAgent *)(myAgentPointer));
 }
 
 PointerAgent& AgentHandle::GetPointerAgentReference() const 
@@ -203,9 +210,7 @@ PointerAgent& AgentHandle::GetPointerAgentReference() const
 		throw AgentHandleException("AHE0008: Attempt to access garbaged handle");
 	if ( !(myAgentPointer->GetAgentType() & agentPointer) )
 		throw AgentHandleException("AHE0009: Attempt to access incorrect type (pointer agent expected)");
-	PointerAgent *a;
-	a = (PointerAgent*)(myAgentPointer);	
-	return *a;
+	return *((PointerAgent *)(myAgentPointer));
 }
 
 CompoundAgent& AgentHandle::GetCompoundAgentReference() const 
@@ -216,9 +221,7 @@ CompoundAgent& AgentHandle::GetCompoundAgentReference() const
 		throw AgentHandleException("AHE0011: Attempt to access garbaged handle");
 	if (!(myAgentPointer->GetAgentType() & agentCompound))
 		throw AgentHandleException("AHE0012: Attempt to access incorrect type (compound agent expected)");
-	CompoundAgent *a;
-	a = (CompoundAgent*)(myAgentPointer);	
-	return *a;
+	return *((CompoundAgent *)(myAgentPointer));
 }
 
 
@@ -230,22 +233,7 @@ Vehicle& AgentHandle::GetVehicleReference() const
 		throw AgentHandleException("AHE0014: Attempt to access garbaged handle");
 	if (!(myAgentPointer->GetAgentType() & agentVehicle))
 		throw AgentHandleException("AHE0015: Attempt to access incorrect type (vehicle expected)");
-	Vehicle *a;
-	a = (Vehicle*)(myAgentPointer);	
-	return *a;
-}
-
-Skeleton& AgentHandle::GetSkeletonReference() const 
-{
-	if (myAgentPointer == NULL)
-		throw AgentHandleException("AHE0016: Attempt to access NULL handle");
-	if (myAgentPointer->IsGarbage())
-		throw AgentHandleException("AHE0017: Attempt to access garbaged handle");
-	if ( !(myAgentPointer->GetAgentType() & agentSkeleton) )
-		throw AgentHandleException("AHE0018: Attempt to access incorrect type (skeleton expected)");
-	Skeleton *a;
-	a = (Skeleton*)(myAgentPointer);	
-	return *a;
+	return *((Vehicle *)(myAgentPointer));
 }
 
 
@@ -258,10 +246,52 @@ Creature& AgentHandle::GetCreatureReference() const
 	if ( !(myAgentPointer->GetAgentType() & agentCreature) )
 		throw AgentHandleException("AHE0021: Attempt to access incorrect type (creature expected)");
 
-	Creature *a;
-	a = (Creature*)(myAgentPointer);	
-	return *a;
+	return *((Creature *)(myAgentPointer));
 }
+
+SkeletalCreature& AgentHandle::GetSkeletalCreatureReference() const 
+{
+	if (myAgentPointer == NULL)
+		throw AgentHandleException("AHE0019: Attempt to access NULL handle");
+	if (myAgentPointer->IsGarbage())
+		throw AgentHandleException("AHE0020: Attempt to access garbaged handle");
+	if ( !(myAgentPointer->GetAgentType() & agentSkeletalCreature) )
+		throw AgentHandleException("AHE0021: Attempt to access incorrect type (creature expected)");
+
+	return *((SkeletalCreature *)(myAgentPointer));
+}
+
+
+
+
+
+
+// dynamic cast ones:
+
+AgentFacultyInterface& AgentHandle::GetAgentFacultyInterfaceReference() const 
+{
+	if (myAgentPointer == NULL)
+		throw AgentHandleException("AHE0001: Attempt to access NULL handle");
+	if (myAgentPointer->IsGarbage())
+		throw AgentHandleException("AHE0002: Attempt to access garbaged handle");
+	if (!(myAgentPointer->GetAgentType() & agentNormal))
+		throw AgentHandleException("AHE0003: Attempt to access incorrect type (raw agent expected)");
+	return *(dynamic_cast<AgentFacultyInterface*>(myAgentPointer));
+}
+
+CreatureFacultyInterface& AgentHandle::GetCreatureFacultyInterfaceReference() const 
+{
+	if (myAgentPointer == NULL)
+		throw AgentHandleException("AHE0019: Attempt to access NULL handle");
+	if (myAgentPointer->IsGarbage())
+		throw AgentHandleException("AHE0020: Attempt to access garbaged handle");
+	if ( !(myAgentPointer->GetAgentType() & agentCreature) )
+		throw AgentHandleException("AHE0021: Attempt to access incorrect type (creature expected)");
+
+	return *(dynamic_cast<CreatureFacultyInterface*>(myAgentPointer));
+}
+
+
 
 
 bool AgentHandle::IsValid()
@@ -330,16 +360,17 @@ bool AgentHandle::IsVehicle()
 	return ( (myAgentPointer->GetAgentType() & agentVehicle) == agentVehicle );
 }
 
-bool AgentHandle::IsSkeleton()
-{
-	if (IsInvalid())
-		return false;
-	return ( (myAgentPointer->GetAgentType() & agentSkeleton) == agentSkeleton );
-}
-
 bool AgentHandle::IsCreature()
 {
 	if (IsInvalid())
 		return false;
 	return ( (myAgentPointer->GetAgentType() & agentCreature) == agentCreature );
 }
+
+bool AgentHandle::IsSkeletalCreature()
+{
+	if (IsInvalid())
+		return false;
+	return ( (myAgentPointer->GetAgentType() & agentSkeletalCreature) == agentSkeletalCreature );
+}
+

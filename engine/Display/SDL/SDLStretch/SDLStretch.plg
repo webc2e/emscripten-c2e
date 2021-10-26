@@ -1,0 +1,37 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: SDLStretch - Win32 SDL Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\TEMP\RSP3E.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SDLSTRETCH_EXPORTS" /Fo"SDLStretch___Win32_SDL_Release/" /Fd"SDLStretch___Win32_SDL_Release/" /FD /c 
+"C:\c3\c2e\engine\Display\SDL\SDLStretch\SDLStretch.cpp"
+]
+Creating command line "cl.exe @C:\TEMP\RSP3E.tmp" 
+Creating temporary file "C:\TEMP\RSP3F.tmp" with contents
+[
+sdl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"SDLStretch___Win32_SDL_Release/SDLStretch.pdb" /map:"SDLStretch___Win32_SDL_Release/SDLStretch.map" /machine:I386 /out:"SDLStretch___Win32_SDL_Release/SDLStretch.dll" /implib:"SDLStretch___Win32_SDL_Release/SDLStretch.lib" 
+.\SDLStretch___Win32_SDL_Release\SDLStretch.obj
+]
+Creating command line "link.exe @C:\TEMP\RSP3F.tmp"
+<h3>Output Window</h3>
+Compiling...
+SDLStretch.cpp
+C:\c3\c2e\engine\Display\SDL\SDLStretch\SDLStretch.cpp(150) : warning C4273: 'SDL_StretchSurface' : inconsistent dll linkage.  dllexport assumed.
+C:\c3\c2e\engine\Display\SDL\SDLStretch\SDLStretch.cpp(206) : warning C4273: 'SDL_StretchSurface' : inconsistent dll linkage.  dllexport assumed.
+C:\c3\c2e\engine\Display\SDL\SDLStretch\SDLStretch.cpp(79) : warning C4244: '=' : conversion from 'unsigned short' to 'unsigned char', possible loss of data
+        C:\c3\c2e\engine\Display\SDL\SDLStretch\SDLStretch.cpp(117) : see reference to function template instantiation 'void __cdecl StretchTemplate(int,int,int,int,int,int,unsigned short *,unsigned char *)' being compiled
+Linking...
+   Creating library SDLStretch___Win32_SDL_Release/SDLStretch.lib and object SDLStretch___Win32_SDL_Release/SDLStretch.exp
+
+
+
+<h3>Results</h3>
+SDLStretch.dll - 0 error(s), 3 warning(s)
+</pre>
+</body>
+</html>

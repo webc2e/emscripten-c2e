@@ -244,7 +244,7 @@ MusicError MusicLoopLayer::Parse(MusicScript &script,
 			// in the script, the waves list is built up whenever
 			// a new wave is encountered
 
-			waveType = GetWaveID( waveName.data() );
+			waveType = GetWaveID( waveName.c_str() );
 
 			if (waveType == MUSIC_NO_WAVE)
 				{

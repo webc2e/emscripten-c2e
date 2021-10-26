@@ -24,10 +24,14 @@
 #include "C2eServices.h"
 #include "App.h"
 #include "CreaturesArchive.h"
+#include "Display/Window.h"
 
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>	// for GetAsyncKeyState()
+#ifndef _WIN32
+	#include "Display/SDL/scrap.h"
+#endif
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	#include "Camera/MainCamera.h"
 #endif
 
 // how many ticks we store mouse position for
@@ -119,6 +123,10 @@ void InputManager::SysAddTranslatedCharEvent( int keycode )
 
 void InputManager::SysAddMouseDownEvent( int mx, int my, int button )
 {
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	theMainView.ScaleMouseCoordinatesAccordingToWindowSize(mx, my);
+#endif
+
 	InputEvent ev;
 	ev.EventCode = InputEvent::eventMouseDown;
 	ev.MouseButtonData.button = button;
@@ -128,12 +136,15 @@ void InputManager::SysAddMouseDownEvent( int mx, int my, int button )
 
 	myMouseX = mx;
 	myMouseY = my;
-
 	myEventPendingMask |= InputEvent::eventMouseDown;
 }
 
 void InputManager::SysAddMouseUpEvent( int mx, int my, int button )
 {
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	theMainView.ScaleMouseCoordinatesAccordingToWindowSize(mx, my);
+#endif
+
 	InputEvent ev;
 	ev.EventCode = InputEvent::eventMouseUp;
 	ev.MouseButtonData.button = button;
@@ -148,6 +159,10 @@ void InputManager::SysAddMouseUpEvent( int mx, int my, int button )
 
 void InputManager::SysAddMouseMoveEvent( int mx, int my )
 {
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	theMainView.ScaleMouseCoordinatesAccordingToWindowSize(mx, my);
+#endif
+
 	InputEvent ev;
 	ev.EventCode = InputEvent::eventMouseMove;
 	ev.MouseMoveData.mx = mx;
@@ -174,32 +189,12 @@ void InputManager::SysAddMouseWheelEvent( int mx, int my, int delta )
 
 bool InputManager::IsKeyDown( int keycode )
 {
-#ifdef WIN32
-	// keys are only down if we have the focus
-	// no window has the mouse captured (which happens
-	// if we are resizing/moving with the keyboard)
-	if (::GetForegroundWindow() == theMainWindow &&
-		::GetCapture() == NULL)
-		return ( GetAsyncKeyState( keycode ) < 0 );
-	else
-		return false;
-#else
-	#warning keyboard polling not implemented
-	return false;
-#endif // WIN32
+	return GlobalIsKeyDown(keycode);
 }
 
 void InputManager::SetMousePosition(int newX, int newY)
 {
-#ifdef _WIN32
-	POINT pt;
-	pt.x = newX;
-	pt.y = newY;
-	ClientToScreen(theMainWindow, &pt);
-	SetCursorPos(pt.x, pt.y);
-#else
-	#warning "TODO: implement SetMousePosition() if possible"
-#endif
+	GlobalWarpMouse(newX, newY);
 	myMouseX = newX;
 	myMouseY = newY;
 }
@@ -240,13 +235,130 @@ TranslatedCharTarget::~TranslatedCharTarget()
 
 void TranslatedCharTarget::SaveFocusState( CreaturesArchive &archive ) const
 {
-	archive << bool( theApp.GetInputManager().GetTranslatedCharTarget() == this );
+	bool target = (theApp.GetInputManager().GetTranslatedCharTarget() == this);
+	archive << target;
 }
 
 void TranslatedCharTarget::RestoreFocusState( CreaturesArchive &archive )
 {
 	bool flag;
 	archive >> flag;
-	if( flag ) theApp.GetInputManager().SetTranslatedCharTarget( this, true );
+	if (flag)
+		theApp.GetInputManager().SetTranslatedCharTarget( this, true );
+}
+
+#ifndef _WIN32
+	static char *scrapSDL = NULL;
+#endif
+
+std::string InputManager::FetchTextFromClipboard()
+{
+#ifdef _WIN32
+    if (!IsClipboardFormatAvailable(CF_TEXT)) 
+        return ""; 
+    if (!OpenClipboard(NULL)) 
+        return ""; 
+
+	std::string ret;
+    HGLOBAL hglb = GetClipboardData(CF_TEXT); 
+    if (hglb != NULL) 
+    { 
+        char* pstr = (char*)GlobalLock(hglb); 
+        if (pstr != NULL) 
+        { 
+            ret = pstr;
+            GlobalUnlock(hglb); 
+        } 
+    } 
+    CloseClipboard(); 
+
+	// Convert CR/LF to LF
+	std::string convText;
+	for (int i = 0; i < ret.size(); ++i)
+	{
+		char c = ret[i];
+		if (c != 13)
+			convText += c;
+	}
+
+    return convText; 
+#else // C2E_SDL
+	return ""; // this doesn't work yet
+
+	int scraplen;
+
+	get_scrap(T('T','E','X','T'), &scraplen, &scrapSDL);
+	if ( scraplen == 0 ) 
+		return "";
+
+	// Convert the scrap from Mac text to UNIX text
+	char *cp;
+	int i;
+	for (cp = scrapSDL, i = 0; i < scraplen; ++cp, ++i)
+	{
+		if (*cp == '\r')
+			*cp = '\n';
+	}
+	return scrapSDL;
+#endif
+}
+
+void InputManager::SendTextToClipboard(const std::string& text)
+{
+#ifdef _WIN32
+	// Convert LF to CR/LF
+	std::string convText;
+	for (int i = 0; i < text.size(); ++i)
+	{
+		char c = text[i];
+		if (c == 10)
+			convText += (char)13;
+		convText += c;
+	}
+
+    int cch = convText.size();
+ 
+    // Open the clipboard, and empty it. 
+    if (!OpenClipboard(NULL)) 
+        return; 
+    EmptyClipboard(); 
+
+    // Allocate a global memory object for the text. 
+    HGLOBAL hglbCopy = GlobalAlloc(GMEM_MOVEABLE, 
+        (cch + 1) * sizeof(char)); 
+    if (hglbCopy == NULL) 
+    { 
+        CloseClipboard(); 
+        return;
+    } 
+
+    // Lock the handle and copy the text to the buffer. 
+    char* pCopy = (char*)GlobalLock(hglbCopy); 
+    memcpy(pCopy, (char*)convText.c_str(), cch); 
+    pCopy[cch] = (char)0;    // null character 
+    GlobalUnlock(hglbCopy); 
+
+    // Place the handle on the clipboard. 
+    SetClipboardData(CF_TEXT, hglbCopy); 
+
+	// Close the clipboard
+	CloseClipboard(); 
+#else
+	return; // this doesn't work yet
+	
+	const char *textC = text.c_str();
+	{ /* Convert the scrap from UNIX text to Mac text */
+		char *cp;
+		int   i;
+		scrapSDL = (char*)realloc(scrapSDL, strlen(textC)+1);
+		strcpy(scrapSDL, textC);
+		for ( cp=scrapSDL, i=0; i<strlen(scrapSDL); ++cp, ++i ) {
+			if ( *cp == '\n' )
+				*cp = '\r';
+		}
+		textC = scrapSDL;
+	}
+	put_scrap(T('T','E','X','T'), strlen(textC), (char*)textC);
+#endif
 }
 

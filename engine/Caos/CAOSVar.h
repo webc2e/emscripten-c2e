@@ -10,11 +10,11 @@
 
 #include "../../common/BasicException.h"
 #include "../C2eServices.h"	// for debugging macros
-#include "../CreaturesArchive.h"
 #include <string>
 #include "../Agents/AgentHandle.h"
+#include "../../modules/ModuleAPI.h"
 
-class CAOSVar
+class C2E_MODULE_API CAOSVar
 {
 public:
 	CAOSVar();
@@ -50,9 +50,9 @@ public:
 	void SetInteger( int i );
 	void SetFloat( float f );
 	void SetString( const std::string& str );
-	void SetAgent( AgentHandle& a );
+	void SetAgent( AgentHandle a );
 
-	int GetType() const { return myBecomeZero?typeInteger:myType; }
+	int GetType() const { return myBecomeZero ? typeInteger : myType; }
 
 	// serialization stuff
 	virtual bool Write(CreaturesArchive &ar) const;
@@ -60,6 +60,8 @@ public:
 
 	virtual bool Write( std::ostream &stream) const;
 	virtual bool Read( std::istream &stream);
+
+	bool operator < (const CAOSVar& other) const;
 
 protected:
 	union PolyVar
@@ -168,9 +170,8 @@ inline void CAOSVar::SetString( const std::string& str )
 	myBecomeZero = false;
 }
 
-inline void CAOSVar::SetAgent( AgentHandle& a )
+inline void CAOSVar::SetAgent( AgentHandle a )
 {
-	
 	if( myType == typeString )
 		delete myData.pv_string;
 	myType = typeAgent;
@@ -178,20 +179,12 @@ inline void CAOSVar::SetAgent( AgentHandle& a )
 	myBecomeZero = false;
 }
 
-
-inline CreaturesArchive &operator<<( CreaturesArchive& ar, CAOSVar const &var )
-{
-	var.Write( ar );
-	return ar;
-}
-
-inline CreaturesArchive &operator>>( CreaturesArchive& ar, CAOSVar &var )
-{
-	var.Read( ar );
-	return ar;
-}
+CreaturesArchive &operator<<( CreaturesArchive& ar, CAOSVar const &var );
+CreaturesArchive &operator>>( CreaturesArchive& ar, CAOSVar &var );
 
 // Global
-extern CAOSVar INTEGERZERO;
+extern C2E_MODULE_API CAOSVar INTEGERZERO;
+extern C2E_MODULE_API CAOSVar COASVARAGENTNULL;
 
 #endif // CAOSVAR_H
+

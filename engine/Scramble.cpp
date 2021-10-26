@@ -35,3 +35,4 @@ void Scramble(char *string, int length)
 		scramble += (char) 193;
 		}
 	}
+

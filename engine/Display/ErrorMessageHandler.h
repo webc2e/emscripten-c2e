@@ -16,7 +16,7 @@
 
 #include "System.h"
 #include <string>
-#include "../../common/BasicException.h"
+#include <exception>
 
 class ErrorMessageHandler 
 {
@@ -25,10 +25,12 @@ public:
 		
 	// display a message from the catalogue
 	static void Show(std::string baseTag, int offsetID, std::string source, ...);
-	// display a message from one of our exceptions
-	static void Show(BasicException& e, std::string source);
+	// display a message from an exception
+	static void Show(std::exception& e, std::string source);
 	// return a formatted message for throwing in an exception
 	static std::string Format(std::string baseTag, int offsetID, std::string source, ...);
+	// format message and throw BasicException of it
+	static void Throw(std::string baseTag, int offsetID, std::string source, ...);
 	// for strings which can't be in the catalogue (such as catalgoue failure errors)
 	static void NonLocalisable(std::string unformatted, std::string source, ...);
 
@@ -51,3 +53,4 @@ private:
 };
 
 #endif // ERROR_MESSAGE_HANDLER_H
+

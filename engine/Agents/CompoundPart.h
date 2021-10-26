@@ -17,7 +17,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include "../Display/EntityImage.h"
+#include "../AgentDisplay/EntityImage.h"
 #include "../Map/Map.h"
 
 class CompoundAgent;
@@ -37,6 +37,7 @@ public:
 		partGraph  = 16,	// UIGraph
 		partCamera = 32,	// CameraPart
 		partButton = 64,	// UIButton
+		partGenerative = 128, // Corals
 	};
 
 	int GetType() { return myType; }
@@ -91,6 +92,21 @@ public:
 	bool Visibility(int scope);
 	void DrawMirrored(bool mirrored);
 
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	virtual void CreateAnimStrip(int blockwidth, int blockheight);
+	void RememberTintInformation(int worldIndex, 
+								int red/* =-1*/,
+								int green /*=-1*/, 
+								int blue /*=-1*/, 
+								int rot/*=-1*/, 
+								int swp/*=-1*/);
+	void RestoreTint();
+
+	virtual void DrawFlippedVertically(bool flip);
+	uint16 GetSpriteRotationAngle();
+	void SetSpriteRotationAngle(uint16 angle);
+#endif
+
 
 
 	// ---------------------------------------------------------------------
@@ -143,18 +159,18 @@ public:
 	// ----------------------------------------------------------------------
 	virtual bool Read(CreaturesArchive &archive);
 
-	virtual bool SetAnim(const uint8_t* anim, int length);
-	virtual bool SetFrameRate(const uint8_t rate);
+	virtual bool SetAnim(const uint8* anim, int length);
+	virtual bool SetFrameRate(const uint8 rate);
 
 	virtual void DrawLine( int32 x1,
 					int32 y1,
 					int32 x2,
 					int32 y2 ,	 
-					uint8_t lineColourRed = 0,
-					uint8_t lineColourGreen = 0,
-					uint8_t lineColourBlue = 0,
-					uint8_t stippleon =0,
-					uint8_t stippleoff = 0,
+					uint8 lineColourRed = 0,
+					uint8 lineColourGreen = 0,
+					uint8 lineColourBlue = 0,
+					uint8 stippleon =0,
+					uint8 stippleoff = 0,
 					uint32 stippleStart  =0);
 
 	virtual void ResetLines();
@@ -162,16 +178,28 @@ public:
 	CompoundAgent *GetParent() const { return myParent; }
 	void SetParent( CompoundAgent *parent ) { myParent = parent; }
 
-	virtual void Tint(const uint16* tintTable);
-	
+	virtual void Tint(const uint16* tintTable, bool oneImage = false);
+	void UnClone();
+
+	virtual void DrawAlphaBlended(bool drawAlpha, int intensity);
+		
 protected:
 	bool myPixelPerfectHitTestFlag;
 	EntityImage* myEntity;
 	Vector2D myRelativePosition;
 	int	myRelPlane;
 	CompoundAgent *myParent;
-
 	int myType;
+	bool 	myEntityImageIsCloned;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	int	myWorldIndex;
+	int myRedTint;
+	int myGreenTint;
+	int myBlueTint;
+	int myRotation;
+	int mySwap;
+#endif
 };
 
 
@@ -189,3 +217,4 @@ inline void CompoundPart::SussPlane( int mainplane )
 
 
 #endif // COMPOUNDPART_H
+

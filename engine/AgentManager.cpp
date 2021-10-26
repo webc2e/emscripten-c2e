@@ -30,17 +30,16 @@
 #include "AgentManager.h"
 #include "App.h"
 #include "Agents/Agent.h"
-#include "Creature/Creature.h"
+#include "Creature/SkeletalCreature.h"
+#include "Creature/CreatureAgent.h"
 #include "Agents/SimpleAgent.h"
 #include "Agents/CompoundAgent.h"
 #include "Agents/PointerAgent.h"
 #include "Agents/Vehicle.h"
-#include "Display/MainCamera.h"
-#include "Display/EntityImage.h"
+#include "Camera/MainCamera.h"
 #include "Classifier.h"
 #include "General.h"
 #include "Display/ErrorMessageHandler.h"
-#include "Display/DisplayEngine.h"
 #include "C2eServices.h"
 #include "Creature/LifeFaculty.h"
 #include "Creature/SensoryFaculty.h"
@@ -48,13 +47,7 @@
 #include "CreaturesArchive.h"
 #include "World.h"
 
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#else
 #include <sstream>
-#endif
-
-#include "Map/Map.h" // FastFloatToInteger
 
 ////////////////////////////////////////////////////////////////////////////
 // static member variables
@@ -67,16 +60,27 @@ AgentList AgentManager::ourAgentList;
 TaxonomicalAgentMap AgentManager::ourFGSMap;
 TaxonomicalHelperMap AgentManager::ourFGSHelperMap;
 CreatureCollection AgentManager::ourCreatureCollection;
-int AgentManager::ourCategoryIdsForSmellIds[CA_PROPERTY_COUNT];
+std::vector<int> AgentManager::ourCategoryIdsForSmellIds;
+
+
+int AgentManager::InitCategorySmellMap()
+{
+	ourCategoryIdsForSmellIds.resize(CA_PROPERTY_COUNT);
+	for (int i=0; i<CA_PROPERTY_COUNT; i++)
+	{
+		ourCategoryIdsForSmellIds[i] = -1;
+	}
+	return 0;
+}
+int AgentManager::ourDummyInitVar = InitCategorySmellMap();
+
+
 
 ////////////////////////////////////////////////////////////////////////////
 // Constructors
 ////////////////////////////////////////////////////////////////////////////
 AgentManager::AgentManager()
 {
-	for (int i=0; i<CA_PROPERTY_COUNT; i++) {
-		ourCategoryIdsForSmellIds[i] = -1;
-	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -99,7 +103,7 @@ AgentManager& AgentManager::GetAgentManager()
 ////////////////////////////////////////////////////////////////////////////
 
 
-AgentHandle AgentManager::CreateCreature
+AgentHandle AgentManager::CreateSkeletalCreature
 	(int family, 
 	AgentHandle& gene, int gene_index, int8 sex, int8 variant)
 {
@@ -118,18 +122,13 @@ AgentHandle AgentManager::CreateCreature
 		{
 			variant = Rnd(1,NUM_BEHAVIOUR_VARIANTS);
 		}
-		AgentHandle creature(new Creature(family, id, gene, gene_index, sex, variant));
-		if(creature.IsCreature() && creature.GetAgentReference().myFailedConstructionException == "")
+		AgentHandle creature(new SkeletalCreature(family, id, gene, gene_index, sex, variant));
+		if(creature.IsSkeletalCreature() && creature.GetAgentReference().myFailedConstructionException == "")
 		{
 		}
 		else
 		{
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf[256];
-			std::ostrstream ost( hackbuf, sizeof( hackbuf ) );
-#else
 			std::ostringstream ost;
-#endif
 
 			ost << "Creature:" << std::endl << "Family: " << family << " Moniker: " << monikerForDebugMessage;
 			ost << " Gender: " << (int)sex << " Variant: " << (int)variant << std::endl;
@@ -145,6 +144,58 @@ AgentHandle AgentManager::CreateCreature
 		return NULLHANDLE;
 	}
 }
+
+
+AgentHandle AgentManager::CreateCreatureAgent(
+					int family,
+				    AgentHandle gene, int gene_index,	// your genome
+					int   sex,		// your sex 0=randomly choose 1=male 2=female
+					int   variant,  // 0 means choose randomly from 1 to NUM_BEHAVIOUR_VARIANTS)
+					FilePath const& gallery,
+					int numimages,
+					int baseimage,
+					int plane)
+{
+	std::string monikerForDebugMessage = gene.GetAgentReference().GetGenomeStore().MonikerAsString(gene_index);
+
+	uint32 id = CreateUniqueAgentID();
+	AgentHandle creature;
+	try
+	{
+		// Choose my sex randomly if required
+		if (sex==0)	
+		{
+			sex = Rnd(1,2);
+		}
+		if (variant==0) 
+		{
+			variant = Rnd(1,NUM_BEHAVIOUR_VARIANTS);
+		}
+		AgentHandle creature(new CreatureAgent(family, id, gene, gene_index, sex, variant, gallery, numimages, baseimage, plane));
+		if(creature.IsCreature() && creature.GetAgentReference().myFailedConstructionException == "")
+		{
+		}
+		else
+		{
+			std::ostringstream ost;
+
+			ost << "Creature:" << std::endl << "Family: " << family << " Moniker: " << monikerForDebugMessage;
+			ost << " Gender: " << (int)sex << " Variant: " << (int)variant << std::endl;
+			ost << creature.GetAgentReference().myFailedConstructionException;
+			ErrorMessageHandler::NonLocalisable(ost.str(),"AgentManager::CreateCreatureAgent");
+		}
+		return creature;
+	}
+
+	catch(BasicException& e)
+	{
+		ErrorMessageHandler::Show(e, std::string("AgentManager::CreateCreatureAgent"));
+		return NULLHANDLE;
+	}
+}
+
+
+
 
 AgentHandle AgentManager::CreateSimpleAgent
 	(int family, int genus, int species,
@@ -162,7 +213,7 @@ AgentHandle AgentManager::CreateSimpleAgent
 											firstimage,
 											plane, false));
 
-	
+
 		if (agent.GetAgentReference().myFailedConstructionException.size() == 0) 
 		{
 			ourAgentList.push_front(agent);
@@ -171,12 +222,7 @@ AgentHandle AgentManager::CreateSimpleAgent
 		}
 		else
 		{
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf[256];
-			std::ostrstream ost( hackbuf, sizeof( hackbuf ) );
-#else
 			std::ostringstream ost;
-#endif
 			ost << "Simple Agent:" << std::endl << "Family: " << family << " Genus: " << genus << " Species: " << species << std::endl;
 			ost << "Gallery: " << gallery.GetFileName() << " First Image: " << firstimage << " Image Count: " << imagecount << std::endl;
 			ost << "Created in plane: " << plane << std::endl;
@@ -185,14 +231,13 @@ AgentHandle AgentManager::CreateSimpleAgent
 			ErrorMessageHandler::NonLocalisable(ost.str(),"AgentManager::CreateSimpleAgent");			
 		}
 		return agent;
-		}
+	}
 	catch(EntityImage::EntityImageException& e)
-		{
+	{
 			ErrorMessageHandler::Show(e, std::string("AgentManager::CreateSimpleAgent"));
 			return NULLHANDLE;
-		}
-
 	}
+}
 
 
 
@@ -214,18 +259,14 @@ AgentHandle AgentManager::CreateCompoundAgent
 		if (agent.GetAgentReference().myFailedConstructionException.size() == 0)
 		{
 			ourAgentList.push_front(agent);
+			int size = ourAgentList.size();
 			ourAgentMap[id] = ourAgentList.begin();
 			ourFGSHelperMap[id] = ourFGSMap.insert(std::make_pair(agent.GetAgentReference().GetClassifier(),agent));
 		}
 		else
 		{
 			
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf[256];
-			std::ostrstream ost( hackbuf, sizeof( hackbuf ) );
-#else
 			std::ostringstream ost;
-#endif
 			ost << "Compound Agent:" << std::endl << "Family: " << family << " Genus: " << genus << " Species: " << species << std::endl;
 			ost << "Gallery: " << gallery.GetFileName() << " First Image: " << baseimage << " Image Count: " << numimages << std::endl;
 			ost << "Created in plane: " << plane << std::endl;
@@ -268,12 +309,7 @@ AgentHandle AgentManager::CreateVehicle
 		}
 		else
 		{	
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf[256];
-			std::ostrstream ost( hackbuf, sizeof( hackbuf ) );
-#else
 			std::ostringstream ost;
-#endif
 			ost << "Vehicle:" << std::endl << "Family: " << family << " Genus: " << genus << " Species: " << species << std::endl;
 			ost << "Gallery: " << gallery.GetFileName() << " First Image: " << baseimage << " Image Count: " << numimages << std::endl;
 			ost << "Created in plane: " << plane << std::endl;
@@ -294,37 +330,47 @@ AgentHandle AgentManager::CreateVehicle
 AgentHandle AgentManager::CreatePointer()
 {
 	int family, genus, species;
-	
+	int baseImage = 0;
+	int numImages = 0;
 	int hotx, hoty;
 
 	// Read the family, genus and species
 	std::string classifier = theCatalogue.Get("Pointer Information", 0);
-#ifdef C2E_OLD_CPP_LIB
-	std::istrstream classifierin( classifier.c_str() );
-#else
 	std::istringstream classifierin(classifier);
-#endif
 	classifierin >> family >> genus >> species;
 
 	std::string hotspot = theCatalogue.Get("Pointer Information", 1);
 
-#ifdef C2E_OLD_CPP_LIB
-	std::istrstream hotspotin(hotspot.c_str());
-#else
 	std::istringstream hotspotin(hotspot);
-#endif
 	hotspotin >> hotx >> hoty;
 	Vector2D hotspotvector(hotx, hoty);
 
 	std::string sprite = theCatalogue.Get("Pointer Information", 2);
-	FilePath gallery(sprite + ".s16", IMAGES_DIR);
+	FilePath gallery = MakeGalleryPath(sprite);
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	int width, height;
+	std::string anim = theCatalogue.Get("Pointer Information", 3);
+	std::istringstream animvals(anim);
+	animvals >> numImages >> baseImage;
+
+	std::string blck = theCatalogue.Get("Pointer Information", 4);
+	std::istringstream blckvals(blck);
+	blckvals >> width >> height;
+#endif
+
 	uint32 id = CreateUniqueAgentID();
 	try
-	{
-		AgentHandle agent( new PointerAgent(family, genus, species, id,
-			gallery, 0, 0));
+	{	
+		PointerAgent* pointerAgent = new PointerAgent(family, genus, species, id,
+			gallery, numImages, baseImage);
+		AgentHandle agent(pointerAgent);
 
-		if (agent.GetPointerAgentReference().myFailedConstructionException.size() == 0)
+		#ifdef C2D_DIRECT_DISPLAY_LIB
+		pointerAgent->CreateAnimStrip(width, height);
+		#endif
+
+		if (pointerAgent->myFailedConstructionException.size() == 0)
 		{
 			agent.GetPointerAgentReference().SetHotSpot(hotspotvector);
 			ourAgentList.push_front(agent);
@@ -333,21 +379,14 @@ AgentHandle AgentManager::CreatePointer()
 			theMainView.KeepUpWithMouse(agent.GetAgentReference().GetEntityImage());
 		}
 		else
-		{
-			
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf[256];
-			std::ostrstream ost( hackbuf, sizeof( hackbuf ) );
-#else
+		{			
 			std::ostringstream ost;
-#endif
 			ost << "Pointer Agent:" << std::endl << "Family: " << family << " Genus: " << genus << " Species: " << species << std::endl;
 			ost << "Gallery: " << gallery.GetFileName() << std::endl;
-			ost << agent.GetAgentReference().myFailedConstructionException;
-			agent.GetAgentReference().Trash();
+			ost << pointerAgent->myFailedConstructionException;
 			ErrorMessageHandler::NonLocalisable(ost.str(),"AgentManager::CreatePointer");
 		}
-	return agent;
+		return agent;
 	}
 	catch(EntityImage::EntityImageException& e)
 	{
@@ -356,8 +395,6 @@ AgentHandle AgentManager::CreatePointer()
 	}
 
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////
 // Agent Update methods
@@ -420,9 +457,15 @@ void AgentManager::UpdateAllAgents()
 	ourKillList.clear();
 }
 
+void AgentManager::ExecuteScriptOnAgent
+	(AgentHandle agent, int event, const CAOSVar& from, 
+	 const CAOSVar& p1, const CAOSVar& p2)
+{
+	agent.GetAgentReference().ExecuteScriptForEvent(event, from, p1, p2);
+}
 
 void AgentManager::ExecuteScriptOnAllAgents
-	(int event, AgentHandle& from, 
+	(int event, const CAOSVar& from, 
 	 const CAOSVar& p1, const CAOSVar& p2)
 {
 	AgentListIterator it;
@@ -439,13 +482,11 @@ void AgentManager::ExecuteScriptOnAllAgents
 		{
 			Agent& agentref = agent.GetAgentReference();
 			
-				if (agentref.IsRunning() && !agentref.AreYouDoomed())
-					agentref.ExecuteScriptForEvent(event, from, 
-						p1, p2);
-				if (agentref.AreYouDoomed())
-					KillAgent(agent);
-
-		
+			if (agentref.IsRunning() && !agentref.AreYouDoomed())
+				agentref.ExecuteScriptForEvent(event, from, 
+					p1, p2);
+			if (agentref.AreYouDoomed())
+				KillAgent(agent);		
 		}
 	}
 	// Now we clean the map.
@@ -458,7 +499,7 @@ void AgentManager::ExecuteScriptOnAllAgents
 }
 
 void AgentManager::ExecuteScriptOnAllAgentsDeferred
-	(int event, AgentHandle& from, 
+	(int event, const CAOSVar& from, 
 	 const CAOSVar& p1, const CAOSVar& p2)
 {
 	myDeferredScripts.push_back( DeferredScript( event, from, p1, p2 ) );
@@ -482,7 +523,18 @@ CreaturesArchive& operator<<( CreaturesArchive &ar, AgentManager::DeferredScript
 
 CreaturesArchive& operator>>( CreaturesArchive &ar, AgentManager::DeferredScript &script )
 {
-	ar >> script.event >> script.from >> script.p1 >> script.p2;
+	ar >> script.event;
+	
+	if (ar.GetFileVersion() >= 18)
+		ar >> script.from;
+	else
+	{
+		AgentHandle fromHandle;
+		ar >> fromHandle;
+		script.from.SetAgent(fromHandle);
+	}
+		
+	ar >> script.p1 >> script.p2;
 	return ar;
 }
 
@@ -738,11 +790,12 @@ AgentHandle AgentManager::WhatCreatureAmIOver(const AgentHandle& me, const Vecto
 
 AgentHandle AgentManager::WhatAmIOver(const AgentHandle& me, const Vector2D& xy)
 {
-	Box r;
 	AgentListIterator it;
 	AgentHandle agent;
 	AgentHandle bestObj;
 	int32 bestPlane = -1;
+	int size = ourAgentList.size();
+
 	for( it=ourAgentList.begin(); it != ourAgentList.end(); ++it )
 	{
 		agent = (*it);
@@ -755,12 +808,9 @@ AgentHandle AgentManager::WhatAmIOver(const AgentHandle& me, const Vector2D& xy)
 
         if (agent==me) 
 			continue;					
-        
-		agent.GetAgentReference().GetAgentExtent(r);						// get its boundary
-        
+                
 		if(bestPlane < agent.GetAgentReference().GetPlane())
 		{
-//			return agent;			// if I'm over it, return
 			//Let's do a hit test on the agent now...
 			if (agent.GetAgentReference().HitTest(xy))
 			{
@@ -1046,7 +1096,7 @@ void AgentManager::FindByAreaAndFGS( AgentList& agents,
 	const Classifier& c, const Box& r )
 {
 	AgentListIterator it;
-	AgentListIterator itnext;
+	AgentListIterator nextit;
 	AgentList temp;
 	// EITHER:
 	// 1) FindByArea( agents, r );
@@ -1066,15 +1116,15 @@ void AgentManager::FindByAreaAndFGS( AgentList& agents,
 	it = agents.begin();
 	while(  it != agents.end() )
 	{
-		itnext = it;
-		++itnext;
+		nextit = it;
+		++nextit;
 
 		if( !(*it).GetAgentReference().GetClassifier().GenericMatchForWildCard( c, TRUE, TRUE,
 			TRUE, FALSE ) )
 		{
 			agents.erase( it );
 		}
-		it = itnext;
+		it = nextit;
 	}*/
 
 }
@@ -1086,7 +1136,7 @@ void AgentManager::FindBySightAndFGS( AgentHandle const& viewer,
 	const Classifier& c )
 {
 	AgentListIterator it;
-	AgentListIterator itnext;
+	AgentListIterator nextit;
 
 	FindByFGS( agents, c );
 
@@ -1094,14 +1144,14 @@ void AgentManager::FindBySightAndFGS( AgentHandle const& viewer,
 	it = agents.begin();
 	while(  it != agents.end() )
 	{
-		itnext = it;
-		++itnext;
+		nextit = it;
+		++nextit;
 
 		// note: CanSee() will ignore viewer agent
 		if( !viewer.GetAgentReference().CanSee(*it) )
 			agents.erase( it );
 
-		it = itnext;
+		it = nextit;
 	}
 }
 
@@ -1176,14 +1226,14 @@ bool AgentManager::Write(CreaturesArchive &ar) const
 
 bool AgentManager::Read(CreaturesArchive &ar)
 {
-
 	int32 version = ar.GetFileVersion();
 
 	if(version >= 3)
 	{
+		// Progress bar is now updated in CreaturesArchive (bytewise)
+		// (this count was used for an agent-wise progress bar)
 		int count;
 		ar >> count;
-		theApp.SpecifyProgressIntervals(count);
 		while( count-- )
 		{
 			int id;
@@ -1202,7 +1252,6 @@ bool AgentManager::Read(CreaturesArchive &ar)
 				if (agent.IsPointerAgent())
 					thePointer = agent;
 			}
-			theApp.UpdateProgressBar();
 		}
 
 		for (int i=0; i<CA_PROPERTY_COUNT; i++) {
@@ -1212,7 +1261,7 @@ bool AgentManager::Read(CreaturesArchive &ar)
 		ar >> ourCreatureCollection;
 		ar >> ourBaseUniqueID;
 		ar >> myDeferredScripts;
-	
+
 	}
 	else
 	{
@@ -1220,11 +1269,25 @@ bool AgentManager::Read(CreaturesArchive &ar)
 		return false;
 	}
 
+	// This is needed if a skeletal creature is paused - we have
+	// to do it here, as MoveTowardsTargetPoseString() is a complex
+	// function that requires that all agents have loaded in
+	{
+		CreatureCollectionIterator it;
+		for (it = ourCreatureCollection.begin(); it != ourCreatureCollection.end(); it++)
+		{
+			if (it->IsSkeletalCreature())
+				it->GetSkeletalCreatureReference().MoveTowardsTargetPoseString();
+		}
+	}
+
 	// Right, all the blasted agents are loaded in and stabilised - let's have some fun :)
-	AgentListIterator it;
-	for(it = ourAgentList.begin(); it != ourAgentList.end(); it++)
-		if ((*it).GetAgentReference().AreYouDoomed())
-			KillAgent(*it);
+	{
+		AgentListIterator it;
+		for(it = ourAgentList.begin(); it != ourAgentList.end(); it++)
+			if ((*it).GetAgentReference().AreYouDoomed())
+				KillAgent(*it);
+	}
 
 	return true;
 }
@@ -1296,4 +1359,79 @@ void AgentManager::AddCreatureToUpdateList(AgentHandle const & creature)
 	ourFGSHelperMap[id] = ourFGSMap.insert(std::make_pair(creature.GetAgentReference().GetClassifier(),creature));
 }
 
+AgentListIterator AgentManager::GetAgentIteratorStart()
+{
+	return ourAgentList.begin();
+}
+
+bool AgentManager::IsEnd(AgentListIterator& it)
+{
+	return (it == ourAgentList.end());
+}
+
+AgentMap& AgentManager::GetAgentIDMap()
+{
+	return ourAgentMap;
+}
+
+CreatureCollection& AgentManager::GetCreatureCollection()
+{
+	return ourCreatureCollection;
+}
+
+AgentHandle AgentManager::GetCreatureByIndex(uint32 index)
+{
+	if(index < ourCreatureCollection.size())
+		return ourCreatureCollection[index];
+	else
+		return NULLHANDLE;
+}
+
+int AgentManager::GetCreatureCount()
+{
+	return ourCreatureCollection.size();
+}
+
+uint32 AgentManager::CreateUniqueAgentID()
+{
+	if ((++ourBaseUniqueID)==0x80000000)
+		ourBaseUniqueID=1;
+	return ourBaseUniqueID;
+}
+
+FilePath AgentManager::MakeGalleryPath( std::string const& name)
+{
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	return FilePath( name + ".bmp", IMAGES_DIR );
+#else
+#ifdef NETTY
+
+	bool check=false;
+	if (name.find("rubber")!=-1)
+	{
+		theApp.Netty->TextOut("Hello",name.c_str());
+		check=true;
+	}
+	theApp.Netty->TextOut("->",name.c_str());
+#endif
+
+	return FilePath( name + ".s16", IMAGES_DIR );
+#endif
+}
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+void AgentManager::RestoreAllTints()
+{
+
+	AgentListIterator it;
+
+	for( it=ourAgentList.begin(); it!=ourAgentList.end(); ++it )
+	{
+		(*it).GetAgentReference().RestoreTint();
+	}
+
+}
+
+#endif
 

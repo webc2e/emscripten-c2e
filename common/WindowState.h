@@ -24,3 +24,4 @@ namespace WindowState
 }
 
 #endif
+

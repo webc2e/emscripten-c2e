@@ -1,45 +1,37 @@
-# some files in this dir are win32 only:
-# engine/Display/Window.cpp
-# engine/Display/DisplayEngine.cpp
-# engine/Display/FastEntityImage.cpp
-# engine/Display/RemoteCamera.cpp
-# engine/Display/ErrorDialog.cpp
-# engine/Display/MemoryMappedFile.cpp \
+# -*- Makefile -*- module for Display
+# $Id: module.mk,v 1.11 2001/01/31 18:05:10 firving Exp $
 
-SRC += engine/Display/Background.cpp \
-	engine/Display/BackgroundGallery.cpp \
+_SOURCES := engine/Display/Background.cpp \
 	engine/Display/Bitmap.cpp \
-	engine/Display/Camera.cpp \
 	engine/Display/ClonedGallery.cpp \
-	engine/Display/ClonedSprite.cpp \
 	engine/Display/CompressedBitmap.cpp \
-	engine/Display/CompressedGallery.cpp \
-	engine/Display/CompressedSprite.cpp \
 	engine/Display/CreatureGallery.cpp \
 	engine/Display/DrawableObject.cpp \
 	engine/Display/DrawableObjectHandler.cpp \
-	engine/Display/EntityImage.cpp \
-	engine/Display/EntityImageClone.cpp \
-	engine/Display/EntityImageWithEmbeddedCamera.cpp \
 	engine/Display/ErrorMessageHandler.cpp \
-	engine/Display/FastDrawingObject.cpp \
 	engine/Display/Gallery.cpp \
 	engine/Display/Line.cpp \
-	engine/Display/MainCamera.cpp \
-	engine/Display/MapImage.cpp \
-	engine/Display/NormalGallery.cpp \
 	engine/Display/SharedGallery.cpp \
 	engine/Display/Sprite.cpp \
 	engine/Display/System.cpp \
-	engine/Display/TintManager.cpp
+	engine/Display/TintManager.cpp \
+	engine/Display/EasterEgg.cpp \
+	engine/Display/DisplayEnginePlotFunctions.cpp
 
-# files for SDL version:
-SRC += engine/Display/SDL/SDL_DisplayEngine.cpp \
-	engine/Display/SDL/SDL_FastEntityImage.cpp \
-	engine/Display/SDL/SDL_Main.cpp \
-	engine/Display/SDL/SDL_RemoteCamera.cpp \
-	engine/Display/SDL/SDL_ErrorDialog.cpp \
+ifeq ($(ERROR_OUTPUT),console)
+	_SOURCES += engine/Display/Console/ConsoleErrorDialog.cpp
+else
+	_SOURCES += engine/Display/GTK/GTK_ErrorDialog.cpp
+endif
 
+SOURCES += $(_SOURCES)
 
-SRC += engine/Display/unix/MemoryMappedFile.cpp
+LIBRARIES += libDisplay.so
+
+libDisplay.so: $(patsubst %.cpp, %.o, $(_SOURCES)) engine/Display/Plot.o
+libDisplay.do: $(patsubst %.cpp, %.od, $(_SOURCES)) engine/Display/Plot.o
+libDisplay.ho: $(patsubst %.cpp, %.oh, $(_SOURCES)) engine/Display/Plot.o
+
+include engine/Display/SDL/module.mk
+include engine/Display/unix/module.mk
 

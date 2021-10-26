@@ -37,10 +37,17 @@ inline int ReadInt(std::istream& src)
 
 inline void ReadString(std::istream& src, std::string& str)
 {
+	str = "";
 	int leng = ReadInt(src);
-	str.resize(leng);
 	for(int i=0;i<leng;i++)
-		src.read(&(str.at(i)),1);
+	{
+		char c;
+		src.read(&c,1);
+		str+=(c);
+		// If num was too big, don't go into a huge loop reading nothing
+		if (!src.good())
+			return;
+	}
 }
 
 // ----------------------------------------------------------------------------------
@@ -56,6 +63,10 @@ StringIntGroup::StringIntGroup(std::istream& fromThis)
 	num = ReadInt(fromThis);
 	for(loop=0;loop<num;loop++)
 	{
+		// If num was too big, don't go into a huge loop reading nothing
+		if (!fromThis.good())
+			return;
+
 		ReadString(fromThis,name);
 		val = ReadInt(fromThis);
 		myStringIntMap[name] = val;
@@ -63,6 +74,10 @@ StringIntGroup::StringIntGroup(std::istream& fromThis)
 	num = ReadInt(fromThis);
 	for(loop=0;loop<num;loop++)
 	{
+		// If num was too big, don't go into a huge loop reading nothing
+		if (!fromThis.good())
+			return;
+
 		ReadString(fromThis,name);
 		ReadString(fromThis,sval);
 		myStringStringMap[name] = sval;
@@ -169,3 +184,4 @@ void StringIntGroup::SaveToStream(std::ostream& dest)
 		WriteString(dest,(*ssi).second);
 	}
 }
+

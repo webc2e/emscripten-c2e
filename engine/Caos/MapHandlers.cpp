@@ -15,11 +15,7 @@
 #endif
 
 #include <string>
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#else
 #include <sstream>
-#endif
 #include "AgentHandlers.h"
 #include "../App.h"
 #include "../World.h"
@@ -28,8 +24,14 @@
 #include "../AgentManager.h"
 #include "../Map/Map.h"
 #include "MapHandlers.h"
-#include "../Display/MainCamera.h"
+#include "../Camera/MainCamera.h"
 #include "../Agents/Vehicle.h"
+
+
+void MapHandlers::Command_CALC( CAOSMachine& vm )
+{
+	theApp.GetWorld().GetMap().RecalculateAllNavigationalCAs();
+}
 
 
 void MapHandlers::Command_DOCA( CAOSMachine& vm )
@@ -52,7 +54,9 @@ void MapHandlers::Command_DOCA( CAOSMachine& vm )
 		{
 			for (int p=0; p<agentsThatEmitCAs[j].size(); p++)
 			{
-				agentsThatEmitCAs[theApp.GetWorld().GetMap().GetCAIndex()][p].GetAgentReference().HandleCA();
+ 				AgentHandle agent = agentsThatEmitCAs[theApp.GetWorld().GetMap().GetCAIndex()][p];
+				if (agent.IsValid())
+					agent.GetAgentReference().HandleCA();
 			}
 			theApp.GetWorld().GetMap().UpdateCurrentCAProperty();
 		}
@@ -303,12 +307,7 @@ void MapHandlers::StringRV_RATE( CAOSMachine& vm, std::string& str )
 		vm.ThrowRunError( CAOSMachine::sidFailedToGetCARates );
 	}
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[256];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
+	std::ostringstream stream;
 	stream << ' ' << rates.GetGain() << ' ' << rates.GetLoss() << ' ' << rates.GetDiffusion();
 	str = stream.str();
 }
@@ -524,13 +523,7 @@ void MapHandlers::StringRV_BKDS( CAOSMachine& vm, std::string& str )
 		GetBackgroundCollection(metaRoomID, backgroundCollection) )
 		vm.ThrowRunError( CAOSMachine::sidFailedToGetBackgrounds );
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[1024];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
-
+	std::ostringstream stream;
 	for( StringIterator i = backgroundCollection.begin(); i != backgroundCollection.end(); ++i )
 	{
 		if( i != backgroundCollection.begin() )
@@ -567,8 +560,31 @@ int MapHandlers::IntegerRV_HIRP( CAOSMachine& vm )
 	if( roomID < 0 )
 		return -1;
 
+/*
+	if (option==2)
+	{
+		// set it so you can't smell yourself if you're navigating to other agents of your category:
+		int agentTargCategory = SensoryFaculty::GetCategoryIdOfAgent(AgentHandle(a));
+		if (attnId==agentTargCategory)
+		{	
+			map.AlterCAEmission(agentRoomId, caIndex, -a.GetCAIncrease());
+		}
+
+		int mapDirection = GO_NOWHERE;
+		map.WhichDirectionToFollowCA(agentRoomId, caIndex, mapDirection, true);		// true means approach
+
+		// set it so you can smell yourself again:
+		if (attnId==agentTargCategory)
+		{
+			map.AlterCAEmission(agentRoomId, caIndex, +a.GetCAIncrease());
+		}
+	}
+*/
+
 	int highRoom;
-	if( !theApp.GetWorld().GetMap().GetRoomIDWithHighestCA( roomID, caIndex, option != 0, highRoom ) )
+	// Changed from option!=0 to just option to allow for a third option (2) which takes
+	// into account links as well as door neighbours.
+	if( !theApp.GetWorld().GetMap().GetRoomIDWithHighestCA( roomID, caIndex, (CaRoomSearchCriteria)option, highRoom ) )
 	{
 		vm.ThrowRunError( CAOSMachine::sidFailedToFindHighestCA );
 	}
@@ -584,7 +600,7 @@ int MapHandlers::IntegerRV_LORP( CAOSMachine& vm )
 		return -1;
 
 	int lowRoom;
-	if( !theApp.GetWorld().GetMap().GetRoomIDWithLowestCA( roomID, caIndex, option != 0, lowRoom ) )
+	if( !theApp.GetWorld().GetMap().GetRoomIDWithLowestCA( roomID, caIndex, (CaRoomSearchCriteria)option, lowRoom ) )
 	{
 		vm.ThrowRunError( CAOSMachine::sidFailedToFindLowestCA );
 	}
@@ -675,13 +691,7 @@ void MapHandlers::StringRV_EMID( CAOSMachine& vm, std::string& str )
 
 	theApp.GetWorld().GetMap().GetMetaRoomIDCollection( metaRoomIDCollection );
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[1024];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
-
+	std::ostringstream stream;
 	for( IntegerIterator i = metaRoomIDCollection.begin(); i != metaRoomIDCollection.end(); ++i )
 		stream << ' ' << *i;
 
@@ -702,13 +712,7 @@ void MapHandlers::StringRV_ERID( CAOSMachine& vm, std::string& str )
 		if( !theApp.GetWorld().GetMap().GetRoomIDCollectionForMetaRoom( metaRoomID, roomIDCollection, count ) )
 			vm.ThrowRunError( CAOSMachine::sidFailedToGetRoomIDs );
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[32768];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
-
+	std::ostringstream stream;
 	for( IntegerIterator i = roomIDCollection.begin(); i != roomIDCollection.end(); ++i )
 		stream << ' ' << *i;
 
@@ -725,13 +729,7 @@ void MapHandlers::StringRV_RLOC( CAOSMachine& vm, std::string& str )
 		xLeft, xRight, yLeftCeiling, yRightCeiling, yLeftFloor, yRightFloor) )
 		vm.ThrowRunError( CAOSMachine::sidFailedToGetRoomLocation );
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[256];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
-
+	std::ostringstream stream;
 	stream << xLeft << ' ' << xRight << ' ' <<
 		yLeftCeiling << ' ' << yRightCeiling << ' ' <<
 		yLeftFloor << ' ' << yRightFloor;
@@ -747,14 +745,9 @@ void MapHandlers::StringRV_MLOC( CAOSMachine& vm, std::string& str )
 	if( !theApp.GetWorld().GetMap().GetMetaRoomLocation( metaRoomID, positionX, positionY, width, height) )
 		vm.ThrowRunError( CAOSMachine::sidFailedToGetMetaRoomLocation );
 
-#ifdef C2E_OLD_CPP_LIB
-	char hackbuf[256];
-	std::ostrstream stream( hackbuf, sizeof(hackbuf) );
-#else
-	std::stringstream stream;
-#endif
-
+	std::ostringstream stream;
 	stream << positionX << ' ' << positionY << ' ' << width << ' ' << height;
 
 	str = stream.str();
 }
+

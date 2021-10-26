@@ -15,7 +15,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include "../Display/System.h"
+#include	"../../common/C2eTypes.h"
 #include "../Agents/AgentHandle.h"
 class CAOSMachine;
 class Camera;
@@ -32,15 +32,23 @@ public:
 	static void Command_TRCK( CAOSMachine& vm );
 	static void Command_TRAN( CAOSMachine& vm );
 	static void Command_ZOOM( CAOSMachine& vm );
-	static void Command_TEXT( CAOSMachine& vm );
 	static void Command_SNAP( CAOSMachine& vm );
 	static void Command_WDOW(CAOSMachine& vm);
+
 
 	// The Tint Commands :):)
 	static void Command_WTNT( CAOSMachine& vm );
 	static void Command_TNTW( CAOSMachine& vm );
 	static void Command_TINT( CAOSMachine& vm );
+#ifndef C2D_DIRECT_DISPLAY_LIB
+	static void Command_TINO( CAOSMachine& vm );
+#endif
 	static void Command_FRSH(CAOSMachine& vm);
+
+	static void Command_SCLE( CAOSMachine& vm );
+	static void Command_ALPH( CAOSMachine& vm ); 
+	static void Command_SHAD( CAOSMachine& vm ); 
+	static void Command_STRC( CAOSMachine& vm ); 
 
 	// RValues
 	static int IntegerRV_WNDT( CAOSMachine& vm );
@@ -63,3 +71,4 @@ public:
 };
 
 #endif
+

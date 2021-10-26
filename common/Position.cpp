@@ -18,3 +18,4 @@ CreaturesArchive &operator>>( CreaturesArchive &archive, Position &position )
 	archive >> position.myX >> position.myY;
 	return archive;
 }
+

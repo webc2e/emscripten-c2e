@@ -41,21 +41,21 @@ public:
 //				Note needs some exception handling
 //					
 // ----------------------------------------------------------------------
-	MemoryMappedFile(HANDLE memoryFile, 
+	typedef HANDLE FileMapping;
+	MemoryMappedFile(FileMapping memoryFile, 
 				 uint32 highOffset,
 				 uint32 lowOffset,
-				 uint32 numBytesToMap,
-				  uint32 accessRights = FILE_MAP_WRITE);
+				 uint32 numBytesToMap);
 
 	virtual ~MemoryMappedFile();
 
-	void Open(std::string& name,
+	void Open(std::string const& name,
 		uint32 desiredAccessflags =GENERIC_READ|GENERIC_WRITE,
 		uint32 sharemodeFlags = FILE_SHARE_READ|FILE_SHARE_WRITE,
 		uint32 fileSize = 0);
 	void Close();
 
-	inline void ReadUINT8Ptr(uint8_t*& dataBufferPtr);
+	inline void ReadUINT8Ptr(uint8*& dataBufferPtr);
 	inline void ReadUINT32Ptr(uint32*& dataBufferPtr);
 	inline void ReadUINT16Ptr(uint16*& dataBufferPtr);
 
@@ -63,28 +63,29 @@ public:
 
 	inline uint32* GetUINT32Ptr();
 
-	inline uint8_t ReadUINT8();
+	inline uint8 ReadUINT8();
 	inline uint16 ReadUINT16();
 	inline uint32 ReadUINT32();
 
-	inline void WriteUINT8(uint8_t value);
+	inline void WriteUINT8(uint8 value);
 	inline void WriteUINT16(uint16 value);
 	inline void WriteUINT32(uint32 value);
 
-	inline void Blast(uint32 countInBytes, uint8_t* source);
-	inline void BlockCopy(uint32 countInBytes,uint8_t* dest);
-
-//	void Seek(uint32 numBytes,){myPosition += numBytes;}
+	inline void Blast(uint32 countInBytes, uint8* source);
+	inline void BlockCopy(uint32 countInBytes,uint8* dest);
 
 	int32 Seek(int32 moveBy, File::FilePosition from);
 
 	unsigned char* GetFileStart(){return myFileData;}
-	HANDLE GetFileMapping(){return myMemoryFile;}
+	FileMapping GetFileMapping(){return myMemoryFile;}
 
 	uint32 GetPosition(){return myPosition;}
 	void Reset(){myPosition = 0;}
 
 	bool Valid(){return (myMemoryFile !=NULL);}
+	// when we have only mapped to a file the mapping does not
+	// own the memoryfile handle
+	bool MappedToExistingFile(){return myMappedToExistingFileOKFlag;}
 
 //////////////////////////////////////////////////////////////////////////
 // Exceptions
@@ -123,6 +124,7 @@ private:
 	File myFile;
 	uint32	myLength;
 	uint32	myPosition;
+	bool	myMappedToExistingFileOKFlag;
 
 
 };
@@ -164,23 +166,23 @@ void MemoryMappedFile::ReadUINT32Ptr(uint32*& dataBufferPtr)
 }
 
 
-void MemoryMappedFile::ReadUINT8Ptr(uint8_t*& dataBufferPtr)
+void MemoryMappedFile::ReadUINT8Ptr(uint8*& dataBufferPtr)
 {
 	_ASSERT(myPosition <= myLength);
 	_ASSERT(myFileData);
 
-	dataBufferPtr = (uint8_t*)(myFileData + myPosition);
+	dataBufferPtr = (uint8*)(myFileData + myPosition);
 	_ASSERT(dataBufferPtr);
-	myPosition += sizeof(uint8_t);
+	myPosition += sizeof(uint8);
 }
 
 
-uint8_t MemoryMappedFile::ReadUINT8()
+uint8 MemoryMappedFile::ReadUINT8()
 {
 	_ASSERT(myPosition <= myLength);
 	_ASSERT(myFileData);
-	uint8_t value = *(myFileData + myPosition);
-	myPosition+= sizeof(uint8_t);
+	uint8 value = *(myFileData + myPosition);
+	myPosition+= sizeof(uint8);
 	return value;
 }
 	
@@ -205,14 +207,14 @@ uint32 MemoryMappedFile::ReadUINT32()
 }
 
 
-void MemoryMappedFile::WriteUINT8(uint8_t value)
+void MemoryMappedFile::WriteUINT8(uint8 value)
 {
 	_ASSERT(myPosition <= myLength);
 		_ASSERT(myFileData);
 
-	uint8_t* data = myFileData + myPosition;
+	uint8* data = myFileData + myPosition;
 	*data = value;
-	myPosition+= sizeof(uint8_t);
+	myPosition+= sizeof(uint8);
 }
 	
 void MemoryMappedFile::WriteUINT16(uint16 value)
@@ -231,18 +233,18 @@ void MemoryMappedFile::WriteUINT32(uint32 value)
 	myPosition+= sizeof(uint32);
 }
 
-void MemoryMappedFile::Blast(uint32 countInBytes, uint8_t* source)
+void MemoryMappedFile::Blast(uint32 countInBytes, uint8* source)
 {
 	_ASSERT(myPosition <= myLength);
-	uint8_t* data = (uint8_t*)(myFileData + myPosition);
+	uint8* data = (uint8*)(myFileData + myPosition);
 	memcpy(data,source,countInBytes);
 	myPosition+= countInBytes;
 }
 
-void MemoryMappedFile::BlockCopy(uint32 countInBytes,uint8_t* dest)
+void MemoryMappedFile::BlockCopy(uint32 countInBytes,uint8* dest)
 {
 	_ASSERT(myPosition <= myLength);
-	uint8_t* data = (uint8_t*)(myFileData + myPosition);
+	uint8* data = (uint8*)(myFileData + myPosition);
 	memcpy(dest,data,countInBytes);
 	dest+=countInBytes;
 	myPosition+= countInBytes;

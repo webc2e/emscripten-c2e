@@ -2,12 +2,15 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
 
 #include "Faculty.h"
+#include "AgentFacultyInterface.h"
+#include "CreatureFacultyInterface.h"
+#include "../Agents/AgentHandle.h"
+
 
 CREATURES_IMPLEMENT_SERIAL(Faculty)
 
@@ -18,7 +21,7 @@ CREATURES_IMPLEMENT_SERIAL(Faculty)
 
 Faculty::Faculty()
 {
-
+	myActiveFlag = true;
 }
 
 Faculty::~Faculty()
@@ -27,15 +30,25 @@ Faculty::~Faculty()
 }
 
 
-void Faculty::Init(AgentHandle c) {
-	myCreature = c;
-}
 
+
+void Faculty::Init() {}
 void Faculty::Update() {}
-
 void Faculty::ReadFromGenome(Genome& g) {}
 
-float* Faculty::GetLocusAddress(int type, int organ, int tissue, int locus) {
+
+
+
+void Faculty::SetCallback(AgentFacultyInterface* a, CreatureFacultyInterface* f)
+{
+	myCreatureAsAgent = a;
+	myCreature = f;
+}
+
+
+
+float* Faculty::GetLocusAddress(int type, int organ, int tissue, int locus)
+{
 	return NULL;
 }
 
@@ -43,7 +56,9 @@ float* Faculty::GetLocusAddress(int type, int organ, int tissue, int locus) {
 
 
 bool Faculty::Write(CreaturesArchive &archive) const {
-	archive << myCreature;
+
+	archive << myActiveFlag;
+
 	return true;
 }
 
@@ -53,7 +68,18 @@ bool Faculty::Read(CreaturesArchive &archive)
 
 	if(version >= 3)
 	{
-		archive >> myCreature;
+		// before version 15 this was saved out, now it's reset
+		// automatically:
+		if (version < 15)
+		{
+			AgentHandle c;
+			archive >> c;
+			myCreature = &(c.GetCreatureFacultyInterfaceReference());
+		}
+		if (version >= 39)
+		{
+			archive >> myActiveFlag;
+		}
 	}
 	else
 	{
@@ -62,3 +88,19 @@ bool Faculty::Read(CreaturesArchive &archive)
 	}
 	return true;
 }
+
+
+
+
+void Faculty::SetActive(bool b)
+{
+	myActiveFlag = b;
+}
+
+bool Faculty::IsActive()
+{
+	return myActiveFlag;
+}
+
+
+

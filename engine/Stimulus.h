@@ -6,21 +6,13 @@
 #endif
 
 #include "../common/C2eTypes.h"
-#include "CreaturesArchive.h"
-#include "Classifier.h"
-
 #include "Creature/Biochemistry/BiochemistryConstants.h"
-
+#include "Agents/AgentHandle.h"
 
 class Agent;
 class Creature;
+class CreaturesArchive;
 
-
-
-#include "Caos/AutoDocumentationTable.h"
-
-extern TableSpec ourStimulusNumbers[];
-extern int sizeOurStimulusNumbers;
 
 
 
@@ -230,3 +222,4 @@ struct Stimulus {
 	bool Read(CreaturesArchive &archive);
 };
 #endif
+

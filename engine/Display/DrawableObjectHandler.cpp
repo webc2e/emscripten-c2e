@@ -26,7 +26,14 @@
 // 11Nov98	Alima			Created
 //							Hooks are in to draw cameras
 // 16Dec98  Alima			Added dirty Rect scheme
-// 20Aug99	Daniel			Made it much cleaner
+// 20Aug99	Daniel			Made it much cleaner -
+//							myRenderMappings is very basically is a list of all sprites
+//							shared by all instances of drawable object handlers.
+//							This is so that each drawable object handler can have its
+//							own interest level concerning camera shyness
+//							Made the sorting of agents into planes more efficient.
+//
+//							
 // --------------------------------------------------------------------------
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
@@ -35,11 +42,9 @@
 #include	"DrawableObjectHandler.h"
 #include	"System.h"
 #include	"DisplayEngine.h"
-#include	"MainCamera.h"
-#include	"EntityImage.h"
 #include	"Sprite.h"
-#include	"FastEntityImage.h"
 #include	"Line.h"
+#include	"../Camera/CameraSprite.h"
 #include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////
@@ -73,25 +78,24 @@ bool DrawableObjectHandler::ourAlreadyDoneSetCurrentBoundsThisTick = false;
 //					  the whole list each update
 //						
 // ----------------------------------------------------------------------
-bool DrawableObjectHandler::Add(EntityImage* const next)
+bool DrawableObjectHandler::Add(DrawableObject* const sprite)
 {
 	if(myShutDownFlag)
 		return false;
 
-	if (myRenderMappings.find(next->GetSpritePtr()) != myRenderMappings.end())
+	if (myRenderMappings.find(sprite) != myRenderMappings.end())
 		return false;
 
     RECT displayRect;
     POINT topLeft;
     POINT bottomRight;
-	Sprite* sprite;
 
     myOwnerCamera->GetViewArea(displayRect);
 
 	// Take the bounding rectangle for each entity
 	// for the dirty rect scheme
 	RECT rect;
-    next->GetBound(rect);
+    sprite->GetBound(rect);
 
     //weed out rects that are just not on screen
     topLeft.x = rect.left;
@@ -112,7 +116,6 @@ bool DrawableObjectHandler::Add(EntityImage* const next)
 		myNewRects.push_back(rect);
 		}// end if PointInRectangle....
 	}
-		sprite = next->GetSpritePtr();
 		
 		return InsertObject(sprite,&rect);
 
@@ -125,16 +128,7 @@ bool DrawableObjectHandler::InsertObject( DrawableObject* const  obj, RECT* rect
 {
 	// insert depending on what it is
 	uint32 thePlane = obj->GetPlane();
-	if(obj->AreYouASprite())
-	{
-		// update the sprite with its current bound
-		/*
-		obj->SetCurrentBound();
-		obj->SetScreenPosition(Position(rect->left - 
-									myWorldPosition.GetX(),
-									rect->top- myWorldPosition.GetY()));
-									*/
-	}
+
 	myRenderObjects[thePlane].push_back(obj);
 	myRenderMappings.insert(std::make_pair(obj,--(myRenderObjects[thePlane].end())));
 
@@ -142,46 +136,6 @@ bool DrawableObjectHandler::InsertObject( DrawableObject* const  obj, RECT* rect
 	return true;
 }
 
-
-// ----------------------------------------------------------------------
-// Method:      Add 
-// Arguments:   camera			
-//
-// Returns:     true - no fail conditions yet!
-//
-// Description: Cameras are just drawable enties which must be drawn in
-//				plane order
-//						
-// ----------------------------------------------------------------------
-bool DrawableObjectHandler::Add(Camera* camera)
-{
-	if(myShutDownFlag)
-		return false;
-
-	
-	return InsertObject(camera);
-}
-
-
-
-
-// ----------------------------------------------------------------------
-// Method:      Add 
-// Arguments:   camera			
-//
-// Returns:     true - no fail conditions yet!
-//
-// Description: Cameras are just drawable enties which must be drawn in
-//				plane order
-//						
-// ----------------------------------------------------------------------
-bool DrawableObjectHandler::Add(Line* const obj)
-{
-	if(myShutDownFlag)
-		return false;
-
-	return InsertObject(obj);
-}
 
 // ----------------------------------------------------------------------
 // Method:      Destructor 
@@ -211,12 +165,7 @@ void DrawableObjectHandler::Draw(bool completeRedraw)
 	DrawableObjectList::iterator oit;
 	
 	RECT rect;
-	/* // Try this with Boxes instead
-	POINT topLeft;
-	POINT bottomRight;
-	POINT bottomLeft;
-	POINT topRight;
-	*/
+
 	RECT displayRect;
 
 
@@ -226,15 +175,22 @@ void DrawableObjectHandler::Draw(bool completeRedraw)
 	Box entityBox;
 	
 
+	DrawableObject* obj = NULL;
+
 	for(it = myRenderObjects.begin(); it != myRenderObjects.end(); it++)
 	for(oit = (*it).second.begin(); oit != (*it).second.end(); oit++)
 		{
-		DrawableObject* obj = (*oit);
+		obj = (*oit);
 
 		// if remote cameras cannot be allowed to try to draw themselves
-		if (obj->AreYouALine() && myOwnerCamera->IsRemote())
+		// or any other camera
+		if (obj->AreYouALine() && myOwnerCamera->AreYouARemoteCamera())
 			continue;
+		
 		if (obj->AreYouACamera() && obj == myOwnerCamera)
+			continue;
+
+		if(obj->AreYouACamera() && myOwnerCamera->AreYouARemoteCamera())
 			continue;
 
         obj->GetBound(rect);
@@ -245,9 +201,12 @@ void DrawableObjectHandler::Draw(bool completeRedraw)
 			if (entityBox.IntersectRect(entityBox,displayBox))
 			if (!(amIInterestedInCameraShyObjects && obj->AreYouACamera()))
             {
-				obj->SetScreenPosition(Position(rect.left - 
-										myWorldPosition.GetX(),rect.top 
-										-myWorldPosition.GetY()));
+				//gtb!temp!
+				obj->SetScreenPosition(Position(
+					rect.left - myWorldPosition.GetX()
+					,
+					rect.top - myWorldPosition.GetY()
+				));
 
 				// virtual function that eventually calls the display engine
 				obj->Draw();
@@ -256,12 +215,7 @@ void DrawableObjectHandler::Draw(bool completeRedraw)
 		}
 
  	myOldDirtyTiles.clear();
-#ifdef _MSC_VER
-	// TODO: is this ANSI?
-	myOldDirtyTiles.assign(myNewDirtyTiles.begin(),myNewDirtyTiles.end());
-#else
 	myOldDirtyTiles = myNewDirtyTiles;
-#endif
 	myNewDirtyTiles.clear();
 }
 
@@ -312,7 +266,7 @@ void DrawableObjectHandler::Update(Position pos)
 			if(rect.right > displayRect.right) rect.right = displayRect.right;
 			if(rect.bottom > displayRect.bottom) rect.bottom = displayRect.bottom;
 
-			Position backgroundTopLeft = myOwnerCamera->GetBackgroundTopLeft();
+			Position backgroundTopLeft = myOwnerCamera->GetBackgroundTopLeft(0);
 
 			top = (rect.top - backgroundTopLeft.GetY())>>7;
 			bottom = (rect.bottom - backgroundTopLeft.GetY())>>7;
@@ -323,7 +277,7 @@ void DrawableObjectHandler::Update(Position pos)
 			{
 				for (int j = top; j <= bottom; j++)
 				{
-					IntegerPair tilepos(i,j);// = std::make_pair<i,j>;
+					IntegerPair tilepos(i,j);
 					ourBackgroundTilesMap[tilepos] = true;
 				}
 			}
@@ -366,43 +320,6 @@ void DrawableObjectHandler::AddDirtyRect(RECT rect)
 	myFastRects.push_back(rect);
 }
 
-// ----------------------------------------------------------------------
-// Method:      AddFastRects 
-// Arguments:   rect - new dirty rectangle for a fast drawn object			
-//
-// Returns:     None
-//
-// Description: When an entity image is declared a fast object - take the 
-//				mouse for example, it should be removed from the general
-//				rendering update but its dirty rects must be updated.
-//						
-// ----------------------------------------------------------------------
-void DrawableObjectHandler::AddFastRect(FastEntityImage* fastObject)
-{
-	if(myShutDownFlag)
-		return;
-
-	RECT displayRect;
-	myOwnerCamera->GetViewArea(displayRect);
-
-	RECT rect = fastObject->GetBound();
-	 rect = fastObject->GetLastBound();
-
-	bool forgetIt = false;
-
-	if(rect.top < displayRect.top||
-		rect.left < displayRect.left||
-		rect.right > displayRect.right||
-		rect.bottom > displayRect.bottom)
-	{
-		forgetIt = true;
-//		OutputDebugString("Forget it\n");
-	}
-
-	if(!forgetIt)
-		myFastRects.push_back(rect);
-}
-
 
 
 
@@ -415,39 +332,7 @@ void DrawableObjectHandler::AddFastRect(FastEntityImage* fastObject)
 //				list.
 //			
 // ----------------------------------------------------------------------
-bool DrawableObjectHandler::Remove(EntityImage* const chop)
-{
-	if(myShutDownFlag)
-		return false;
-
-	// check through the renderList for the offending entityImage and remove
-	// it
-	DrawableObjectList::iterator oit;
-
-	std::map<DrawableObject*,std::list<DrawableObject*>::iterator>::iterator mit;
-
-	mit = myRenderMappings.find(chop->GetSpritePtr());
-	if (mit == myRenderMappings.end())
-		return false;
-	oit = (*mit).second;
-
-	myRenderObjects[(*oit)->GetPlane()].erase(oit);
-	myRenderMappings.erase(mit);
-
-	return true;
-}
-
-
-// ----------------------------------------------------------------------
-// Method:      Remove
-// Arguments:   newEntity - pointer to new entity to chop from the
-//				list
-// Returns:     true if the entity was found and removed false otherwise
-// Description: This removes the given entityImage from the current update
-//				list.
-//			
-// ----------------------------------------------------------------------
-bool DrawableObjectHandler::Remove(Camera* const chop)
+bool DrawableObjectHandler::Remove(DrawableObject* const chop)
 {
 	if(myShutDownFlag)
 		return false;
@@ -469,37 +354,6 @@ bool DrawableObjectHandler::Remove(Camera* const chop)
 	return true;
 }
 
-
-// ----------------------------------------------------------------------
-// Method:      Remove
-// Arguments:   newEntity - pointer to new entity to chop from the
-//				list
-// Returns:     true if the entity was found and removed false otherwise
-// Description: This removes the given entityImage from the current update
-//				list.
-//			
-// ----------------------------------------------------------------------
-bool DrawableObjectHandler::Remove(Line* const chop)
-{
-	if(myShutDownFlag)
-		return false;
-
-	// check through the renderList for the offending entityImage and remove
-	// it
-	DrawableObjectList::iterator oit;
-
-	std::map<DrawableObject*,std::list<DrawableObject*>::iterator>::iterator mit;
-
-	mit = myRenderMappings.find(chop);
-	if (mit == myRenderMappings.end())
-		return false;
-	oit = (*mit).second;
-
-	myRenderObjects[(*oit)->GetPlane()].erase(oit);
-	myRenderMappings.erase(mit);
-
-	return true;
-}
 
 
 void DrawableObjectHandler::SetWorldPosition(Position pos)

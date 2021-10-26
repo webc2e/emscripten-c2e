@@ -1,3 +1,5 @@
+// Windoze
+
 // --------------------------------------------------------------------------
 // Filename:	File.cpp
 // Class:		File
@@ -49,6 +51,9 @@ void File::Open(const std::string& name,
 			uint32 desiredAccessFlags/* = GENERIC_READ|GENERIC_WRITE*/,
 		   uint32 shareModeFlag /*= FILE_SHARE_READ)*/)
 {
+
+
+
 	if(myDiskFileHandle != INVALID_HANDLE_VALUE)
 	{
 	//	std::string string = ErrorMessageHandler::Format("file_error", 1, "File::Open");
@@ -56,7 +61,11 @@ void File::Open(const std::string& name,
 		Close();
 	}
 
-	myDiskFileHandle=CreateFile(name.data(),
+
+
+
+
+	myDiskFileHandle=CreateFile(name.c_str(),
 						desiredAccessFlags,
 						shareModeFlag,
 						NULL,
@@ -106,6 +115,10 @@ void File::Create(const std::string& name,
 			uint32 desiredAccessFlags/* = GENERIC_READ|GENERIC_WRITE*/,
 		   uint32 shareModeFlag /*= FILE_SHARE_READ)*/)
 {
+
+
+
+
 	if(myDiskFileHandle != INVALID_HANDLE_VALUE)
 	{
 	//	std::string string = ErrorMessageHandler::Format("file_error", 1, "File::Create");
@@ -113,7 +126,7 @@ void File::Create(const std::string& name,
 		Close();
 	}
 
-	myDiskFileHandle=CreateFile(name.data(),
+	myDiskFileHandle=CreateFile(name.c_str(),
 						desiredAccessFlags,
 						shareModeFlag,
 						NULL,
@@ -241,14 +254,6 @@ void File::Write(std::string string)
 	Write("\0",1);
 }
 
-bool File::FileExists(std::string& filename)
-{
-	uint32 attributes = GetFileAttributes(filename.c_str());
-	
-	return attributes == -1 ?  false: true;
-
-}
-
 void File::Close()
 {
 	if (myDiskFileHandle!=INVALID_HANDLE_VALUE)
@@ -259,3 +264,57 @@ void File::Close()
 	myPosition = 0;
 	myName.empty();
 }
+// SPARKY the following were inline
+// ****************************************************************************
+#ifdef _WIN32
+uint32 File::Read(void* buffer,uint32 size)
+{
+	_ASSERT(myPosition + size <= myLength);
+	uint32	bytes_read;
+
+	if (myPosition+size > myLength)
+	{
+		size=myLength-myPosition;
+		if (size==0) return 0;
+	}
+
+	_ASSERT(myDiskFileHandle);
+	ReadFile(myDiskFileHandle,buffer,size,&bytes_read,NULL);
+	myPosition+=bytes_read;
+	return bytes_read;
+}
+// ****************************************************************************
+uint32 File::Write(const void* buffer,uint32 size)
+{
+	uint32	bytesWritten;
+
+	_ASSERT(myDiskFileHandle);
+	WriteFile(myDiskFileHandle,buffer,size,&bytesWritten,NULL);
+		
+	myPosition+=bytesWritten;
+	return bytesWritten;
+}
+#endif // _WIN32
+// ****************************************************************************
+#ifndef _WIN32
+// posix version
+uint32 File::Read(void* buffer,uint32 size)
+{
+	ASSERT( myDiskFileHandle != INVALID_HANDLE_VALUE );
+	int count = read( myDiskFileHandle, buffer, size );
+	if( count == -1 )
+		throw FileException( "File::Read() failed", __LINE__ );
+	return (uint32)count;
+}
+// ****************************************************************************
+uint32 File::Write(const void* buffer,uint32 size)
+{
+	ASSERT( myDiskFileHandle != INVALID_HANDLE_VALUE );
+	int count = write( myDiskFileHandle, buffer, size );
+	if( count == -1 )
+		throw FileException( "File::Write() failed", __LINE__ );
+
+	return (uint32)count;
+}
+#endif
+// ****************************************************************************

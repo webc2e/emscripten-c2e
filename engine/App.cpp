@@ -1,24 +1,32 @@
 // app.cpp
+// 22/02/2001 Dave Carter: added include for creature/vocab.h
 
 #ifdef _MSC_VER
 #pragma warning(disable : 4786 4503)
 #endif
 
+#include "CosInstaller.h"
+
+#include "ModuleImporter.h"
+
 #include "App.h"
 
-// not currently used.
-//#include "CPUID.h"
-
+#include "Agents/AgentConstants.h"
 #include "Caos/CAOSMachine.h"
 #include "Caos/Orderiser.h"
+#include "Display/DisplayErrorConstants.h"
+#include "Maths.h"
+
 #include "Display/DisplayEngine.h"
-#include "Display/EntityImage.h"
+
+#include "AgentDisplay/EntityImage.h"
+#include "Camera/MainCamera.h"
 #include "Display/ErrorMessageHandler.h"
-#include "Display/MainCamera.h"
 #include "General.h" // for logging macros
 #include "World.h"
+
 #ifdef _WIN32
-#include "../common/RegistryHandler.h"
+#include "RegistryHandler.h"
 #endif
 #include "C2eServices.h"
 #include "Display/SharedGallery.h"
@@ -31,11 +39,19 @@
 #include "AgentManager.h"
 
 #include "Creature/SensoryFaculty.h"
+#include "Creature/Vocab.h"
 
+#include "../common/FileFuncs.h"
 #include "../common/PRAYFiles/PrayManager.h"
+#include "../common/StringFuncs.h"
 #include "Caos/AutoDocumentationTable.h"
 #include "Creature/Brain/BrainScriptFunctions.h"
+#include "DirectoryManager.h"
 #include "TimeFuncs.h"
+
+#include "build.h"
+
+#include "../common/C2eDebug.h"
 
 #ifndef _WIN32
 // VK_ scancodes
@@ -45,24 +61,40 @@
 #include <unistd.h>
 #endif
 
-#include <fstream>
-//#include <sstream>
-////////////////////// GLOBALS ////////////////////////
+#ifdef _WIN32
+#include "Display/Win32ScreenKiller.h"
+#endif
 
-App theApp;
+#ifdef C2E_SDL
+#include "Display/SDL/SDL_Main.h" // for SignalTerminateApp()
+#endif
+
+#include <fstream>
+#include <locale.h>
+
+////////////////////// GLOBALS ////////////////////////
+// CAOSDescription theCAOSDescription;
+App App::ourApp;
+App &App::GetTheApp() { return ourApp; }
 
 const int App::ourTickLengthsAgo = 10;
+int App::myWorldTickInterval = 50;
 
 SoundManager *theSoundManager = NULL; // pointer to global Sound Manager
 MusicManager *theMusicManager = NULL; // pointer to global Music Manager
-
 /////////////////////////////////////////////////////////////////////////////
 // App
 
 App::App() {
+#ifdef NETTY
+  Netty = new TheNetty();
+  Netty->TitleOut("DS");
+#endif
+
+  myWorldTickInterval = 50;
+
   myWorld = NULL;
-#ifdef _WIN32
-  myMainHWND = NULL;
+#ifndef C2E_SDL
   myCursor = NULL;
 #endif
   mySystemTick = 0;
@@ -75,20 +107,13 @@ App::App() {
   mySaveNextTick = false;
   myLoadThisWorldNextTick = "";
   myQuitNextTick = false;
-  myPrayManager = NULL;
   myProgressBar = NULL;
 
   myAutoKillAgentsOnError = false;
 
-#ifdef _WIN32
+#ifndef C2E_SDL
   myMutex = 0;
-#endif // _WIN32
-  memset(&myBedTime, 0, sizeof(SYSTEMTIME));
-  memset(&myRecordOfYourBirthday, 0, sizeof(SYSTEMTIME));
-  memset(&myMaxPlayingTime, 0, sizeof(SYSTEMTIME));
-  memset(&myEndGameTime, 0, sizeof(SYSTEMTIME));
-
-  IUseAdditionalRegistrySettings = false;
+#endif
 
   myRecentTickLengths.resize(ourTickLengthsAgo);
   std::fill(myRecentTickLengths.begin(), myRecentTickLengths.end(),
@@ -107,6 +132,12 @@ App::App() {
   myDisplaySettingsErrorNextTick = false;
   myDelayedResizeFlag = false;
   myDelayedMovingFlag = false;
+  IsScreenSaver = false;
+  IsScreenSaverPreview = false;
+  IsScreenSaverConfig = false;
+#ifdef _WIN32
+  myPreviewWindowHandle = NULL;
+#endif
 
   myScrollingSpeedRangeUp.push_back(1);
   myScrollingSpeedRangeUp.push_back(2);
@@ -132,119 +163,156 @@ App::~App() { ; }
 /////////////////////////////////////////////////////////////////////////////
 // App initialization
 
-#ifdef _WIN32
-bool App::Init(HWND wnd)
-#else
-bool App::Init()
-#endif
-{
+bool App::Init() {
+  theFlightRecorder.Log(FLIGHT_STARTUP, "In App init");
+  std::string path = theDirectoryManager.GetDirectory(CREATURE_DATABASE_DIR);
 
-#ifdef _WIN32
-  myMainHWND = wnd;
-#endif
-
+  SharedGallery::theSharedGallery().SetCreatureGalleryFolder(path);
   SharedGallery::theSharedGallery().CleanCreatureGalleryFolder();
 
 #ifdef _WIN32
   // Prevent multiple copies of game from running.
   while (!CheckForMutex()) {
-    std::string message = theCatalogue.Get("app_error", 0);
-    if (::MessageBox(theMainWindow, message.c_str(), GetGameName().c_str(),
-                     MB_SYSTEMMODAL | MB_RETRYCANCEL) == IDCANCEL)
-      return false;
+    // We don't want the error message when we're a screen saver
+    if (!IsScreenSaver) {
+      std::string message =
+          GetGameName() + " " + theCatalogue.Get("app_error", 0);
+      if (::MessageBox(theMainWindow, message.c_str(), GetGameName().c_str(),
+                       MB_SYSTEMMODAL | MB_RETRYCANCEL) == IDCANCEL)
+        return false;
+    } else {
+      HANDLE hProcess = GetCurrentProcess();
+      TerminateProcess(hProcess, -1);
+    }
   }
-
-  /*
-          // Code that checks the processor - here for reference
-          {
-                  DWORD dwCPU = GetProcessorType();
-                  std::ostringstream processor;
-                  processor << std::hex <<
-                          std::string("CPU: Type = 0x") << (unsigned int)(dwCPU
-     & CPU_TYPE) << std::string(" Family = 0x") << (unsigned int)(dwCPU &
-     CPU_FAMILY) << std::string(" Model = 0x") << (unsigned int)(dwCPU &
-     CPU_MODEL) << std::string(" Stepping = 0x") << (unsigned int)(dwCPU &
-     CPU_STEPPING) << std::string("\n") << '\0';
-
-                  std::ostringstream frequency;
-                  frequency << "Time stamp frequency: " <<
-     (int)GetHighPerformanceTimeStampFrequency() << std::endl;
-          }
-  */
 
   // Copy protection (primitive)
-  while (!CheckForCD()) {
-    std::string message = theCatalogue.Get("app_cd_needed", 0);
-    if (::MessageBox(theMainWindow, message.c_str(), GetGameName().c_str(),
-                     MB_SYSTEMMODAL | MB_RETRYCANCEL) == IDCANCEL)
-      return false;
-  }
-
+  // Each product needing this has to be specifically hard-coded.
+  // If you use it, you need to add catalogue entries to your
+  // game's catalogue files appropriately:
+  //
+  // TAG "folks_you_gotta_put_a_cd_in"
+  // "You must have your Sea-Monkeys Disc in your CD-ROM drive to play.\nPlease
+  // insert your Sea-Monkeys CD-ROM and try again."
+  /*	  SPARKY
+          if (myGameName == "Sea-Monkeys")
+          {
+                  // It would be simply irritating to check for the screen saver
+                  if (!(IsAppAScreenSaver() || GetScreenSaverConfig() ||
+     GetIsScreenSaverPreview()))
+                  {
+                          theFlightRecorder.Log(FLIGHT_STARTUP, "CD check");
+                          while (!CheckForCD())
+                          {
+                                  std::string message =
+     theCatalogue.Get("folks_you_gotta_put_a_cd_in", 0); if
+     (::MessageBox(theMainWindow, message.c_str(), GetGameName().c_str(),
+     MB_SYSTEMMODAL | MB_RETRYCANCEL) == IDCANCEL) return false;
+                          }
+                  }
+          }
+    */
   // Check disk space
-  if (!CheckAllFreeDiskSpace()) {
-    std::string message = theCatalogue.Get("app_insufficient_disk_space", 0);
-    if (::MessageBox(theMainWindow, message.c_str(), GetGameName().c_str(),
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Disk space check");
+  int expectedSystem = 75 * 1024 * 1024;
+  int expectedGeneral = 32 * 1024 * 1024;
+  UserSettings().Get("DiskSpaceCheckSystem", expectedSystem);
+  UserSettings().Get("DiskSpaceCheck", expectedGeneral);
+  if (!CheckAllFreeDiskSpace(expectedSystem, expectedGeneral)) {
+    std::ostringstream out;
+    out << theCatalogue.Get("app_insufficient_disk_space", 0) << GetGameName()
+        << theCatalogue.Get("app_insufficient_disk_space", 1)
+        << expectedSystem / 1024 / 1024
+        << theCatalogue.Get("app_insufficient_disk_space", 2)
+        << expectedGeneral / 1024 / 1024
+        << theCatalogue.Get("app_insufficient_disk_space", 3);
+
+    if (::MessageBox(theMainWindow, out.str().c_str(), GetGameName().c_str(),
                      MB_YESNO) == IDNO)
       return false;
   }
 #else
-
-#warning No mutex, diskspace or CD protection checks.
-
+  // There are fairly deliberately no non-Win32 mutex, diskspace, CD protection
+  // checks. If they're needed on a particular platform, they should be added
+  // here.
 #endif
 
+  // Load modules
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Loading modules");
+  std::string errorFile;
+  if (!ModuleImporter::LoadModules(errorFile)) {
+    ErrorMessageHandler::Show("module_error", 0, "App::Init",
+                              errorFile.c_str());
+    return false;
+  }
+
   // Load syntax
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Loading syntax tables");
   theCAOSDescription.LoadDefaultTables();
+  // From modules
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    moduleInterface->AddCAOSCommands(theCAOSDescription);
+  }
 
   // Serialise out caos.syntax for CAOS tool to load in
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Making syntax file for CAOS tool");
   std::string syntaxfile;
-  syntaxfile = std::string(GetDirectory(MAIN_DIR)) + "caos.syntax";
+
+  syntaxfile = theDirectoryManager.GetDirectory(MAIN_DIR, true) + "caos.syntax";
   if (!theCAOSDescription.SaveSyntax(syntaxfile)) {
     ErrorMessageHandler::Show("app_error", 1, "App::Init", syntaxfile.c_str());
   }
   CAOSMachine::InitialiseHandlerTables();
 
-  GetLocalTime(&myGameStartTime);
-
-  std::string langid = "en"; // default to english (ugh)
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), "Language", langid,
-                       HKEY_CURRENT_USER);
-#else
-  UserSettings().Get("Language", langid);
-#endif
+  std::string langid = GetLangCatalogue();
 
   // set flight recorder mask
-  int32 mask = 1; // default to runtime errors
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), "FlightRecorderMask", mask,
-                       HKEY_CURRENT_USER);
-#else
-  UserSettings().Get("FlightRecorderMask", (int &)mask);
-#endif
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Flight recorder self reference ;-)");
+  int mask = FLIGHT_RUNTIME +
+             FLIGHT_NETBABEL; // default to runtime errors and netbabel
+  UserSettings().Get("FlightRecorderMask", mask);
   theFlightRecorder.SetCategories(mask);
 
-  myPrayManager = new PrayManager(langid);
-  myPrayManager->AddDir(GetDirectory(PRAYFILE_DIR));
-  myPrayManager->AddDir(GetDirectory(CREATURES_DIR));
+  // Set default Eame variables
+  GetEameVar("engine_nudge_border_t").SetInteger(2);
+  GetEameVar("engine_nudge_border_b").SetInteger(2);
+  GetEameVar("engine_nudge_border_l").SetInteger(2);
+  GetEameVar("engine_nudge_border_r").SetInteger(2);
+
+  // Pray
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Setting up PRAY system");
+  thePrayManager.SetLanguage(langid);
+  AddBasicPrayDirectories();
 
   // Seed random number generators
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Seeding random number generators");
   srand(GetTimeStamp() + GetRealWorldTime() + 1);
   RandQD1::seed(GetTimeStamp() + GetRealWorldTime());
 
+  // Call other initialisation functions
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Calling generic init functions");
+  CallInitialisationFunctions();
+
   // set up the main view before we do anything in the world
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Setting up view");
   SetUpMainView();
   theMainView.Enable();
   CreateProgressBar();
 
-  DoLoadWorld("Startup");
+  // Load in the world
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Loading Startup world");
+  DoLoadWorld(std::string("Startup"));
 
-  InitialiseFromGameVariables();
+  // Read values from standard game variables
+  RefreshFromGameVariables();
 
   // this now has to be done after we know whether we use midi or not
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Setting up sound");
   SetUpSound();
 
-  // then..
+  // Load catalogue files in
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Reinitialising catalogue files");
   InitLocalisation();
 
   return true;
@@ -262,14 +330,15 @@ void App::UpdateApp() {
   // a virtual machine.
 
   if (myDisplaySettingsErrorNextTick) {
-#ifdef _WIN32
-    std::string s = theCatalogue.Get(theDisplayErrorTag,
-                                     (int)DisplayEngine::sidDodgyPixelFormat2);
+#ifndef C2E_SDL
+    std::string s =
+        theCatalogue.Get(theDisplayErrorTag, (int)sidDodgyPixelFormat2);
     theMainView.PrepareForMessageBox();
-    ::MessageBox(NULL, s.c_str(), "Creatures 3", MB_OK | MB_ICONSTOP);
+    ::MessageBox(NULL, s.c_str(), theApp.GetGameName().c_str(),
+                 MB_OK | MB_ICONSTOP);
     theMainView.EndMessageBox();
 #else
-    // TODO: implement non-win32 version
+    // TODO: implement non-directx version
 #endif
     myDisplaySettingsErrorNextTick = false;
   }
@@ -298,12 +367,8 @@ void App::UpdateApp() {
     mySaveNextTick = false;
   }
   if (myQuitNextTick) {
-    theFlightRecorder.Log(16, "Signalling termination...\n");
-#ifdef SignalTerminateApplication
+    theFlightRecorder.Log(FLIGHT_SHUTDOWN, "Signalling termination...\n");
     SignalTerminateApplication();
-#else
-#warning "TODO: Implement SignalTerminateApplication"
-#endif
     myQuitNextTick = false;
   }
 
@@ -313,16 +378,24 @@ void App::UpdateApp() {
     myLoadThisWorldNextTick = "";
   }
 
-  // In Creatures Adventures we have the option to
-  // let the parent control timings and stuff like that
-  // this is invoked by gamevars
-  HandleAdditionalRegistrySettings();
-
   // Look for global input
   HandleInput();
 
   // Increase system tick
   mySystemTick++;
+
+#ifdef _WIN32
+  // Check for screensaver startup being over
+  if (IsAppAScreenSaver() && mySystemTick == 10) {
+    Win32ScreenKiller::Stop();
+  }
+#endif
+
+  // Update all modules
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    moduleInterface->Update(mySystemTick);
+  }
 
   myWorld->TaskSwitcher();
 
@@ -340,121 +413,14 @@ void App::UpdateApp() {
   myRecentTickLengths[myRecentTickPos] = tickLength;
 }
 
-bool App::GetDirectories() {
-  const char *directories[] = {"Main Directory",
-                               "Sounds Directory",
-                               "Images Directory",
-                               "Genetics Directory",
-                               "Body Data Directory",
-                               "Overlay Data Directory",
-                               "Backgrounds Directory",
-                               "Catalogue Directory",
-                               "Bootstrap Directory",
-                               "Worlds Directory",
-                               "Exported Creatures Directory",
-                               "Resource Files Directory",
-                               "Journal Directory",
-                               "Creature Database Directory"};
-
-  int dir;
-  // set pointers to directories to empty
-  for (dir = 0; dir < NUM_DIRS; dir++) {
-    memset((void *)m_dirs[dir], (int)NULL, (size_t)MAX_PATH);
-  }
-
-  // get all registry data regarding the directories
-  // do this before command line is parsed
-
-#ifdef _WIN32
-  // windows version
-
-  for (dir = 0; dir < NUM_DIRS; dir++) {
-    std::string buffer;
-    std::string value((char *)(directories[dir]));
-    theRegistry.GetValue(theRegistry.DefaultKey(), value, buffer,
-                         HKEY_LOCAL_MACHINE);
-    if (buffer.empty()) {
-      ErrorMessageHandler::NonLocalisable(
-          "NLE0001: There is no registry entry for the "
-          "following:\nHKEY_LOCAL_MACHINE\\%s\\%s",
-          std::string("App::GetDirectories"), theRegistry.DefaultKey().c_str(),
-          directories[dir]);
-      return false;
-    } else {
-      // if there's no trailing backslash add one:
-      if (buffer[buffer.size() - 1] != '\\')
-        buffer.append("\\");
-      uint32 attributes = GetFileAttributes(buffer.data());
-
-      if (attributes == -1) {
-        ErrorMessageHandler::NonLocalisable(
-            "NLE0002: The following directory doesn't exist:\n%s\nMake sure "
-            "the registry entry is correct!",
-            std::string("App::GetDirectories"), buffer.c_str());
-        return false;
-      }
-
-      strcpy(m_dirs[dir], (const char *)buffer.data());
-    }
-  }
-
-#else
-  // posix version
-
-  for (dir = 0; dir < NUM_DIRS; dir++) {
-    std::string buffer;
-    std::string key((char *)(directories[dir]));
-    MachineSettings().Get(key, buffer);
-
-    if (buffer.empty()) {
-      ErrorMessageHandler::NonLocalisable("NLE0001: '%s' setting not found.",
-                                          std::string("App::GetDirectories"),
-                                          key.c_str());
-      return false;
-    }
-    // if there's no trailing slash add one:
-    if (buffer[buffer.size() - 1] != '/')
-      buffer.append("/");
-
-    // valid dir path?
-    struct stat inf;
-    bool groovy = true;
-    if (stat(buffer.c_str(), &inf) != 0)
-      groovy = false;
-    else {
-      if (!S_ISDIR(inf.st_mode))
-        groovy = false; // not a directory.
-    }
-
-    if (!groovy) {
-      ErrorMessageHandler::NonLocalisable(
-          "NLE0002: '%s' doesn't appear to be a valid directory\n"
-          "(Make sure the setting is correct!)",
-          std::string("App::GetDirectories"), buffer.c_str());
-      return false;
-    }
-
-    strcpy(m_dirs[dir], (const char *)buffer.data());
-
-    // end of posix-specific version
-#endif
-}
-return true;
-}
-
 /////////////////////////////////////////////////////////////////////////////
 
 void App::ShutDown() {
+  theFlightRecorder.Log(FLIGHT_SHUTDOWN, "App Shutting down...");
 
-  theFlightRecorder.Log(16, "App Shutting down...");
   // tell the camera to stop running
   // (before world object disappears!)
   theMainView.ShutDown();
-
-  if (myPrayManager) {
-    delete myPrayManager;
-    myPrayManager = NULL;
-  }
 
   if (theMusicManager) {
     delete theMusicManager;
@@ -482,7 +448,7 @@ void App::ShutDown() {
 
   SharedGallery::theSharedGallery().DestroyGalleries();
 
-#ifdef _WIN32
+#ifndef C2E_SDL
   // Provides mutual exclusion with itself / any emergency kits etc.
   if (myMutex) {
     ReleaseMutex(myMutex);
@@ -492,7 +458,13 @@ void App::ShutDown() {
   // TODO: non-win32 version
 #endif
 
-  theFlightRecorder.Log(16, "TheApp has shutdown...\n");
+  // Shutdown all modules
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    moduleInterface->Shutdown();
+  }
+
+  theFlightRecorder.Log(FLIGHT_SHUTDOWN, "TheApp has shutdown...\n");
 }
 
 // ----------------------------------------------------------------------
@@ -508,38 +480,60 @@ void App::SetUpMainView() {
 
   // get the camera up and running
   bool fullscreen = true;
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), std::string("FullScreen"),
-                       fullscreen, HKEY_CURRENT_USER);
-#else
   int inthack = 1;
   UserSettings().Get("FullScreen", inthack);
   fullscreen = (inthack != 0);
-#endif
+
+  if (IsScreenSaver || IsScreenSaverPreview)
+    fullscreen = true;
 
   // This needs to be moved to whichever object
   // wants control of the cameras and resetting
   // meta rooms
   // but for now...
-  std::string value("Default Background");
+
+  // NOTE: This appears also in World::Init()!
+  // - BenC 03Feb00
+
   std::string defaultBackground("GreatOutdoors");
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), value, defaultBackground,
-                       HKEY_CURRENT_USER);
-#else
-  UserSettings().Get(value, defaultBackground);
-#endif
+  UserSettings().Get("Default Background", defaultBackground);
+
+  // Has display type been previously determined?
+  int registry_display_type = RGB_UNKNOWN;
+  MachineSettings().Get("Display Type", registry_display_type);
+
+  std::vector<std::string> pathsToImageFoldersToConvert;
+
+  {
+    for (int i = 0; i < theDirectoryManager.GetAuxDirCount(IMAGES_DIR); ++i) {
+      std::string path = theDirectoryManager.GetAuxDir(IMAGES_DIR, i);
+      pathsToImageFoldersToConvert.push_back(path);
+    }
+  }
+
+  {
+    for (int i = 0; i < theDirectoryManager.GetAuxDirCount(BACKGROUNDS_DIR);
+         ++i) {
+      std::string path = theDirectoryManager.GetAuxDir(BACKGROUNDS_DIR, i);
+      pathsToImageFoldersToConvert.push_back(path);
+    }
+  }
+
+  {
+    for (int i = 0; i < theDirectoryManager.GetAuxDirCount(OVERLAYS_DIR); ++i) {
+      std::string path = theDirectoryManager.GetAuxDir(OVERLAYS_DIR, i);
+      pathsToImageFoldersToConvert.push_back(path);
+    }
+  }
 
   if (!theMainView.StartUp(0, // world coordinates of view
                            0,
-                           fullscreen, // fullscreen or windowed?
-#ifdef _WIN32
-                           GetHandle(), // window handle
-#endif
+                           fullscreen,        // fullscreen or windowed?
                            defaultBackground, // default background file
-                           0,                 // world coordinate
-                           0)) // of top left corner of background
-  {
+                           0,                 // world coordinate of
+                           0,                 //  top left corner of background
+                           registry_display_type,
+                           pathsToImageFoldersToConvert)) {
     theMainView.Disable();
   } else {
     theMainView.MakeMapImage();
@@ -577,18 +571,36 @@ void App::WindowHasMoved() { myDelayedMovingFlag = true; }
 void App::WindowHasResized() { myDelayedResizeFlag = true; }
 
 void App::internalWindowHasResized() {
+#ifdef C2E_SDL
+  // just refresh the screen directly - don't bother mucking around
+  // with window redraw messages...
+  theMainView.Update(true, false);
+#else
   theMainView.ResizeWindow();
-  theAgentManager.ExecuteScriptOnAllAgents(SCRIPTWINDOWRESIZED, NULLHANDLE,
-                                           INTEGERZERO, INTEGERZERO);
+#endif
+  theAgentManager.ExecuteScriptOnAllAgents(
+      SCRIPTWINDOWRESIZED, COASVARAGENTNULL, INTEGERZERO, INTEGERZERO);
 }
 
 void App::internalWindowHasMoved() { theMainView.MoveWindow(); }
 
 void App::SetUpSound(void) {
+  // Option to turn of fall sound
+  int disable = 0;
+  UserSettings().Get("DisableSound", disable);
+  if (disable == 1) {
+    theSoundManager = NULL;
+    theMusicSoundManager = NULL;
+    return;
+  }
+
   // Now want two sound managers, allocated 1 meg each,
   // one for game sound, one for game music:
   try {
-    theSoundManager = new SoundManager();
+    // TODO: Fix Heisenbug.  If you remove the next line,
+    // then with no sound under Linux/GCC you get a segfault.
+    std::cout << "Initializing Sound" << std::endl;
+    theSoundManager = new SoundManager;
   } catch (BasicException &e) {
     theSoundManager = NULL;
     theMusicSoundManager = NULL;
@@ -606,7 +618,7 @@ void App::SetUpSound(void) {
 
   if (IOnlyPlayMidiMusic == false) {
     try {
-      theMusicSoundManager = new SoundManager();
+      theMusicSoundManager = new SoundManager;
     } catch (SoundManager::SoundException &e) {
       theMusicSoundManager = NULL;
 
@@ -615,7 +627,7 @@ void App::SetUpSound(void) {
     }
 
     if (theMusicSoundManager) {
-      theMusicSoundManager->InitializeCache(1024);
+      theMusicSoundManager->InitializeCache(2 * 1024);
     } else {
       // no music message?
       return;
@@ -657,14 +669,8 @@ void App::SetUpSound(void) {
 
     if (theMusicManager) {
       theMusicManager->Play();
-      // pMusicManager -> BeginTrack("Underground");
-      // pMusicManager -> UpdateSettings (0.5, 0.5);
     }
   }
-}
-
-void App::HandleIncomingRequest(ServerSide &server) {
-  myRequestManager.HandleIncoming(server);
 }
 
 // ----------------------------------------------------------------------
@@ -681,6 +687,13 @@ void App::HandleIncomingRequest(ServerSide &server) {
 //
 // ----------------------------------------------------------------------
 void App::ChangeResolution() {
+#ifdef C2E_SDL
+
+  DisplayEngine::theRenderer().NextScreenMode(); // in sdl version only
+  internalWindowHasResized();
+
+#else // original directx version
+
   // just a test cycle through resolutions
   // each application would have a way
   // of allowing the user to select a resolution
@@ -693,6 +706,7 @@ void App::ChangeResolution() {
 
   if (x > 2)
     x = 0;
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -707,28 +721,65 @@ void App::ChangeResolution() {
 //
 // ----------------------------------------------------------------------
 void App::ToggleFullScreenMode() {
-  theMainView.ToggleFullScreenMode();
-  theAgentManager.ExecuteScriptOnAllAgents(SCRIPTWINDOWRESIZED, NULLHANDLE,
-                                           INTEGERZERO, INTEGERZERO);
+  if (theMainView.ToggleFullScreenMode()) {
+    theAgentManager.ExecuteScriptOnAllAgents(
+        SCRIPTWINDOWRESIZED, COASVARAGENTNULL, INTEGERZERO, INTEGERZERO);
+  } else {
+    DisplaySettingsErrorNextTick();
+  }
+}
+
+// For language tags, we use values in language.cfg if available,
+// otherwise we use whatever is in User.cfg
+
+std::string App::GetLangCLib() {
+  Configurator languageConfig;
+  languageConfig.BindToFile("language.cfg");
+
+  std::string langCLibrary = "english"; // default to English, ugh!
+  if (languageConfig.Exists("LanguageCLibrary"))
+    languageConfig.Get("LanguageCLibrary", langCLibrary);
+  else
+    UserSettings().Get("LanguageCLibrary", langCLibrary);
+
+  return langCLibrary;
+}
+
+std::string App::GetLangCatalogue() {
+  Configurator languageConfig;
+  languageConfig.BindToFile("language.cfg");
+
+  std::string langid = "en"; // default to English, ugh!
+  if (languageConfig.Exists("Language"))
+    languageConfig.Get("Language", langid);
+  else
+    UserSettings().Get("Language", langid);
+
+  return langid;
 }
 
 bool App::InitLocalisation() {
+  std::string langCLibrary = GetLangCLib();
+  std::string langid = GetLangCatalogue();
+
+  // set our locale
+  // just time and date, as other stuff messes up parsers
+  setlocale(LC_TIME, langCLibrary.c_str());
+
+  // read in set of catalogue files for language
   theCatalogue.Clear();
-
-  std::string langid = "en"; // default to english (ugh)
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), "Language", langid,
-                       HKEY_CURRENT_USER);
-#else
-  UserSettings().Get("Language", langid);
-#endif
-
   try {
-    std::string catpath;
+    int count = theDirectoryManager.GetAuxDirCount(CATALOGUE_DIR);
+    for (int i = 0; i < count; ++i) {
+      std::string catpath = theDirectoryManager.GetAuxDir(CATALOGUE_DIR, i);
 
-    catpath = GetDirectory(CATALOGUE_DIR);
-    theCatalogue.AddDir(catpath, langid);
-
+      Catalogue localCatalogue;
+      localCatalogue.AddDir(catpath, langid);
+      // Merge them in to check for bad clashes.  Two tags
+      // can go in twice, as long as the initial parts
+      // contain the same data
+      theCatalogue.Merge(localCatalogue);
+    }
   } catch (Catalogue::Err &e) {
     ErrorMessageHandler::Show(e, "App::InitLocalisation");
     return false;
@@ -736,40 +787,37 @@ bool App::InitLocalisation() {
 
   if (!SensoryFaculty::SetupStaticVariablesFromCatalogue())
     return false;
+
+  if (!Vocab::SetupCatalogueVector())
+    return false;
+
   InitBrainMappingsFromCatalogues();
   // Add the Catalogue Entries for the pray manager....
   std::string prayCatalogueName = "Pray System File Extensions";
-  if (theCatalogue.TagPresent(prayCatalogueName) && (myPrayManager != NULL)) {
-    GetResourceManager().ClearChunkFileExtensionList();
-    GetResourceManager().GarbageCollect(true);
+  if (theCatalogue.TagPresent(prayCatalogueName)) {
+    thePrayManager.ClearChunkFileExtensionList();
+    thePrayManager.GarbageCollect(true);
     for (int i = 0; i < theCatalogue.GetArrayCountForTag(prayCatalogueName);
          i++) {
 
       std::string anExtension = theCatalogue.Get(prayCatalogueName, i);
-      GetResourceManager().AddChunkFileExtension(anExtension);
+      thePrayManager.AddChunkFileExtension(anExtension);
     }
-    GetResourceManager().RescanFolders();
+    thePrayManager.RescanFolders();
   }
 
-  theApp.InitLocalCatalogueFilesFromTheWorldsDirectory();
+  InitLocalCatalogueFilesFromTheWorldsDirectory();
 
   return true;
 }
 
 bool App::InitLocalCatalogueFilesFromTheWorldsDirectory() {
-  std::string langid = "en"; // default to english (ugh)
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), "Language", langid,
-                       HKEY_CURRENT_USER);
-#else
-  UserSettings().Get("Language", langid);
-#endif
-
+  std::string langid = GetLangCatalogue();
   try {
     std::string catpath;
 
     // also get the local catalogue files
-    if (GetWorldDirectoryVersion(CATALOGUE_DIR, catpath)) {
+    if (theDirectoryManager.GetWorldDirectoryVersion(CATALOGUE_DIR, catpath)) {
       theCatalogue.AddDir(catpath, langid);
     }
   } catch (Catalogue::Err &e) {
@@ -780,264 +828,16 @@ bool App::InitLocalCatalogueFilesFromTheWorldsDirectory() {
   return true;
 }
 
-// get the world directory path of the given folder
-// e.g. ..\\Worlds\\Myworld\\Images
-bool App::GetWorldDirectoryVersion(int dir, std::string &path,
-                                   bool createFilePlease /*=false*/) {
-  if (!myWorld)
-    return false;
-
-  char buf[MAX_PATH];
-  GetDirectory(dir, buf);
-  path = buf;
-  // get the words between the last two backslashes
-  size_t end = path.find_last_of("\\");
-  size_t start = path.find_last_of("\\", end - 1);
-  if (end == -1 || start == -1) {
-    // no main directory version!
-    return false;
-  }
-
-  // hurrah now we have the name of the directory!
-  std::string name = path.substr(start + 1, end - start - 1);
-
-  return GetWorldDirectoryVersion(name, path, createFilePlease);
-}
-
-// for attic files, we separate out this part of the function
-bool App::GetWorldDirectoryVersion(const std::string &name, std::string &path,
-                                   bool createFilePlease /*=false*/) {
-  if (!myWorld)
-    return false;
-
-  // now get the worlds directory
-  char buf[MAX_PATH];
-  theApp.GetDirectory(WORLDS_DIR, buf);
-  path = buf;
-  path += myWorld->GetWorldName() + "\\" + name + "\\";
-
-#ifdef _WIN32
-  if (GetFileAttributes(path.data()) == -1) {
-    if (createFilePlease) {
-      return CreateDirectory(path.data(), NULL) ? true : false;
-    } else // just report that there was no directory at all
-    {
-      return false;
-    }
-  }
-#else
-  // TODO: non-win32 version
-  ASSERT(false);
-#endif
-
-  return true;
-}
-
 bool App::CreateNewWorld(std::string &worldName) {
   bool ret;
-#ifdef _WIN32
   FilePath path(worldName, WORLDS_DIR);
-  ret = CreateDirectory(path.GetFullPath().data(), NULL) ? true : false;
-#else
-  // TODO: non-win32 version
-#endif
+  //	MessageBox(NULL,path.GetFullPath().c_str(),"",MB_OK);
+  ret = CreateDirectory(path.GetFullPath().c_str(), NULL) ? true : false;
 
   return ret;
 }
 
-void App::HandleAdditionalRegistrySettings() {
-  if (IUseAdditionalRegistrySettings) {
-    bool quitgame = false;
-
-    static bool nornsAreTiredAlready = false;
-
-    SYSTEMTIME currentTime;
-    GetLocalTime(&currentTime);
-
-    if (!IsValidTime(currentTime))
-      return;
-
-    if (IsValidDate(myRecordOfYourBirthday)) {
-      if (myRecordOfYourBirthday.wMonth == currentTime.wMonth &&
-          myRecordOfYourBirthday.wDay == currentTime.wDay) {
-        myWorld->ActivateBirthdayBanner();
-      }
-    }
-
-    // check to see if it is past bedtime
-    if (IsValidTime(myEndGameTime)) {
-      // oops we went right past the hour somehow better quit
-      // now
-      if (currentTime.wHour > myEndGameTime.wHour) {
-        quitgame = true;
-        DoParentMenuTests(currentTime.wMinute, quitgame, currentTime,
-                          nornsAreTiredAlready);
-
-      } // if we are on the hour or approaching it
-      else if (myEndGameTime.wHour == currentTime.wHour) {
-        if (currentTime.wMinute >= myBedTime.wMinute)
-          quitgame = true;
-
-        DoParentMenuTests(myEndGameTime.wMinute, quitgame, currentTime,
-                          nornsAreTiredAlready);
-
-      } else if (myEndGameTime.wHour - currentTime.wHour == 1) {
-        DoParentMenuTests(60, quitgame, currentTime, nornsAreTiredAlready);
-      }
-
-    } // end valid times
-
-    // check to see if we have been playing for too long already
-    /*	if(IsValidTime(myGameStartTime) && IsValidGameTime(myMaxPlayingTime))
-            {
-                    // check seconds
-                    if(myMaxPlayingTime.wHour == 0 && myMaxPlayingTime.wMinute
-       ==0
-                            && myMaxPlayingTime.wSecond != 0)
-                    {
-                            if(currentTime.wSecond - myGameStartTime.wSecond >=
-       myMaxPlayingTime.wSecond)
-                            {
-                                    quitgame = true;
-                            }
-                    }
-                    else if(myMaxPlayingTime.wHour == 0 &&
-       myMaxPlayingTime.wMinute !=0)
-                    {
-                            int testTime =currentTime.wMinute;
-                            // if we are on the hour
-                            if(testTime == 0)
-                            {
-                                    testTime = 60;
-                            }
-
-                            if(testTime - myGameStartTime.wMinute >
-       myMaxPlayingTime.wMinute)
-                            {
-                                    myQuitNextTick = true;
-                                    quitgame = true;
-                            }
-                            else
-                            {
-                                            DoParentMenuTests(myGameStartTime.wMinute
-       + myMaxPlayingTime.wMinute, quitgame, currentTime, nornsAreTiredAlready);
-
-                            }
-                    }
-                    else
-                    {
-                            int diff = currentTime.wHour -
-       myGameStartTime.wHour; if(diff >=myMaxPlayingTime.wHour )
-                            {
-                            quitgame = true;
-                            }
-                    }
-
-
-            }*/
-
-    // overall if we need to quit
-    // flood the norns with sleepyness
-    if (quitgame && !nornsAreTiredAlready) {
-      myWorld->MakeAllNornsTired();
-      nornsAreTiredAlready = true;
-      myWorld->ShowCountDownClock(true, 8);
-    }
-  }
-}
-
-void App::DoParentMenuTests(int bedTimeMinutes, bool &quitgame,
-                            SYSTEMTIME &currentTime,
-                            bool &nornsAreTiredAlready) {
-  static int bedTimeReminders;
-  static bool workHereIsDone = false;
-
-  if (workHereIsDone)
-    return;
-
-  int diff = bedTimeMinutes - currentTime.wMinute;
-  // if there is less than five minutes to go
-  if (diff <= 5)
-    quitgame = true;
-
-  // start showing shut down messages now
-  // every five or so minutes
-
-  if (diff <= 5) {
-    if (bedTimeReminders == 0 || bedTimeReminders == 1)
-      bedTimeReminders = 2;
-
-    // if we haven't done this already then...
-    if (bedTimeReminders == 2) {
-      bedTimeReminders++;
-      // let the clock stay up now
-      myWorld->ShowCountDownClock(false, 8);
-    }
-
-    // flood creatures with sleepiness and tiredness now
-    if (!nornsAreTiredAlready) {
-      myWorld->MakeAllNornsTired();
-      nornsAreTiredAlready = true;
-      quitgame = false;
-    }
-
-    // make the clock count down to zero
-    switch (diff) {
-    case 5:
-      myWorld->UpdateCountDownClock(0);
-      break;
-
-    case 4:
-      myWorld->UpdateCountDownClock(1);
-      break;
-
-    case 3:
-      myWorld->UpdateCountDownClock(2);
-      break;
-    case 2:
-      myWorld->UpdateCountDownClock(3);
-      break;
-    case 1:
-      myWorld->UpdateCountDownClock(4);
-      break;
-    case 0: {
-      workHereIsDone = true;
-      myWorld->UpdateCountDownClock(5);
-      myWorld->ShowCountDownClockQuit();
-      //	 mySaveNextTick = true;
-      //	 myQuitNextTick = true;
-      break;
-    }
-    default:
-      myWorld->UpdateCountDownClock(5);
-      myWorld->ShowCountDownClockQuit();
-      workHereIsDone = true;
-      break;
-    }
-
-  } else if (diff <= 10) {
-
-    // if we haveskip the 15 minute warning...
-    if (bedTimeReminders == 0)
-      bedTimeReminders = 1;
-
-    // if we haven't done this already then...
-    if (bedTimeReminders == 1) {
-      bedTimeReminders++;
-      // just flash up
-      myWorld->ShowCountDownClock(true, 7);
-    }
-  } else if (diff <= 15) {
-    // if we haven't done this already then...
-    if (bedTimeReminders == 0) {
-      bedTimeReminders++;
-      // just flash up
-      myWorld->ShowCountDownClock(true, 0);
-    }
-  }
-}
-
-#ifdef _WIN32
+#ifndef C2E_SDL
 // shouldn't this be in window.cpp?
 void App::BeginWaitCursor() {
   // set the wait cursor
@@ -1069,6 +869,10 @@ void App::HandleInput() {
     if (ev->EventCode == InputEvent::eventKeyDown) {
       int key = ev->KeyData.keycode;
 
+      if (myInputManager.GetTranslatedCharTarget()) {
+        myInputManager.GetTranslatedCharTarget()->RawKey(key);
+      }
+
       // deal with debug key presses
       if (DebugKeyNow()) {
         // VK_PAUSE is handled in MainWindowProc, so it works
@@ -1080,8 +884,11 @@ void App::HandleInput() {
           GetWorld().GetPreviousMetaRoom();
         else if (key == VK_NEXT)
           GetWorld().GetNextMetaRoom();
+#ifndef C2E_SDL
+        // sdl version does screenmode changes from main msg loop
         else if (key == VK_HOME)
           ChangeResolution();
+#endif
         else if (key == VK_DELETE)
           myShouldHighlightAgentsKnownToCreatureFlag =
               !myShouldHighlightAgentsKnownToCreatureFlag;
@@ -1105,145 +912,53 @@ void App::HandleInput() {
 }
 
 // called also when the game is reloaded
-void App::InitialiseFromGameVariables() {
+void App::DoRefreshFromGameVariables() {
   // initialse some variables from the world
 
-  CAOSVar &planeForLines =
-      theApp.GetWorld().GetGameVar("engine_plane_for_lines");
+#ifdef C2D_DIRECT_DISPLAY_LIB
+  CAOSVar scroll = theApp.GetWorld().GetGameVar("engine_DoWackyScroll");
+
+  if (scroll.GetType() == CAOSVar::typeInteger) {
+    _ASSERT(scroll.GetType() == CAOSVar::typeInteger);
+    theMainView.DoWackyScroll(scroll.GetInteger() == 0 ? false : true);
+  }
+#endif
+
+  CAOSVar &planeForLines = GetWorld().GetGameVar("engine_plane_for_lines");
   if (planeForLines.GetType() == CAOSVar::typeInteger)
     myPlaneForConnectiveAgentLines =
         planeForLines.GetInteger() == 0 ? 9998 : planeForLines.GetInteger();
 
   CAOSVar &soundLevels =
-      theApp.GetWorld().GetGameVar("engine_playAllSoundsAtMaximumLevel");
+      GetWorld().GetGameVar("engine_playAllSoundsAtMaximumLevel");
   ASSERT(soundLevels.GetType() == CAOSVar::typeInteger);
 
   myPlayAllSoundsAtMaximumLevel = soundLevels.GetInteger() == 0 ? false : true;
 
   CAOSVar &skeletonUpdate =
-      theApp.GetWorld().GetGameVar("engine_SkeletonUpdateDoubleSpeed");
+      GetWorld().GetGameVar("engine_SkeletonUpdateDoubleSpeed");
   ASSERT(skeletonUpdate.GetType() == CAOSVar::typeInteger);
   // default is false
   myShouldSkeletonsAnimateDoubleSpeedFlag =
       skeletonUpdate.GetInteger() == 0 ? false : true;
 
-  CAOSVar &var = theApp.GetWorld().GetGameVar("cav_useparentmenu");
-  ASSERT(var.GetType() == CAOSVar::typeInteger);
-  IUseAdditionalRegistrySettings = var.GetInteger() == 0 ? false : true;
-
-  CAOSVar &midi = theApp.GetWorld().GetGameVar("engine_usemidimusicsystem");
+  CAOSVar &midi = GetWorld().GetGameVar("engine_usemidimusicsystem");
   ASSERT(midi.GetType() == CAOSVar::typeInteger);
   IOnlyPlayMidiMusic = midi.GetInteger() == 0 ? false : true;
 
-  memset(&myBedTime, 0, sizeof(SYSTEMTIME));
-  memset(&myRecordOfYourBirthday, 0, sizeof(SYSTEMTIME));
-  memset(&myMaxPlayingTime, 0, sizeof(SYSTEMTIME));
-
-  std::string string;
-
-  // no big deal if these fail do not report it to the kid
-  // user's birthday
-  CAOSVar &birthdate = theApp.GetWorld().GetGameVar("cav_birthdate");
-  if (birthdate.GetType() == CAOSVar::typeString)
-    birthdate.GetString(string);
-
-  ConstructSystemTime(myRecordOfYourBirthday, string);
-
-  // user's quittime
-  CAOSVar &quit = theApp.GetWorld().GetGameVar("cav_quittime");
-
-  if (quit.GetType() == CAOSVar::typeString)
-    quit.GetString(string);
-
-  ConstructSystemTime(myBedTime, string);
-
-  // user's gamelength
-  CAOSVar &gamelength = theApp.GetWorld().GetGameVar("cav_gamelength");
-
-  if (gamelength.GetType() == CAOSVar::typeString)
-    gamelength.GetString(string);
-
-  ConstructSystemTime(myMaxPlayingTime, string);
-
-  CAOSVar &perDay = theApp.GetWorld().GetGameVar("cav_gamelengthIsPerDay");
-  if (perDay.GetType() == CAOSVar::typeInteger) {
-    // if it is per day then we should have serialized the last gamestart time
-    // compare it to todays date and if it is the same day
-    // set the ingame start time to what was saved otherwise continue
-    int per = perDay.GetInteger();
-    if (per == 1) {
-      bool gameOver = false;
-      SYSTEMTIME timeEnd = myWorld->GetLastGameEndTime();
-      SYSTEMTIME length = myWorld->GetLastPlayLength();
-
-      if (IsValidGameTime(length) && IsValidTime(myGameStartTime) &&
-          IsValidTime(timeEnd)) {
-        // only go so far as same day month year
-        if (timeEnd.wDay == myGameStartTime.wDay &&
-            timeEnd.wMonth == myGameStartTime.wMonth &&
-            timeEnd.wYear == myGameStartTime.wYear) {
-          // check to see if we have been playing for too long already
-
-          // check seconds
-          if (myMaxPlayingTime.wHour == 0 && myMaxPlayingTime.wMinute == 0 &&
-              myMaxPlayingTime.wSecond != 0) {
-            if (length.wSecond - myGameStartTime.wSecond >=
-                myMaxPlayingTime.wSecond) {
-              gameOver = true;
-            } else {
-              myMaxPlayingTime.wSecond =
-                  myGameStartTime.wSecond - length.wSecond;
-            }
-          } // minutes
-          else if (myMaxPlayingTime.wHour == 0 &&
-                   myMaxPlayingTime.wMinute != 0) {
-            int testTime = length.wMinute;
-            // if we are on the hour
-            if (testTime == 0) {
-              testTime = 60;
-            }
-
-            if (testTime - myGameStartTime.wMinute >=
-                myMaxPlayingTime.wMinute) {
-              gameOver = true;
-            } else {
-              myMaxPlayingTime.wMinute = myGameStartTime.wMinute - testTime;
-            }
-          } else {
-            int diff = length.wHour - myGameStartTime.wHour;
-            if (diff >= myMaxPlayingTime.wHour) {
-              gameOver = true;
-            } else {
-              myMaxPlayingTime.wHour = myGameStartTime.wHour - length.wHour;
-            }
-          }
-        } // end if same day
-      }   // end if times are valid
-      if (gameOver) {
-        // set the max playing time to 2 minute so that
-        // when we start checking we bail out
-        memset(&myMaxPlayingTime, 0, sizeof(SYSTEMTIME));
-        myMaxPlayingTime.wMinute = 2;
-      }
-    } // end if per day
-  }
-
-  // decide which of the two times are sooner
-  GetTimeGameShouldEnd();
-
-  CAOSVar &HH = theApp.GetWorld().GetGameVar("engine_creature_pickup_status");
+  CAOSVar &HH = GetWorld().GetGameVar("engine_creature_pickup_status");
   if (HH.GetType() == CAOSVar::typeInteger) // Has to be an integer
   {
     myCreaturePickupStatus = HH.GetInteger();
   }
 
   CAOSVar &CDBW =
-      theApp.GetWorld().GetGameVar("engine_distance_before_port_line_warns");
+      GetWorld().GetGameVar("engine_distance_before_port_line_warns");
   if (CDBW.GetType() == CAOSVar::typeFloat) {
     myMaximumDistanceBeforePortLineWarns = CDBW.GetFloat();
   }
   CAOSVar &CDBS =
-      theApp.GetWorld().GetGameVar("engine_distance_before_port_line_snaps");
+      GetWorld().GetGameVar("engine_distance_before_port_line_snaps");
   if (CDBS.GetType() == CAOSVar::typeFloat) {
     myMaximumDistanceBeforePortLineSnaps = CDBS.GetFloat();
   }
@@ -1263,6 +978,10 @@ float App::GetTickRateFactor() {
 }
 
 bool App::CreateProgressBar() {
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+#else
   if (myProgressBar)
     return true;
 
@@ -1280,12 +999,15 @@ bool App::CreateProgressBar() {
       return false;
     }
   }
+
+#endif
   return false;
 }
 
 void App::StartProgressBar(int catOffset) {
-#ifdef _WIN32
-  // ugh. This stuff shouldn't be in app.
+#ifndef C2D_DIRECT_DISPLAY_LIB
+
+  // should this stuff really be in App?
 
   if (myProgressBar && !myWorld->IsStartUpWorld() &&
       !DisplayEngine::theRenderer().ProgressBarAlreadyStarted()) {
@@ -1345,128 +1067,29 @@ void App::StartProgressBar(int catOffset) {
     // tell display engine about it
     bool ok = DisplayEngine::theRenderer().CreateProgressBar(bitmap);
   }
-#endif
-  // TODO: non-win32 progress bar.
+#endif // C2D_DIRECT_DISPLAY_LIB
 }
 
 void App::SpecifyProgressIntervals(int updateIntervals) {
-#ifdef _WIN32
+#ifndef C2D_DIRECT_DISPLAY_LIB
   if (myProgressBar && !myWorld->IsStartUpWorld())
     DisplayEngine::theRenderer().StartProgressBar(updateIntervals);
-#endif
+#endif // C2D_DIRECT_DISPLAY_LIB
 }
 
-void App::UpdateProgressBar() {
-#ifdef _WIN32
-  if (myProgressBar && !myWorld->IsStartUpWorld()) {
-    DisplayEngine::theRenderer().UpdateProgressBar();
+void App::UpdateProgressBar(int amount /* = 1 */) {
+#ifndef C2D_DIRECT_DISPLAY_LIB
+  if (theMainView.GetLoading() && myProgressBar && !myWorld->IsStartUpWorld()) {
+    DisplayEngine::theRenderer().UpdateProgressBar(amount);
   }
-#endif
+#endif // C2D_DIRECT_DISPLAY_LIB
 }
 
 void App::EndProgressBar() {
-#ifdef _WIN32
+#ifndef C2D_DIRECT_DISPLAY_LIB
   theMainView.SetLoading(false);
   DisplayEngine::theRenderer().EndProgressBar();
-#endif
-}
-
-bool App::ConstructSystemTime(SYSTEMTIME &time, std::string &string) {
-  std::string word;
-  // month s
-  std::string date("\\");
-  std::string colon(":");
-
-  size_t start, end, next, p0;
-  bool done = false;
-  start = end = next = 0;
-  int value = 0;
-
-  // Find out whether this is time or date format
-  //  dates are separated by backslashes
-  start = string.find_first_of(date, next);
-  if (start < string.length()) {
-    // day month year
-    for (int i = 0; i < 3; i++) {
-
-      // Find start of date digits.
-      start = string.find_first_not_of(date, next);
-      // Find end of date digits.
-      p0 = string.find_first_of(date, start);
-      // Check for end of string.
-      end = (p0 >= string.length()) ? string.length() : p0;
-
-      // Copy all the date digits.
-      word = string.substr(next, end - start);
-
-      value = atoi(word.c_str());
-
-      next = end + 1;
-      // if we have reached the end of the string without
-      // getting all three date positions?
-      if (next >= string.length() && i < 2)
-        return false;
-      else {
-        switch (i) {
-        case 0: {
-          time.wDay = value;
-          break;
-        }
-        case 1: {
-          time.wMonth = value;
-          break;
-        }
-        case 2: {
-          time.wYear = value;
-          break;
-        }
-        }
-      }
-    } // end for i < 3
-  } else {
-    // times are separated by colons
-    start = string.find_first_of(colon, next);
-    if (start < string.length()) {
-
-      // hours minutes seconds
-      for (int i = 0; i < 3; i++) {
-
-        // Find start of time digits.
-        start = string.find_first_not_of(colon, next);
-        // Find end of time digits.
-        p0 = string.find_first_of(colon, start);
-        // Checking for end of string.
-        end = (p0 >= string.length()) ? string.length() : p0;
-        // Copy the digit.
-        word = string.substr(next, end - start);
-
-        value = atoi(word.c_str());
-
-        // if we have reached the end of the string without
-        // getting all three time positions?
-        next = end + 1;
-        if (next >= string.length() && i < 2)
-          return false;
-        else {
-          switch (i) {
-          case 0: {
-            time.wHour = value;
-            break;
-          }
-          case 1: {
-            time.wMinute = value;
-            break;
-          }
-          case 2: {
-            time.wSecond = value;
-            break;
-          }
-          }
-        }
-      } // end for i < 3
-    }
-  }
-  return true;
+#endif // C2D_DIRECT_DISPLAY_LIB
 }
 
 void App::SetPassword(std::string &password) {
@@ -1482,77 +1105,39 @@ bool App::DoINeedToGetPassword() {
   return temp;
 }
 
-void App::RefreshGameVariables() {
-  InitialiseFromGameVariables();
-  myWorld->InitialiseFromGameVariables();
+void App::RefreshFromGameVariables() {
+  DoRefreshFromGameVariables();
+  if (myWorld)
+    myWorld->DoRefreshFromGameVariables();
 }
 
-void App::GetTimeGameShouldEnd() {
-  // default time is bedtime ther are check later to see if this is valid
-  GameEndHelper(myEndGameTime, myBedTime);
+void App::DoLoadWorld(const std::string &worldName) {
+#ifdef _WIN32
+  // Sigh... Hardcodingtastic.  Unfortunately, we can't
+  // parameterise this, as then people would hack it
+  // too easily.
+/*	// SPARKY
+        if (myGameName == "Docking Station")
+        {
+                // If we are loading a Creatures 3 world
+                if (worldName != "Startup" &&
+   GetEameVar("engine_no_auxiliary_bootstrap_1").GetInteger() == 0)
+                {
+                        while (!CheckForCD())
+                        {
+                                std::string message =
+   theCatalogue.Get("ds_c3_app_cd_needed", 0); if (::MessageBox(theMainWindow,
+   message.c_str(), GetGameName().c_str(), MB_SYSTEMMODAL | MB_RETRYCANCEL) ==
+   IDCANCEL)
+                                {
+                                        HANDLE hProcess = GetCurrentProcess();
+                                        TerminateProcess(hProcess, -1);
+                                }
+                        }
+                }
+        }*/
+#endif
 
-  if (IsValidTime(myGameStartTime)) {
-
-    if (IsValidGameTime(myMaxPlayingTime)) {
-      // find out which time (h:m:) is earlier
-
-      // calculate when the endgame would be on based on length of play
-
-      div_t hour = div(myGameStartTime.wHour + myMaxPlayingTime.wHour, 24);
-
-      myEndGameTime.wHour = hour.rem;
-
-      // remember that we might be over the 60 minutes in which we
-      // should increase the hour
-      div_t minutes =
-          div(myGameStartTime.wMinute + myMaxPlayingTime.wMinute, 60);
-
-      myEndGameTime.wMinute = minutes.rem;
-
-      myEndGameTime.wHour += minutes.quot;
-
-      if (myEndGameTime.wHour < myBedTime.wHour) {
-        return;
-      }
-
-      if (IsValidTime(myBedTime)) {
-        // copy in the bedtimne then
-        if (myBedTime.wHour < myEndGameTime.wHour) {
-          GameEndHelper(myEndGameTime, myBedTime);
-          return;
-        }
-
-        if (myBedTime.wHour == myEndGameTime.wHour) {
-          if (myEndGameTime.wMinute < myBedTime.wMinute) {
-
-            return;
-          }
-
-          if (myBedTime.wMinute < myEndGameTime.wMinute) {
-            GameEndHelper(myEndGameTime, myBedTime);
-            return;
-          }
-
-          // if they are equal in minutes then all is well
-        }
-      }
-    }
-  }
-}
-
-void App::GameEndHelper(SYSTEMTIME &dest, SYSTEMTIME &source) {
-
-  dest.wDay = source.wDay;
-  dest.wDayOfWeek = source.wDayOfWeek;
-  dest.wHour = source.wHour;
-  dest.wMilliseconds = source.wMilliseconds;
-  dest.wMinute = source.wMinute;
-  dest.wMonth = source.wMonth;
-  dest.wSecond = source.wSecond;
-  dest.wYear = source.wYear;
-}
-
-void App::DoLoadWorld(std::string worldName) {
   // try loading main world
   if (myWorld)
     delete myWorld;
@@ -1569,26 +1154,132 @@ void App::DoLoadWorld(std::string worldName) {
 }
 
 bool App::ProcessCommandLine(std::string commandLine) {
+  theFlightRecorder.Log(FLIGHT_STARTUP, "Processing command line\n");
+
+#ifdef _WIN32
+  // Screensaver.  Note that it can be launched directory (with engine.exe
+  // renamed to GameName.scr) or indirectly (via ScreenStub.exe) with the
+  // screensaver command line switches.
+
+  // Process screensaver command line
+  if (commandLine.compare(0, 2, "/s") == 0 ||
+      commandLine.compare(0, 2, "-s") == 0 ||
+      commandLine.compare(0, 1, "s") == 0) {
+    std::string path, appName, extension;
+    GetAppDetails(&path, &appName, &extension);
+    if (!stricmp(extension.c_str(), "scr")) // SPARKY was strcmpi
+      SetGameName(appName);
+    else if (GetGameName().empty())
+      // Note: find_last_of(" ") isn't quite correct, as it won't cope with
+      // game names with spaces in.  This is a nasty hack at the last minute
+      // for Sea Monkeys, so you can come and hit me if you like. - Francis
+      SetGameName(commandLine.substr(commandLine.find_last_of(" ") + 1,
+                                     commandLine.size()));
+    IsScreenSaver = true;
+    GetEameVar("engine_screensaver").SetInteger(1);
+
+    HANDLE pseudoThis = GetCurrentThread();
+    HANDLE realThis;
+    if (!DuplicateHandle(GetCurrentProcess(), pseudoThis, GetCurrentProcess(),
+                         &realThis, 0, FALSE, 0))
+      ASSERT(false);
+    Win32ScreenKiller::Start(realThis);
+
+    return true;
+  }
+  // Process screensaver preview command line
+  if (commandLine.compare(0, 2, "/p") == 0 ||
+      commandLine.compare(0, 2, "-p") == 0 ||
+      commandLine.compare(0, 1, "p") == 0) {
+    std::string path, appName, extension;
+    GetAppDetails(&path, &appName, &extension);
+    if (!stricmp(extension.c_str(), "scr")) // SPARKY was strcmpi
+      SetGameName(appName);
+    else if (GetGameName().empty())
+      SetGameName(commandLine.substr(commandLine.find_last_of(" ") + 1,
+                                     commandLine.size()));
+    IsScreenSaverPreview = true;
+    GetEameVar("engine_scrpreview").SetInteger(1);
+
+    /*
+    char hWndStr[5];
+    strcpy(hWndStr, commandLine.substr(commandLine.find('p') + 2, 4).c_str());
+    myPreviewWindowHandle = (HWND)strtoul(hWndStr, NULL, 10);
+    */
+
+    return false;
+  }
+  // Process screensaver configure command line
+  if (commandLine.compare(0, 2, "/c") == 0 ||
+      commandLine.compare(0, 2, "-c") == 0 ||
+      commandLine.compare(0, 1, "c") == 0) {
+    std::string path, appName, extension;
+    GetAppDetails(&path, &appName, &extension);
+    if (!stricmp(extension.c_str(), "scr")) // SPARKY was strcmpi
+      SetGameName(appName);
+    else if (GetGameName().empty())
+      SetGameName(commandLine.substr(commandLine.find_last_of(" ") + 1,
+                                     commandLine.size()));
+    IsScreenSaverConfig = true;
+    GetEameVar("engine_scrconfig").SetInteger(1);
+    return true;
+  }
+#endif
+
+  // Check for both with and without a space (now you
+  // can launch without specifying the game name at the
+  // command line)
   if (commandLine.substr(0, 11) == "--autokill ") {
     myAutoKillAgentsOnError = true;
     commandLine = commandLine.substr(11);
   }
+  if (commandLine.substr(0, 10) == "--autokill") {
+    myAutoKillAgentsOnError = true;
+    commandLine = commandLine.substr(10);
+  }
 
   // Get the game name if any from the command line
-  if (!commandLine.empty())
-    SetGameName(commandLine);
-  else {
-    ErrorMessageHandler::NonLocalisable(
-        "NLE0007: You must specify a game name in the command line.\nFor "
-        "example, Creatures 3 or Creatures Adventures\n\nFor soak tests, "
-        "specify --autokill before the game name\nto kill agents which "
-        "generate run time errors.",
-        std::string("App::ProcessCommandLine"));
-    return false;
-  }
+  SetGameName(commandLine);
 
   return true;
 }
+
+#ifdef _WIN32
+// Get the application path name and extension from the command line
+bool App::GetAppDetails(std::string *path, std::string *fileName,
+                        std::string *extension) {
+  std::string commandLine, appName;
+
+  commandLine = GetCommandLine();
+
+  // Get the full path and filename from the command line
+  int pathEnd = commandLine.find(".");
+  appName = commandLine.substr(0, pathEnd + 4);
+  if (appName[0] == '\"')
+    appName = appName.substr(1, appName.size() - 1);
+
+  *path = appName.substr(0, appName.rfind('\\'));
+
+  // Make into a long filename (we don't use GetLongPathName
+  // as it doesn't work on Windows 95 or Windows NT)
+  WIN32_FIND_DATA fd;
+  HANDLE hFind = ::FindFirstFile(appName.c_str(), &fd);
+  if (hFind != INVALID_HANDLE_VALUE) {
+    ::FindClose(hFind);
+    appName = fd.cFileName;
+  } else {
+    ASSERT(false);
+    return false;
+  }
+
+  // Remove the path from the filename and extension
+  *extension = appName.substr(appName.rfind('.') + 1, appName.size());
+  *fileName = appName.substr(appName.rfind('\\') + 1,
+                             appName.rfind('.') - (appName.rfind('\\') + 1));
+
+  return true;
+}
+#endif
 
 // Now for the engine game variable documentation tables.....
 
@@ -1603,7 +1294,7 @@ TableSpec ourGameVariables[] = {
               "are functional.  For non-numeric keypad keys, you must hold "
               "Shift down with the key."),
     TableSpec("@engine_full_screen_toggle@", "Integer", "1",
-              "Alt+Shift+Enter usually toggles full screen mode.  Set to 0 to "
+              "Alt+Enter usually toggles full screen mode.  Set to 0 to "
               "disable this."),
     TableSpec("@engine_SkeletonUpdateDoubleSpeed@", "Integer", "0",
               "If non-zero, skeleton updates happen each tick. If Zero, they "
@@ -1644,6 +1335,12 @@ TableSpec ourGameVariables[] = {
               "Saved worlds and other archives are compressed using zlib.  "
               "This sets the compression level. The value ranges between: 0 - "
               "No compression, 1 - Best speed, 9 - Best compression."),
+    TableSpec("@engine_other_world@", "String", "&lt;NONE&gt;",
+              "Used by @#FILE OOPE@ to allow saving to other world's journal "
+              "directories."),
+    TableSpec("@engine_netbabel_save_passwords@", "Integer", "0",
+              "Set to 1 to tell the netbabel module to save passwords in "
+              "user.cfg, 0 for it to forget them."),
 
     TableSpec(), // Birth deserves a seperate table
     TableSpec("@engine_multiple_birth_first_chance@", "Float", "0.0",
@@ -1667,8 +1364,6 @@ TableSpec ourGameVariables[] = {
               "This sets the number of seasons in a year. (Game Time)"),
 
     TableSpec(), // Volume and sound Specs
-    TableSpec("@engine_volume@", "Integer", "0",
-              "This sets the normal volume for the game."),
     TableSpec(
         "@engine_mute@", "Integer", "0",
         "This sets whether (non zero) or not (zero) to mute the MIDI player"),
@@ -1706,6 +1401,42 @@ TableSpec ourGameVariables[] = {
         "they are nearning their maximum length before they snap"),
     TableSpec("@engine_distance_before_port_line_snaps@", "Float", "800.0",
               "At this distance, port lines will simply snap."),
+};
+
+TableSpec ourEameVariables[] = {
+    TableSpec("Eame Variables"),
+    TableSpec("Variable (for @#EAME@)", "Expected Type", "Default",
+              "Description"),
+
+    TableSpec(
+        "@engine_no_auxiliary_bootstrap_nnn@", "Integer", "0",
+        "Set to non-zero to prevent @#LOAD@ using that auxiliary Bootstrap "
+        "directory for new worlds.  nnn can be 0 for the main Bootstrap "
+        "directory, or the number of an auxiliary one.  The setting is stored "
+        "for each world in files in the world's directory."),
+    TableSpec("@engine_clone_upon_import@", "Integer", "0",
+              "Set to 1 to force @#PRAY IMPO@ to clone all creatures."),
+    TableSpec("@engine_screensaver@", "Integer", "0 or 1",
+              "Returns 1 if the engine is in screen saver mode, 0 otherwise. "
+              "This should treated as a read only game variable"),
+    TableSpec("@engine_scrpreview@", "Integer", "0 or 1",
+              "Returns 1 if the engine is in screen saver preview mode, 0 "
+              "otherwise. This should treated as a read only game variable"),
+    TableSpec("@engine_scrconfig@", "Integer", "0 or 1",
+              "Returns 1 if the engine is in screen saver configuration mode, "
+              "0 otherwise. This should treated as a read only game variable"),
+    TableSpec("@engine_decouple_mouse@", "Integer", "0",
+              "Set to 1 to disconnect the physical mouse from the @#PNTR@ "
+              "agent.  You can then @#MVTO@ the pointer agent without the user "
+              "getting in the way."),
+    TableSpec(
+        "@engine_nudge_border_t@", "Integer", "2",
+        "Alters the top border for screen-edge nudge scrolling in full screen "
+        "mode.  There are also engine_nudge_border_b, engine_nudge_border_l, "
+        "engine_nudge_border_r for the bottom, left and right borders.  You "
+        "can use negative values, and should do particularly if you have a "
+        "pointer hotspot not at the top left corner of the pointer sprite.  "
+        "See @#SCOL@ for related features."),
 };
 
 TableSpec ourDebugKeys[] = {
@@ -1746,7 +1477,9 @@ TableSpec ourDebugKeys[] = {
 int dummyAppOwnedTables =
     AutoDocumentationTable::RegisterTable(ourGameVariables,
                                           sizeof(ourGameVariables)) +
-    AutoDocumentationTable::RegisterTable(ourDebugKeys, sizeof(ourDebugKeys));
+    AutoDocumentationTable::RegisterTable(ourDebugKeys, sizeof(ourDebugKeys)) +
+    AutoDocumentationTable::RegisterTable(ourEameVariables,
+                                          sizeof(ourEameVariables));
 
 int App::EorWolfValues(int andMask, int eorMask) {
   int wolf = 0;
@@ -1769,38 +1502,27 @@ int App::EorWolfValues(int andMask, int eorMask) {
   myAutoKillAgentsOnError = (wolf & 8) == 8;
 
   // In case autokill has changed
-#ifdef ResetWindowTitle
   ResetWindowTitle();
-#else
-#warning "TODO: Implement ResetWindowTitle"
-#endif
   return wolf;
 }
 
 bool App::DebugKeyNowNoShift() {
-  return (theApp.GetWorld().GetGameVar("engine_debug_keys").GetInteger() == 1);
+  return (GetWorld().GetGameVar("engine_debug_keys").GetInteger() == 1);
 }
 
 bool App::DebugKeyNow() {
   return DebugKeyNowNoShift() && GetInputManager().IsKeyDown(VK_SHIFT);
 }
 
-int App::GetZLibCompressionLevel() {
-  if (myWorld)
-    return GetWorld().GetGameVar("engine_zlib_compression").GetInteger();
-  else
-    return 6;
-}
-
 #ifdef _WIN32
+
 bool App::CheckForCD() {
   // Look for msnope32.dll in the windows system directory
   char systemDirectory[MAX_PATH + 1];
   GetSystemDirectory(systemDirectory, MAX_PATH);
   std::string overrideFilename =
       std::string(systemDirectory) + "\\msnope32.dll";
-  int overrideAttributes = GetFileAttributes(overrideFilename.c_str());
-  if (overrideAttributes != -1) {
+  if (FileExists(overrideFilename.c_str())) {
     // if we have it, it's a developer overriding the protection
     return true;
   }
@@ -1816,9 +1538,14 @@ bool App::CheckForCD() {
     std::string driveName = pDrive;
     if (GetDriveType(driveName.c_str()) == DRIVE_CDROM) {
       // Look for Creatures 3 icon file on the CD
-      std::string fileToFind = driveName + "Install\\Install\\Creatures 3.ico";
-      int filePresent = GetFileAttributes(fileToFind.c_str());
-      if (filePresent != -1) {
+      std::string fileToFind;
+      if (myGameName == "Sea-Monkeys")
+        fileToFind = driveName + "Intro\\SMIntro.avi";
+
+      // This is the Creatures 3 check, for historyical reference:
+      // fileToFind = driveName + "Install\\Install\\Creatures 3.ico";
+
+      if (FileExists(fileToFind.c_str())) {
         return true;
       }
     }
@@ -1843,42 +1570,35 @@ bool App::CheckForMutex() {
   return true;
 }
 
-bool App::CheckAllFreeDiskSpace() {
+bool App::CheckAllFreeDiskSpace(int expectedSystem, int expectedGeneral) {
+  // Check system directory
   char systemDirectory[MAX_PATH + 1];
   GetSystemDirectory(systemDirectory, MAX_PATH);
-  if (!CheckFreeDiskSpace(systemDirectory, true))
+  if (!CheckFreeDiskSpace(systemDirectory, expectedSystem))
     return false;
 
+  // Check paths in main game directories
+  // (auxiliary directories aren't ever written to)
   for (int i = 0; i < NUM_DIRS; ++i) {
-    if (!CheckFreeDiskSpace(m_dirs[i], false))
+    if (!CheckFreeDiskSpace(theDirectoryManager.GetDirectory(i),
+                            expectedGeneral))
       return false;
   }
 
   return true;
 }
 
-bool App::CheckFreeDiskSpace(std::string path, bool systemDirectory) {
-
-// for non-win32 we'll just assume there is enough space
-#ifdef _WIN32
+bool App::CheckFreeDiskSpace(std::string path, int expected) {
+  // Expand relative paths
+  char buf[_MAX_PATH + 1];
+  char *filePart;
+  GetFullPathName(path.c_str(), _MAX_PATH, buf, &filePart);
+  path = buf;
 
   if (path.size() < 3)
     return true;
 
   path = path.substr(0, 3);
-
-  int32 expected = 0;
-  if (systemDirectory) {
-    // 75Mb by default
-    expected = 75 * 1024 * 1024;
-    theRegistry.GetValue(theRegistry.DefaultKey(), "DiskSpaceCheckSystem",
-                         expected, HKEY_CURRENT_USER);
-  } else {
-    // 32Mb by default
-    expected = 32 * 1024 * 1024;
-    theRegistry.GetValue(theRegistry.DefaultKey(), "DiskSpaceCheck", expected,
-                         HKEY_CURRENT_USER);
-  }
 
   DWORD sectorsPerCluster = 0;
   DWORD bytesPerSector = 0;
@@ -1892,16 +1612,240 @@ bool App::CheckFreeDiskSpace(std::string path, bool systemDirectory) {
     if (size < expected)
       return false;
   }
-#else
-#warning // No free-disk-space check for non-win32
+
+  return true;
+}
+
+#endif // WIN32
+
+std::string App::GenerateWindowTitle() {
+
+  std::string title;
+  // title="SPARKY";
+
+  // Game name
+  if (!GetGameName().empty())
+    title += GetGameName() + std::string(" - ");
+
+  // Engine version
+  title += theCatalogue.Get("system_title", 1) + std::string(" ") +
+           GetEngineVersion();
+
+  // Build number if available
+  if (theCatalogue.TagPresent("build_number"))
+    title += std::string(" B") + theCatalogue.Get("build_number", 0);
+
+  // Port number if available
+  if (theCatalogue.TagPresent("port_number"))
+    title += std::string(" P") + theCatalogue.Get("port_number", 0);
+
+  // Reminder that autokill is turned on
+  if (AutoKillAgentsOnError())
+    title += std::string(" - ") + theCatalogue.Get("system_title", 2);
+
+  return title;
+}
+
+std::string App::GetWarpOutgoingPath() {
+  std::string nickname = GetNetworkNickname();
+  LowerCase(nickname);
+  if (GetNetworkNickname().empty())
+    nickname = "None";
+
+  std::string path =
+      theDirectoryManager.GetDirectory(USERS_DIR) + nickname + PathSeparator();
+  if (!FileExists(path.c_str()))
+    CreateDirectory(path.c_str(), NULL);
+  path += std::string("Warp Out") + PathSeparator();
+  if (!FileExists(path.c_str()))
+    CreateDirectory(path.c_str(), NULL);
+  return path;
+}
+
+std::string App::GetWarpIncomingPath() {
+  std::string nickname = GetNetworkNickname();
+  LowerCase(nickname);
+  if (GetNetworkNickname().empty())
+    nickname = "None";
+
+  std::string path =
+      theDirectoryManager.GetDirectory(USERS_DIR) + nickname + PathSeparator();
+  if (!FileExists(path.c_str()))
+    CreateDirectory(path.c_str(), NULL);
+  path += std::string("Warp In") + PathSeparator();
+  if (!FileExists(path.c_str()))
+    CreateDirectory(path.c_str(), NULL);
+  return path;
+}
+
+void App::NotifyNewNickname(const std::string &nickName) {
+  AddBasicPrayDirectories();
+
+  NetworkInterface *networkInterface = ModuleImporter::GetNetworkInterface();
+  if (networkInterface) {
+    thePrayManager.AddDir(GetWarpIncomingPath());
+    networkInterface->SetDirectories(GetWarpOutgoingPath(),
+                                     GetWarpIncomingPath());
+  }
+
+  thePrayManager.RescanFolders();
+}
+
+void App::AddBasicPrayDirectories() {
+  thePrayManager.ClearDirList();
+  {
+    for (int i = 0; i < theDirectoryManager.GetAuxDirCount(PRAYFILE_DIR); ++i) {
+      thePrayManager.AddDir(theDirectoryManager.GetAuxDir(PRAYFILE_DIR, i));
+    }
+  }
+  {
+    for (int i = 0; i < theDirectoryManager.GetAuxDirCount(CREATURES_DIR);
+         ++i) {
+      thePrayManager.AddDir(theDirectoryManager.GetAuxDir(CREATURES_DIR, i));
+    }
+  }
+}
+
+// These provide callback to external modules, that need
+// initialisation functions calling
+int App::AddInitialisationFunction(InitialisationFunction function) {
+  GetInitialisationFunctions().push_back(function);
+  return 0;
+}
+
+std::vector<App::InitialisationFunction> &App::GetInitialisationFunctions() {
+  static std::vector<InitialisationFunction> ourmyInitialisationFunctions;
+  return ourmyInitialisationFunctions;
+}
+
+void App::CallInitialisationFunctions() {
+  std::vector<InitialisationFunction> &InitialisationFunctions =
+      GetInitialisationFunctions();
+  for (int i = 0; i < InitialisationFunctions.size(); ++i) {
+    InitialisationFunctions[i](*this);
+  }
+}
+
+std::string App::GetNetworkUserId() {
+  NetworkInterface *networkInterface = ModuleImporter::GetNetworkInterface();
+  if (networkInterface)
+    return networkInterface->GetUserId();
+  else
+    return "";
+}
+
+std::string App::GetNetworkNickname() {
+  NetworkInterface *networkInterface = ModuleImporter::GetNetworkInterface();
+  if (networkInterface)
+    return networkInterface->GetNickname();
+  else
+    return "";
+}
+
+std::string App::GetWorldName() {
+  std::string worldName("");
+
+  if (myWorld)
+    return myWorld->GetWorldName();
+
+  return worldName;
+}
+
+bool App::InitConfigFiles() {
+#ifdef _WIN32
+  if (!GetGameName().empty()) {
+    Registry registry;
+    registry.ChooseDefaultKey(GetGameName());
+    std::string value;
+    if (registry.GetValue("Main Directory", value, HKEY_LOCAL_MACHINE))
+      SetCurrentDirectory(value.c_str());
+  }
+#endif
+
+  std::string machineConfig = "machine.cfg";
+  std::string userConfig = "user.cfg";
+
+  if (!myMachineSettings.BindToFile(machineConfig))
+    return false;
+  if (!myUserSettings.BindToFile(userConfig))
+    return false;
+
+#ifdef _WIN32
+  // If either configuration file missing, then get settings from
+  // registry instead...
+  if (!FileExists(machineConfig.c_str()) || !FileExists(userConfig.c_str())) {
+    Registry::MigrateFromRegistry();
+  }
+
+  // Get auxiliary directories from registry, if asked to do so
+  Registry::MigrateAuxiliaryDirectoriesFromRegistry();
+#endif
+
+  // Read game name from configurator file
+  SetGameName(myMachineSettings.Get("Game Name"));
+
+#ifdef _WIN32
+  // Put settings in registry, for tools to look at
+  Registry::TransferToRegistryForTools();
 #endif
 
   return true;
 }
 
-#endif // _WIN32
+// static
+int App::GetWorldTickInterval() { return myWorldTickInterval; }
 
-bool App::InitConfigFiles(const std::string &userfile,
-                          const std::string &machinefile) {
-  return true;
+// static
+void App::SetWorldTickInterval(int worldTickInterval) {
+  myWorldTickInterval = worldTickInterval;
 }
+
+bool App::IsAppAScreenSaver() { return IsScreenSaver; }
+
+bool App::GetScreenSaverConfig() { return IsScreenSaverConfig; }
+
+bool App::GetIsScreenSaverPreview() { return IsScreenSaverPreview; }
+
+#ifdef _WIN32
+HWND App::GetPreviewWindowHandle() { return myPreviewWindowHandle; }
+#endif
+
+CAOSVar &App::GetEameVar(const std::string &name) {
+  if (name.empty())
+    throw BasicException("Empty string EAME variables not allowed");
+  return (myEameVars[name]);
+}
+
+std::string App::GetNextEameVar(const std::string &name) {
+  if (name.empty() && myEameVars.size() > 0)
+    return myEameVars.begin()->first;
+
+  std::map<std::string, CAOSVar>::iterator it;
+  it = myEameVars.find(name);
+  if (it != myEameVars.end())
+    it++;
+
+  if (it == myEameVars.end())
+    return "";
+  else
+    return it->first;
+}
+
+void App::DeleteEameVar(const std::string &name) {
+  std::map<std::string, CAOSVar>::iterator it;
+  it = myEameVars.find(name);
+  if (it != myEameVars.end())
+    myEameVars.erase(it);
+}
+
+CAOSVar &App::GetGameVar(const std::string &name) {
+  return GetWorld().GetGameVar(name);
+}
+
+std::string App::GetDefaultMNG() {
+  std::string defaultMNG = "music.mng";
+  UserSettings().Get("Default Munge", defaultMNG);
+  return defaultMNG;
+}
+
+bool App::IsFullScreen() { return theMainView.IsFullScreen(); }

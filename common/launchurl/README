@@ -1,0 +1,42 @@
+launchurl
+---------
+
+
+Launchurl attempts to determine the users 'preferred' web browser and to
+launch a url with it. It checks for KDE and Gnome, both of which have ways
+to launch a browser. If neither of those is installed, it tries for the
+BROWSER environment variable, and failing that it tries a hardcoded list
+of browsers which might be installed.
+
+usage:
+launchurl [-d|-debug] [-v|-version] url
+
+eg:
+./launchurl http://www.google.com
+
+
+
+Please it out on your computer and maybe have a quick look at the source.
+
+The Makefile is very basic, but should work ok. Just type 'make'.
+I've also included the binary
+I compiled on my system (i386 Debian).
+
+
+Bug reports, patches, suggestions and other feedback would be most welcome!
+
+
+
+Thanks,
+Ben.
+
+ben.campbell@ntlworld.com or
+ben.campbell@justaddmonsters.com
+
+
+
+
+
+
+
+

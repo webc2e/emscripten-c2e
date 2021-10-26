@@ -1,4 +1,5 @@
 #include "CAOSVar.h"
+#include "../CreaturesArchive.h"
 #include "../Agents/Agent.h"
 
 #ifdef _MSC_VER
@@ -6,13 +7,48 @@
 #endif
 
 
+CreaturesArchive &operator<<( CreaturesArchive& ar, CAOSVar const &var )
+{
+	var.Write( ar );
+	return ar;
+}
+
+CreaturesArchive &operator>>( CreaturesArchive& ar, CAOSVar &var )
+{
+	var.Read( ar );
+	return ar;
+}
+
+bool CAOSVar::operator< (const CAOSVar& other) const
+{
+	if (myType < other.myType)
+		return true;
+	if (myType > other.myType)
+		return false;
+	switch(myType)
+	{
+	case typeString:
+		return ((*myData.pv_string) < (*other.myData.pv_string));
+	case typeAgent:
+		return (myHandle < other.myHandle);
+	case typeInteger:
+		return (myData.pv_int < other.myData.pv_int);
+	case typeFloat:
+		return (myData.pv_float < other.myData.pv_float);
+	default:
+		ASSERT(false); // shouldn't fire
+	}
+	return false;
+}
+
 // Global
-CAOSVar INTEGERZERO;
+C2E_MODULE_API CAOSVar INTEGERZERO;
+C2E_MODULE_API CAOSVar COASVARAGENTNULL;
 
 // virtual
 void CAOSVar::Get( const int type, PolyVar& data ) const
 {
-	_ASSERT(myType == type);
+	//_ASSERT(myType == type);
 	data = myData;
 }
 
@@ -215,3 +251,4 @@ bool CAOSVar::Read(std::istream &stream)
 	}
 	return true;
 }
+

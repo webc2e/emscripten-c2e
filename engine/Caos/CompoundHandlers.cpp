@@ -26,12 +26,13 @@
 #include "../Agents/UIPart.h"
 #include "../Agents/CameraPart.h"
 #include "../Agents/CompoundAgent.h"
-#include "../Display/MainCamera.h"
+#include "../Camera/MainCamera.h"
+#include "../Maths.h"
 
 
 void CompoundHandlers::Command_PAT( CAOSMachine& vm )
 {
-	const int pat_subcount=7;
+	const int pat_subcount=8;
 	int subcmd;
 	static CommandHandler HandlerTable[ pat_subcount ] =
 	{
@@ -42,6 +43,7 @@ void CompoundHandlers::Command_PAT( CAOSMachine& vm )
 		SubCommand_PAT_CMRA,
 		SubCommand_PAT_GRPH,
 		SubCommand_PAT_KILL,
+		SubCommand_PAT_MOVE,
 	};
 
 	subcmd = vm.FetchOp();
@@ -158,7 +160,7 @@ void CompoundHandlers::Command_FRMT( CAOSMachine& vm )
 	if( !(part->GetType() & CompoundPart::partText) )
 		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
 
-	((UITextPart*)part)->SetAttributes( TextAttributes( left, top, right, bottom, lineSpacing, characterSpacing, justification ) );
+	((UITextPart*)part)->SetAttributes( TextAttributes( left, top, right, bottom, lineSpacing, characterSpacing, justification) );
 }
 
 void CompoundHandlers::Command_GRPL( CAOSMachine& vm )
@@ -280,6 +282,44 @@ void CompoundHandlers::StringRV_PTXT( CAOSMachine& vm, std::string& str )
 		str = "";
 }
 
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void CompoundHandlers::SubCommand_PAT_DULL( CAOSMachine& vm )
+{
+	int partid;
+	int relplane;
+	int baseimage;
+	std::string gallery;
+	std::string filename;
+	AgentHandle agent;
+	CompoundPart* part;
+
+	vm.ValidateTarg();
+	if( !vm.GetTarg().IsCompoundAgent() )
+		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+
+	agent = vm.GetTarg();
+
+	partid = vm.FetchIntegerRV();
+	vm.FetchStringRV( gallery );
+	baseimage = vm.FetchIntegerRV();
+	Vector2D position;
+	position.x = vm.FetchFloatRV();
+	position.y = vm.FetchFloatRV();
+	relplane = vm.FetchIntegerRV();
+
+	int numImages = vm.FetchIntegerRV();
+
+		FilePath path = theAgentManager.MakeGalleryPath(gallery);
+	part = new CompoundPart( path,
+		baseimage, position, relplane,numImages );
+
+	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
+	{
+		delete part;
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
+	}
+}
+#else
 void CompoundHandlers::SubCommand_PAT_DULL( CAOSMachine& vm )
 {
 	int partid;
@@ -310,16 +350,17 @@ void CompoundHandlers::SubCommand_PAT_DULL( CAOSMachine& vm )
 	// parts should just send 1 image since the pupt and puhl work only for
 	// the main part
 	int numImages = 0;
-	part = new CompoundPart( FilePath( gallery + ".s16",IMAGES_DIR ),
+		FilePath path = theAgentManager.MakeGalleryPath(gallery);
+	part = new CompoundPart( path,
 		baseimage, position, relplane,numImages );
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 }
-
+#endif
 
 void CompoundHandlers::SubCommand_PAT_BUTT( CAOSMachine& vm )
 {
@@ -359,16 +400,148 @@ void CompoundHandlers::SubCommand_PAT_BUTT( CAOSMachine& vm )
 	// should check for used partid here!
 
 	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	part = new UIButton( FilePath( gallery + ".s16", IMAGES_DIR),
+	// it does use numImages now
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+
+	part = new UIButton( path,
 		baseImage, numImages, position, relplane,
 		hoverAnim, messageID, option);
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 }
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+void CompoundHandlers::SubCommand_PAT_TEXT( CAOSMachine& vm )
+{
+	int partid;
+	int relplane;
+	int baseimage;
+	int messageID;
+	std::string gallery;
+	std::string fontSprite;
+	AgentHandle agent;
+	CompoundPart* part;
+
+	int fontWidth;
+	int fontHeight;
+	int red;
+	int blue;
+	int green;
+	bool bold;
+
+	vm.ValidateTarg();
+	if( !vm.GetTarg().IsCompoundAgent() )
+		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+
+	agent = vm.GetTarg();
+
+	partid = vm.FetchIntegerRV();
+	vm.FetchStringRV( gallery );
+	baseimage = vm.FetchIntegerRV();
+	Vector2D position;
+	position.x = vm.FetchFloatRV();
+	position.y = vm.FetchFloatRV();
+	relplane = vm.FetchIntegerRV();
+	messageID = vm.FetchIntegerRV();
+	vm.FetchStringRV( fontSprite );
+
+	fontWidth= vm.FetchIntegerRV();
+	fontHeight= vm.FetchIntegerRV();
+	red = vm.FetchIntegerRV();
+	green = vm.FetchIntegerRV();
+	 blue = vm.FetchIntegerRV();
+	bold = vm.FetchIntegerRV() == 0 ? false : true;
+
+	// should check for used partid here!
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+
+	part = new UIText(path,
+						baseimage, 
+						0, 
+						position, 
+						relplane,
+						messageID,
+						fontSprite,
+						fontWidth,
+						fontHeight,
+						red,
+						green,
+						blue,
+						bold);
+
+	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
+	{
+		delete part;
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
+	}
+}
+
+void CompoundHandlers::SubCommand_PAT_FIXD( CAOSMachine& vm )
+{
+	int partid;
+	int relplane;
+	int baseimage;
+	std::string gallery;
+	std::string fontSprite;
+	AgentHandle agent;
+	CompoundPart* part;
+
+	int fontWidth;
+	int fontHeight;
+	int red;
+	int blue;
+	int green;
+	bool bold;
+
+	vm.ValidateTarg();
+	if( !vm.GetTarg().IsCompoundAgent() )
+		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+
+	agent = vm.GetTarg();
+
+	partid = vm.FetchIntegerRV();
+	vm.FetchStringRV( gallery );
+	baseimage = vm.FetchIntegerRV();
+	Vector2D position;
+	position.x = vm.FetchFloatRV();
+	position.y = vm.FetchFloatRV();
+	relplane = vm.FetchIntegerRV();
+	vm.FetchStringRV( fontSprite );
+
+	
+	fontWidth= vm.FetchIntegerRV();
+	fontHeight= vm.FetchIntegerRV();
+	red = vm.FetchIntegerRV();
+	green = vm.FetchIntegerRV();
+	blue = vm.FetchIntegerRV();
+	bold = vm.FetchIntegerRV() == 0 ? false : true;
+
+	// should check for used partid here!
+
+	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+
+	part = new UIFixedText( path,
+		baseimage, 0, position, relplane, fontSprite,	fontWidth,
+						fontHeight,
+						red,
+						green,
+						blue,
+						bold );
+
+	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
+	{
+		delete part;
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
+	}
+}
+
+#else
 
 void CompoundHandlers::SubCommand_PAT_TEXT( CAOSMachine& vm )
 {
@@ -398,15 +571,15 @@ void CompoundHandlers::SubCommand_PAT_TEXT( CAOSMachine& vm )
 	vm.FetchStringRV( fontSprite );
 
 	// should check for used partid here!
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	part = new UIText( FilePath( gallery + ".s16", IMAGES_DIR ),
+	part = new UIText(path,
 		baseimage, 0, position, relplane, messageID, fontSprite );
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 }
 
@@ -438,15 +611,23 @@ void CompoundHandlers::SubCommand_PAT_FIXD( CAOSMachine& vm )
 	// should check for used partid here!
 
 	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	part = new UIFixedText( FilePath( gallery + ".s16", IMAGES_DIR ),
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+
+	part = new UIFixedText( path,
 		baseimage, 0, position, relplane, fontSprite );
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 }
+
+#endif
+
+
+
+
 
 void CompoundHandlers::SubCommand_PAT_GRPH( CAOSMachine& vm )
 {
@@ -476,13 +657,15 @@ void CompoundHandlers::SubCommand_PAT_GRPH( CAOSMachine& vm )
 	// should check for used partid here!
 
 	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	part = new UIGraph( FilePath( gallery + ".s16", IMAGES_DIR ),
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+	
+	part = new UIGraph( path,
 		baseimage, 0, position, relplane, numValues );
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 }
 
@@ -532,14 +715,16 @@ void CompoundHandlers::SubCommand_PAT_CMRA( CAOSMachine& vm )
 	// should check for used partid here!
 
 	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	part = new CameraPart( FilePath( gallery + ".s16", IMAGES_DIR),
+	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+
+	part = new CameraPart( path,
 		baseImage, numImages, position, relplane,
 		viewWidth, viewHeight, cameraWidth, cameraHeight);
 
 	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
 	{
 		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExists );
+		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
 	}
 	theMainView.MakeTheEntityHandlerResetBoundsProperly();
 }
@@ -552,5 +737,35 @@ void CompoundHandlers::SubCommand_PAT_KILL( CAOSMachine& vm )
 
 	int partid = vm.FetchIntegerRV();
 	vm.GetTarg().GetCompoundAgentReference().DestroyPart( partid );
+}
+
+int CompoundHandlers::IntegerRV_PART( CAOSMachine& vm )
+{
+	int part_id = vm.FetchIntegerRV();
+	
+		vm.ValidateTarg();
+
+	if( !vm.GetTarg().IsCompoundAgent() )
+		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+
+	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+
+	if (agent.ValidatePart( part_id ))
+		return true;
+	else
+		return false;
+}
+
+void CompoundHandlers::SubCommand_PAT_MOVE( CAOSMachine& vm )
+{
+	vm.ValidateTarg();
+	if( !vm.GetTarg().IsCompoundAgent() )
+		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+
+	int partid = vm.FetchIntegerRV();
+	Vector2D position;
+	position.x = vm.FetchFloatRV();
+	position.y = vm.FetchFloatRV();
+	vm.GetTarg().GetCompoundAgentReference().MovePart( partid, position );
 }
 

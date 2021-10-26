@@ -15,19 +15,22 @@
 #include "DisplayHandlers.h"
 #include "CAOSMachine.h"
 #include "../Agents/Agent.h"
-#include "../Display/DisplayEngine.h"
-#include "../Display/MainCamera.h"
-#include "../Display/RemoteCamera.h"
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+#else
+	#include "../Display/DisplayEngine.h"
+	#include "../Display/SharedGallery.h"
+#endif //C2D_DIRECT_DISPLAY_LIB
+
+#include "../Camera/MainCamera.h"
+#include "../Camera/RemoteCamera.h"
 #include "../App.h"
 #include "../World.h"
 #include "../Map/Map.h"
 #include "../Agents/SimpleAgent.h"
 #include "../Display/TintManager.h"
-#include "../Display/SharedGallery.h"
-
-#ifndef _WIN32
-#include "../unix/FileFuncs.h"
-#endif
+#include "../../common/FileFuncs.h"
 
 void DisplayHandlers::Command_WTNT( CAOSMachine& vm )
 {
@@ -48,6 +51,10 @@ void DisplayHandlers::Command_TNTW( CAOSMachine& vm )
 	TintManager& tint = theApp.GetWorld().GetTintManager(index);
 	vm.ValidateTarg();
 	vm.GetTarg().GetAgentReference().Tint( tint.GetMyTintTable(), vm.GetPart() );
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	vm.GetTarg().GetAgentReference().RememberTintInformation(index,vm.GetPart());
+#endif
 }
 
 void DisplayHandlers::Command_TINT( CAOSMachine& vm )
@@ -58,11 +65,45 @@ void DisplayHandlers::Command_TINT( CAOSMachine& vm )
 	b = vm.FetchIntegerRV();
 	rot = vm.FetchIntegerRV();
 	swp = vm.FetchIntegerRV();
+
+
+	TintManager tintin;
+	vm.ValidateTarg();
+
+	// trying to untint an agent
+	if(r == -1 && g == -1 && b == -1)
+	{
+		vm.GetTarg().GetAgentReference().Tint( NULL, vm.GetPart() );
+	}
+	else
+	{
+	tintin.BuildTintTable(r,g,b,rot,swp);
+	vm.GetTarg().GetAgentReference().Tint( tintin.GetMyTintTable(), vm.GetPart() );
+	}
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	vm.GetTarg().GetAgentReference().RememberTintInformation(-1,vm.GetPart(),r,g,b,rot,swp);
+#endif
+}
+
+
+#ifndef C2D_DIRECT_DISPLAY_LIB
+void DisplayHandlers::Command_TINO( CAOSMachine& vm )
+{
+	int r, g, b, rot, swp;
+	r = vm.FetchIntegerRV();
+	g = vm.FetchIntegerRV();
+	b = vm.FetchIntegerRV();
+	rot = vm.FetchIntegerRV();
+	swp = vm.FetchIntegerRV();
+
+
 	TintManager tintin;
 	vm.ValidateTarg();
 	tintin.BuildTintTable(r,g,b,rot,swp);
-	vm.GetTarg().GetAgentReference().Tint( tintin.GetMyTintTable(), vm.GetPart() );
+	vm.GetTarg().GetAgentReference().Tint( tintin.GetMyTintTable(), vm.GetPart(), true );
 }
+#endif
 
 void DisplayHandlers::Command_LINE( CAOSMachine& vm )
 {
@@ -441,18 +482,7 @@ int DisplayHandlers::IntegerRV_CMRY( CAOSMachine& vm )
 
 	return (int)y;
 }
-
-
-void DisplayHandlers::Command_TEXT(CAOSMachine& vm)
-{
-	std::string text;
-	vm.FetchStringRV(text);
-	int x = vm.FetchIntegerRV();
-	int y = vm.FetchIntegerRV();
-
-	DisplayEngine::theRenderer().DrawStringToBackBuffer(x,y,text,false,0,0);
-}
-
+// ****************************************************************************
 void DisplayHandlers::Command_SNAP( CAOSMachine& vm)
 {
 	std::string imageName;
@@ -484,31 +514,88 @@ void DisplayHandlers::Command_SNAP( CAOSMachine& vm)
 	std::string filename;
 	filePath.GetWorldDirectoryVersionOfTheFile(filename, true);
 
+#ifdef NETTY
+	bool check=false;
+	if (imageName.find("rubber")!=-1)
+	{
+		theApp.Netty->TextOut("Display::",imageName.c_str());
+		check=true;
+	}
+
+	//theApp.Netty->TextOut("DisplayHandlers::Command_SNAP",filename.c_str());
+#endif
+
 	camera->SaveAsSpriteFile( filename );
 	theApp.GetWorld().MarkFileCreated( filePath );
 	theMainView.RemoveCamera( camera );
 	delete camera;
 }
+// ****************************************************************************
 
 int DisplayHandlers::IntegerRV_LOFT( CAOSMachine& vm )
 {
 	std::string imageName;
 	vm.FetchStringRV( imageName);
 
+#ifdef NETTY
+	theApp.Netty->TextOut("IntergerRV_LOFT",imageName.c_str());
+
+	bool check=false;
+	if (imageName.find("rubber")!=-1)
+	{
+		theApp.Netty->TextOut("Display::",imageName.c_str());
+		check=true;
+	}
+
+	//theApp.Netty->TextOut("DisplayHandlers::Command_SNAP",filename.c_str());
+
+#endif
+
 	FilePath filePath(imageName + ".s16", IMAGES_DIR);
-	bool inUse = SharedGallery::QueryGalleryInUse(filePath);
+	// now the shared gallery does not know about world directories
+	// it only deals with full path names
+	std::string worldGalleryName;
+	bool inUse = false;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	
+#else
+	if (filePath.GetWorldDirectoryVersionOfTheFile(worldGalleryName))
+	{
+		inUse = SharedGallery::QueryGalleryInUse(worldGalleryName);
+	}
+	else
+	{
+		inUse = SharedGallery::QueryGalleryInUse(filePath.GetFullPath());
+	}
 	
 	if (inUse)
 		return 1;
-	
+
+#endif
 	theApp.GetWorld().MarkFileForAttic(filePath);
 	return 0;
 }
-
+// ****************************************************************************
 int DisplayHandlers::IntegerRV_SNAX( CAOSMachine& vm )
 {
 	std::string imageName;
 	vm.FetchStringRV( imageName);
+
+#ifdef NETTY
+	theApp.Netty->TextOut("IntergerRV_LOFT",imageName.c_str());
+
+	bool check=false;
+	if (imageName.find("rubber")!=-1)
+	{
+		theApp.Netty->TextOut("Display::",imageName.c_str());
+		check=true;
+	}
+
+	//theApp.Netty->TextOut("DisplayHandlers::Command_SNAP",filename.c_str());
+
+#endif
+
 
 	{
 		FilePath filePath(imageName + ".c16", IMAGES_DIR);
@@ -524,7 +611,7 @@ int DisplayHandlers::IntegerRV_SNAX( CAOSMachine& vm )
 
 	return 0;
 }
-
+// ****************************************************************************
 void DisplayHandlers::Command_FRSH(CAOSMachine& vm)
 {
 	theMainView.Refresh();
@@ -537,5 +624,103 @@ void DisplayHandlers::Command_WDOW(CAOSMachine& vm)
 
 int DisplayHandlers::IntegerRV_WDOW(CAOSMachine& vm)
 {
-	return DisplayEngine::theRenderer().IsFullScreen() ? 1 : 0;
+	#ifdef C2D_DIRECT_DISPLAY_LIB
+	_ASSERT(false);
+	return -1;
+	#else
+		return DisplayEngine::theRenderer().IsFullScreen() ? 1 : 0;
+	#endif
 }
+
+void DisplayHandlers::Command_SCLE(CAOSMachine& vm)
+{
+	float scaleBy = vm.FetchFloatRV();	
+	int yesOrNo = vm.FetchIntegerRV();
+
+	if(yesOrNo == 0)
+	{
+		// trun scaling off please
+		vm.GetTarg().GetAgentReference().Scale(scaleBy, false);
+	}
+	else
+	{
+		// scale away
+		vm.GetTarg().GetAgentReference().Scale(scaleBy, true);
+	}
+}
+
+void DisplayHandlers::Command_ALPH(CAOSMachine& vm)
+{
+	vm.ValidateTarg();
+
+	int intensity = vm.FetchIntegerRV();
+	int yesOrNo = vm.FetchIntegerRV();
+
+	vm.GetTarg().GetAgentReference().DrawAlphaBlended(intensity,yesOrNo != 0,vm.GetPart());
+
+}
+
+void DisplayHandlers::Command_SHAD(CAOSMachine& vm)
+{
+	int shadowvalue = vm.FetchIntegerRV();
+	int x = vm.FetchIntegerRV();
+	int y = vm.FetchIntegerRV();
+	int yesOrNo = vm.FetchIntegerRV();
+
+	if(yesOrNo == 0)
+	{
+		// turn shadowing off please
+		vm.GetTarg().GetAgentReference().DrawShadowed(shadowvalue,x,y,false);
+	}
+	else
+	{
+		// blend away
+		vm.GetTarg().GetAgentReference().DrawShadowed(shadowvalue,x,y,true);
+	}
+}
+
+
+void DisplayHandlers::Command_STRC(CAOSMachine& vm)
+{
+	int stretchedWidth = vm.FetchIntegerRV();
+	int stretchedHeight = vm.FetchIntegerRV();;
+
+	int yesOrNo = vm.FetchIntegerRV();
+
+	if(yesOrNo == 0)
+	{
+		// turn width stretching off please
+		vm.GetTarg().GetAgentReference().DrawToNewWidthAndHeight(stretchedWidth,
+																stretchedHeight,
+																false);
+	}
+	else
+	{
+		// stretch away
+		vm.GetTarg().GetAgentReference().DrawToNewWidthAndHeight(stretchedWidth,
+																stretchedHeight,
+																true);
+	}
+}
+
+/*
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void DisplayHandlers::Command_SCLA(CAOSMachine& vm)
+{
+	float scaleBy = vm.FetchFloatRV();	
+	int yesOrNo = vm.FetchIntegerRV();
+
+	if(yesOrNo == 0)
+	{
+		// trun scaling off please
+		vm.GetTarg().GetAgentReference().Scale(scaleBy, false);
+	}
+	else
+	{
+		// scale away
+		vm.GetTarg().GetAgentReference().Scale(scaleBy, true);
+	}
+}
+#endif // C2D_DIRECT_DISPLAY_LIB
+*/
+

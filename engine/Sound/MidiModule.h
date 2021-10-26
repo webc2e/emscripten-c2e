@@ -16,7 +16,7 @@
 #define MIDI_MODULE_H
 
 
-#ifndef _WIN32
+#ifdef C2E_SDL
 
 #include "stub/stub_MidiModule.h"
 
@@ -46,27 +46,26 @@ public :
 	~MidiModule();
 
 
-	bool StartUp(LPDIRECTSOUND directSoundObject,
-						 HWND window);
-
 	bool PlayMidiFile(std::string& file);
 
 	void StopPlaying();
 	void SetVolume(long volume);
+	long GetVolume();
 
-	IDirectMusicPerformance* CreatePerformance();
-	IDirectMusicLoader* CreateLoader();
 	IDirectMusicSegment* LoadMidiSegment(WCHAR midiFileName[]);
 	HRESULT FreeDirectMusic();
 	void Mute(bool mute);
 	
 private:
+	bool StartUp(LPDIRECTSOUND directSoundObject,
+						 HWND window);
+	IDirectMusicLoader* CreateLoader();
+	IDirectMusicPerformance* CreatePerformance();
 		
 	IDirectMusicPerformance*	myPerformance;
 	IDirectMusic*				myDirectMusic;
 	IDirectMusicLoader*			myLoader;
 	IDirectMusicSegment*		mySegment;
-	IDirectMusicSegmentState*	mySegmentState;
 	std::string myCurrentFile;
 	long myVolume;
 	bool myMuteFlag;
@@ -76,3 +75,4 @@ private:
 #endif	// end of non-win32 redirection
 
 #endif // MIDI_MODULE_H
+

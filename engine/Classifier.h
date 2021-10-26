@@ -23,16 +23,16 @@
 // these three should be genetically specified, or be in the scripts.
 // There's only the music code where they're still used, but I've got
 // a feeling they might be explicit constants elsewhere.  Oh well.
-const uint8_t		G_NORN				= 0x01;	// all pets are of this genus
-const uint8_t		G_GRENDEL			= 0x02;
-const uint8_t		G_ETTIN 			= 0x03;
+const uint8		G_NORN				= 0x01;	// all pets are of this genus
+const uint8		G_GRENDEL			= 0x02;
+const uint8		G_ETTIN 			= 0x03;
 
 /*********************************************************************
 * class Classifier.
 *********************************************************************/
 class Classifier : public PersistentObject
 {
-	CREATURES_DECLARE_SERIAL(Classifier);
+	CREATURES_DECLARE_SERIAL(Classifier)
 
 public:
 	uint32 myFamily;
@@ -64,10 +64,10 @@ public:
 	virtual bool Read(CreaturesArchive &archive);
 
 	// Access methods.
-	inline uint8_t Family() const
+	inline uint8 Family() const
 	{	return myFamily;}
 
-	inline uint8_t Genus() const
+	inline uint8 Genus() const
 	{	return myGenus;}
 
 	inline uint16 Species() const
@@ -118,3 +118,4 @@ public:
 
 
 #endif // CLASSIFIER_H
+

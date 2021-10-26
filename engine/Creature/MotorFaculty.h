@@ -12,9 +12,6 @@
 #include "CreatureConstants.h"
 #include "Faculty.h"
 
-class Creature;
-class Agent;
-
 struct InvoluntaryAction {
 	float locus;							// receptor locus (recommendation strength)
 	byte latency;							// counter to prevent instant reactivation
@@ -66,3 +63,4 @@ protected:
 };
 
 #endif//MotorFaculty_H
+

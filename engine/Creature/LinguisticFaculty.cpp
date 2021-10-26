@@ -5,6 +5,7 @@
 // Description: Handles speach
 //
 // Author:		Adapted C2 code by David Bhowmik
+//				gtb: (2/11/00) solved problem of verb-noun commands only having a partial effect.
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
@@ -13,9 +14,11 @@
 #endif
 
 #include "LinguisticFaculty.h"
+#include "../AgentManager.h"
 #include "../App.h"
 #include "../Stimulus.h"
-#include "Creature.h"
+#include "CreatureFacultyInterface.h"
+#include "AgentFacultyInterface.h"
 #include "SensoryFaculty.h"
 #include "MotorFaculty.h"
 #include "../World.h"
@@ -23,7 +26,9 @@
 #include "LifeFaculty.h"
 #include "Biochemistry/BiochemistryConstants.h"
 #include "../Display/ErrorMessageHandler.h"
-
+#include "../../common/StringFuncs.h"
+#include "../Maths.h"
+#include "../Agents/PointerAgent.h"
 
 CREATURES_IMPLEMENT_SERIAL(LinguisticFaculty)
 
@@ -33,6 +38,17 @@ const float defaultNounNudge = 0.7f;
 const float defaultVerbNudge = 0.7f;
 
 
+
+
+LinguisticFaculty::Command LinguisticFaculty::GetNullCommand()
+{
+	Command c;
+	c.verbToNudge = NONE;
+	c.nounToNudge = NONE;
+	c.amountToNudgeVerb = 0.0f;
+	c.amountToNudgeNoun = 0.0f;
+	return c;
+}
 
 
 // ---------------------------------------------------------------------------
@@ -48,6 +64,8 @@ const float defaultVerbNudge = 0.7f;
 // ------------------------------------------------------------------------
 LinguisticFaculty::LinguisticFaculty()
 {
+	myLastSpokenCommandGivenToMeWhichIHaventBeenAbleToDoYetBecauseImNotLookingAtTheRightNoun = GetNullCommand();
+
 	myVocab.resize(noOfTypes-1);	// do not include other creatures names
 	myVocab[VERB].resize(NUMACTIONS);
 	myVocab[NOUN].resize(SensoryFaculty::GetNumCategories());
@@ -58,6 +76,7 @@ LinguisticFaculty::LinguisticFaculty()
 	myVocab[NICEDRIVE].resize(NUMDRIVES);
 
 	myVoiceFileHasBeenInitialised = false;
+	myLifeStageForMyCurrentVoice = -1;
 	myStackCount = 0;
 }
 
@@ -93,14 +112,11 @@ LinguisticFaculty::~LinguisticFaculty()
 // Description: 
 // Arguments:   AgentHandle a = 
 // ------------------------------------------------------------------------
-void LinguisticFaculty::Init(AgentHandle a) 
+void LinguisticFaculty::Init() 
 {
-	myCreature = a;
-	Creature& c = myCreature.GetCreatureReference();
-
 	// load default vocabulary randomly from the appropriate catalogue file
 	// (choice depends on type of creature):
-	int genus = c.GetClassifier().Genus();
+	int genus = myCreatureAsAgent->GetClassifier().Genus();
 	std::string vocabCatalogueString =
 		genus==1 ? "Default Norn Speak" :
 		genus==2 ? "Default Grendel Speak" :
@@ -142,8 +158,8 @@ void LinguisticFaculty::Init(AgentHandle a)
 // ------------------------------------------------------------------------
 void LinguisticFaculty::SetWord(int type, int id, std::string s, bool perfect) 
 {
-	std::transform( s.begin(), s.end(), s.begin(), tolower );	
-	myVocab[type][id].InitWord(s, myCreature.GetCreatureReference().Life()->GetAge(), perfect);
+	LowerCase(s);
+	myVocab[type][id].InitWord(s, myCreature->Life()->GetAge(), perfect);
 }
 
 
@@ -251,55 +267,55 @@ bool LinguisticFaculty::KnownWord(int type, int id) const
 void LinguisticFaculty::LearnVocab() 
 {
 	int i;
-	int pointerCat = SensoryFaculty::GetCategoryIdOfClassifier(&thePointer.GetPointerAgentReference().GetClassifier());
+	int pointerCat = SensoryFaculty::GetCategoryIdOfAgent(thePointer);
 
     for (i=0; i<myVocab[VERB].size(); i++) 
 	{
 		// default action word
 		std::string word = theCatalogue.Get("Creature Actions", i);
-		std::transform( word.begin(), word.end(), word.begin(), tolower );
+		LowerCase(word);
 		myVocab[VERB][i].InitWord(word, 
-			myCreature.GetCreatureReference().Life()->GetAge(), true);
+			myCreature->Life()->GetAge(), true);
     }
     for (i=0; i<myVocab[NOUN].size(); i++) 
 	{	// default object name (if nameing pointer make sure not already named
 		if(i == pointerCat)
 		{
 			std::string word = thePointer.GetPointerAgentReference().GetName();
-			std::transform( word.begin(), word.end(), word.begin(), tolower );
+			LowerCase(word);
 			myVocab[NOUN][i].InitWord(word, 
-				myCreature.GetCreatureReference().Life()->GetAge(), true);
+				myCreature->Life()->GetAge(), true);
 		}
 		else
 		{
 			std::string word = SensoryFaculty::GetCategoryName(i);
-			std::transform( word.begin(), word.end(), word.begin(), tolower );
+			LowerCase(word);
 			myVocab[NOUN][i].InitWord(word, 
-				myCreature.GetCreatureReference().Life()->GetAge(), true);
+				myCreature->Life()->GetAge(), true);
 		}
     }
     for (i=0; i<myVocab[DRIVE].size(); i++)
 	{		// default drive name
 		std::string word = theCatalogue.Get("Creature Drives", i);
-		std::transform( word.begin(), word.end(), word.begin(), tolower );	
+		LowerCase(word);
 		myVocab[DRIVE][i].InitWord(word, 
-			myCreature.GetCreatureReference().Life()->GetAge(), true);
+			myCreature->Life()->GetAge(), true);
     }
 	for (i=0; i<myVocab[SPECIAL].size(); i++) 
 	{
 		// default specials
 		std::string word = theCatalogue.Get("Learnt Specials", i);
-		std::transform( word.begin(), word.end(), word.begin(), tolower );	
+		LowerCase(word);
 		myVocab[SPECIAL][i].InitWord(word,
-			myCreature.GetCreatureReference().Life()->GetAge(), true);
+			myCreature->Life()->GetAge(), true);
     }
 	for (i=0; i<myVocab[QUALIFIER].size(); i++)
 	{
 		// default qualifiers
 		std::string word = theCatalogue.Get("Learnt Qualifiers", i);
-		std::transform( word.begin(), word.end(), word.begin(), tolower );	
+		LowerCase(word);
 		myVocab[QUALIFIER][i].InitWord(word,
-			myCreature.GetCreatureReference().Life()->GetAge(), true);
+			myCreature->Life()->GetAge(), true);
     }
     for (i=0; i<myVocab[PERSONAL].size(); i++) 
 	{
@@ -307,18 +323,18 @@ void LinguisticFaculty::LearnVocab()
 		if(myVocab[PERSONAL][i].learnedStrength == 0.0f)
 		{
 			std::string word = theCatalogue.Get("Learnt Personals", i);
-			std::transform( word.begin(), word.end(), word.begin(), tolower );	
+			LowerCase(word);
 			myVocab[PERSONAL][i].InitWord(word, 
-				myCreature.GetCreatureReference().Life()->GetAge(), true);
+				myCreature->Life()->GetAge(), true);
 		}
     }
 	for (i=0; i<myVocab[NICEDRIVE].size(); i++)
 	{		
 		// default drive name
 		std::string word = theCatalogue.Get("Learnt Nice Drives", i);
-		std::transform( word.begin(), word.end(), word.begin(), tolower );	
+		LowerCase(word);
 		myVocab[NICEDRIVE][i].InitWord(word, 
-			myCreature.GetCreatureReference().Life()->GetAge(), true);
+			myCreature->Life()->GetAge(), true);
     }
 }
 
@@ -338,10 +354,22 @@ void LinguisticFaculty::LearnVocab()
 // ------------------------------------------------------------------------
 void LinguisticFaculty::Update() 
 {
-	Creature& c = myCreature.GetCreatureReference();
-
-	if (c.Life()->GetWhetherAlert() || c.Life()->GetWhetherZombie()) 
+	if (myCreature->Life()->GetWhetherAlert() || myCreature->Life()->GetWhetherZombie()) 
 	{
+		// gtb, 2/11/00:
+		Command& c = myLastSpokenCommandGivenToMeWhichIHaventBeenAbleToDoYetBecauseImNotLookingAtTheRightNoun;
+		if (c.verbToNudge!=NONE && c.nounToNudge==myCreature->Motor()->GetCurrentAttentionId())
+		{
+			// aha, I'm now looking at the right noun so I can do my command:
+			myCreature->GetBrain()->SetInput("verb", c.verbToNudge, c.amountToNudgeVerb);
+
+			// also, keep looking at the noun!
+			myCreature->GetBrain()->SetInput("noun", c.nounToNudge, c.amountToNudgeNoun);
+
+			// command done so we erase it:
+			c = GetNullCommand();
+		}
+
 		if(mySentenceStack.size() !=0)
 		{
 			// speak qued sentence
@@ -364,7 +392,7 @@ void LinguisticFaculty::Update()
 		{
 			// que a new sentence
 			float odds = RndFloat();
-			AgentHandle nearest = c.Sensory()->GetNearestCreatureOrPointer();
+			AgentHandle nearest = myCreature->Sensory()->GetNearestCreatureOrPointer();
 
 			if((odds > 0.7f && nearest.IsValid()) || (odds > 0.5f && nearest.IsInvalid())) 
 				SayWhatDoing(INTERMEDIATE_DELAY_OFFSET);
@@ -391,9 +419,7 @@ void LinguisticFaculty::Update()
 // Arguments:   int delay = 
 // ------------------------------------------------------------------------
 void LinguisticFaculty::SayWhatDoing(int delay) {
-	Creature& c = myCreature.GetCreatureReference();
-
-	int decisionId = c.Motor()->GetCurrentDecisionId();
+	int decisionId = myCreature->Motor()->GetCurrentDecisionId();
 	if (decisionId<0 || decisionId>=myVocab[VERB].size())
 		return;	// nothing to say
     
@@ -418,7 +444,7 @@ void LinguisticFaculty::SayWhatDoing(int delay) {
 			// add noun	
 			if (DoesThisScriptRequireAnItObject(decisionId)) 
 			{
-				attentionId = c.Motor()->GetCurrentAttentionId();
+				attentionId = myCreature->Motor()->GetCurrentAttentionId();
 				if (attentionId>=0 || attentionId<myVocab[NOUN].size())
 					whatToSay += myVocab[NOUN][attentionId].outWord + " ";
 			}
@@ -461,10 +487,6 @@ void LinguisticFaculty::SayWhatDoing(int delay) {
 // ------------------------------------------------------------------------
 void LinguisticFaculty::ExpressNeed(int requestedDriveToExpress, int delay)
 {
-	Creature& c = myCreature.GetCreatureReference();
-
-
-
 	int driveToExpress;
 	float driveLevelToExpress = -999.0f;
 
@@ -472,7 +494,7 @@ void LinguisticFaculty::ExpressNeed(int requestedDriveToExpress, int delay)
 	float illnessLevel = 0.2f;
 	for (int i=FIRST_ANTIGEN; i<=LAST_ANTIGEN; i++) 
 	{
-		float level = c.GetBiochemistry()->GetChemical(i);
+		float level = myCreature->GetBiochemistry()->GetChemical(i);
 		if (level > illnessLevel) 
 			illnessLevel = level;
 	}
@@ -493,7 +515,7 @@ void LinguisticFaculty::ExpressNeed(int requestedDriveToExpress, int delay)
 			
 			for (int i=0; i!=NUMDRIVES; i++) 
 			{
-				float driveLevel = c.GetDriveLevel(i);
+				float driveLevel = myCreature->GetDriveLevel(i);
 				if (driveLevel > driveLevelToExpress) 
 				{
 					driveLevelToExpress = driveLevel;
@@ -506,7 +528,7 @@ void LinguisticFaculty::ExpressNeed(int requestedDriveToExpress, int delay)
 		{
 			 // get level of drive to talk about:
 			driveToExpress = requestedDriveToExpress;
-			driveLevelToExpress = c.GetDriveLevel(driveToExpress);
+			driveLevelToExpress = myCreature->GetDriveLevel(driveToExpress);
 		}
 
 
@@ -587,23 +609,20 @@ void LinguisticFaculty::ExpressOpinion(AgentHandle creatureOrPointer, int delay)
 	if(creatureOrPointer.IsInvalid())
 		return;
 
-	Creature& c = myCreature.GetCreatureReference();
-
-
 	float opinion;
 	float moodOpinion;
-	c.Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
+	myCreature->Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
 
 	bool aboutGrendel = creatureOrPointer.IsCreature() && 
-		creatureOrPointer.GetAgentReference().GetGenus()==2;
+		creatureOrPointer.GetAgentFacultyInterfaceReference().GetGenus()==2;
 	
 
 
 	// calculate opinion
 	std::string opinionStr;
 	
-	if(opinion > 0.1f && (c.GetGenus()!=2 || 
-		(c.GetGenus()==2 && aboutGrendel)))
+	if(opinion > 0.1f && (myCreatureAsAgent->GetGenus()!=2 || 
+		(myCreatureAsAgent->GetGenus()==2 && aboutGrendel)))
 	{
 		// good opinion
 
@@ -611,7 +630,7 @@ void LinguisticFaculty::ExpressOpinion(AgentHandle creatureOrPointer, int delay)
 		if(moodOpinion < 0.1f)	
 		{
 			// bad mood effecting behaviour say why
-			if(c.GetDriveLevel(ANGER) > c.GetDriveLevel(FEAR))
+			if(myCreature->GetDriveLevel(ANGER) > myCreature->GetDriveLevel(FEAR))
 				ExpressNeed(ANGER, delay);
 			else
 				ExpressNeed(FEAR, delay);
@@ -620,7 +639,7 @@ void LinguisticFaculty::ExpressOpinion(AgentHandle creatureOrPointer, int delay)
 		}
 		else
 		{
-			if(opinion > 0.7f  && c.GetGenus()!=2)
+			if(opinion > 0.7f  && myCreatureAsAgent->GetGenus()!=2)
 				opinionStr = myVocab[SPECIAL][LOVE].outWord + " ";
 			else
 				opinionStr = myVocab[SPECIAL][LIKE].outWord + " ";
@@ -633,7 +652,7 @@ void LinguisticFaculty::ExpressOpinion(AgentHandle creatureOrPointer, int delay)
 		if(moodOpinion > -0.1f)
 		{
 			// good mood effecting behaviour say why
-			if(c.GetDriveLevel(SEXDRIVE) > c.GetDriveLevel(LONELINESS))
+			if(myCreature->GetDriveLevel(SEXDRIVE) > myCreature->GetDriveLevel(LONELINESS))
 				ExpressNeed(SEXDRIVE, delay);
 			else
 				ExpressNeed(LONELINESS, delay);
@@ -668,9 +687,9 @@ void LinguisticFaculty::ExpressOpinion(AgentHandle creatureOrPointer, int delay)
 			// add name of agent spoken about
 			if(creatureOrPointer.IsCreature())
 			{
-				std::string platonic = creatureOrPointer.GetCreatureReference().Linguistic()->GetPlatonicWord(PERSONAL, ME);
+				std::string platonic = creatureOrPointer.GetCreatureFacultyInterfaceReference().Linguistic()->GetPlatonicWord(PERSONAL, ME);
 			
-				std::string name = creatureOrPointer.GetCreatureReference().Linguistic()->GetWord(PERSONAL, ME);
+				std::string name = creatureOrPointer.GetCreatureFacultyInterfaceReference().Linguistic()->GetWord(PERSONAL, ME);
 
 				// dont use personal name use creature type
 				if(name.empty() || platonic == theCatalogue.Get("Learnt Personals", ME)
@@ -754,45 +773,44 @@ void LinguisticFaculty::StackSentence(std::string sentence, bool shout,  int del
 // ------------------------------------------------------------------------
 void LinguisticFaculty::Say(std::string string)
 {
-	Creature& c = myCreature.GetCreatureReference();
-
 	int32 delay = 0;
 
 	bool creaturesAreDumb = theApp.GetWorld().GetGameVar("engine_dumb_creatures").GetInteger()==1;
 
 	if (!creaturesAreDumb) 
 	{
-		if ((!myVoiceFileHasBeenInitialised) || (myLifeStageForMyCurrentVoice < c.Life()->GetAge())) 
+		if ((!myVoiceFileHasBeenInitialised) || (myLifeStageForMyCurrentVoice < myCreature->Life()->GetAge())) 
 		{
-			int genus = c.GetClassifier().Genus();
+			int genus = myCreatureAsAgent->GetClassifier().Genus();
 
 
 			// New style voice initialisation
-			if (!c.GetVoice().ReadData(c.GetClassifier().Genus(), c.GetClassifier().Species(), c.Life()->GetAge()))
+			if (!myCreatureAsAgent->GetVoice().ReadData(myCreatureAsAgent->GetClassifier().Genus(), myCreatureAsAgent->GetClassifier().Species(), myCreature->Life()->GetAge()))
 				return;
 			myVoiceFileHasBeenInitialised = true;
-			myLifeStageForMyCurrentVoice = c.Life()->GetAge();
+			myLifeStageForMyCurrentVoice = myCreature->Life()->GetAge();
 
 		}
-		if (c.GetVoice().BeginSentence(string)) 
+		if (myCreatureAsAgent->GetVoice().BeginSentence(string)) 
 		{
 			uint32 sound;
-			while (c.GetVoice().GetNextSyllable(sound,delay)) 
+			while (myCreatureAsAgent->GetVoice().GetNextSyllable(sound,delay)) 
 			{
-				c.SoundEffect(sound,delay);
+				myCreatureAsAgent->SoundEffect(sound,delay);
 			}
 		}
-		delay=c.GetVoice().GetSentenceDelay();
+		delay=myCreatureAsAgent->GetVoice().GetSentenceDelay();
 	}
 
 	// p1 - string spoken
 	// p2 - agent speaking (can't use FROM, as the same message is sent from the agent
 	//      help which can't set FROM)
-	CAOSVar p1, p2;
+	CAOSVar p1, p2, from;
 	p1.SetString(string);
-	p2.SetAgent(myCreature);
+	p2.SetAgent(myCreatureAsAgent->GetAsAgentHandle());
+	from.SetAgent(myCreatureAsAgent->GetAsAgentHandle());
 	theAgentManager.ExecuteScriptOnAllAgentsDeferred(SCRIPT_MAKE_SPEECH_BUBBLE,
-		myCreature, p1, p2);
+		from, p1, p2);
 
 	
 }
@@ -818,7 +836,7 @@ void LinguisticFaculty::Shout(std::string sentence, int verb, int noun)
 	Stimulus s;
 	s.stimulusType = Stimulus::typeSHOU;
 	s.incomingSentence = sentence;
-	s.fromAgent = this->myCreature.GetAgentReference();
+	s.fromAgent = myCreatureAsAgent->GetAsAgentHandle();
 	// to NOT stim amount cos will nudge brain
 	s.nounIdToStim = noun;			
 	s.verbIdToStim = verb;
@@ -842,22 +860,15 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 	if(sentenceSpoken.length() == 0 ) 
 		return ;
 	
-	Creature& c = myCreature.GetCreatureReference();
-	
-
 	// dont talk to yourself
-	if(speakerAgent.IsCreature())
-	{
-		Creature& speakerCreature = speakerAgent.GetCreatureReference();
-		if(&speakerCreature == &c) return;
-	}
+	if (speakerAgent == myCreatureAsAgent->GetAsAgentHandle())
+		return;
 
 
 	// PREPROCESS SENTENCE STRING 
 
 	// make sentence lowercase
-	std::transform( sentenceSpoken.begin(), sentenceSpoken.end(), sentenceSpoken.begin(), tolower );	
-
+	LowerCase(sentenceSpoken);
 
 	// discard leading spaces:
 	sentenceSpoken.erase(0, sentenceSpoken.find_first_not_of(" "));
@@ -919,17 +930,18 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 				StackSentence(myVocab[NOUN][attentionId].outWord);
 			}
 		}
-	    c.Sensory()->Stimulate(speakerAgent, STIM_GOBBLEDYGOOK, -1);
+	    myCreature->Sensory()->Stimulate(speakerAgent, STIM_GOBBLEDYGOOK, -1);
 		return;
 	}
 
 
 	std::string syntax = TranslateToBase(localSyntax);
 	
-	int nounToNudge = NONE;
-	int verbToNudge = NONE;
-	float amountToNudgeNoun = defaultNounNudge;
-	float amountToNudgeVerb = defaultVerbNudge;
+	Command command;
+	command.nounToNudge = NONE;
+	command.verbToNudge = NONE;
+	command.amountToNudgeNoun = defaultNounNudge;
+	command.amountToNudgeVerb = defaultVerbNudge;
 
 
 	// handle sentence semantics
@@ -939,26 +951,26 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 		// your name said without reference to noun or verb
 		// then look at agent who spoke
 		if(speakerAgent.IsPointerAgent())
-	        nounToNudge = SensoryFaculty::GetCategoryIdOfAgent(speakerAgent);
+	        command.nounToNudge = SensoryFaculty::GetCategoryIdOfAgent(speakerAgent);
 		else if(speakerAgent.IsCreature())
 		{
-			nounToNudge = myCreature.GetCreatureReference().Sensory()->
+			command.nounToNudge = myCreature->Sensory()->
 						PayAttentionToCreature(speakerAgent);
 		}
 		// wake them up!
-		if (c.Life()->GetWhetherAsleep())
-			c.Life()->SetWhetherAsleep(false);
+		if (myCreature->Life()->GetWhetherAsleep())
+			myCreature->Life()->SetWhetherAsleep(false);
 	}
 	else if(syntax == "n")
 	{
 		// statement about object from anything
-        nounToNudge = wordsHeard[NOUN];
+        command.nounToNudge = wordsHeard[NOUN];
 
 		// if agent help or still learning word or object is my current focus say so
 		if((!speakerAgent.IsCreature() && !speakerAgent.IsPointerAgent()) || // agentHelp
 			speakerAgent.IsPointerAgent() ||
-			myVocab[NOUN][nounToNudge].outWord != myVocab[NOUN][nounToNudge].platonicWord ||
-			nounToNudge == c.Motor()->GetCurrentAttentionId())
+			myVocab[NOUN][command.nounToNudge].outWord != myVocab[NOUN][command.nounToNudge].platonicWord ||
+			command.nounToNudge == myCreature->Motor()->GetCurrentAttentionId())
 		{
 			StackSentence(myVocab[NOUN][wordsHeard[NOUN]].outWord);
 		}
@@ -966,21 +978,21 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 	else if(syntax == "c")
 	{
 		// another creature name spoken - pay attention to creature of name
-		wordsHeard[NOUN] = myCreature.GetCreatureReference().Sensory()->
+		wordsHeard[NOUN] = myCreature->Sensory()->
 		PayAttentionToCreature(wordsHeard[CREATURENAME]);
-		nounToNudge = wordsHeard[NOUN];
+		command.nounToNudge = wordsHeard[NOUN];
 	}
 	else if((syntax == "pg" || syntax == "gp" || syntax == "g") &&
 		speakerAgent.IsPointerAgent())
 	{		
 	    // YES rewards creature as if he'd been patted (do not pick up explicit knowledge)
-		c.Sensory()->Stimulate(speakerAgent, STIM_POINTERYES, -1);
+		myCreature->Sensory()->Stimulate(speakerAgent, STIM_POINTERYES, -1);
 	}
 	else if((syntax == "pb" || syntax == "bp" || syntax == "b") &&
 		speakerAgent.IsPointerAgent())
 	{
 		// NO punishes creature - like slap (do not pick up explicit knowledge)
-		c.Sensory()->Stimulate(speakerAgent, STIM_POINTERNO, -1);
+		myCreature->Sensory()->Stimulate(speakerAgent, STIM_POINTERNO, -1);
 	}
 	else if( syntax == "pv" || syntax == "vnp" ||		// directed commands
 			syntax == "1vnp" || syntax == "2vnp" ||	// qualified directed commands
@@ -998,33 +1010,33 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 			syntax == "1vc" || syntax == "2vc")
 		{				
 			// pay attention to a creature 
-			wordsHeard[NOUN] = myCreature.GetCreatureReference().Sensory()->
+			wordsHeard[NOUN] = myCreature->Sensory()->
 			PayAttentionToCreature(wordsHeard[CREATURENAME]);
 
 			CreatureCollection &creatures = theAgentManager.GetCreatureCollection();
 			creatureOrPointer = creatures[wordsHeard[CREATURENAME]];
-			nounToNudge = wordsHeard[NOUN];
+			command.nounToNudge = wordsHeard[NOUN];
 		}
 		else if(wordsHeard[NOUN] == SensoryFaculty::GetCategoryIdOfAgent(thePointer))
 		{
 			// pointer special case
 			creatureOrPointer = thePointer;
-			nounToNudge = wordsHeard[NOUN];
+			command.nounToNudge = wordsHeard[NOUN];
 		}
 		else if(wordsHeard[NOUN] != NONE)
 		{
 			// pay attention to an object
-			nounToNudge = wordsHeard[NOUN];
+			command.nounToNudge = wordsHeard[NOUN];
 		}
 		else if(!(speakerAgent.IsPointerAgent() && wordsHeard[SPECIAL] == LOOK))
 		{
 			// noun not mentioned i.e. "pv" or "v"
 			// verb 'look' may also be SPECIAL LOOK - in which case handled seperately
 			// else if no noun presume current attention object
-			nounToNudge = c.Motor()->GetCurrentAttentionId();
+			command.nounToNudge = myCreature->Motor()->GetCurrentAttentionId();
 		}
 		
-		if(creatureOrPointer.IsValid() && c.GetGenus()!=2)
+		if(creatureOrPointer.IsValid() && myCreatureAsAgent->GetGenus()!=2)
 		{
 			// if asking to do bad thing and like creature - refuse (not grendels)
 			for(int i=0; i < theCatalogue.GetArrayCountForTag("Bad Action Script"); i++)
@@ -1033,7 +1045,7 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 				{
 					float opinion;
 					float moodOpinion;
-					c.Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
+					myCreature->Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
 
 					if(opinion > 0.1f)
 						ExpressOpinion(creatureOrPointer);	// say contradiction if so
@@ -1048,7 +1060,7 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 			{
 				float opinion;
 				float moodOpinion;
-				c.Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
+				myCreature->Sensory()->GetOpinionOfCreature(creatureOrPointer, opinion, moodOpinion);
 
 				if(opinion < -0.1f)
 					ExpressOpinion(creatureOrPointer);	// say contradiction if so
@@ -1060,26 +1072,26 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 
 			
 	
-		verbToNudge = GetNeuronIdFromScriptOffset(wordsHeard[VERB]);
+		command.verbToNudge = GetNeuronIdFromScriptOffset(wordsHeard[VERB]);
 
 
 		if(syntax.find("1") != -1)
 		{
 			// maybe
-			amountToNudgeNoun = 0.3f;
-			amountToNudgeVerb = 0.3f;
+			command.amountToNudgeNoun = 0.3f;
+			command.amountToNudgeVerb = 0.3f;
 		}
 		else if(syntax.find("2") != -1)
 		{
 			//definately
-			amountToNudgeNoun = 1.1f;
-			amountToNudgeVerb = 1.1f;
+			command.amountToNudgeNoun = 1.1f;
+			command.amountToNudgeVerb = 1.1f;
 		}
 		else	
 		{
 			// unqualified
-			amountToNudgeNoun = 0.9f;
-			amountToNudgeVerb = 0.9f;
+			command.amountToNudgeNoun = 0.9f;
+			command.amountToNudgeVerb = 0.9f;
 		}
 
 	}
@@ -1101,13 +1113,13 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 		// creature may give responce to asker
 		// responce should contain creatures name else will be in 
 		// the same form sa SayWhatDoing() i.e vn
-		Creature& speakerCreature = speakerAgent.GetCreatureReference();
+		CreatureFacultyInterface& speakerCreature = speakerAgent.GetCreatureFacultyInterfaceReference();
 
 		if(speakerAgent.IsCreature() && 5%Rnd(1, 5) == 0)	// dont respond always
 			return;
 
 		// get what id do in this situation
-		Brain::KnowledgeAction action = GetCreatureOwner().GetCreatureReference().
+		Brain::KnowledgeAction action = myCreature->
 				GetBrain()->GetKnowledge(wordsHeard[DRIVE]);
 	
 		// I dont know fuck
@@ -1166,7 +1178,7 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 		if(wordsHeard[CREATURENAME] != -1)
 		{
 			ExpressOpinion(creatures[wordsHeard[CREATURENAME]], delay);
-			wordsHeard[NOUN] = myCreature.GetCreatureReference().Sensory()->
+			wordsHeard[NOUN] = myCreature->Sensory()->
 				PayAttentionToCreature(wordsHeard[CREATURENAME]);
 		}
 		else
@@ -1174,7 +1186,7 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 			// "op" 
 			ExpressOpinion(speakerAgent, delay);
 		}
-		nounToNudge = wordsHeard[NOUN];
+		command.nounToNudge = wordsHeard[NOUN];
 
 	}
 	else if((syntax == "on" || syntax == "nop" ||syntax == "noc" || syntax == "con") && 
@@ -1197,11 +1209,11 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 			// say opinion of creature
 			CreatureCollection &creatures = theAgentManager.GetCreatureCollection();
 			ExpressOpinion(creatures[wordsHeard[CREATURENAME]]);
-			wordsHeard[NOUN] = myCreature.GetCreatureReference().Sensory()->
+			wordsHeard[NOUN] = myCreature->Sensory()->
 				PayAttentionToCreature(wordsHeard[CREATURENAME]);
 		}
 	
-		nounToNudge = wordsHeard[NOUN];
+		command.nounToNudge = wordsHeard[NOUN];
 
 	}
 	else if( (syntax == "nvp" || syntax == "cvp" || syntax == "vp") ||
@@ -1237,13 +1249,13 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 				{
 					AgentHandle a = thePointer.GetPointerAgentReference().IsTouching(0, 0);
 					
-					if(nounToNudge == NONE)
+					if(command.nounToNudge == NONE)
 					{
 						// shift attn to obj under pointer if no attention object was mentioned
 						if(a.IsValid())
-							nounToNudge = c.Sensory()->PayAttentionToAgent(a);
+							command.nounToNudge = myCreature->Sensory()->PayAttentionToAgent(a);
 						else 	
-							nounToNudge = SensoryFaculty::GetCategoryIdOfAgent(thePointer);
+							command.nounToNudge = SensoryFaculty::GetCategoryIdOfAgent(thePointer);
 					}
 					else
 					{
@@ -1252,9 +1264,9 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 						// then shift attention to one under pointer
 						if(a.IsValid())
 						{
-							if(nounToNudge == SensoryFaculty::GetCategoryIdOfAgent(a)  && 
-								c.Sensory()->GetKnownAgent(nounToNudge) != a)
-								c.Sensory()->PayAttentionToAgent(a);
+							if(command.nounToNudge == SensoryFaculty::GetCategoryIdOfAgent(a)  && 
+								myCreature->Sensory()->GetKnownAgent(command.nounToNudge) != a)
+								myCreature->Sensory()->PayAttentionToAgent(a);
 						}
 					}
 				}
@@ -1276,27 +1288,50 @@ void LinguisticFaculty::HearSentence(AgentHandle speakerAgent, std::string
 
 	
     // otherwise send STIM_POINTERWORD or STIM_CREATUREWORD to fire the sensory neu &
-    // update boredom etc. (note: these stimuli must NOT have any nounStim values)
+    // update boredom etmyCreature-> (note: these stimuli must NOT have any nounStim values)
 	if (speakerAgent.IsPointerAgent())
-		c.Sensory()->Stimulate(speakerAgent, STIM_POINTERWORD, -1);
+		myCreature->Sensory()->Stimulate(speakerAgent, STIM_POINTERWORD, -1);
 	else if (speakerAgent.IsCreature())
-			c.Sensory()->Stimulate(speakerAgent, STIM_CREATUREWORD, -1);
-
+			myCreature->Sensory()->Stimulate(speakerAgent, STIM_CREATUREWORD, -1);
 
 
 	// Modulate the amount of nudge according to how well recognised the words are
 	// (so that newly learned words have less impact than familiar ones)
-
-
-	if (nounToNudge!=NONE) 
+	if (command.nounToNudge!=NONE) 
 	{
-		amountToNudgeNoun *= myVocab[NOUN][nounToNudge].learnedStrength;
-		c.GetBrain()->SetInput("noun", nounToNudge, amountToNudgeNoun);
+		command.amountToNudgeNoun *= myVocab[NOUN][command.nounToNudge].learnedStrength;
 	}
-	if (verbToNudge!=NONE) 
+	if (command.verbToNudge!=NONE) 
 	{
-		amountToNudgeVerb *= myVocab[VERB][verbToNudge].learnedStrength;
-		c.GetBrain()->SetInput("verb", verbToNudge, amountToNudgeVerb);
+		command.amountToNudgeVerb *= myVocab[VERB][command.verbToNudge].learnedStrength;
+	}
+
+
+	
+	
+	// gtb: new (2/11/00) to solve problem of verb-noun commands only having a partial effect:
+	if (command.nounToNudge!=NONE && command.verbToNudge!=NONE && command.nounToNudge!=myCreature->Motor()->GetCurrentAttentionId())
+	{
+		// store this command for when the noun switches:
+		// (overwriting the previous saved command if there was one):
+		myLastSpokenCommandGivenToMeWhichIHaventBeenAbleToDoYetBecauseImNotLookingAtTheRightNoun = command;
+
+		// don't nudge the verb this time as if the noun nudge failed and the verb nudge
+		// succeeded the norn would do something nonsensical:
+		command.verbToNudge = NONE;
+	}
+
+
+
+
+	// Actually nudge the neurons:
+	if (command.nounToNudge!=NONE) 
+	{
+		myCreature->GetBrain()->SetInput("noun", command.nounToNudge, command.amountToNudgeNoun);
+	}
+	if (command.verbToNudge!=NONE) 
+	{
+		myCreature->GetBrain()->SetInput("verb", command.verbToNudge, command.amountToNudgeVerb);
 	}
 	
 }
@@ -1455,7 +1490,7 @@ bool LinguisticFaculty::ParseSentence(AgentHandle speakerAgent,
 	// learn all words explicitly mentioned to learn that have NOT been picked up
 	if(speakerAgent.IsCreature())
 	{
-		Creature &speakerCreature = speakerAgent.GetCreatureReference();
+		CreatureFacultyInterface& speakerCreature = speakerAgent.GetCreatureFacultyInterfaceReference();
 	
 		// learn word if speaker knows it better
 
@@ -1464,14 +1499,14 @@ bool LinguisticFaculty::ParseSentence(AgentHandle speakerAgent,
 			myVocab[VERB][learnVerb].learnedStrength)
 		{	
 			myVocab[VERB][learnVerb].HearWord(
-				speakerAgent.GetCreatureReference().Linguistic()->GetWord(VERB, learnVerb));
+				speakerAgent.GetCreatureFacultyInterfaceReference().Linguistic()->GetWord(VERB, learnVerb));
 		}		
 		if(learnNoun != NONE && learnNoun != wordsHeard[NOUN] &&
 			speakerCreature.Linguistic()->GetWordStrength(NOUN, learnNoun) >
 			myVocab[NOUN][learnNoun].learnedStrength)
 		{	
 			myVocab[NOUN][learnNoun].HearWord(
-				speakerAgent.GetCreatureReference().Linguistic()->GetWord(NOUN, learnNoun));
+				speakerAgent.GetCreatureFacultyInterfaceReference().Linguistic()->GetWord(NOUN, learnNoun));
 		}
 
 	}
@@ -1544,23 +1579,22 @@ bool LinguisticFaculty::GetWordType(std::string wordToMatch,
 
 	CreatureCollection &creatures = theAgentManager.GetCreatureCollection();
 	int noCreatures = creatures.size();
-	AgentHandle me = myCreature.GetAgentReference();
 
 	for(int c = 0; c != noCreatures; c++)
 	{
-		if(creatures[c]!=me)
+		if(creatures[c]!=myCreatureAsAgent->GetAsAgentHandle())
 		{
-			if (creatures[c].GetCreatureReference().Linguistic()->KnownWord(PERSONAL, ME))
+			if (creatures[c].GetCreatureFacultyInterfaceReference().Linguistic()->KnownWord(PERSONAL, ME))
 			{
 
 				// ignore "me" as a name
-				if(creatures[c].GetCreatureReference().Linguistic()->GetPlatonicWord(PERSONAL, ME) 
+				if(creatures[c].GetCreatureFacultyInterfaceReference().Linguistic()->GetPlatonicWord(PERSONAL, ME) 
 					==theCatalogue.Get("Learnt Personals", ME))
 					continue;
 
 				// compare against how speaker says its own name
 				std::string vocabWordToCompareAgainst =
-				creatures[c].GetCreatureReference().Linguistic()->GetWord(PERSONAL, ME);
+				creatures[c].GetCreatureFacultyInterfaceReference().Linguistic()->GetWord(PERSONAL, ME);
 			
 				
 				if(	vocabWordToCompareAgainst != "" && wordToMatch==vocabWordToCompareAgainst)
@@ -1574,7 +1608,7 @@ bool LinguisticFaculty::GetWordType(std::string wordToMatch,
 
 				// compare against how it should say its own name
 				vocabWordToCompareAgainst =
-					creatures[c].GetCreatureReference().Linguistic()->GetPlatonicWord(PERSONAL, ME);
+					creatures[c].GetCreatureFacultyInterfaceReference().Linguistic()->GetPlatonicWord(PERSONAL, ME);
 				if (vocabWordToCompareAgainst != "" && wordToMatch==vocabWordToCompareAgainst) 
 				{				
 					wordType = CREATURENAME;
@@ -1653,7 +1687,7 @@ bool LinguisticFaculty::ParseAsLearnSentence( std::string const &str )
 	int id = 0;
 	for( i = 0; i < wordList[2].size(); ++i )
 	{
-		if( !isdigit( wordList[2][i] ) )
+		if( !isdigit( (unsigned char)(wordList[2][i]) ) )
 			return false;
 		id = id * 10 + wordList[2][i] - '0';
 	}
@@ -1777,20 +1811,23 @@ std::string LinguisticFaculty::TranslateToLocal(std::string syntax)
 bool LinguisticFaculty::Write(CreaturesArchive &archive) const {
 	base::Write( archive );
 
-	Creature& c = myCreature.GetCreatureReference();
-	
 	for	(int i=0; i<noOfTypes-1; i++) {
 		archive << (int)(myVocab[i].size());
 		for (int o=0; o<myVocab[i].size(); o++) {
 			archive << myVocab[i][o].platonicWord;
 			archive << myVocab[i][o].outWord;
 			archive << myVocab[i][o].learnedStrength;
-			// archive << myVoiceFile;
 			archive << myVoiceFileHasBeenInitialised;
 		}
 	}
 
 	archive << myStackCount;
+
+	const Command& c = myLastSpokenCommandGivenToMeWhichIHaventBeenAbleToDoYetBecauseImNotLookingAtTheRightNoun;
+	archive << c.verbToNudge;
+	archive << c.nounToNudge;
+	archive << c.amountToNudgeVerb;
+	archive << c.amountToNudgeNoun;
 
 	return true;
 }
@@ -1821,17 +1858,34 @@ bool LinguisticFaculty::Read(CreaturesArchive &archive)
 		for	(int i=0; i<noOfTypes-1; i++) {
 			int n;
 			archive >> n;
-			myVocab[i].resize(n);
+			if (n != myVocab[i].size())
+				throw CreaturesArchive::Exception( "LFE0001: vocab array size mismatch" );
+
 			for (int o=0; o<n; o++) {
 				archive >> myVocab[i][o].platonicWord;
 				archive >> myVocab[i][o].outWord;
 				archive >> myVocab[i][o].learnedStrength;
-				// archive >> myVoiceFile;
 				archive >> myVoiceFileHasBeenInitialised;
 			}
 		}
 
 		archive >> myStackCount;
+
+		// gtb 2/11/00
+		Command& c = myLastSpokenCommandGivenToMeWhichIHaventBeenAbleToDoYetBecauseImNotLookingAtTheRightNoun;
+		if (version >= 35)
+		{
+			archive >> c.verbToNudge;
+			archive >> c.nounToNudge;
+			archive >> c.amountToNudgeVerb;
+			archive >> c.amountToNudgeNoun;
+		}
+		else
+		{
+			c = GetNullCommand();
+		}
+
+		myLifeStageForMyCurrentVoice = -1;
 	}
 	else
 	{
@@ -1840,3 +1894,4 @@ bool LinguisticFaculty::Read(CreaturesArchive &archive)
 	}
 	return true;
 }
+

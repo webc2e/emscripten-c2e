@@ -32,7 +32,7 @@ MusicError MusicVariable::Parse(MusicScript &script)
 	// First Token should always be "Variable" ...
 	std::string token(script.GetCurrentToken());
 
-	if (strcmp(token.data(),"Variable")!=0)
+	if (strcmp(token.c_str(),"Variable")!=0)
 		{
 		return MUSIC_SYNTAX_ERROR;
 		}

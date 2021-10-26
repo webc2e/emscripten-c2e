@@ -43,7 +43,7 @@ public:
 	bool GetNextSyllable(DWORD &sound, int32 &length);
 	int32 GetSentenceDelay();
 
-	bool ReadData(uint8_t genus, uint8_t gender, uint8_t age);
+	bool ReadData(uint8 genus, uint8 gender, uint8 age);
 	bool ReadData(std::string& thisVoice);
 	// ----------------------------------------------------------------------
 	// Method:		Write
@@ -64,3 +64,4 @@ public:
 	virtual bool Read(CreaturesArchive &archive);
 };
 #endif
+

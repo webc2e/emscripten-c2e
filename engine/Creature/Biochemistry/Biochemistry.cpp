@@ -13,8 +13,8 @@
 
 #include "Organ.h"
 #include "../Genome.h"
-#include "../Creature.h"
-#include "../LifeFaculty.h"
+#include "../CreatureFacultyInterface.h"
+#include "../../Maths.h"
 
 
 CREATURES_IMPLEMENT_SERIAL(Biochemistry)
@@ -119,6 +119,7 @@ bool Biochemistry::Read(CreaturesArchive &archive)
 		archive >> myNoOfNeuroEmitters;
 
 		archive >> myNoOfOrgans;
+		CreaturesArchive::ForceOpenRange(myNoOfOrgans, 0, MAXORGANS);
 		for ( i=0; i<myNoOfOrgans; i++)
 			archive >> myOrgans[i];
 	}
@@ -136,7 +137,7 @@ bool Biochemistry::Read(CreaturesArchive &archive)
 // The only biochemical loci are in organ.
 
 float* Biochemistry::GetInvalidCreatureLocusAddress() {
-	return myCreature.GetCreatureReference().GetInvalidLocusAddress();
+	return myCreature->GetInvalidLocusAddress();
 }
 
 
@@ -144,7 +145,7 @@ float* Biochemistry::GetCreatureLocusAddress(int type,	// ID relates to RECEPTOR
 							 int organ,
 							 int tissue,		// tissue containing locus
 							 int locus) {		// locus on object
-	return myCreature.GetCreatureReference().GetLocusAddress(type, organ, tissue, locus);
+	return myCreature->GetLocusAddress(type, organ, tissue, locus);
 }
 
 
@@ -359,3 +360,45 @@ Organ* Biochemistry::GetOrgan(int organNumber) const
 
 	return myOrgans[organNumber];
 }
+
+
+
+/*********************************************************************
+* Public: DumpAllhemicals(std::ostream& out)
+* Save out levelCs of all chemicals to a stream - a support function
+* to allow minimal dumps of creatures for, say, Palm support
+*********************************************************************/
+bool Biochemistry::DumpAllChemicals(std::ostream& out)
+{
+	for ( int k=0; k<NUMCHEM; k++) {
+		out.write((char*)&myChemicalDecayRates[k], sizeof(myChemicalDecayRates[k]));
+		out.write((char*)&myChemicalConcs[k], sizeof(myChemicalConcs[k]));
+	}
+
+	// Stick with the other DUMP formats
+	out << (char)0 << "END DUMP";
+
+	return true;
+}
+
+
+/*********************************************************************
+* Public: UnDumpAllChemicals(std::istream& in)
+* Read in levels of all chemicals from a stream - a support function
+* to allow minimal dumps of creatures for, say, Palm support
+*********************************************************************/
+bool Biochemistry::UnDumpAllChemicals(std::istream& in)
+{
+	for ( int k=0; k<NUMCHEM; k++) {
+		in.read((char*)&myChemicalDecayRates[k], sizeof(myChemicalDecayRates[k]));
+		in.read((char*)&myChemicalConcs[k], sizeof(myChemicalConcs[k]));
+	}
+
+	static char endDump[9];
+	in.read(endDump, 9);
+	if (strncmp(endDump+1, "END DUMP", 8))
+		return false;
+
+	return true;
+}
+

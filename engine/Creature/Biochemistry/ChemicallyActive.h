@@ -24,3 +24,4 @@ public:
 };
 
 #endif //_ChemicallyActive_H
+

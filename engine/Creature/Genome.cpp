@@ -25,11 +25,8 @@
 #include "../File.h"
 #include "../FilePath.h"
 
-#include "../AppConstants.h"
-
 #ifndef _WIN32
 #include <sys/stat.h>
-
 #endif
 
 // this must be greater than the maximum possible
@@ -60,7 +57,7 @@ void Genome::Init()
 	myVariant = 0;
 	myAge = 0;
 	myEndHasBeenReached = false;
-        myGeneAge = 255;
+    myGeneAge = 255;
 	myCrossoverMutationCount = 0;
 	myCrossoverCrossCount = 0;
 	myCrossMaxLength = 0;
@@ -98,63 +95,6 @@ Genome::Genome(GenomeStore& store,
 	}
 }
 
-
-
-#ifdef _WIN32
-// TODO: check if this fn is still used by vat kit!
-
-// this function by dave bhowmik for sole use of the vat kit... not used by
-// the game.
-// construct a genome from given gene filename
-
-// DAVE - could this call Genome::ReadFromFile now? - FRANCIS
-Genome::Genome(char filename[],		
-				 int   sex,			// express 1=male 2=female sex-linked genes
-				 byte  age, 		// age of creature (determines which genes switch on)
-				 int variant)		// variant (0==all, 1-NUM_BEHAVIOUR_VARIANTS=whatever)
-{
-	Init();
-	mySex = sex;
-	myVariant = variant;
-	myAge = age;
-
-	OFSTRUCT ofstruct;
-	HFILE hFile;
-	DWORD bytesRead;
-
-	if((hFile = OpenFile(filename, &ofstruct, OF_READ)) == HFILE_ERROR)
-	{
-		std::string str = ErrorMessageHandler::Format("genome_error", 0, "Genome::Genome", filename);
-		throw GenomeException(str,__LINE__);
-	}
-
-	//Look for dna3 marker, reject if not found.
-	const int fileHdrLen = 4;
-	char fileHdr[fileHdrLen];
-	
-	ReadFile((HANDLE)hFile, &fileHdr, fileHdrLen, &bytesRead, NULL) ; 
-
-
-	if (*((TOKEN*)fileHdr) == DNA3TOKEN)
-	{
-		int iSize = GetFileSize((HANDLE)hFile, NULL) - fileHdrLen;
-		myGenes = new byte[iSize];					// allocate file-sized buffer
-		ReadFile((HANDLE)hFile, myGenes, iSize, &bytesRead, NULL) ; 
-
-		myLength = bytesRead;				// read stuff into it
-	}
-	else
-	{
-		std::string str = ErrorMessageHandler::Format("genome_error", 1, "Genome::Genome", filename);
-		throw GenomeException(str,__LINE__);
-	}
-	_lclose(hFile);
-	Reset();									// reset pointers
-}
-
-#endif // _WIN32
-
-
 void Genome::ReadFromFile(std::string filename,
   				 int   sex,			// express 1=male 2=female sex-linked genes
 				 byte  age, 		// age of creature (determines which genes switch on)
@@ -168,16 +108,20 @@ void Genome::ReadFromFile(std::string filename,
 	myVariant = variant;
 	myMoniker = moniker;
 
-	int len;
-	struct stat buf;
-	stat(filename.data(),&buf); // TODO: Check for errors
-	len = buf.st_size;
-	FILE* fp = fopen(filename.data() , "rb" );
+	FILE* fp = fopen(filename.c_str() , "rb" );
 	if( !fp )
 	{
 		std::string str = ErrorMessageHandler::Format("genome_error", 0, "Genome::Genome", filename.c_str());
 		throw GenomeException(str,__LINE__);
 	}
+	int len;
+#ifdef _WIN32
+	len = _filelength( _fileno( fp ) );	// SPARKY was filelength/fileno
+#else
+	struct stat buf;
+	stat(filename.c_str(),&buf); // TODO: Check for errors
+	len = buf.st_size;
+#endif
 	// Look for dna3 marker, reject if not found.
 	TOKEN header;
 	fread( &header,4,1,fp );
@@ -188,10 +132,35 @@ void Genome::ReadFromFile(std::string filename,
 		return;
 	}
 
-	myLength = len-4;
+	len -= 4;
+	myLength = len;
+
+	//gtb 5/9/00:
+	myLength += ourLongerThanAnyGene;
+
+
 	myGenes = new byte[myLength];
 	fread( myGenes, myLength, 1, fp );
 	fclose( fp );
+
+	// if not a proper genome with an end (gtb 5/9/00):
+	bool gendExists = false;
+	for (byte* p=myGenes; p<=myGenes+len-4; p++)
+	{
+		if (TokenAt(p)==ENDGENOMETOKEN)
+		{
+			gendExists = true;
+			break;
+		}
+	}
+	if (!gendExists)
+	{
+		// pad end with spaces and a gend (gtb, 5/9/00):
+		memset(myGenes+len, ourLongerThanAnyGene-4, sizeof(byte));
+		TokenAt(myGenes+myLength-4) = ENDGENOMETOKEN;
+	}
+
+
 
 	Reset();		// reset pointers
 

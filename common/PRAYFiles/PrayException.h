@@ -41,7 +41,7 @@ public:
 		eidNotPrayFile,
 		eidCompressError,
 		eidFileNotOpen,
-
+		eidSizeMismatch,
 	};
 
 	// ----------------------------------------------------------------------------------
@@ -61,17 +61,29 @@ public:
 	int GetCode() { return myCode; }
 
 	// ----------------------------------------------------------------------------------
+	// Method:		GetCode
+	// Arguments:	(None)
+	// Returns:		std::string - the filename
+	// Description:	This retreives the name of the file in which the
+	// error happend, or an empty string if not available.
+	// ----------------------------------------------------------------------------------
+	std::string GetPrayFile() { return myPrayFile; }
+
+	// ----------------------------------------------------------------------------------
 	// Constructor
 	// Arguments:	msg - std::string - The message to store
 	//				code - int        - The code to indicate where the error occured.
 	// Returns:		(None)
 	// Description:	Creates the Exception. The code should indicate where the error was.
 	// ----------------------------------------------------------------------------------
-	PrayException(std::string msg, int code) : myMessage(msg), myCode(code) { }
+	PrayException(std::string msg, int code, std::string prayFile)
+		: myMessage(msg), myCode(code), myPrayFile(prayFile) { }
 
 private:
 	std::string myMessage;
 	int myCode;
+	std::string myPrayFile; // file that the error happened in, if available
 };
 
 #endif //PRAYEXCEPTION_H
+

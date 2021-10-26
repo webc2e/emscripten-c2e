@@ -10,7 +10,8 @@
 #include "../common/Vector2D.h"
 #include "C2eServices.h"
 
-#ifndef WIN32
+#ifndef WINELIB
+#ifndef _WIN32
 	typedef struct tagPOINT { int x; int y;} POINT;
 	typedef struct tagRECT { int left; int top; int right; int bottom; } RECT;
 
@@ -22,6 +23,7 @@
 	#ifndef TRUE
 		#define TRUE (!FALSE)
 	#endif
+#endif
 #endif
 
 typedef unsigned char byte;

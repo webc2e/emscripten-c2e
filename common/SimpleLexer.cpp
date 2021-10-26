@@ -33,7 +33,7 @@ int SimpleLexer::GetToken( std::string& text )
 	while( myInput.good() )
 	{
 		c = Peek();
-		if( isspace(c) )
+		if( isspace((unsigned char)(c)) )
 			Get();
 		else if( c=='#' || c=='*' )
 		{
@@ -74,6 +74,7 @@ int SimpleLexer::GetToken( std::string& text )
 					case 't': text += '\t'; break;
 					case '\\': text += '\\'; break;
 					case '\"': text += '\"'; break;
+					case '\'': text += '\''; break;
 					default: return typeError;	// unknown code
 				}
 				break;
@@ -87,9 +88,9 @@ int SimpleLexer::GetToken( std::string& text )
 		else
 			return typeString;
 	}
-	else if( isdigit( c ) )
+	else if( isdigit( (unsigned char)(c) ) )
 	{
-		while( myInput.good() && isdigit( Peek() ) )
+		while( myInput.good() && isdigit( (unsigned char)(Peek()) ) )
 			text += Get();
 
 		if( myInput.fail() )
@@ -101,7 +102,7 @@ int SimpleLexer::GetToken( std::string& text )
 	{
 		// symbol - sequence of printables up to next whitespace
 		// (or unprintable) char.
-		while( myInput.good() && isgraph( Peek() ) )
+		while( myInput.good() && isgraph( (unsigned char)(Peek()) ) )
 			text += Get();
 
 		// don't need to put the whitespace back

@@ -14,64 +14,88 @@
 #include <time.h>
 
 
+#ifdef _WIN32
+#include <mmsystem.h>	// for timeGetTime
+#else
+#include <sys/time.h>
+#endif
+
+#ifdef C2E_SDL
+#include <SDL/SDL.h>
+#endif
+
+
 uint32 GetRealWorldTime()
 {
 	return (uint32)(time(NULL));
 }
 
 
-#ifdef _WIN32
+
+#ifdef C2E_SDL
 int GetTimeStamp()
-{
-	return timeGetTime();
-}
+	{ return (int)SDL_GetTicks(); }
+#else
+	#ifdef _WIN32
+		int GetTimeStamp()
+			{ return timeGetTime(); }
+	#endif
+#endif
+
+
 
 int64 GetHighPerformanceTimeStamp()
 {
+#ifdef _WIN32
 	LARGE_INTEGER stamp;
 	if (QueryPerformanceCounter(&stamp))
 		return stamp.QuadPart;
 	else
-		return 0;		
+		return 0;
+#else
+	timeval tv;
+	gettimeofday(&tv, NULL);
+	int64 j = (int64)1000000 * (int64)tv.tv_sec + (int64)tv.tv_usec;
+
+	return j;
+#endif
 }
 
 int64 GetHighPerformanceTimeStampFrequency()
 {
+#ifdef _WIN32
 	LARGE_INTEGER stamp;
 	if (QueryPerformanceFrequency(&stamp))
 		return stamp.QuadPart;
 	else
-		return 0;		
-}
-
+		return 0;
 #else
-// Non-windows version
-
-// TODO: implementation :-)
-
-int GetTimeStamp()
-{
-	return 0;
+	return (int64)1000000;
+#endif
 }
 
-int64 GetHighPerformanceTimeStamp()
-{
-	return 0;
-}
+#ifndef WINELIB
+#ifndef _WIN32
 
-int64 GetHighPerformanceTimeStampFrequency()
-{
-	return 0;
-}
-
-// win32 replacement function
+// replacement for win32 call
 void GetLocalTime( SYSTEMTIME* t )
 {
-	memset( t,0,sizeof( SYSTEMTIME ) );
-	#warning TODO: implement GetLocalTime()
+	time_t bar;
+	time( &bar );
+	struct tm* foo = localtime( &bar );
+	t->wYear = foo->tm_year + 1900;	// TODO: +1900? MS docs are ambiguous.
+	t->wMonth = foo->tm_mon+1;
+	t->wDayOfWeek = foo->tm_wday;
+	t->wDay = foo->tm_mday;
+	t->wHour = foo->tm_hour;
+	t->wMinute = foo->tm_min;
+	t->wSecond = foo->tm_sec;
+	t->wMilliseconds = 0;		// don't need sub-second accuracy anyway.
 }
 
 #endif
+#endif
+
 
 
 
@@ -79,8 +103,8 @@ void GetLocalTime( SYSTEMTIME* t )
 //Check for invalid time components
 bool IsValidTime(SYSTEMTIME& time)
 {
-	// TODO: Is this correct?
-	if(time.wHour < 1 || time.wHour > 24)
+	// TODO: Is this correct? (off-by-one error?)
+	if(time.wHour < 0 || time.wHour > 23)
 		return false;
 
 	if( time.wMinute > 59)

@@ -5,7 +5,13 @@
 #include "QuoteFactory.h"
 #include "../Maths.h"
 
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+#else
 #include "../Display/DisplayEngine.h"
+#endif // C2D_DIRECT_DISPLAY_LIB
+
+#include "../../common/StringFuncs.h"
 
 const char* dictionary = "acbdefghi jklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"£$%^&*()-=_+,./<>?;'#:@~[]{}`¬\\|\n";
 const char*    encdict = "JKLMacb?;'#:@~[defpqrstuvwxyzABC3456=_+,.]{}`¬\\|DEFG HIghijklmnoNOPQR/<>STUVW789!\"£$%^&*()-XYZ012¦";
@@ -55,8 +61,7 @@ void ConvertDullText(std::string& thisString)
 	}
 	else
 	{
-		for (int i = 0; i < thisUser.size(); ++i)
-			thisUser[i] = tolower(thisUser[i]);
+		LowerCase(thisUser);
 		encode(thisUser);
 
 		first = quoteMap.lower_bound(thisUser);
@@ -84,14 +89,20 @@ void ConvertDullText(std::string& thisString)
 
 	if (thisString == "***")
 	{
-		// Make the world flat once more...
-		DisplayEngine::theRenderer().SetDesiredRoundness(false);
+		#ifndef C2D_DIRECT_DISPLAY_LIB
+
+			// Make the world flat once more...
+			DisplayEngine::theRenderer().SetDesiredRoundness(false);
+		#endif
 		thisString = "It isn't!";
 	}
 	if (thisString == "###")
 	{
 		// Make the world round instead...
-		DisplayEngine::theRenderer().SetDesiredRoundness(true);
+		#ifndef C2D_DIRECT_DISPLAY_LIB
+			DisplayEngine::theRenderer().SetDesiredRoundness(true);
+		#endif
 		thisString = "It isn't!";
 	}
 }
+

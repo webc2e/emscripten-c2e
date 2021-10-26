@@ -90,3 +90,4 @@ class MusicVariableContainer : public MusicNamedItem
 	};
 
 #endif
+

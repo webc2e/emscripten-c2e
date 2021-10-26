@@ -143,3 +143,4 @@ bool OutputPort::Read(CreaturesArchive &ar)
 
 	return true;
 }
+

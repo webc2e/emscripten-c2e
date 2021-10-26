@@ -36,3 +36,4 @@ typedef int SoundHandle;
 #define NO_SOUND_HANDLE -1
 
 #endif
+

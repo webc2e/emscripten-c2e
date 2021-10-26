@@ -18,11 +18,11 @@
 // 22Apr98	Peter Chilvers	Created
 // 09Jun98	Peter Chilvers	Implemented review changes (KH/RC) :
 //							Made defines into const
-// int 							Made MatchID() & FindObjectID()
-// const
-// 10Apr98	Peter Chilvers	Extended list of types supported by Read/Write
-// 14Aug98	Peter Chilvers	Converted Write to take const argument
-// 19Aug98	Peter Chilvers	Added CRect, CPoint unsigned int and WORD
+// int 							Made MatchID() &
+// FindObjectID() const 10Apr98	Peter Chilvers	Extended list of types supported
+// by Read/Write 14Aug98	Peter Chilvers	Converted Write to take const
+// argument 19Aug98	Peter Chilvers	Added CRect, CPoint unsigned int and
+// WORD
 //							to supported types
 // 25Aug98	Peter Chilvers	Replaced ArchiveLink with CTypedPtrArray
 // 09Dec98	Alima Adams		Replaced CTypedPtrArray with a
@@ -42,21 +42,11 @@
 
 #include "../common/BasicException.h"
 #include "../common/C2eTypes.h"
-#include "Agents/AgentHandle.h"
+#include "../modules/ModuleAPI.h"
 #include "Display/ErrorMessageHandler.h"
 
 #include "TimeFuncs.h"
-
-#ifdef _WIN32
-#include "../common/zlib113/zlib.h"
-#else
 #include <zlib.h>
-#endif
-
-// disable annoying warning in VC when using stl (debug symbols > 255 chars)
-//#ifdef _MSC_VER
-//#pragma warning( disable : 4786 4503)
-//#endif
 
 #include <deque>
 #include <list>
@@ -65,7 +55,6 @@
 #include <vector>
 
 class PersistentObject;
-class Agent;
 
 // Flags an empty ID (see FindObjectID)
 const int32 NOT_IN_ARCHIVE = -1;
@@ -81,7 +70,7 @@ const int32 FIRST_AGENT = -4;
 
 typedef float ArchiveFloat;
 
-class CreaturesArchive {
+class C2E_MODULE_API CreaturesArchive {
 public:
   class Exception : public BasicException {
   public:
@@ -98,7 +87,8 @@ public:
   // Description:	Constructs an archive to either read from a file or
   //				write to a file
   // ----------------------------------------------------------------------
-  CreaturesArchive(std::iostream &stream, Mode mode, bool bNoVersion = false);
+  CreaturesArchive(std::istream &stream, Mode mode, bool bNoVersion = false);
+  CreaturesArchive(std::ostream &stream, Mode mode, bool bNoVersion = false);
 
   // ----------------------------------------------------------------------
   // Method:		~CreaturesArchive
@@ -135,7 +125,7 @@ public:
   // ----------------------------------------------------------------------
 
   void Write(int value);
-  void Write(uint8_t value);
+  void Write(uint8 value);
   void Write(double value);
   void Write(uint16 value);
   void Write(uint32 value);
@@ -146,7 +136,6 @@ public:
   void Write(LPCTSTR string);
   void Write(const std::string &string);
   void Write(const SYSTEMTIME &time);
-  // void Write(const CPoint& point);
   void Write(const Box &rect);
   void Write(const RECT &rect);
   void Write(const PersistentObject *object);
@@ -163,7 +152,7 @@ public:
   //				references to persistent objects into account
   // ----------------------------------------------------------------------
   void Read(int &value);
-  void Read(uint8_t &value);
+  void Read(uint8 &value);
   void Read(double &value);
   void Read(uint16 &value);
   void Read(uint32 &value);
@@ -173,7 +162,6 @@ public:
   void Read(int32 &value);
   void Read(std::string &string);
   void Read(SYSTEMTIME &time);
-  // void Read(CPoint &point);
   void Read(Box &rect);
   void Read(RECT &rect);
   void Read(PersistentObject *&object);
@@ -212,6 +200,9 @@ public:
   // ----------------------------------------------------------------------
   void Skip(int count);
 
+  static void ForceOpenRange(int &item, int lower, int upper);
+  static void ForceOpenRangeException(const int &item, int lower, int upper);
+
   // ----------------------------------------------------------------------
   // Friend Functions
   // ----------------------------------------------------------------------
@@ -233,7 +224,7 @@ public:
     return ar;
   }
 
-  friend CreaturesArchive &operator>>(CreaturesArchive &ar, uint8_t &value) {
+  friend CreaturesArchive &operator>>(CreaturesArchive &ar, uint8 &value) {
     ar.Read(value);
     return ar;
   }
@@ -284,10 +275,6 @@ public:
     return ar;
   }
 
-  /*
-  friend CreaturesArchive& operator >>( CreaturesArchive& ar, CPoint &point)
-          {ar.Read(point); return ar;}
-  */
   friend CreaturesArchive &operator>>(CreaturesArchive &ar, Vector2D &v) {
     ar.Read(v);
     return ar;
@@ -324,7 +311,7 @@ public:
     return ar;
   }
 
-  friend CreaturesArchive &operator<<(CreaturesArchive &ar, uint8_t value) {
+  friend CreaturesArchive &operator<<(CreaturesArchive &ar, uint8 value) {
     ar.Write(value);
     return ar;
   }
@@ -381,10 +368,6 @@ public:
     return ar;
   }
 
-  /*
-  friend CreaturesArchive& operator <<( CreaturesArchive& ar, const CPoint
-  &point) {ar.Write(point); return ar;}
-  */
   friend CreaturesArchive &operator<<(CreaturesArchive &ar, const Vector2D &v) {
     ar.Write(v);
     return ar;
@@ -414,8 +397,15 @@ public:
 
   void SetAgentArchiveStyle(AgentArchiveStyle style);
 
-  void SetCloningACreature(bool value) { myCloningACreature = value; }
-  bool GetCloningACreature() { return myCloningACreature; }
+  void SetCloningASkeletalCreature(bool value) {
+    myCloningASkeletalCreature = value;
+  }
+  bool GetCloningASkeletalCreature() { return myCloningASkeletalCreature; }
+
+  static void SetZLibCompressionLevel(int level);
+
+  typedef void (*UpdateProgressBarFunction)(int);
+  void SetUpdateProgressBarFunction(UpdateProgressBarFunction function);
 
 private:
   // ----------------------------------------------------------------------
@@ -431,20 +421,26 @@ private:
   // mode
   // Reading / Writing
   // ----------------------------------------------------------------------
-  //		Status mode;
   Mode myMode;
   int32 myVersion;
+
+  static int ourZLibCompressionLevel;
+
   // ----------------------------------------------------------------------
   // targetFile
   // File being read from / written to
   // ----------------------------------------------------------------------
-  std::iostream &myStream;
+  std::istream *myInStream;
+  std::ostream *myOutStream;
 
   // ----------------------------------------------------------------------
   // archived
   // Array of objects already in the archive
   // ----------------------------------------------------------------------
 
+#ifdef _MSC_VER
+#pragma warning(disable : 4251)
+#endif
   std::vector<PersistentObject *> myArchiveVector;
   std::map<PersistentObject const *, int32> myArchiveMap;
 
@@ -453,11 +449,16 @@ private:
 
   std::vector<std::string> myClassVector;
   std::map<std::string, int32> myClassMap;
+#ifdef _MSC_VER
+#pragma warning(default : 4251)
+#endif
 
   AgentArchiveStyle myAgentArchiveStyle;
   int myAgentArchivedCount;
-  Agent const *myFirstAgent;
-  bool myCloningACreature;
+  PersistentObject const *myFirstAgent;
+  bool myCloningASkeletalCreature;
+
+  UpdateProgressBarFunction myUpdateProgressBarFunction;
 
   // ---------------------------------------------------------------------
   // Method:		WriteBinary
@@ -474,13 +475,6 @@ private:
 
   template <typename T> void ReadBinary(T &value) {
     Read(reinterpret_cast<char *>(&value), sizeof(value));
-    /*
-    if( myStream.gcount() != sizeof( value ) )
-    {
-            std::string str = ErrorMessageHandler::Format("archive_error", 2,
-    "CreaturesArchive::ReadBinary"); throw Exception( str.c_str() );
-    }
-    */
   }
 };
 
@@ -507,8 +501,13 @@ template <class C>
 CreaturesArchive &operator>>(CreaturesArchive &ar, std::vector<C> &value) {
   uint32 n;
   ar >> n;
-  value.resize(n);
+  // Only resize to 5000 max, to avoid broken archives
+  // eating all memory and crashing the game.  In that case,
+  // we assume file length will run out first (dodgy files
+  // should be checked to be within a reasonably length).
+  value.resize(n > 5000 ? 5000 : n);
   for (int i = 0; i < n; i++) {
+    value.resize(i + 1);
     ar >> value[i];
   }
   return ar;
@@ -561,26 +560,49 @@ CreaturesArchive &operator>>(CreaturesArchive &ar,
   return ar;
 }
 
+// Serialize sets(whose elements must have << >> operators defined)
+template <class Value>
+CreaturesArchive &operator<<(CreaturesArchive &ar,
+                             const std::set<Value> &sett) {
+  typename std::set<Value>::const_iterator it;
+  ar << (uint32)(sett.size());
+  for (it = sett.begin(); it != sett.end(); ++it)
+    ar << *it;
+  return ar;
+}
+
+template <class Value>
+CreaturesArchive &operator>>(CreaturesArchive &ar, std::set<Value> &sett) {
+  uint32 size;
+  ar >> size;
+  while (size--) {
+    Value thing;
+    ar >> thing;
+    sett.insert(thing);
+  }
+  return ar;
+}
+
 // Serialize multisets (whose elements must have << >> operators defined)
 template <class Key, class Pred>
 CreaturesArchive &operator<<(CreaturesArchive &ar,
-                             const std::multiset<Key, Pred> &set) {
+                             const std::multiset<Key, Pred> &sett) {
   typename std::multiset<Key, Pred>::const_iterator it;
-  ar << (uint32)(set.size());
-  for (it = set.begin(); it != set.end(); ++it)
+  ar << (uint32)(sett.size());
+  for (it = sett.begin(); it != sett.end(); ++it)
     ar << *it;
   return ar;
 }
 
 template <class Key, class Pred>
 CreaturesArchive &operator>>(CreaturesArchive &ar,
-                             std::multiset<Key, Pred> &set) {
+                             std::multiset<Key, Pred> &sett) {
   uint32 size;
   ar >> size;
   while (size--) {
     Key key;
     ar >> key;
-    set.insert(key);
+    sett.insert(key);
   }
   return ar;
 }

@@ -30,12 +30,12 @@
 #include "CreaturesArchive.h"
 #include "PersistentObject.h"
 #include <string>
-#include "Display/Position.h"
 
-#include "Agents/Agent.h"
-#include "App.h"
+const int BUFFER_SIZE = 4096;
 
-const int BUFFER_SIZE = 16384;
+// Compression level 0 - 9
+// Can be set at runtime by the static member SetZLibCompressionLevel
+int C2E_MODULE_API CreaturesArchive::ourZLibCompressionLevel = 6;
 
 // ----------------------------------------------------------------------
 // Method:		CreaturesArchive
@@ -45,14 +45,15 @@ const int BUFFER_SIZE = 16384;
 // Description:	Constructs an archive to either read from a file or
 //				write to a file (which should already be open)
 // ----------------------------------------------------------------------
-CreaturesArchive::CreaturesArchive( std::iostream &stream, Mode mode, bool bNoVersion /* = false */ )
-	: myStream(stream), myMode( mode ),
+CreaturesArchive::CreaturesArchive( std::istream &stream, Mode mode, bool bNoVersion /* = false */ )
+	: myInStream(&stream), myMode( mode ),
 	myAgentArchiveStyle(PERSISTENT_OBJECTS),
-	myAgentArchivedCount(0), myFirstAgent(NULL)
+	myAgentArchivedCount(0), myFirstAgent(NULL),
+	myUpdateProgressBarFunction(NULL)
 {
-	ASSERT(myStream.good());
+	ASSERT(myInStream->good());
 
-	myCloningACreature = false;
+	myCloningASkeletalCreature = false;
 
 	myStreamBuffer.zalloc = (alloc_func)NULL;
 	myStreamBuffer.zfree = (free_func)NULL;
@@ -66,50 +67,77 @@ CreaturesArchive::CreaturesArchive( std::iostream &stream, Mode mode, bool bNoVe
 	baseHint += (char)4;  // Linux EOF (Hopefully)
 	std::string readHint = baseHint;
 
-	if( mode == Load )
-	{
-		myStreamBuffer.next_in = myCompressedDataBuffer;
-		myStreamBuffer.next_out = myUncompressedDataBuffer;
-		myStreamBuffer.avail_in = 0;
-		myStreamBuffer.avail_out = BUFFER_SIZE;
-		myLastUncompressedDataRead = myUncompressedDataBuffer;
-		int err = inflateInit(&myStreamBuffer);
-		if (err != Z_OK)
-		{
-			throw Exception( "CRA0001: zlib failed to initialise" );
-		}
-		myStream.read(&(readHint.at(0)),readHint.length());
-		if (readHint != baseHint)
-		{
-			throw Exception( "CRA0002: Not a creatures archive" );
-		}
+	ASSERT(mode == Load);
 
-		Read( myVersion );
-		if (!bNoVersion)
+	myStreamBuffer.next_in = myCompressedDataBuffer;
+	myStreamBuffer.next_out = myUncompressedDataBuffer;
+	myStreamBuffer.avail_in = 0;
+	myStreamBuffer.avail_out = BUFFER_SIZE;
+	myLastUncompressedDataRead = myUncompressedDataBuffer;
+	int err = inflateInit(&myStreamBuffer);
+	if (err != Z_OK)
+	{
+		throw Exception( "CRA0001: zlib failed to initialise" );
+	}
+	myInStream->read(&(readHint.at(0)),readHint.length());
+	if (myUpdateProgressBarFunction)
+		myUpdateProgressBarFunction(myInStream->gcount());
+	if (readHint != baseHint)
+	{
+		throw Exception( "CRA0002: Not a creatures archive" );
+	}
+
+	Read( myVersion );
+	if (!bNoVersion)
+	{
+		if( myVersion > GetCurrentVersion() )
 		{
-			if( myVersion != GetCurrentVersion() )
-			{
-				std::string str = ErrorMessageHandler::Format("archive_error", 6, "CreaturesArchive::CreaturesArchive");
-				throw Exception( str.c_str() );
-			}
+#ifndef NON_LOCALISED_ERRORS
+			std::string str = ErrorMessageHandler::Format("archive_error", 6, "CreaturesArchive::CreaturesArchive");
+#else
+			std::string str = "Incompatible version";
+#endif
+			throw Exception( str.c_str() );
 		}
 	}
-	else
-	{
-		myStreamBuffer.next_in = myUncompressedDataBuffer;
-		myStreamBuffer.next_out = myCompressedDataBuffer;
-		myStreamBuffer.avail_in = 0;
-		myStreamBuffer.avail_out = BUFFER_SIZE;
-		int err = deflateInit(&myStreamBuffer, theApp.GetZLibCompressionLevel()); // compression level 0 - 9
-		if (err != Z_OK)
-		{
-			throw Exception( "CRA0003: zlib failed to initialise" );
-		}
-		myStream.write(readHint.c_str(),readHint.length());
+}
 
-		myVersion = GetCurrentVersion();
-		Write( myVersion );
+CreaturesArchive::CreaturesArchive( std::ostream &stream, Mode mode, bool bNoVersion /* = false */ )
+	: myOutStream(&stream), myMode( mode ),
+	myAgentArchiveStyle(PERSISTENT_OBJECTS),
+	myAgentArchivedCount(0), myFirstAgent(NULL)
+{
+	ASSERT(myOutStream->good());
+
+	myCloningASkeletalCreature = false;
+
+	myStreamBuffer.zalloc = (alloc_func)NULL;
+	myStreamBuffer.zfree = (free_func)NULL;
+	myStreamBuffer.opaque = (voidpf)NULL;
+
+	myCompressedDataBuffer = new unsigned char[BUFFER_SIZE];
+	myUncompressedDataBuffer = new unsigned char[BUFFER_SIZE];
+
+	std::string baseHint = "Creatures Evolution Engine - Archived information file. zLib 1.13 compressed.";
+	baseHint += (char)26; // MS-DOS EOF
+	baseHint += (char)4;  // Linux EOF (Hopefully)
+	std::string readHint = baseHint;
+
+	ASSERT(mode == Save);
+
+	myStreamBuffer.next_in = myUncompressedDataBuffer;
+	myStreamBuffer.next_out = myCompressedDataBuffer;
+	myStreamBuffer.avail_in = 0;
+	myStreamBuffer.avail_out = BUFFER_SIZE;
+	int err = deflateInit(&myStreamBuffer, ourZLibCompressionLevel);
+	if (err != Z_OK)
+	{
+		throw Exception( "CRA0003: zlib failed to initialise" );
 	}
+	myOutStream->write(readHint.c_str(),readHint.length());
+
+	myVersion = GetCurrentVersion();
+	Write( myVersion );
 }
 
 // ----------------------------------------------------------------------
@@ -130,7 +158,7 @@ CreaturesArchive::~CreaturesArchive()
 			zret = deflate(&myStreamBuffer,Z_FINISH);
 			if (myStreamBuffer.avail_out < BUFFER_SIZE)
 			{
-				myStream.write((char*)myCompressedDataBuffer,BUFFER_SIZE - myStreamBuffer.avail_out);
+				myOutStream->write((char*)myCompressedDataBuffer,BUFFER_SIZE - myStreamBuffer.avail_out);
 				myStreamBuffer.next_out = myCompressedDataBuffer;
 				myStreamBuffer.avail_out = BUFFER_SIZE;
 			}
@@ -152,7 +180,7 @@ CreaturesArchive::~CreaturesArchive()
 void CreaturesArchive::Skip( int count )
 {
 	_ASSERT(false); // We shouldn't be skipping around.
-	myStream.seekg( count, std::istream::cur );
+	// myStream->seekg( count, std::istream::cur );
 }
 
 
@@ -170,7 +198,7 @@ void CreaturesArchive::Write( int value)
 }
 
 
-void CreaturesArchive::Write(uint8_t value)
+void CreaturesArchive::Write(uint8 value)
 {
 	ASSERT( IsSaving());
 	WriteBinary( value );
@@ -271,15 +299,6 @@ typedef struct _SYSTEMTIME {
 */
 
 
-
-/*
-void CreaturesArchive::Write(const CPoint &point)
-{
-
-	WriteBinary(point.x);
-	WriteBinary(point.y);
-}
-*/
 void CreaturesArchive::Write(const Vector2D &v)
 {
 	WriteBinary(v.x);
@@ -330,7 +349,7 @@ void CreaturesArchive::Write( const void *data, size_t count )
 			if (myStreamBuffer.avail_out == 0)
 			{
 				// we have some data to dump to disk...
-				myStream.write( (char*)myCompressedDataBuffer,BUFFER_SIZE );
+				myOutStream->write( (char*)myCompressedDataBuffer,BUFFER_SIZE );
 				myStreamBuffer.next_out = myCompressedDataBuffer;
 				myStreamBuffer.avail_out = BUFFER_SIZE;
 			}
@@ -362,12 +381,11 @@ void CreaturesArchive::Write(const PersistentObject *object)
 	{
 		if( object->IsAgent() )
 		{
-			Agent const *agent = (Agent *)object;
 			myAgentArchivedCount++;
 
 			if (myAgentArchivedCount > 1)
 			{
-				if (myFirstAgent == agent)
+				if (myFirstAgent == object)
 				{
 					Write ( FIRST_AGENT );
 					return;
@@ -386,7 +404,7 @@ void CreaturesArchive::Write(const PersistentObject *object)
 			}
 			else
 			{
-				myFirstAgent = agent;
+				myFirstAgent = object;
 			}
 		}
 	}
@@ -451,7 +469,7 @@ void CreaturesArchive::Read(int &value)
 }
 
 
-void CreaturesArchive::Read(uint8_t &value)
+void CreaturesArchive::Read(uint8 &value)
 {
 	ASSERT( IsLoading() );
 
@@ -512,9 +530,28 @@ void CreaturesArchive::Read( std::string& value)
 	ASSERT( IsLoading() );
 	int32 len;
 	ReadBinary(len);
-	ASSERT(len < 100000); // sanity check
-	value.resize(len);
-	Read( &value[0], len );
+	if (len < 0)
+		throw Exception( "CRA0009: negative string size" );
+	// Sanity check
+	if (len < 100000)
+	{
+		value.resize(len);
+		Read( &value[0], len );
+	}
+	else
+	{
+		// For long strings, we read them slower
+		// This is to avoid trouble with allocating
+		// all the memory in the computer, and the archive
+		// containing it all as it is broken
+		value = "";
+		for (int i = 0; i < len; ++i)
+		{
+			char c;
+			ReadBinary(c);
+			value += c;
+		}
+	}
 }
 
 void CreaturesArchive::Read( SYSTEMTIME& time)
@@ -530,14 +567,6 @@ void CreaturesArchive::Read( SYSTEMTIME& time)
 	ReadBinary( time.wYear );
 }
 
-
-/*
-void CreaturesArchive::Read(CPoint &point)
-{
-	Read(point.x);
-	Read(point.y);
-}
-*/
 void CreaturesArchive::Read(Vector2D &v)
 {
 	Read(v.x);
@@ -581,32 +610,44 @@ void CreaturesArchive::Read( void *buffer, size_t count )
 		}
 		if (read == count)
 			return; // No need to process more...
+
 		// Okay then, I've used up all the output...
 		myLastUncompressedDataRead = myUncompressedDataBuffer;
 		myStreamBuffer.next_out = myUncompressedDataBuffer;
 		myStreamBuffer.avail_out = BUFFER_SIZE;
 		// Next we have to deal such that, until we have a fully used output buffer,
 		// or we hit the end of our input stream, deal with it...
-		if (myStream.good())
+		if (myInStream->good())
 		{
-			while (myStream.good() && myStreamBuffer.avail_out > 0)
+			while (myInStream->good() && myStreamBuffer.avail_out > 0)
 			{
 				// Right then, if we have run out of input, get another chunk....
 				if (myStreamBuffer.avail_in == 0)
 				{
 					myStreamBuffer.next_in = myCompressedDataBuffer;
-					myStream.read((char*)myCompressedDataBuffer,BUFFER_SIZE);
-					myStreamBuffer.avail_in = myStream.gcount();
+					myInStream->read((char*)myCompressedDataBuffer,BUFFER_SIZE);
+					myStreamBuffer.avail_in = myInStream->gcount();
+					if (myUpdateProgressBarFunction)
+						myUpdateProgressBarFunction(myInStream->gcount());
 				}
-				inflate(&myStreamBuffer,0);
+				int result = inflate(&myStreamBuffer,0);
+				if (result != Z_OK && result != Z_STREAM_END)
+					throw Exception( "CRA0004: zlib inflate error reading compressed stream" );
 			}
 		}
 		else
 		{
 			// Erm, we have no more in the stream, but there may be data in the buffer left
-			inflate(&myStreamBuffer,0);
+			int result = inflate(&myStreamBuffer,0);
+			if (result != Z_OK && result != Z_STREAM_END)
+				throw Exception( "CRA0005: zlib inflate error reading compressed stream" );
 		}
 		
+		// No more was read in, when we needed it... ;-(
+		if (myStreamBuffer.next_out == myUncompressedDataBuffer)
+		{
+			throw Exception( "CRA0006: decompression stream ended before expected" );
+		}
 	}
 }
 
@@ -634,12 +675,12 @@ void CreaturesArchive::Read(PersistentObject *&object)
 
 	if (id == FIRST_AGENT)
 	{
-		object = const_cast<Agent *>(myFirstAgent);
+		object = const_cast<PersistentObject *>(myFirstAgent);
 		return;
 	}
 
 	// Is this object already in the archive?
-	if( id < myArchiveVector.size() )
+	if(id >= 0 && id < myArchiveVector.size() )
 	{
 		object = myArchiveVector[id];
 		return;
@@ -660,6 +701,14 @@ void CreaturesArchive::Read(PersistentObject *&object)
 	}
 
 
+	// Hack by gtb:
+	// If we're reading in a C3 archive change the Creature objects
+	// to be SkeletalCreatures:
+	if (GetFileVersion()<14 && className=="Creature")
+	{
+		className = "SkeletalCreature";
+	}
+
 	// Create an object of the class name's type
 	object = PersistentObject::New( className.c_str() );
 
@@ -673,7 +722,7 @@ void CreaturesArchive::Read(PersistentObject *&object)
 				myAgentArchivedCount++;
 
 				if (myAgentArchivedCount == 1)
-					myFirstAgent = (Agent *)object;
+					myFirstAgent = object;
 			}
 		}
 
@@ -685,10 +734,12 @@ void CreaturesArchive::Read(PersistentObject *&object)
 		// Load function, not the base class's)
 		std::string magic;
 		Read( magic );
-		ASSERT( magic == "OBST" );
+		if ( magic != "OBST" )
+			throw Exception( "CRA0007: object start marker mismatch" );
 		object -> Read ( *this );
 		Read( magic );
-		ASSERT( magic == "OBEN" );
+		if ( magic != "OBEN" )
+			throw Exception( "CRA0008: object end marker mismatch" );
 	}
 
 }
@@ -698,10 +749,15 @@ void CreaturesArchive::WriteFloatRefTarget(const float &v)
 	Write( v );
 	if( myFloatMap.find( &v ) != myFloatMap.end() )
 	{
+#ifndef NON_LOCALISED_ERRORS
 		std::string str = ErrorMessageHandler::Format("archive_error", 0, "CreaturesArchive::WriteFloatRef");
+#else
+		std::string str = "WriteFloatRefTarget failed";
+#endif
 		throw Exception( str.c_str() );
 	}
-	myFloatMap[ &v ] = myFloatMap.size();
+	int siz = myFloatMap.size();
+	myFloatMap[ &v ] = siz;
 }
 
 void CreaturesArchive::WriteFloatRef(const float *v)
@@ -715,7 +771,11 @@ void CreaturesArchive::WriteFloatRef(const float *v)
 		myFloatMap.find( v );
 	if( it == myFloatMap.end() )
 	{
+#ifndef NON_LOCALISED_ERRORS
 		std::string str = ErrorMessageHandler::Format("archive_error", 5, "CreaturesArchive::WriteFloatRef");
+#else
+		std::string str = "WriteFloatRef failed";
+#endif
 		throw Exception( str.c_str() );
 	}
 	Write( it->second );
@@ -736,9 +796,15 @@ void CreaturesArchive::ReadFloatRef(float *&v)
 		v = 0;
 		return;
 	}
-	if( id < 0 || id >= myFloatVector.size() )
+
+	int siz = myFloatVector.size();
+	if( id < 0 || id >= siz )
 	{
+#ifndef NON_LOCALISED_ERRORS
 		std::string str = ErrorMessageHandler::Format("archive_error", 1, "CreaturesArchive::ReadFloatRef");
+#else
+		std::string str = "ReadFloatRef failed";
+#endif
 		throw Exception( str.c_str() );
 	}
 	v = myFloatVector[id];
@@ -747,8 +813,8 @@ void CreaturesArchive::ReadFloatRef(float *&v)
 // ---------------------------------------------------------------------
 // Method:		GetCurrentVersion
 // Arguments:	None
-// Returns:		Version number of archive being read/written
-// Description:	This can be used by objects being read to read in old
+// Returns:		Version number of archive being read
+// Description:	This can be used by objects being read, to read in old
 //				object schemas.
 // ---------------------------------------------------------------------
 int32 CreaturesArchive::GetFileVersion()
@@ -764,11 +830,37 @@ void CreaturesArchive::SetAgentArchiveStyle(AgentArchiveStyle style)
 // ---------------------------------------------------------------------
 // Method:		GetCurrentVersion
 // Arguments:	None
-// Returns:		Current archive version number
+// Returns:		Version number of the archive that this engine writes out.
 // Description:	This number should be incremented when ANY class changes
 //				the format it is archived in.
 // ---------------------------------------------------------------------
 int32 CreaturesArchive::GetCurrentVersion()
 {
-	return 12;
+	return 39;
 }
+
+void CreaturesArchive::SetZLibCompressionLevel(int level)
+{
+	ourZLibCompressionLevel = level;
+}
+
+void CreaturesArchive::ForceOpenRange(int& item, int lower, int upper)
+{
+	if (item < lower)
+		item = lower;
+	if (item >= upper)
+		item = upper - 1;
+}
+
+void CreaturesArchive::ForceOpenRangeException(const int& item, int lower, int upper)
+{
+	if (item < lower || item >=upper)
+		throw Exception( "CRA0010: range check failed" );
+}
+
+void CreaturesArchive::SetUpdateProgressBarFunction(UpdateProgressBarFunction function)
+{
+	myUpdateProgressBarFunction = function;
+}
+
+

@@ -8,13 +8,13 @@
 #include "../FilePath.h"
 #include "../App.h"
 #include "../World.h"
+#include "../../common/FileFuncs.h"
+#include "../Maths.h"
+#include "../DirectoryManager.h"
+#include "../UniqueIdentifier.h"
 
-#ifndef C2E_OLD_CPP_LIB
-// stringstream is a newish addition to the std lib...
 #include <sstream>
 #include <iomanip>
-#endif // C2E_OLD_CPP_LIB
-
 
 // -------------------------------------------------------------------------
 // Public
@@ -77,14 +77,35 @@ bool GenomeStore::LoadEngineeredFile(int index, std::string engineeredFilename)
 {
 	ASSERT(AssertValid());
 
+	// Search in all auxiliary directories
 	std::vector<std::string> files;
-	GetFilesInDirectory(theApp.GetDirectory(GENETICS_DIR), files, engineeredFilename + ".gen");
+
+
+
+
+	for (int i = 0; i < theDirectoryManager.GetAuxDirCount(GENETICS_DIR); ++i)
+	{
+		GetFilesInDirectory(theDirectoryManager.GetAuxDir(GENETICS_DIR, i), files, engineeredFilename + ".gen");
+	}
+
+	if (files.size()==0)
+	{
+		// SPARKY look in CU
+		GetFilesInDirectory(theDirectoryManager.GetDirectory(GENETICS_DIR,true), files, engineeredFilename + ".gen");
+
+	}
+
+
 	if (files.size() == 0)
 	{
+		// If nothing found, look in world directory
 		std::string worldDir;
-		theApp.GetWorldDirectoryVersion(GENETICS_DIR, worldDir, true);
+		theDirectoryManager.GetWorldDirectoryVersion(GENETICS_DIR, worldDir, true);
 		GetFilesInDirectory(worldDir, files, engineeredFilename + ".gen");
 	}
+
+
+
 
 	if (files.size() == 0)
 		return false;
@@ -93,7 +114,7 @@ bool GenomeStore::LoadEngineeredFile(int index, std::string engineeredFilename)
 	FilePath filepathEng(file, GENETICS_DIR);
 	std::string filenameEng = filepathEng.GetFullPath();
 
-	if (!File::FileExists(filenameEng))
+	if (!::FileExists(filenameEng.c_str()))
 	{
 		ASSERT(false);
 		return false;
@@ -134,7 +155,7 @@ bool GenomeStore::CloneSlot(int index, std::string monikerCloneFrom)
 	ASSERT(AssertValid());
 
 	std::string fileFrom = Filename(monikerCloneFrom);
-	if (!File::FileExists(fileFrom))
+	if (!::FileExists(fileFrom.c_str()))
 	{
 		ASSERT(false);
 		return false;
@@ -200,7 +221,7 @@ bool GenomeStore::CrossoverFrom(int index, GenomeStore& motherStore, int motherI
 		ASSERT(false);
 
 	RegisterConceptionEventAndBasicData(childGenome, motherMoniker, fatherMoniker,
-		natural ? LifeEvent::typeConcieved : LifeEvent::typeSpliced);
+		natural ? LifeEvent::typeConceived : LifeEvent::typeSpliced);
 	
 	ASSERT(AssertValid());
 
@@ -222,7 +243,7 @@ bool GenomeStore::IdenticalTwinFrom(int index,
 		return false;
 
 	std::string fileFrom = Filename(twinMoniker);
-	if (!File::FileExists(fileFrom))
+	if (!::FileExists(fileFrom.c_str()))
 	{
 		ASSERT(false);
 		return false;
@@ -243,7 +264,7 @@ bool GenomeStore::IdenticalTwinFrom(int index,
 		ASSERT(false);
 
 	RegisterConceptionEventAndBasicData(newGenome, motherMoniker, fatherMoniker,
-		LifeEvent::typeConcieved);
+		LifeEvent::typeConceived);
 	
 	ASSERT(AssertValid());
 
@@ -305,7 +326,7 @@ bool GenomeStore::FileExists(std::string moniker)
 	if (filename.empty())
 		return false;
 	else
-		return File::FileExists(filename);
+		return ::FileExists(filename.c_str());
 }
 
 // static
@@ -321,95 +342,14 @@ std::string GenomeStore::Filename(std::string moniker)
 
 	return filename;
 }
-
+// ****************************************************************************
 FilePath GenomeStore::GetFilePath(std::string moniker)
 {
 	ASSERT(!moniker.empty());
 	FilePath filepath(moniker + ".gen", GENETICS_DIR);
 	return filepath;
 }
-
-std::string GenomeStore::GenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus)
-{
-	int tryCount = 0;
-	std::string moniker;
-	do
-	{
-		moniker = TryGenerateUniqueMoniker(monikerSeed1, monikerSeed2, genus);
-		++tryCount;
-		ASSERT(moniker.size() == 32);
-	}
-	while(FileExists(moniker));
-
-	// If it takes more than one go then, unless we're _very_
-	// unlucky, TryGenerateUniqueMoniker isn't unique enough.
-	ASSERT(tryCount == 1);
-	
-	ASSERT(!moniker.empty());
-	return moniker;
-}
-
-// Statistically unique across all computers anywhere
-std::string GenomeStore::TryGenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus)
-{
-#ifndef C2E_OLD_CPP_LIB
-	std::ostringstream friendlyTagSream;
-	friendlyTagSream << "Moniker Friendly Names " << genus + 1;
-	std::string friendlyTag = friendlyTagSream.str();
-#else
-	char buf[128];
-	sprintf( buf, "Moniker Friendly Names %d", genus+1);
-	std::string friendlyTag(buf);
-#endif
-	if (!theCatalogue.TagPresent(friendlyTag))
-		friendlyTag = "Moniker Friendly Names";
-
-	int friendlyMax = theCatalogue.GetArrayCountForTag(friendlyTag);
-	int friendly = Rnd(0, friendlyMax - 1);
-	std::string friendlyPart = theCatalogue.Get(friendlyTag, friendly);
-	
-	// ensure _exactly_ four characters
-	friendlyPart = friendlyPart + friendlyPart + friendlyPart + friendlyPart + "xxxx";
-	friendlyPart.assign(friendlyPart, 0, 4);
-	
-	// Next we need a generation number :)
-	int generationOne = 0, generationTwo = 0;
-	{
-#ifndef C2E_OLD_CPP_LIB
-		std::istringstream monikerStream1(monikerSeed1);
-		monikerStream1 >> generationOne;
-		std::istringstream monikerStream2(monikerSeed2);
-		monikerStream2 >> generationTwo;
-#else
-		// TODO: check that this produces correct generation numbers!
-		generationOne = monikerSeed1[0]*100 +
-			monikerSeed1[1]*10 +
-			monikerSeed1[2];
-		generationTwo = monikerSeed2[0]*100 +
-			monikerSeed2[1]*10 +
-			monikerSeed2[2];
-#endif
-	}
-	// Generation number defined as Max+1 (Because Helen Birchmore (Yes Blame her!) said so :)
-	int ownGeneration = (generationOne < generationTwo) ? generationTwo + 1 : generationOne + 1;
-	// special case for cloning to preserve generation
-	if (!monikerSeed1.empty() && monikerSeed2.empty())
-		ownGeneration = generationOne;
-
-	std::string moniker = GenerateUniqueIdentifier(monikerSeed1, monikerSeed2);
-#ifndef C2E_OLD_CPP_LIB
-	std::ostringstream out;
-	out << std::setfill('0') << std::setw(3) << ownGeneration;
-	return out.str() + "-" + friendlyPart + "-" + moniker;
-#else
-	// buf is defined above
-	sprintf( buf, "%03d", ownGeneration );
-	return std::string(buf) + "-" + friendlyPart + "-" + moniker;
-#endif
-}
-
-
-
+// ****************************************************************************
 CreaturesArchive &operator<<( CreaturesArchive &archive, GenomeStore const &genomeStore )
 {
 	archive << genomeStore.myMonikers;
@@ -442,7 +382,7 @@ void GenomeStore::RegisterConceptionEventAndBasicData(Genome& genome, const std:
 	history.AddEvent(event, monikerMum, monikerDad);
 
 	// if natural, trigger pregnant and impregnated events
-	if (event == LifeEvent::typeConcieved)
+	if (event == LifeEvent::typeConceived)
 	{
 		CreatureHistory& motherHistory = historyStore.GetCreatureHistory(monikerMum);
 		motherHistory.AddEvent(LifeEvent::typeBecamePregnant, moniker, monikerDad);
@@ -484,4 +424,26 @@ void GenomeStore::ClonedEntirely()
 	}
 	ASSERT(AssertValid());
 }
+
+std::string GenomeStore::GenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus)
+{
+	int tryCount = 0;
+	std::string moniker;
+	do
+	{
+		moniker = TryGenerateUniqueMoniker(monikerSeed1, monikerSeed2, genus);
+		++tryCount;
+		// The size can now be more than 32, for generations greater than 999
+		// ASSERT(moniker.size() == 32);
+	}
+	while(FileExists(moniker));
+
+	// If it takes more than one go then, unless we're _very_
+	// unlucky, TryGenerateUniqueMoniker isn't unique enough.
+	ASSERT(tryCount == 1);
+	
+	ASSERT(!moniker.empty());
+	return moniker;
+}
+
 

@@ -10,3 +10,4 @@
 void ConvertDullText(std::string& thisString);
 
 #endif // QUOTEFACTORY_H
+

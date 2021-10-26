@@ -49,25 +49,34 @@ class CosInstaller
 public:
 
 	CosInstaller();
-	CosInstaller(std::string& script);
+	CosInstaller(std::string& script, bool dontInjectInstallScript = false, bool injectUninstallScript = false, bool dontInjectEventScripts = false, std::ostream* out = NULL);
 	CosInstaller(std::vector<std::string>& bootStrapFoldersToLoad);
-
+	CosInstaller(std::istream& in, std::ostream& out);
+	CosInstaller(int32 subbootNumbers,
+							int32 folderNumbers);
 	~CosInstaller();
 
 	void LoadCosFiles(const std::string& bootstrap_dir,bool showProgress= false,
-		bool updateScriptoriumOnly =false );
+		bool dontInjectInstallScript = false );
 
 
 	void SetUpProgressBar(std::vector<std::string>& bootstrapFoldersToLoad);
 
-	bool AddScript(Classifier classifier);
-	bool ReadScriptFile(std::string const& filename, bool updateScriptoriumOnly =false);
-	bool ReadScriptStream(std::istream& in, bool updateScriptoriumOnly = false);
-	bool ExecuteScripts();
+	bool AddScript(const std::string& text, Classifier classifier, std::ostream* finalOut);
+	bool ReadScriptFile(std::string const& filename, bool dontInjectInstallScript = false, bool injectUninstallScript = false, bool dontInjectEventScripts = false, std::ostream* out = NULL);
+	bool ReadScriptStream(std::istream& in, bool dontInjectInstallScript, bool injectUninstallScript, bool dontInjectEventScripts, std::ostream* out);
+	bool ExecuteScripts(std::ostream* out);
+	bool ExecuteScript(const std::string& text, std::ostream* finalOut);
 
+protected:
+	void ShowError(const std::string& tag, int offset, const std::string& report, std::ostream* out);
+
+private:
 	std::string myTextBuffer;
-	std::vector<std::string> myInstallScripts;
 	std::vector<std::string> myExecuteScripts;
+	std::vector<std::string> myEventScripts;
+	std::vector<Classifier> myEventScriptsClassifiers;
+
 
 	std::string myCurrentFileForErrorMessages;
 };

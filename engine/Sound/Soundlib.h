@@ -1,22 +1,27 @@
-#ifndef _WIN32
-#include "stub/stub_Soundlib.h"
+// a stub version of soundlib is available: "stub/stub_Soundlib.h"
+
+#ifdef C2E_SDL
+	//#include "stub/stub_Soundlib.h"
+	#include "../PersistentObject.h"	// ugly hack for Makefile dependencies...
+	#include "SDL/SDL_Soundlib.h"
 #else
-// directsound version follows:
-
-
-#ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+	#ifdef _MSC_VER
+	#pragma warning(disable:4786 4503)
 #endif
 
-#ifndef _SOUNDMAN_H
-#define _SOUNDMAN_H
+#ifndef SOUNDLIB_H
+#define SOUNDLIB_H
 
-#include <mmreg.h>
-#include <dsound.h>
+
+#ifdef C2E_SDL
+	#include <SDL/SDL.h>
+#else
+	#include <mmreg.h>
+	#include <dsound.h>
+#endif
 
 #include <set>
 #include "../PersistentObject.h"
-
 
 #define MAX_ACTIVE_SOUNDS	32
 
@@ -27,11 +32,10 @@ typedef enum {NO_SOUND_ERROR=0, SOUNDCACHE_UNINITIALIESED,
 
 typedef int SOUNDHANDLE;
 
-//typedef std::vector<SoundQueueItem*>::iterator SOUNDQUEUEITEM_ITERATOR; 
-//typedef std::vector<CachedSound *>::iterator CACHEDSOUND_ITERATOR; 
-
-// Volumes range from -5000 (silence) to 0 (full volume)
+// Volumes range from -5000 (almost completely silent) to 0 (full volume)
 const int SoundMinVolume = -5000;
+// For fade out we go to -10000 (completely silent)
+const int SoundAbsoluteMinVolume = -10000;
 
 // CachedSound - Data structure storing members of sound cache
 class CachedSound : public PersistentObject
@@ -74,6 +78,7 @@ public:
 // them.
 // ActiveSamples can be faded using 'fade_rate.'  They will
 // automatically be deleted once silent
+
 class ActiveSample
 {
 public:
@@ -89,6 +94,7 @@ public:
 
 	ActiveSample();
 };
+
 
 // A SoundQueue is maintained to allow a delay before a sound
 // is played.  This enables compound sounds to be created from
@@ -124,6 +130,7 @@ public:
 // to play midi sounds
 class MidiModule;
 
+
 class SoundManager :  public PersistentObject
 {
 	CREATURES_DECLARE_SERIAL( SoundManager )
@@ -157,6 +164,7 @@ public:
 		sidFailedToSetCooperativeLevel,
 		sidPrimaryBufferNotCreated,
 		sidPrimaryBufferCouldNotBeSetToNewFormat,
+		sidFriendlyFailedToCreateDirectSoundObject,
 	};
 
 
@@ -165,6 +173,9 @@ public:
 public:
 	SoundManager();
 	~SoundManager();
+
+	void RestoreSoundManager();
+	void ReleaseDirectSoundObject();
 
 	void StopAllSounds();
 	void Update();					// Called by on timer
@@ -178,6 +189,7 @@ public:
 											//  The sound cache
 
 	SOUNDERROR SetVolume(long volume);		//  Sets the overall sound volume
+	long GetVolume();
 
 	SOUNDERROR FadeOut();					//  Begin to fade all sounds (but
 											//  leaves them "playing silently"
@@ -216,12 +228,17 @@ public:
 	void StopMidiPlayer();
 
 	void SetVolumeOnMidiPlayer(int32 volume);
+	int GetVolumeOnMidiPlayer();
 
 	void MuteMidiPlayer(bool mute);
 
-	void SetMNGFile(std::string& mng);
+	void SetMNGFile(const std::string& mng);
 
 	bool IsMixerFaded() { return faded; }
+
+	void ReleaseAccessTotheSoundCard();
+
+	void RestoreAccessTotheSoundCard();
 
 private:
 	SOUNDHANDLE PlayCachedSound(CachedSound *wave, int volume=0,
@@ -251,7 +268,7 @@ private:
 	SOUNDERROR SetTargetVolume(long volume);	//  Sets the manager to fade towards the
 												//  given volume
 
-		// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	// Method:		Write
 	// Arguments:	archive - archive being written to
 	// Returns:		true if successful
@@ -270,7 +287,6 @@ private:
 	virtual bool Read(CreaturesArchive &archive);
 
 	// members
-	MidiModule* myMidiModule;
 			
 	BOOL	mixer_suspended;					//  Mixer currently out of operation
 
@@ -279,12 +295,14 @@ private:
 
 	int		last_used;
 
-	std::set<CachedSound *>	sounds;			//  Flexible array of sounds in cache
+	std::set<CachedSound *>	sounds;		//  Flexible array of sounds in cache
 
 	// Share the DirectSound object and primary buffers between different sound managers
 	static int					references;
 	static LPDIRECTSOUND		pDSObject;
 	static IDirectSoundBuffer	*pPrimary;	//  pointer to primary buffer
+
+	MidiModule* myMidiModule;
 
 	long				sounds_playing;
 	ActiveSample		active_sounds[MAX_ACTIVE_SOUNDS];
@@ -302,8 +320,12 @@ private:
 
 	bool				faded;					//  Flags if the system is
 												//  not audible (or fading out)
+
 };
 
-#endif
+#endif	// SOUNDLIB_H
 
-#endif // _WIN32
+#endif // stub guard
+
+ 
+

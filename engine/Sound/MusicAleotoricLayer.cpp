@@ -614,7 +614,7 @@ MusicError MusicAleotoricLayer::Voice::Parse(MusicScript &script,
 				}
 
 			// Make sure an effect exists with this name
-			effectType = layer.GetEffectID( effectName.data() );
+			effectType = layer.GetEffectID( effectName.c_str() );
 
 			if (effectType == MUSIC_NO_EFFECT)
 				{
@@ -718,7 +718,7 @@ MusicError MusicAleotoricLayer::Voice::Parse(MusicScript &script,
 			// in the script, the waves list is built up whenever
 			// a new wave is encountered
 
-			waveType = layer.GetWaveID( waveName.data() );
+			waveType = layer.GetWaveID( waveName.c_str() );
 
 			if (waveType == MUSIC_NO_WAVE)
 				{

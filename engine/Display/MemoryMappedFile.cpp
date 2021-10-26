@@ -30,31 +30,32 @@
 
 #include "MemoryMappedFile.h"
 #include "ErrorMessageHandler.h"
-#include "../resource.h"
 
 MemoryMappedFile::MemoryMappedFile()
 :myMemoryFile(0),
 myLength(0),
 myPosition(0),
 myFileData(0),
-myConstantPtrToViewOfFile(0)
+myConstantPtrToViewOfFile(0),
+myMappedToExistingFileOKFlag(false)
 {
 }
 
 MemoryMappedFile::MemoryMappedFile(std::string filename,
 				uint32 desiredAccessflags/* =GENERIC_READ|GENERIC_WRITE*/,
 				uint32 sharemodeFlags /*= FILE_SHARE_READ|FILE_SHARE_WRITE*/)
-:myFile(filename.data(),desiredAccessflags,sharemodeFlags),
+:myFile(filename.c_str(),desiredAccessflags,sharemodeFlags),
 myMemoryFile(0),
 myLength(0),
 myPosition(0),
 myFileData(0),
-myConstantPtrToViewOfFile(0)
+myConstantPtrToViewOfFile(0),
+myMappedToExistingFileOKFlag(false)
 {
 Open(filename,desiredAccessflags,sharemodeFlags);
 }
 
-void MemoryMappedFile::Open(std::string& filename,
+void MemoryMappedFile::Open(std::string const & filename,
 							uint32 desiredAccessflags, /* =GENERIC_READ|GENERIC_WRITE*/
 							uint32 shareModeflags/* = FILE_SHARE_READ|FILE_SHARE_WRITE*/,
 							uint32 fileSize/*=0*/)
@@ -156,30 +157,26 @@ void MemoryMappedFile::Open(std::string& filename,
 //							mapping from
 //				numBytesToMap - how many bytes to map.
 //
-// Description: This memory maps the supplied file.  Then it Initialises
-//				the bitmaps.  This can be used for the Creature gallery
+// Description: This memory maps the supplied existing file.  
+//				This can be used for the Creature gallery
 //				which a composite file of galleries hanlded elsewhere.
 //				The gallery only needs to map to it's part of the file.
 //	
 //				Note needs some exception handling
 //					
 // ----------------------------------------------------------------------
-MemoryMappedFile::MemoryMappedFile(HANDLE memoryFile, 
+MemoryMappedFile::MemoryMappedFile(FileMapping memoryFile, 
 				 uint32 highOffset,
 				 uint32 lowOffset,
-				 uint32 numBytesToMap,
-				 uint32 accessRights /*FILE_MAP_WRITE*/)
+				 uint32 numBytesToMap)
 				 :myMemoryFile(0), // you don't have your own memory file
-myLength(numBytesToMap),
-myPosition(0)
+				myLength(numBytesToMap),
+				myPosition(0)
 {
 //	_ASSERT(Valid());
 	//we have to map according to the systems granularity
 	SYSTEM_INFO systemInfo;
-
 	GetSystemInfo(&systemInfo);
-
-	// set the first step
 	uint32 granularity = systemInfo.dwAllocationGranularity;
 
 	uint32 multiplyBy = 1;
@@ -189,25 +186,21 @@ myPosition(0)
 	// for example if low offset is 1300 and the granularity is 500
 	// then we are looking for the boundary starting at 1000
 	if(lowOffset % systemInfo.dwAllocationGranularity)
-		{
+	{
 		while(granularity < lowOffset) 
-			{
+		{
 			multiplyBy++;
-			granularity = 
-			multiplyBy * systemInfo.dwAllocationGranularity;
-			}
+			granularity = multiplyBy * systemInfo.dwAllocationGranularity;
 		}
-
+	}
 	// ours is the last boundary
 	multiplyBy--;
-
-	_ASSERT((systemInfo.dwAllocationGranularity * multiplyBy) 
-		<= lowOffset );
+	ASSERT((systemInfo.dwAllocationGranularity * multiplyBy) <= lowOffset );
 
 	myFileData =  
 		(unsigned char*)MapViewOfFile(memoryFile,  // file-mapping object  	
 			// access mode
-			accessRights,      
+			FILE_MAP_WRITE,      
 			// high-order 32 bits of file offset
 			highOffset,     
 			// low-order 32 bits of file offset
@@ -236,7 +229,7 @@ myPosition(0)
 	}
 
 	myConstantPtrToViewOfFile = myFileData;
-		// now move the data pointer to the exact start of the file
+	// now move the data pointer to the exact start of the file
 	// which is the low offset (taking account of our granularity
 	// boundary) which in our example would be 1300%500 = 300
 
@@ -244,6 +237,7 @@ myPosition(0)
 	myLength -= (lowOffset %systemInfo.dwAllocationGranularity )- myPosition;
 	myPosition = 0;
 
+	myMappedToExistingFileOKFlag = true;
 }
 
 MemoryMappedFile::~MemoryMappedFile()
@@ -286,7 +280,8 @@ int32 MemoryMappedFile::Seek(int32 moveBy, File::FilePosition from)
 	{
 	case(File::Start): 
 		{
-			if(moveBy > myLength) return success;
+			if(moveBy > myLength)
+				return success;
 
 			myPosition = moveBy;
 			break;
@@ -312,3 +307,4 @@ int32 MemoryMappedFile::Seek(int32 moveBy, File::FilePosition from)
 
 	return success;
 }
+

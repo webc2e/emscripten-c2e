@@ -71,6 +71,7 @@ public:
 		sidFailedToSetCooperativeLevel,
 		sidPrimaryBufferNotCreated,
 		sidPrimaryBufferCouldNotBeSetToNewFormat,
+		sidFriendlyFailedToCreateDirectSoundObject,
 	};
 
 
@@ -92,6 +93,7 @@ public:
 											//  The sound cache
 
 	SOUNDERROR SetVolume(long volume);		//  Sets the overall sound volume
+	int GetVolume();						//  Gets the overall sound volume
 
 	SOUNDERROR FadeOut();					//  Begin to fade all sounds (but
 											//  leaves them "playing silently"
@@ -130,12 +132,16 @@ public:
 	void StopMidiPlayer();
 
 	void SetVolumeOnMidiPlayer(int32 volume);
+	int GetVolumeOnMidiPlayer();
 
 	void MuteMidiPlayer(bool mute);
 
-	void SetMNGFile(std::string& mng);
+	void SetMNGFile(const std::string& mng);
 
 	bool IsMixerFaded();
+
+	void ReleaseAccessTotheSoundCard();
+	void RestoreAccessTotheSoundCard();
 
 private:
 

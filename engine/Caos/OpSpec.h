@@ -20,11 +20,13 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include <string.h>
-#include "../CreaturesArchive.h"
+#include <string>
+#include "../../common/C2eDebug.h" // for ASSERT
 
+class CreaturesArchive;
 class CAOSMachine;
 class CAOSVar;
+class AgentHandle;
 
 typedef void (*CommandHandler)( CAOSMachine& vm );
 typedef int (*IntegerRVHandler)( CAOSMachine& vm );
@@ -132,31 +134,35 @@ public:
 	// Description: need to tidy these up a bit...
 	// ---------------------------------------------------------------------
 	OpSpec()
-		: myOpcode(0), mySubCommands(0), mySpecialCode(0), myCommandTable(-1), myHelpCategory(0) {};
+		: myOpcode(0), mySubCommands(0), mySpecialCode(0), myCommandTable(-1), myHelpCategory(0), mySuperCommandTable(-1) {};
 
+	// most things
 	OpSpec( std::string n, HandlerFunction handler, std::string p,  
 			std::string help_params, int category, std::string help_general)
 		: myOpcode(-1), myName(n), myParameters(p), mySubCommands(0), mySpecialCode(0), myCommandTable(-1),
 		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general),
-		  myHandlerFunction(handler) {};
+		  myHandlerFunction(handler), mySuperCommandTable(-1) {};
 
-	OpSpec( std::string n, HandlerFunction handler, int subtable, 
-		std::string help_params, int category, std::string help_general)
-		: myOpcode(-1), myName(n), myParameters("*"), mySubCommands(subtable), mySpecialCode(0), myCommandTable(-1),
-		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general),
-		  myHandlerFunction(handler) {};
-
+	// things like DOIF and REPS which loop and jump
 	OpSpec( std::string n, HandlerFunction handler, std::string p, int i,
 			std::string help_params, int category, std::string help_general)
 		: myOpcode(-1), myName(n), myParameters(p), mySubCommands(0), mySpecialCode(i), myCommandTable(-1),
 		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general),
-		  myHandlerFunction(handler) {};
+		  myHandlerFunction(handler), mySuperCommandTable(-1) {};
+
+	// for commands that have subcommands
+	OpSpec( std::string n, HandlerFunction handler, int subtable, 
+		std::string help_params, int category, std::string help_general)
+		: myOpcode(-1), myName(n), myParameters("*"), mySubCommands(subtable), mySpecialCode(0), myCommandTable(-1),
+		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general),
+		  myHandlerFunction(handler), mySuperCommandTable(-1) {};
 
 	// for subcommands
-	OpSpec( int opcode, std::string n, std::string p,  
+	OpSpec( std::string n, std::string p,  
 			std::string help_params, int category, std::string help_general)
-		: myOpcode(opcode), myName(n), myParameters(p), mySubCommands(0), mySpecialCode(0), myCommandTable(-1),
-		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general){};
+		: myOpcode(-1), myName(n), myParameters(p), mySubCommands(0), mySpecialCode(0), myCommandTable(-1),
+		  myHelpParameters(help_params), myHelpCategory(category), myHelpGeneral(help_general),
+		  mySuperCommandTable(-1) {};
 
 	// ---------------------------------------------------------------------
 	// Method:      GetName
@@ -202,12 +208,15 @@ public:
 	// ---------------------------------------------------------------------
 	// Method:      GetSubCommands
 	// Arguments:   None
-	// Returns:     Sub-command op spec
+	// Returns:     Sub-command table
 	// Description: Simple accessor function
 	// ---------------------------------------------------------------------
 	inline int GetSubCommands() const { return mySubCommands; }
 	inline bool HasSubCommands() const { return myParameters == "*"; } 
 	bool IsSubCommand() const;
+
+	// Setting and getting the supercommand table ID
+	void SetSuperCommand(const OpSpec& superSpec);
 
 	// These are used for writing out caos.syntax
 	bool Write(CreaturesArchive &archive) const;
@@ -215,8 +224,7 @@ public:
 
 	// Help related functions
 	std::string GetPrettyName() const;
-	std::string GetCommandTableString() const;
-	std::string GetPrettyCommandTableString() const;
+	std::string GetPrettyType() const;
 
 	inline void SetCommandTable(int table) { myCommandTable = table; };
 	inline std::string GetHelpParameters() const { return myHelpParameters; };
@@ -230,17 +238,21 @@ public:
 	inline HandlerFunction GetHandlerFunction() const { return myHandlerFunction; };
 
 private:
+	static std::string GetTableType(int table);
+
 	int myOpcode;
 	std::string myName;
 	std::string myParameters;
 	int	mySpecialCode;
 	int mySubCommands;
+	std::string mySuperName;
+	int mySuperCommandTable;
 
 	std::string myHelpParameters;
 	int myHelpCategory;
 	std::string myHelpGeneral;
 
-	int myCommandTable; // used only when making HTML; not set normally
+	int myCommandTable;
 
 	HandlerFunction myHandlerFunction;
 };
@@ -249,3 +261,4 @@ private:
 
 
 #endif // OPSPEC_H
+

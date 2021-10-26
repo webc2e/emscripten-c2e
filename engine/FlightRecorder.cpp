@@ -23,11 +23,23 @@
 #include "C2eServices.h"	// to get around circular dependency problem
 #include "FlightRecorder.h"
 #include "Display/ErrorMessageHandler.h"
+#include "../common/FileFuncs.h"
 
 FlightRecorder::FlightRecorder()
 {
-	// all categories on by default
-	myEnabledCategories = 0xFFFFFFFF;
+	// We need some way of letting people enable startup logging (the config file
+	// is no good for this, as it hasn't been read yet!).  We look for this file...
+	if (FileExists("logtastic"))
+	{
+		// enable startup logging (and shutdown for good measure)
+		myEnabledCategories = FLIGHT_RUNTIME + FLIGHT_STARTUP + FLIGHT_SHUTDOWN;
+	}
+	else
+	{
+		// default to basic errors
+		myEnabledCategories = FLIGHT_RUNTIME;
+	}
+
 	myOutFile = NULL;
 	myOutFilename[0] = '\0';
 	strcpy( myOutFilename, "creatures_engine_logfile.txt" );
@@ -38,12 +50,12 @@ FlightRecorder::~FlightRecorder()
 {
 	if( myOutFile )
 	{
-		Log( myEnabledCategories, "");
+		Log( FLIGHT_INTERNAL, "");
 		std::string ended = std::string("LOG ENDED ") + ErrorMessageHandler::ErrorMessageFooter();
-		Log( myEnabledCategories, ended.c_str());
+		Log( FLIGHT_INTERNAL, ended.c_str());
 		fclose( myOutFile );
 	}
-}
+} 
 
 void FlightRecorder::SetOutFile( const char* filename )
 {
@@ -58,14 +70,17 @@ void FlightRecorder::SetOutFile( const char* filename )
 }
 
 
-void FlightRecorder::Log( uint32 categorymask, const char* fmt, ... )
+void FlightRecorder::Log(FlightCategory category, const char* fmt, ... )
 {
-	char buf[512];
+	char buf[4096];
 	va_list args;
 	int len;
 
-	if( !( categorymask & myEnabledCategories ) )
-		return;
+	if (category != 0)
+	{
+		if( !( ((uint32)category) & myEnabledCategories ) )
+			return;
+	}
 
 	// open file if needed...
 	bool madeFile = false;
@@ -77,14 +92,17 @@ void FlightRecorder::Log( uint32 categorymask, const char* fmt, ... )
 	}
 
 	if( !myOutFile )
+	{
+		std::cerr << "Failed to make flight recorder file " << myOutFilename;
 		return;
+	}
 
 	if (madeFile)
 	{
-		Log( myEnabledCategories, "----------------------------------------------------" );
+		Log( FLIGHT_INTERNAL, "----------------------------------------------------" );
 		std::string started = std::string("LOG STARTED ") + ErrorMessageHandler::ErrorMessageFooter();
-		Log( myEnabledCategories, started.c_str());
-		Log( myEnabledCategories, "");
+		Log( FLIGHT_INTERNAL, started.c_str());
+		Log( FLIGHT_INTERNAL, "");
 	}
 	va_start(args, fmt);
 	len = vsprintf( buf, fmt, args);
@@ -93,6 +111,7 @@ void FlightRecorder::Log( uint32 categorymask, const char* fmt, ... )
 	// append a linefeed
 	buf[len] = '\n';
 	buf[++len] = '\0';
+	ASSERT(myOutFile);
 	fwrite( buf, 1, len, myOutFile );
 	fflush( myOutFile );
 }
@@ -100,4 +119,10 @@ void FlightRecorder::Log( uint32 categorymask, const char* fmt, ... )
 void FlightRecorder::SetCategories( uint32 enablemask )
 {
 	myEnabledCategories = enablemask;
+	// And even when the config file is read, if logtastic is there, log startup and shutdown
+	if (FileExists("logtastic"))
+	{
+		myEnabledCategories |= (FLIGHT_STARTUP + FLIGHT_SHUTDOWN);
+	}
 }
+

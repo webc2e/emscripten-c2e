@@ -80,4 +80,5 @@ enum driveoffsets {
 	NUMDRIVES				//<<<< number of entries in list >>>>
 };
 
-#endif//CreatureConstants_H
+#endif//CreatureConstants_Hx
+

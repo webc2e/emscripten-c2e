@@ -33,7 +33,7 @@
   1999-07-19 fai Changes to compile in the Creatures Engine
   1999-05-03 lpd Original version.
  */
-/*$Id: md5.c $ */
+/*$Id: md5.cpp,v 1.2 2001/04/24 15:01:05 firving Exp $ */
 
 #include "md5.h"
 #include <memory.h>
@@ -388,3 +388,4 @@ md5_finish(md5_state_t *pms, md5_byte_t digest[16])
     for (i = 0; i < 16; ++i)
 	digest[i] = (md5_byte_t)(pms->abcd[i >> 2] >> ((i & 3) << 3));
 }
+

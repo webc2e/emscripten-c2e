@@ -32,7 +32,7 @@
 
   1999-05-03 lpd Original version.
  */
-/*$Id: md5.h $ */
+/*$Id: md5.h,v 1.2 2001/04/24 15:01:05 firving Exp $ */
 
 #ifndef md5_INCLUDED
 #define md5_INCLUDED
@@ -77,3 +77,4 @@ void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
 #endif
 
 #endif /* md5_INCLUDED */
+

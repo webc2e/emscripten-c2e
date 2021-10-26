@@ -71,3 +71,4 @@ void Dendrite::ClearWeights()
 		weights[i] = 0.0f;
 	}
 }
+

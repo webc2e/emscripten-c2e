@@ -3,18 +3,24 @@
 #endif
 
 #include "CreatureHistory.h"
+#include "../../CreaturesArchive.h"
+
+#ifndef ISOLATED_HISTORY
 #include "../../World.h"
 #include "../../App.h"
 #include "../Creature.h"
 #include "../LifeFaculty.h"
-//#include "../../Display/Window.h"
+#include "../../AgentManager.h"
+#endif
 
 CreatureHistory::CreatureHistory()
 	: myGender(-1), myGenus(-1), myVariant(-1),
-	  myCrossoverMutationCount(-1), myCrossoverCrossCount(-1)
+	  myCrossoverMutationCount(-1), myCrossoverCrossCount(-1),
+	  myNetworkNeedUploading(true), myWarpHoleVeteran(false)
 {
 }
 
+#ifndef ISOLATED_HISTORY
 void CreatureHistory::AddEvent(const LifeEvent::EventType& eventType,
 			 const std::string& relatedMoniker1,
 			 const std::string& relatedMoniker2,
@@ -25,8 +31,6 @@ void CreatureHistory::AddEvent(const LifeEvent::EventType& eventType,
 		return;
 
 	AgentHandle creature = theAgentManager.FindCreatureAgentForMoniker(myMoniker);
-//	if (eventType == LifeEvent::typeExported)
-//		ASSERT(!creature.IsValid());
 	if (eventType == LifeEvent::typeBorn) //Doesn't check for typeImported anymore in case it is a related (but dead) creature.
 		ASSERT(creature.IsValid());
 
@@ -44,14 +48,19 @@ void CreatureHistory::AddEvent(const LifeEvent::EventType& eventType,
 		event.myAgeInTicks = (uint32)-1;
 		event.myLifeStage = -1;
 	}
-//	event.myRealWorldTime = GetRealWorldTime();
-	event.myRealWorldTime = (uint32)time(NULL);
+	event.myRealWorldTime = GetRealWorldTime();
 
 	event.myRelatedMoniker1 = relatedMoniker1;
 	event.myRelatedMoniker2 = relatedMoniker2;
 	
 	event.myWorldName = theApp.GetWorld().GetWorldName();
 	event.myWorldUniqueIdentifier = theApp.GetWorld().GetUniqueIdentifier();
+
+	// We don't fill in the network user by default - it happens
+	// when the Norn is first uploaded in netbabel, at which
+	// point we are confident who the user is (where as here
+	// we may not have logged in yet).
+	event.myNetworkUser = "";
 
 	// add new event to container
 	myLifeEvents.push_back(event);
@@ -66,9 +75,10 @@ void CreatureHistory::AddEvent(const LifeEvent::EventType& eventType,
 		CAOSVar p1, p2;
 		p1.SetString(myMoniker);
 		p2.SetInteger(newEventNo);
-		theAgentManager.ExecuteScriptOnAllAgentsDeferred(SCRIPT_LIFE_EVENT, NULLHANDLE, p1, p2);
+		theAgentManager.ExecuteScriptOnAllAgentsDeferred(SCRIPT_LIFE_EVENT, COASVARAGENTNULL, p1, p2);
 	}
 }
+#endif
 
 CreaturesArchive &operator<<( CreaturesArchive &archive, CreatureHistory const &creatureHistory )
 {
@@ -80,6 +90,9 @@ CreaturesArchive &operator<<( CreaturesArchive &archive, CreatureHistory const &
 	archive << creatureHistory.myLifeEvents;
 	archive << creatureHistory.myCrossoverMutationCount;
 	archive << creatureHistory.myCrossoverCrossCount;
+	archive << creatureHistory.myNetworkNeedUploading;
+	archive << creatureHistory.myWarpHoleVeteran;
+	archive << creatureHistory.myUploadedName;
 
 	return archive;
 }
@@ -94,11 +107,34 @@ CreaturesArchive &operator>>( CreaturesArchive &archive, CreatureHistory &creatu
 	archive >> creatureHistory.myLifeEvents;
 	archive >> creatureHistory.myCrossoverMutationCount;
 	archive >> creatureHistory.myCrossoverCrossCount;
+	if (archive.GetFileVersion() >= 23)
+	{
+		archive >> creatureHistory.myNetworkNeedUploading;
+		archive >> creatureHistory.myWarpHoleVeteran;
+	}
+	else
+	{
+		creatureHistory.myNetworkNeedUploading = true;
+		creatureHistory.myWarpHoleVeteran = false;
+	}
+
+	if (archive.GetFileVersion() >= 28)
+	{
+		archive >> creatureHistory.myUploadedName;
+	}
 
 	return archive;
 }
 
 LifeEvent* CreatureHistory::GetLifeEvent(int i)
+{
+	if (i < 0 || i >= myLifeEvents.size())
+		return NULL;
+
+	return &myLifeEvents[i];
+}
+
+const LifeEvent* CreatureHistory::GetLifeEvent(int i) const
 {
 	if (i < 0 || i >= myLifeEvents.size())
 		return NULL;
@@ -129,3 +165,32 @@ int CreatureHistory::FindLifeEventReverse(const LifeEvent::EventType& eventType,
 	}
 	return -1;
 }
+
+// Number of life events for the creature which 
+// actually happened to him (and hence we can
+// guarantee the indices for, even as he goes between
+// worlds)
+CreatureHistory::SolidIndex CreatureHistory::SolidCount() const
+{
+	SolidIndex count;
+	for (int i = 0; i < myLifeEvents.size(); ++i)
+		if (myLifeEvents[i].CreaturePresentForEvent())
+			count.value++;
+	return count;
+}
+
+LifeEvent* CreatureHistory::GetSolidLifeEvent(CreatureHistory::SolidIndex solidIndex)
+{
+	for (int i = 0; i < myLifeEvents.size(); ++i)
+	{
+		if (myLifeEvents[i].CreaturePresentForEvent())
+		{
+			solidIndex.value--;
+			if (solidIndex.value == -1)
+				return &myLifeEvents[i];
+		}
+	}
+	ASSERT(false);
+	return NULL;
+}
+

@@ -56,13 +56,14 @@
 
 #include <typeinfo>
 
+class Agent;
+
 // disable annoying warning in VC when using stl (debug symbols > 255 chars)
 #ifdef _MSC_VER
 #pragma warning( disable : 4786 4503)
 #endif
 
 #include <string>
-
 
 // --------------------------------------------------------------------------
 // NewObjectFunction
@@ -89,27 +90,51 @@ typedef class PersistentObject* (*NewObjectFunction) (void);
 
 #include "CreaturesArchive.h"
 
-		#define CREATURES_DECLARE_SERIAL(ClassType)\
-		public: \
-			friend CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object);\
-			friend PersistentObject *CreateNew##ClassType();\
-			virtual LPCTSTR GetClassNameX() const;\
-		private: \
-			static int dummyValue; \
+#define CREATURES_DECLARE_SERIAL(ClassType)\
+	public: \
+		friend CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object);\
+		friend PersistentObject *CreateNew##ClassType();\
+		virtual LPCTSTR GetClassNameX() const;\
+	private: \
+		static int dummyValue; \
 
-		#define CREATURES_IMPLEMENT_SERIAL(ClassType)\
-		PersistentObject *CreateNew##ClassType() {return new ClassType;}\
-		int ClassType::dummyValue=PersistentObject::AddClass(#ClassType,CreateNew##ClassType);\
-		LPCTSTR ClassType::GetClassNameX() const {return #ClassType;}\
-		CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object)\
-			{ar >> (PersistentObject *&) object; return ar;}\
 
-		#define CREATURES_IMPLEMENT_SERIAL_NOT(ClassType)\
-		PersistentObject *CreateNew##ClassType() {ASSERT(false);return NULL;}\
-		int ClassType::dummyValue=PersistentObject::AddClass(#ClassType,CreateNew##ClassType);\
-		LPCTSTR ClassType::GetClassNameX() const {return #ClassType;}\
-		CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object)\
-			{ar >> (PersistentObject *&) object; return ar;}\
+
+#define CREATURES_IMPLEMENT_SERIAL(ClassType)\
+	PersistentObject *CreateNew##ClassType() {\
+		return new ClassType;\
+	}\
+	int ClassType::dummyValue=PersistentObject::AddClass(#ClassType,CreateNew##ClassType);\
+	LPCTSTR ClassType::GetClassNameX() const\
+	{\
+		return #ClassType;\
+	}\
+	CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object)\
+	{\
+		ar >> (PersistentObject *&)(object);\
+		if (object && !dynamic_cast<ClassType*>(object)) \
+			throw BasicException("Type mismatch during serialisation of " #ClassType); \
+		return ar;\
+	}\
+
+
+
+#define CREATURES_IMPLEMENT_SERIAL_NOT(ClassType)\
+	PersistentObject *CreateNew##ClassType() {\
+		ASSERT(false);\
+		return NULL;\
+	}\
+	int ClassType::dummyValue=PersistentObject::AddClass(#ClassType,CreateNew##ClassType);\
+	LPCTSTR ClassType::GetClassNameX() const\
+	{\
+		return #ClassType;\
+	}\
+	CreaturesArchive& operator>>(CreaturesArchive& ar, ClassType *&object)\
+	{\
+		ar >> (PersistentObject *&)(object);\
+		return ar;\
+	}\
+
 
 
 
@@ -147,6 +172,7 @@ class PersistentObject
 		virtual ~PersistentObject() {;}
 
 		virtual bool IsAgent() const {return false;}
+
 		// ----------------------------------------------------------------------
 		// Method:		Write
 		// Arguments:	archive - archive being written to
@@ -299,7 +325,6 @@ class PersistentObject
 						// Arguments:	name - name to match against this class
 						// Returns:		true if the name matches
 						// ----------------------------------------------------------------------
-//						bool Match(LPCTSTR name) {return className.Compare(name)==0;}
 						bool Match(LPCTSTR name) {return className.compare(name)==0;}
 
 						// ----------------------------------------------------------------------
@@ -319,7 +344,6 @@ class PersistentObject
 						// className
 						// String representation of class
 						// ----------------------------------------------------------------------
-//						CString className;
 						std::string className;
 
 						// ----------------------------------------------------------------------
@@ -327,7 +351,7 @@ class PersistentObject
 						// Pointer to a function with no arguments, returning a new object of
 						// the required type
 						// ----------------------------------------------------------------------
-						NewObjectFunction newFunction;;
+						NewObjectFunction newFunction;
 
 						// ----------------------------------------------------------------------
 						// nextClass
@@ -363,3 +387,4 @@ class PersistentObject
 	};
 
 #endif // PERSISTENTOBJECT_H
+

@@ -6,9 +6,11 @@
 #pragma warning(disable:4786 4503)
 #endif
 
+#include "AgentFacultyInterface.h"
+#include "CreatureFacultyInterface.h"
 #include "SensoryFaculty.h"
+#include "Genome.h"
 #include "Brain/Brain.h"
-#include "../Agents/Agent.h"
 #include "LinguisticFaculty.h"
 #include "LifeFaculty.h"
 #include "MotorFaculty.h"
@@ -17,20 +19,20 @@
 #include "../World.h"
 #include "Brain/BrainScriptFunctions.h"
 #include "Biochemistry/BiochemistryConstants.h"
+#include "Brain/BrainConstants.h"
+#include "../Agents/PointerAgent.h"
+#include "../AgentManager.h"
 
-
-#ifndef C2E_OLD_CPP_LIB
 #include <sstream>
-#endif
 
 const int SIMPLEIDS = 1;		// ID of first SimpleObject ID (1-25) - 25 simpleobj genuses
 const int COMPOUNDIDS = 26;		// ID of first CompObj ID (26-35) - 10 compobj genuses
 const int CREATUREIDS = 36;		// ID of first Creature ID (36-39) - 4 creature genuses
 const float visualRange = 512;
 
-// 39 ("geat") is the error code, for
-	// backwards compatibility.
-const int SensoryFaculty::ourCatagoryIdError = 39;
+// 39 ("geat") is the error code, for backwards compatibility.
+// (changed 31/10/00 to -1 by gtb):
+const int SensoryFaculty::ourCatagoryIdError = -1;
 int SensoryFaculty::ourNumCategories = -1;
 
 std::vector<Classifier> SensoryFaculty::ourCategoryClassifiers;
@@ -97,6 +99,9 @@ CREATURES_IMPLEMENT_SERIAL(SensoryFaculty)
 
 
 
+
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -127,6 +132,7 @@ SensoryFaculty::SensoryFaculty()
 
 	myAddedAFriendOnThisUpdate = false;
 
+	SetupInitialCategoryRepresentativeAlgorithms();
 }
 
 
@@ -139,7 +145,7 @@ void SensoryFaculty::PostInit()
 {
 	// must be done post init cos brain will not be initialised when init is run	
 	// -1 cos you need 1 set of spare dendrites for migration to work (see genome notes)
-	int forfSize = myCreature.GetCreatureReference().GetBrain()->GetLobeSize("forf")-1;
+	int forfSize = myCreature->GetBrain()->GetLobeSize("forf")-1;
 	if (forfSize >= 1)
 	{
 		myFriendsAndFoeHandles.resize(forfSize);
@@ -188,68 +194,84 @@ void SensoryFaculty::Update()
 	CleanUpInvalidFriendAgentHandles();
 
 
-	Creature& creature = myCreature.GetCreatureReference();
-	if (!creature.Life()->GetWhetherAlert())
+	if (!myCreature->Life()->GetWhetherAlert())
 		return;
 
-	Brain* brain = creature.GetBrain();
+	Brain* brain = myCreature->GetBrain();
 
-	// SITUATION LOBE:
-	//	brain->SetSituationInput(IP_NEARWALL, ((float)((127-iSig)*2)/255.0f);
-	brain->SetInput("situ", IP_IN_VEHICLE, creature.GetCarrier().IsValid() ? 1.0f : 0.0f);
+	if (brain->IsActive())
+	{
+		// SITUATION LOBE:
+		//	brain->SetSituationInput(IP_NEARWALL, ((float)((127-iSig)*2)/255.0f);
+		brain->SetInput("situ", IP_IN_VEHICLE, myCreatureAsAgent->GetCarrier().IsValid() ? 1.0f : 0.0f);
 
 
-	brain->SetInput("situ", IP_AGE_LEVEL, ((float)creature.Life()->GetAge())/NUMAGES);
-	brain->SetInput("situ", IP_CARRYING_SOMETHING, creature.GetCarried()!=NULLHANDLE ? 1.0f : 0.0f);
-	brain->SetInput("situ", IP_BEING_CARRIED, creature.GetMovementStatus()==Agent::CARRIED ? 1.0f : 0.0f);
-	brain->SetInput("situ", IP_FALLING, !creature.IsStopped() ? 1.0f : 0.0f);// if not stopped you're falling:
-	// find distance to nearest creature of same genus & opposite sex
-	float f = DistanceToNearestCreature(
-		creature.Life()->GetSex() == 1 ? 2 : 1,
-		myCreature.GetAgentReference().GetClassifier().Genus());
-	float vr = myCreature.GetCreatureReference().GetVisualRange();
-	if (f<vr)	
-		brain->SetInput("situ", IP_NEAR_OPPOSITE_SEX, (vr-f)/vr);
+		brain->SetInput("situ", IP_AGE_LEVEL, ((float)myCreature->Life()->GetAge())/NUMAGES);
+		brain->SetInput("situ", IP_CARRYING_SOMETHING, myCreatureAsAgent->GetCarried()!=NULLHANDLE ? 1.0f : 0.0f);
+		brain->SetInput("situ", IP_BEING_CARRIED, myCreatureAsAgent->GetMovementStatus()==Agent::CARRIED ? 1.0f : 0.0f);
+		brain->SetInput("situ", IP_FALLING, !myCreatureAsAgent->IsStopped() ? 1.0f : 0.0f);// if not stopped you're falling:
+		// find distance to nearest creature of same genus & opposite sex
+		float f = DistanceToNearestCreature(
+			myCreature->Life()->GetSex() == 1 ? 2 : 1,
+			myCreatureAsAgent->GetClassifier().Genus());
+		float vr = myCreatureAsAgent->GetVisualRange();
+		if (f<vr)	
+			brain->SetInput("situ", IP_NEAR_OPPOSITE_SEX, (vr-f)/vr);
 
-	brain->SetInput("situ", IP_MUSIC_MOOD, creature.Music()->Mood());
-	brain->SetInput("situ", IP_MUSIC_THREAT, creature.Music()->Threat());
-	brain->SetInput("situ", IP_SELECTED_CREATURE, myCreature==theApp.GetWorld().GetSelectedCreature() ? 1.0f : 0.0f);
+		brain->SetInput("situ", IP_MUSIC_MOOD, myCreature->Music()->Mood());
+		brain->SetInput("situ", IP_MUSIC_THREAT, myCreature->Music()->Threat());
+		brain->SetInput("situ", IP_SELECTED_CREATURE, myCreatureAsAgent->GetAsAgentHandle()==theApp.GetWorld().GetSelectedCreature() ? 1.0f : 0.0f);
+	}
 	
 
 
 
-	AgentHandle it = creature.GetItAgent();
+	AgentHandle it = myCreature->GetItAgent();
 	// DETAIL LOBE:
 	// the IT object in detail:
     if ((it.IsValid()))
 	{
-		Agent& a = it.GetAgentReference();
-		f = fabsf( creature.GetPosition().x - a.GetPosition().x );
+		AgentFacultyInterface& itA = it.GetAgentFacultyInterfaceReference();
+		float f = fabsf( myCreatureAsAgent->GetPosition().x - itA.GetPosition().x );
 		if (f<128.0f)										// starts firing @ <127 pels dist
 	        brain->SetInput("detl", IP_IT_NEARNESS, ((255.0f-f-f))/255.0f);
 
 		// is a being carried:
-		if (a.GetMovementStatus() == Agent::CARRIED)
+		if (itA.GetMovementStatus() == Agent::CARRIED)
 		{
-			if (it == creature.GetCarried())
+			if (it == myCreatureAsAgent->GetCarried())
 				brain->SetInput("detl", IP_IT_IS_BEING_CARRIED_BY_ME, 1.0f);
 			else
 				brain->SetInput("detl", IP_IT_IS_BEING_CARRIED_BY_SOMEONE_ELSE, 1.0f);
 		}
 
-		float size = (a.GetWidth()+a.GetHeight()) / 500.0f;
+		float size = (itA.GetWidth()+itA.GetHeight()) / 500.0f;
 		brain->SetInput("detl", IP_IT_IS_OF_THIS_SIZE, size);
-		brain->SetInput("detl", IP_IT_IS_SMELLING_THIS_MUCH, a.GetCAIncrease());
-		brain->SetInput("detl", IP_IT_IS_FALLING, !a.IsStopped() ? 1.0f : 0.0f);
+		brain->SetInput("detl", IP_IT_IS_SMELLING_THIS_MUCH, itA.GetCAIncrease());
+		brain->SetInput("detl", IP_IT_IS_FALLING, !itA.IsStopped() ? 1.0f : 0.0f);
 
 		if (it.IsCreature())
 		{
-			Creature& c = it.GetCreatureReference();
+			CreatureFacultyInterface& itC = it.GetCreatureFacultyInterfaceReference();
+
 			brain->SetInput("detl", IP_IT_IS_CREATURE,	1.0f);  // IT is a creature
-			brain->SetInput("detl", IP_IT_IS_MYPARENT,	c.GetMoniker()==creature.GetMotherMoniker() || c.GetMoniker()==creature.GetFatherMoniker() ? 1.0f : 0.0f);
-			brain->SetInput("detl", IP_IT_IS_MYCHILD,		c.GetMotherMoniker()==creature.GetMoniker() || c.GetFatherMoniker()==creature.GetMoniker() ? 1.0f : 0.0f);
-			brain->SetInput("detl", IP_IT_IS_MYSIBLING,	c.GetMotherMoniker()==creature.GetMotherMoniker() || c.GetFatherMoniker()==creature.GetFatherMoniker() ? 1.0f : 0.0f);
-			brain->SetInput("detl", IP_IT_IS_OPPOSITESEX,	c.GetFamily()==creature.GetFamily() && c.GetGenus()==creature.GetGenus() && c.Life()->GetSex()!=creature.Life()->GetSex() ? 1.0f : 0.0f);
+
+			brain->SetInput("detl", IP_IT_IS_MYPARENT,	
+				itC.GetShortMoniker()==myCreature->GetMotherMoniker() || 
+				itC.GetShortMoniker()==myCreature->GetFatherMoniker() ? 1.0f : 0.0f);
+
+			brain->SetInput("detl", IP_IT_IS_MYCHILD,		
+				itC.GetMotherMoniker()==myCreature->GetShortMoniker() || 
+				itC.GetFatherMoniker()==myCreature->GetShortMoniker() ? 1.0f : 0.0f);
+
+			brain->SetInput("detl", IP_IT_IS_MYSIBLING,	
+				itC.GetMotherMoniker()==myCreature->GetMotherMoniker() || 
+				itC.GetFatherMoniker()==myCreature->GetFatherMoniker() ? 1.0f : 0.0f);
+
+			brain->SetInput("detl", IP_IT_IS_OPPOSITESEX,	
+				itA.GetFamily()==myCreatureAsAgent->GetFamily() && 
+				itA.GetGenus()==myCreatureAsAgent->GetGenus() && 
+				itC.Life()->GetSex()!=myCreature->Life()->GetSex() ? 1.0f : 0.0f);
 		}
 	}
 
@@ -259,7 +281,7 @@ void SensoryFaculty::Update()
 	{
 		for (i=0; i<NUMDRIVES; i++)
 		{
-			brain->SetInput("driv", i, creature.GetDriveLevel(i));
+			brain->SetInput("driv", i, myCreature->GetDriveLevel(i));
 		}
 	}
 
@@ -267,7 +289,7 @@ void SensoryFaculty::Update()
 	// SMELL LOBE:
 	// update the smell lobe from the 16 Map CAs.
 	int roomId;
-	if (theApp.GetWorld().GetMap().GetRoomIDForPoint( creature.GetDownFootPosition(), roomId))
+	if (theApp.GetWorld().GetMap().GetRoomIDForPoint( myCreature->GetNosePosition(), roomId))
 	{
 		for (i=0; i<CA_PROPERTY_COUNT; i++) {
 			// Get CA value
@@ -275,14 +297,14 @@ void SensoryFaculty::Update()
 			theApp.GetWorld().GetMap().GetRoomProperty(roomId, i, smellValue);
 
 			// Set biochemistry chemicals:
-			creature.GetBiochemistry()->SetChemical(FIRST_SMELL_CHEMICAL+i, smellValue);
+			myCreature->GetBiochemistry()->SetChemical(FIRST_SMELL_CHEMICAL+i, smellValue);
 
 			int neuronId = theAgentManager.GetCategoryIdFromSmellId(i);
 
 			// Also, if the category is the creature's own (e.g. 36=norn) then
 			// get the smell minus its own contribution:
-			if (neuronId==GetCategoryIdOfAgent(myCreature))
-				smellValue = theApp.GetWorld().GetMap().GetRoomPropertyMinusMyContribution(myCreature, smellValue);
+			if (neuronId==GetCategoryIdOfAgent(myCreatureAsAgent->GetAsAgentHandle()))
+				theApp.GetWorld().GetMap().GetRoomPropertyMinusMyContribution(myCreatureAsAgent->GetAsAgentHandle(), smellValue);
 
 			// Set brain neuron:
 			brain->SetInput("smel", neuronId, smellValue);
@@ -294,71 +316,79 @@ void SensoryFaculty::Update()
 	// VISION LOBE:
 	ClearSeenFriendsOrFoes();
 
-	int genusId;
-	for ( genusId=0; genusId<ourNumCategories; genusId++) 
+	// Find all visible agents, so we can later search in that list
+	// for the ones of each category.
+	AgentList visibleAgents;
+	theAgentManager.FindBySightAndFGS(myCreatureAsAgent->GetAsAgentHandle(), visibleAgents, Classifier());
+		
+	int catId;
+	for (catId=0; catId<ourNumCategories; catId++) 
 	{
-		AgentHandle oldKnownAgent = myKnownAgents[genusId];
+		AgentHandle oldKnownAgent = myKnownAgents[catId];
 		std::vector<AgentHandle> agentsNearest;
 		std::vector<float> agentsDistance;
 
 
 		// DEBUG command (highlight known agents):
-		if (myKnownAgents[genusId].IsValid())
+		if (myKnownAgents[catId].IsValid())
 		{
-			myKnownAgents[genusId].GetAgentReference().SetWhetherHighlighted(false);
+			myKnownAgents[catId].GetAgentFacultyInterfaceReference().SetWhetherHighlighted(false);
 		}
 
 		// if you can still see last known agent and have been talking about it - keep it
-		if(myKnownAgents[genusId].IsValid() && creature.CanSee(myKnownAgents[genusId]) && creature.GetBrain()->GetNeuronState("noun", genusId, STATE_VAR) > 0.20f)
+		if(myKnownAgents[catId].IsValid() && myCreatureAsAgent->CanSee(myKnownAgents[catId]) && myCreature->GetBrain()->GetNeuronState("noun", catId, STATE_VAR) > 0.20f)
 		{
-			SetSeenFriendOrFoe(myKnownAgents[genusId]);
+			SetSeenFriendOrFoe(myKnownAgents[catId]);
 			continue;
 		}
 
-		myKnownAgents[genusId] = NULLHANDLE;
+		myKnownAgents[catId] = NULLHANDLE;
 
 
+		// Find the visible agents which have our category
 		AgentList visibleAgentsInThisCategory;
-		theAgentManager.FindBySightAndFGS(myCreature, visibleAgentsInThisCategory, ourCategoryClassifiers[genusId]);
+		for (AgentListIterator m=visibleAgents.begin(); m!=visibleAgents.end(); m++) 
+		{
+			if (GetCategoryIdOfAgent(*m) == catId)
+				visibleAgentsInThisCategory.push_back(*m);
+		}
 
 
-
-		int whichAlgorithm= atoi(theCatalogue.Get("Category Representative Algorithms", genusId));
+		int whichAlgorithm = myCategoryRepresentativeAlgorithms[catId];
 		if (whichAlgorithm<0 || whichAlgorithm>=NUM_CATEGORY_REPRESENTATIVE_ALGORITHMS)
 			whichAlgorithm= PICK_NEAREST_IN_X_DIRECTION;
 
 
-
 		int whichAgentToChoose = -1;
 		// if its safe to change the rep (and we want to) do so:
-		if (whichAlgorithm==PICK_A_RANDOM_ONE && !creature.GetVirtualMachine().IsRunning())
+		if (whichAlgorithm==PICK_A_RANDOM_ONE && !myCreatureAsAgent->VmIsRunning())
 		{
 			whichAgentToChoose = Rnd(0, visibleAgentsInThisCategory.size()-1);
 		}
 
-		AgentHandle oldAgent = myKnownAgents[genusId];
+		AgentHandle oldAgent = myKnownAgents[catId];
 
 		int agentNo=0;
 		AgentHandle winningAgent;
 		for (AgentListIterator l=visibleAgentsInThisCategory.begin(); l!=visibleAgentsInThisCategory.end(); l++, agentNo++) 
 		{
-			Agent& thisAgent = (*l).GetAgentReference();
+			AgentFacultyInterface& thisAgent = (*l).GetAgentFacultyInterfaceReference();
 	
 			// Chosen a random one?
 			if (whichAlgorithm==PICK_A_RANDOM_ONE)
 			{
 				if (agentNo==whichAgentToChoose ||
-					(creature.GetVirtualMachine().IsRunning() && (*l)==oldKnownAgent))
+					(myCreatureAsAgent->VmIsRunning() && (*l)==oldKnownAgent))
 				{
-					winningAgent = thisAgent;
+					winningAgent = thisAgent.GetAsAgentHandle();
 					break;
 				}
 			}
 			if(whichAlgorithm==PICK_RANDOM_NEAREST_IN_X_DIRECTION) 
 			{	
-				if (creature.GetVirtualMachine().IsRunning() && (*l)==oldKnownAgent)
+				if (myCreatureAsAgent->VmIsRunning() && (*l)==oldKnownAgent)
 				{
-					myKnownAgents[genusId] = (*l).GetAgentReference();
+					myKnownAgents[catId] = *l;
 					break;
 				}
 			}
@@ -366,7 +396,7 @@ void SensoryFaculty::Update()
 			if (whichAlgorithm==PICK_NEAREST_IN_CURRENT_ROOM) 
 			{
 				int creatureRoomId;
-				if (!creature.GetRoomID(creatureRoomId))
+				if (!myCreatureAsAgent->GetRoomID(creatureRoomId))
 					continue;
 	
 				int agentRoomId;
@@ -381,7 +411,7 @@ void SensoryFaculty::Update()
 			// if there's no known agent use this agent:
 			if (winningAgent.IsInvalid()) 
 			{
-				winningAgent = thisAgent;
+				winningAgent = thisAgent.GetAsAgentHandle();
 			} 
 			else
 			{
@@ -389,10 +419,7 @@ void SensoryFaculty::Update()
 					|| whichAlgorithm==PICK_RANDOM_NEAREST_IN_X_DIRECTION) 
 				{
 					// closeness in X direction to creature's centre:
-					float thisAgentXDistance = fabsf(
-						creature.GetCentre().x -
-						thisAgent.WhereShouldCreaturesPressMe().x
-					);
+					float thisAgentXDistance = myCreature->GetSensoryDistanceFromAgent(thisAgent.GetAsAgentHandle());
 
 					if(whichAlgorithm==PICK_RANDOM_NEAREST_IN_X_DIRECTION) 
 					{
@@ -407,13 +434,13 @@ void SensoryFaculty::Update()
 							if(i == agentsNearest.size())
 							{
 								// add on end
-								agentsNearest.push_back(thisAgent);
+								agentsNearest.push_back(thisAgent.GetAsAgentHandle());
 								agentsDistance.push_back(thisAgentXDistance);
 							}
 							else
 							{
 								// insert
-								agentsNearest.insert(agentsNearest.begin()+i, thisAgent);
+								agentsNearest.insert(agentsNearest.begin()+i, thisAgent.GetAsAgentHandle());
 								agentsDistance.insert(agentsDistance.begin()+i, thisAgentXDistance);
 								if(agentsNearest.size() > NO_RANDOM_NEAR_AGENTS)
 								{
@@ -426,39 +453,37 @@ void SensoryFaculty::Update()
 					} 
 					else 
 					{
-						float winningAgentXDistance = fabsf(
-							creature.GetCentre().x -
-							winningAgent.GetAgentReference().WhereShouldCreaturesPressMe().x
-						);
+						float winningAgentXDistance = myCreature->GetSensoryDistanceFromAgent(winningAgent);
 
 						if (thisAgentXDistance<winningAgentXDistance) 
 						{
-							winningAgent = thisAgent;
+							winningAgent = thisAgent.GetAsAgentHandle();
 						}
 					}
 
-				} else if (whichAlgorithm==PICK_NEAREST_TO_GROUND) 
+				}
+				else if (whichAlgorithm==PICK_NEAREST_TO_GROUND) 
 				{
 					// closeness in Y direction to creature's centre:
 					float winningAgentYDistance = fabsf(
-						creature.GetPosition().y+creature.GetHeight() -
-						winningAgent.GetAgentReference().WhereShouldCreaturesPressMe().y
+						myCreatureAsAgent->GetPosition().y+myCreatureAsAgent->GetHeight() -
+						winningAgent.GetAgentFacultyInterfaceReference().WhereShouldCreaturesPressMe().y
 					);
 					float thisAgentYDistance = fabsf(
-						creature.GetPosition().y+creature.GetHeight() -
+						myCreatureAsAgent->GetPosition().y+myCreatureAsAgent->GetHeight() -
 						thisAgent.WhereShouldCreaturesPressMe().y
 					);
 
 					if (thisAgentYDistance<winningAgentYDistance) 
 					{
-						winningAgent = thisAgent;
+						winningAgent = thisAgent.GetAsAgentHandle();
 					}
 				}
 			}
 		}
 
 		if(whichAlgorithm==PICK_RANDOM_NEAREST_IN_X_DIRECTION && 
-			myKnownAgents[genusId] == NULLHANDLE && agentsNearest.size() != 0)
+			myKnownAgents[catId] == NULLHANDLE && agentsNearest.size() != 0)
 		{	
 			// if have myKnownAgent[] already you are using the old one (cos still running VM) 
 			// and you have some to select from then select from nearest vector
@@ -469,26 +494,23 @@ void SensoryFaculty::Update()
 				agentsNearest.erase(agentsNearest.begin()+whichAgentToChoose);
 				whichAgentToChoose = Rnd(0,agentsNearest.size()-1);
 			} 
-					
-			myKnownAgents[genusId] = agentsNearest[whichAgentToChoose];
-				
+			myKnownAgents[catId] = agentsNearest[whichAgentToChoose];
 		}
 
 
-		if (myKnownAgents[genusId].IsInvalid()) 
-			myKnownAgents[genusId] = winningAgent;;
+		if (myKnownAgents[catId].IsInvalid()) 
+			myKnownAgents[catId] = winningAgent;
 
-
-		SetSeenFriendOrFoe(myKnownAgents[genusId]);	// adds if not there
+		SetSeenFriendOrFoe(myKnownAgents[catId]);	// adds if not there
 	
 	}
 
 	// Ensure that a carried object is always the representative for that category:
-	if (creature.GetCarried().IsValid())
+	if (myCreatureAsAgent->GetCarried().IsValid())
 	{
-		int categoryOfCarriedObject = GetCategoryIdOfAgent(creature.GetCarried());
-		if (categoryOfCarriedObject>=0 && categoryOfCarriedObject<ourNumCategories  && !creature.GetCarried().GetAgentReference().TestAttributes(Agent::attrInvisible))
-			myKnownAgents[categoryOfCarriedObject] = creature.GetCarried();
+		int categoryOfCarriedObject = GetCategoryIdOfAgent(myCreatureAsAgent->GetCarried());
+		if (categoryOfCarriedObject>=0 && categoryOfCarriedObject<ourNumCategories  && !myCreatureAsAgent->GetCarried().GetAgentFacultyInterfaceReference().TestAttributes(Agent::attrInvisible))
+			myKnownAgents[categoryOfCarriedObject] = myCreatureAsAgent->GetCarried();
 	}
 
 	// give positions as input to vision lobe:
@@ -527,17 +549,16 @@ void SensoryFaculty::Update()
 // ------------------------------------------------------------------------
 void SensoryFaculty::SetVisualInput(int i)
 {
-	Creature& creature = myCreature.GetCreatureReference();
-	Brain* brain = creature.GetBrain();
+	Brain* brain = myCreature->GetBrain();
 					
 	// DEBUG command to highlight all known agents:
 	if (theApp.ShouldHighlightAgentsKnownToCreature())
 	{
-		myKnownAgents[i].GetAgentReference().SetWhetherHighlighted(true);
+		myKnownAgents[i].GetAgentFacultyInterfaceReference().SetWhetherHighlighted(true);
 	}
 
-	float xDisplacement = BoundIntoMinusOnePlusOne((myKnownAgents[i].GetAgentReference().GetCentre().x - creature.GetCentre().x) / visualRange);
-	float yDisplacement = BoundIntoMinusOnePlusOne((myKnownAgents[i].GetAgentReference().GetCentre().y - creature.GetCentre().y) / visualRange);
+	float xDisplacement = BoundIntoMinusOnePlusOne((myKnownAgents[i].GetAgentFacultyInterfaceReference().GetCentre().x - myCreatureAsAgent->GetCentre().x) / visualRange);
+	float yDisplacement = BoundIntoMinusOnePlusOne((myKnownAgents[i].GetAgentFacultyInterfaceReference().GetCentre().y - myCreatureAsAgent->GetCentre().y) / visualRange);
 
 	brain->SetInput("visn", i, xDisplacement);
 	brain->SetInput("elvn", i, yDisplacement);
@@ -548,7 +569,7 @@ void SensoryFaculty::SetVisualInput(int i)
 // Use this agent's Family and Genus to produce a single number in range 0-39, which represents
 // the 'type' of an object. Two objects of the same family+genus have the same ID#, and are
 // INDISTINGUISHABLE from each other as far as creatures are concerned (they have the same name,
-// 'look' the same, have the same significance, etc.)
+// 'look' the same, have the same significance, etmyCreature->)
 // ------------------------------------------------------------------------
 // Function:    GetCategoryIdOfAgent
 // Class:       SensoryFaculty
@@ -556,13 +577,16 @@ void SensoryFaculty::SetVisualInput(int i)
 // Arguments:   AgentHandle& a = 
 // Returns:     int = 
 // ------------------------------------------------------------------------
-int SensoryFaculty::GetCategoryIdOfAgent(const AgentHandle& a)
+int SensoryFaculty::GetCategoryIdOfAgent(AgentHandle a)
 {
-	AgentHandle a2(a);
-	if( a2.IsInvalid())
+	if( a.IsInvalid())
 		return -1;
 
-	return GetCategoryIdOfClassifier(&(a2.GetAgentReference().GetClassifier()));
+	int overrideCat = a.GetAgentFacultyInterfaceReference().GetOverrideCategory();
+	if (overrideCat < 0)
+		return GetCategoryIdOfClassifier(&(a.GetAgentFacultyInterfaceReference().GetClassifier()));
+	else
+		return overrideCat;
 }
 
 
@@ -606,7 +630,7 @@ void SensoryFaculty::Stimulate(AgentHandle& from,
 {
 	Stimulus* s = &myStimulusLib[stim];			// get MY personal version of this stimulus
     s->fromAgent = from;
-	s->toCreature = myCreature;					// I am dest of stimulus
+	s->toCreature = myCreatureAsAgent->GetAsAgentHandle();					// I am dest of stimulus
 	s->fromScriptEventNo = fromScriptEventNo;
 	s->strengthMultiplier = strengthMultiplier;
 	s->forceNoLearning = forceNoLearning;
@@ -623,14 +647,13 @@ void SensoryFaculty::Stimulate(AgentHandle& from,
 // ------------------------------------------------------------------------
 void SensoryFaculty::Stimulate(Stimulus s)			// COPY of stimulus data
 {
-	Creature &c = myCreature.GetCreatureReference();
-	if (c.Life()->GetWhetherDead())
+	if (myCreature->Life()->GetWhetherDead())
 		return;
 
     // If you're asleep, either stim won't get through or it will be
     // attenuated
-    if (!c.Life()->GetWhetherAlert() &&
-		!c.Life()->GetWhetherZombie())
+    if (!myCreature->Life()->GetWhetherAlert() &&
+		!myCreature->Life()->GetWhetherZombie())
 	{
         if  (!(s.bitFlags & IFASLEEP))      // if stim not perceptible by
 		{
@@ -640,10 +663,10 @@ void SensoryFaculty::Stimulate(Stimulus s)			// COPY of stimulus data
 
 
 			// saying the creature's name wakes it up:
-			if (c.Life()->GetWhetherAsleep() &&
-				s.incomingSentence==c.Linguistic()->GetPlatonicWord(LinguisticFaculty::PERSONAL, LinguisticFaculty::ME))
+			if (myCreature->Life()->GetWhetherAsleep() &&
+				s.incomingSentence==myCreature->Linguistic()->GetPlatonicWord(LinguisticFaculty::PERSONAL, LinguisticFaculty::ME))
 			{
-				c.Life()->SetWhetherAsleep(false);
+				myCreature->Life()->SetWhetherAsleep(false);
 			}
 
             return;                         // sleeper, go home
@@ -653,26 +676,26 @@ void SensoryFaculty::Stimulate(Stimulus s)			// COPY of stimulus data
     }
 
 	// stims from the ORDR macro:
-	c.Linguistic()->HearSentence(s.fromAgent, s.incomingSentence, s.verbIdToStim, s.nounIdToStim);
+	myCreature->Linguistic()->HearSentence(s.fromAgent, s.incomingSentence, s.verbIdToStim, s.nounIdToStim);
 
 	// stims from the URGE macro (or STIM #):
 	if (s.nounStim>1.0f)
 	{
-		c.Motor()->SetAttentionOverride(s.nounIdToStim);
+		myCreature->Motor()->SetAttentionOverride(s.nounIdToStim);
 	}
 	else
 	{
 		if (s.nounStim!=0.0f)
-			c.GetBrain()->SetInput("noun", s.nounIdToStim, s.nounStim);
+			myCreature->GetBrain()->SetInput("noun", s.nounIdToStim, s.nounStim);
 	}
 	if (s.verbStim>1.0f)
 	{
-		c.Motor()->SetDecisionOverride(s.verbIdToStim);
+		myCreature->Motor()->SetDecisionOverride(s.verbIdToStim);
 	}
 	else
 	{
 		if (s.verbStim!=0.0f)
-			c.GetBrain()->SetInput("verb", GetNeuronIdFromScriptOffset(s.verbIdToStim), s.verbStim);
+			myCreature->GetBrain()->SetInput("verb", GetNeuronIdFromScriptOffset(s.verbIdToStim), s.verbStim);
 	}
 
 	// stims from the SWAY macro (or STIM #):
@@ -753,7 +776,7 @@ void SensoryFaculty::ReadFromGenome(Genome& g)
 // ------------------------------------------------------------------------
 void SensoryFaculty::AdjustChemicalLevel(int whichChemical, float adjustment)
 {
-	myCreature.GetCreatureReference().GetBiochemistry()->AddChemical(
+	myCreature->GetBiochemistry()->AddChemical(
 		whichChemical, adjustment
 	);
 }
@@ -767,9 +790,8 @@ void SensoryFaculty::AdjustChemicalLevel(int whichChemical, float adjustment)
 //              int fromScriptEventNo = 
 //              AgentHandle& fromAgent = 
 // ------------------------------------------------------------------------
-void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float adjustment, int fromScriptEventNo, AgentHandle const& fromAgent)
+void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float adjustment, int fromScriptEventNo, AgentHandle fromAgent)
 {
-	AgentHandle from2(fromAgent);
 	AdjustChemicalLevel(whichChemical, adjustment);
 
 	int drive = GetDriveNumberOfChemical(whichChemical);
@@ -780,7 +802,7 @@ void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float ad
 
 		// need this line else it object may be NULL 
 		// and hence will match NULL fromAgent and train brain
-		if(from2.IsInvalid()) 
+		if(fromAgent.IsInvalid()) 
 		{
 #ifdef STIM_TEST_TRACE
 			OutputFormattedDebugString("invalid\n");
@@ -788,17 +810,17 @@ void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float ad
 			return;
 		}
 
-		if (myCreature.GetCreatureReference().Life()->GetWhetherAlert())
+		if (myCreature->Life()->GetWhetherAlert())
 		{
 			// check event script corresponds to current creature action:
 
 			bool learn = true;
 			if (theApp.GetWorld().GetGameVar("engine_synchronous_learning").GetInteger() == 1)
 			{		
-				if (fromAgent != myCreature && fromAgent != thePointer)
+				if (fromAgent != myCreatureAsAgent->GetAsAgentHandle() && fromAgent != thePointer)
 				{
 					// check decision creature has made corresponds to script agent is running
-					int decisionOffset = myCreature.GetCreatureReference().Motor()->GetCurrentDecisionId();
+					int decisionOffset = myCreature->Motor()->GetCurrentDecisionId();
 					int expectedAgentScript = GetExpectedAgentScriptFromDecisionOffset(decisionOffset);
 #ifdef STIM_TEST_TRACE
 					OutputFormattedDebugString("Agent script: %d Decision script crossref:%d\n", fromScriptEventNo, expectedAgentScript);
@@ -809,7 +831,7 @@ void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float ad
 						learn = false;
 
 					// check the creature still has attention on the object
-					const AgentHandle& itAgent = myCreature.GetCreatureReference().GetItAgent();
+					AgentHandle itAgent = myCreature->GetItAgent();
 					if (itAgent != fromAgent)
 						learn = false;
 
@@ -825,7 +847,7 @@ void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float ad
 #ifdef STIM_TEST_TRACE
 	OutputFormattedDebugString("learning\n");
 #endif
-				myCreature.GetCreatureReference().GetBrain()->SetInput("resp", drive, adjustment);
+				myCreature->GetBrain()->SetInput("resp", drive, adjustment);
 			}
 #ifdef STIM_TEST_TRACE
 			else
@@ -837,7 +859,7 @@ void SensoryFaculty::AdjustChemicalLevelWithTraining(int whichChemical, float ad
 #ifdef STIM_TEST_TRACE
 	OutputFormattedDebugString("prox\n");
 #endif
-			myCreature.GetCreatureReference().GetBrain()->SetInput("prox", drive, adjustment);
+			myCreature->GetBrain()->SetInput("prox", drive, adjustment);
 		}
 	}
 #ifdef STIM_TEST_TRACE
@@ -870,6 +892,8 @@ bool SensoryFaculty::Write(CreaturesArchive &archive) const
 	archive << myFriendsAndFoeMonikers;
 	archive << myFriendsAndFoeLastEncounters;
 	archive << myAddedAFriendOnThisUpdate;
+
+	archive << myCategoryRepresentativeAlgorithms;
 	return true;
 }
 
@@ -902,6 +926,15 @@ bool SensoryFaculty::Read(CreaturesArchive &archive)
 		archive >> myFriendsAndFoeMonikers;
 		archive >> myFriendsAndFoeLastEncounters;
 		archive >> myAddedAFriendOnThisUpdate;
+
+		if (archive.GetFileVersion() >= 20)
+		{
+			archive >> myCategoryRepresentativeAlgorithms;
+		}
+		else
+		{
+			SetupInitialCategoryRepresentativeAlgorithms();
+		}
 	}
 	else
 	{
@@ -937,18 +970,12 @@ bool SensoryFaculty::SetupStaticVariablesFromCatalogue()
 	{
 		std::string classifier = theCatalogue.Get("Agent Classifiers", i);
 		int f = 0, g = 0, s = 0;
-#ifndef C2E_OLD_CPP_LIB
 		std::istringstream in(classifier);
 		in >> f >> g >> s;
-#else
-		// UGH!
-		sscanf( classifier.c_str(), "%d %d %d",f,g,s );
-#endif
 
 		ourCategoryClassifiers.push_back(Classifier(f, g, s, 0));
 		ourCategoryNames.push_back(theCatalogue.Get("Agent Categories", i));
 	}
-
 	return true;
 }
 
@@ -985,20 +1012,20 @@ float SensoryFaculty::DistanceToNearestCreature(int sex, int genus)
 {
 	CreatureCollection &creatureCollection = theAgentManager.GetCreatureCollection();
 	int noCreatures = creatureCollection.size();
-	Creature &meCreature = myCreature.GetCreatureReference();
-	AgentHandle me = myCreature.GetAgentReference();
-	float nearest = meCreature.GetVisualRange()+1.0f; // detect @ <= visual range
+
+	float nearest = myCreatureAsAgent->GetVisualRange()+1.0f; // detect @ <= visual range
 
 	for(int c = 0; c != noCreatures; c++)
 	{
-		Creature &nearCreature = creatureCollection[c].GetCreatureReference();
+		CreatureFacultyInterface& nearCreature = creatureCollection[c].GetCreatureFacultyInterfaceReference();
+		AgentFacultyInterface& nearCreatureAsAgent = creatureCollection[c].GetAgentFacultyInterfaceReference();
 			
-		if(meCreature.CanSee(AgentHandle(nearCreature)))
+		if(myCreatureAsAgent->CanSee(nearCreatureAsAgent.GetAsAgentHandle()))
 		{
 			if((sex == 0 || nearCreature.Life()->GetSex() == sex) && 
-				(genus == 0 || creatureCollection[c].GetAgentReference().GetClassifier().Genus() == genus))
+				(genus == 0 || nearCreatureAsAgent.GetClassifier().Genus() == genus))
 			{
-				float f = fabsf( meCreature.GetPosition().x - nearCreature.GetPosition().x );	
+				float f = fabsf( myCreatureAsAgent->GetPosition().x - nearCreatureAsAgent.GetPosition().x );	
 			
 				if	(f<nearest)	
 				{
@@ -1045,25 +1072,20 @@ int SensoryFaculty::PayAttentionToCreature(AgentHandle& lookAtCreature)
 	if(lookAtCreature.IsInvalid())
 		return id;
 
-	Creature& creature = myCreature.GetCreatureReference();
-
-	
-
 	if(!lookAtCreature.IsCreature()) return id;
 
-	if(creature.CanSee(lookAtCreature) && creature.Life()->GetWhetherAlert())
+	if(myCreatureAsAgent->CanSee(lookAtCreature) && myCreature->Life()->GetWhetherAlert())
 	{
 		id = SensoryFaculty::GetCategoryIdOfAgent(lookAtCreature);
 
-		if(creature.Sensory()->GetKnownAgent(id) != lookAtCreature)
+		if(myCreature->Sensory()->GetKnownAgent(id) != lookAtCreature)
 		{
 			// differant to current creature known about
-			creature.Sensory()->SetKnownAgent(id, lookAtCreature);
-			creature.Sensory()->SetVisualInput(id);
+			myCreature->Sensory()->SetKnownAgent(id, lookAtCreature);
+			myCreature->Sensory()->SetVisualInput(id);
 								
 			// clear noun in question
-			creature.GetBrain()->ClearNeuronActivity("noun", id);
-
+			myCreature->GetBrain()->SetNeuronState("noun", id, STATE_VAR, 0.0f);
 		}
 	}
 	return id;
@@ -1077,7 +1099,7 @@ int SensoryFaculty::PayAttentionToCreature(AgentHandle& lookAtCreature)
 // Class:       SensoryFaculty
 // Description: Set up a creature (or pointer) you see for the first time in
 //				your friend or foe list, initialising its friendliness towards
-//				you based on your blood relation etc.
+//				you based on your blood relation etmyCreature->
 // Arguments:   AgentHandle& creatureOrPointer = 
 // Returns:     int = 
 // ------------------------------------------------------------------------
@@ -1094,15 +1116,13 @@ int SensoryFaculty::AddFriendOrFoe(AgentHandle& creatureOrPointer)
 	if(creatureOrPointer.IsCreature())
 	{
 		// don't add dead creatures
-		if(creatureOrPointer.GetCreatureReference().Life()->GetWhetherDead())
+		if(creatureOrPointer.GetCreatureFacultyInterfaceReference().Life()->GetWhetherDead())
 			return -1;
 	}	
 
 	// only allow creatures or pointers to be friends
 	if(!creatureOrPointer.IsCreature() && !creatureOrPointer.IsPointerAgent())
 		return -1;
-
-	Creature& creature = myCreature.GetCreatureReference();
 
 	FriendOrFoeIterator ffi = std::find(myFriendsAndFoeHandles.begin(), myFriendsAndFoeHandles.end(), creatureOrPointer);
 
@@ -1139,41 +1159,41 @@ int SensoryFaculty::AddFriendOrFoe(AgentHandle& creatureOrPointer)
 	// so can remember mates on export
 	if(creatureOrPointer.IsCreature())
 	{
-		Creature &c = myFriendsAndFoeHandles[oldestSlot].GetCreatureReference();
+		CreatureFacultyInterface& c = myFriendsAndFoeHandles[oldestSlot].GetCreatureFacultyInterfaceReference();
 		
-		if(c.Life()->GetWhetherDead())
+		if(myCreature->Life()->GetWhetherDead())
 			return -1;
 
 		myFriendsAndFoeMonikers[oldestSlot] = 
-			creatureOrPointer.GetAgentReference().GetGenomeStore().MonikerAsString(0);
+			creatureOrPointer.GetAgentFacultyInterfaceReference().GetGenomeStore().MonikerAsString(0);
 
 		// initialise neurons in brain
-		if(c.GetMoniker()==creature.GetMotherMoniker() || 
-			c.GetMoniker()==creature.GetFatherMoniker() ||
-			c.GetMotherMoniker()==creature.GetMoniker() || 
-			c.GetFatherMoniker()==creature.GetMoniker())
+		if(myCreature->GetShortMoniker()==myCreature->GetMotherMoniker() || 
+			myCreature->GetShortMoniker()==myCreature->GetFatherMoniker() ||
+			myCreature->GetMotherMoniker()==myCreature->GetShortMoniker() || 
+			myCreature->GetFatherMoniker()==myCreature->GetShortMoniker())
 		{
 			// parent child - love immediatly
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.8f);
+			myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.8f);
 		}
-		else if(c.GetMotherMoniker()==creature.GetMotherMoniker() || 
-			c.GetFatherMoniker()==creature.GetFatherMoniker())
+		else if(myCreature->GetMotherMoniker()==myCreature->GetMotherMoniker() || 
+			myCreature->GetFatherMoniker()==myCreature->GetFatherMoniker())
 		{
 			// bothers and sisters
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.225f);
+			myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.225f);
 
 		}
-		else if((c.GetFamily() == creature.GetFamily()) && (c.GetGenus() == creature.GetGenus()) &&	(c.GetGenus() != 2))
+		else if((myCreatureAsAgent->GetFamily() == myCreatureAsAgent->GetFamily()) && (myCreatureAsAgent->GetGenus() == myCreatureAsAgent->GetGenus()) &&	(myCreatureAsAgent->GetGenus() != 2))
 		{
 			// creatures of smae genus (but not grendels)
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.175f);
+			myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, STATE_VAR, 0.175f);
 
 		}
 		
 		else
 		{
 			// someone else set up for clearing and relearning
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, FOURTH_VAR, -1.0f);
+			myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, FOURTH_VAR, -1.0f);
 		}
 
 
@@ -1183,19 +1203,19 @@ int SensoryFaculty::AddFriendOrFoe(AgentHandle& creatureOrPointer)
 		myFriendsAndFoeMonikers[oldestSlot] = theApp.GetWorld().GetUniqueIdentifier();
 
 		// hand friend/foe set up for clearing and relearning
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, FOURTH_VAR, -1.0f);
+		myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, FOURTH_VAR, -1.0f);
 
 	}
 
 	// store last seen time stamp (will be over written at every load up)
-	myFriendsAndFoeLastEncounters[oldestSlot] = creature.Life()->GetTickAge();
+	myFriendsAndFoeLastEncounters[oldestSlot] = myCreature->Life()->GetTickAge();
 
 
 
 	// set up for dendrite to link to combo lobe
 
 	// flag friend or foe neuron for dendrite migration
-	myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", oldestSlot, NGF_VAR, 1.0f);
+	myCreature->GetBrain()->SetNeuronState("forf", oldestSlot, NGF_VAR, 1.0f);
 	
 	// flag bad action concept neurons for this agent catagory to have dendrites migrate to them
 	for(int b = 0; b != theCatalogue.GetArrayCountForTag("Bad Action Script"); b++)
@@ -1203,7 +1223,7 @@ int SensoryFaculty::AddFriendOrFoe(AgentHandle& creatureOrPointer)
 		int badDecisionNeuron = GetNeuronIdFromScriptOffset(atoi(theCatalogue.Get("Bad Action Script",b)));
 		int badConceptNeuron = (GetNumCategories()*badDecisionNeuron)+
 									GetCategoryIdOfAgent(creatureOrPointer);
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("comb", badConceptNeuron, NGF_VAR, 1.0f);
+		myCreature->GetBrain()->SetNeuronState("comb", badConceptNeuron, NGF_VAR, 1.0f);
 	}
 
 	// flag good action concept neurons for this agent catagory to have dendrites migrate to them
@@ -1212,7 +1232,7 @@ int SensoryFaculty::AddFriendOrFoe(AgentHandle& creatureOrPointer)
 		int goodDecisionNeuron = GetNeuronIdFromScriptOffset(atoi(theCatalogue.Get("Good Action Script",g)));
 		int goodConceptNeuron = (GetNumCategories()*goodDecisionNeuron)+
 									GetCategoryIdOfAgent(creatureOrPointer);
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("comb", goodConceptNeuron, NGF_VAR, 1.0f);
+		myCreature->GetBrain()->SetNeuronState("comb", goodConceptNeuron, NGF_VAR, 1.0f);
 	}
 
 	myAddedAFriendOnThisUpdate = true;
@@ -1237,7 +1257,7 @@ void SensoryFaculty::SetCreatureActingUponMe(AgentHandle& creatureOrPointer)
 	{
 		if(myFriendsAndFoeHandles[i] == creatureOrPointer)
 		{
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", i, THIRD_VAR, 1.0f);
+			myCreature->GetBrain()->SetNeuronState("forf", i, THIRD_VAR, 1.0f);
 			break;
 		}
 	}
@@ -1249,7 +1269,7 @@ void SensoryFaculty::SetCreatureActingUponMe(AgentHandle& creatureOrPointer)
 // Function:    GetOpinionOfCreature
 // Class:       SensoryFaculty
 // Description: Used by the LinguisticFaculty for this norn say how he much he likes/
-//				dislikes another creature.
+//				dislikes another myCreature->
 // Arguments:   AgentHandle& creatureOrPointer = 
 //              float &opinion = 
 //              float &moodOpinion = 
@@ -1267,8 +1287,8 @@ int SensoryFaculty::GetOpinionOfCreature(AgentHandle& creatureOrPointer, float &
 		{
 			if(myFriendsAndFoeHandles[i] == creatureOrPointer)
 			{
-				opinion = myCreature.GetCreatureReference().GetBrain()->GetNeuronState("forf", i, STATE_VAR);
-				moodOpinion = myCreature.GetCreatureReference().GetBrain()->GetNeuronState("forf", i, OUTPUT_VAR);
+				opinion = myCreature->GetBrain()->GetNeuronState("forf", i, STATE_VAR);
+				moodOpinion = myCreature->GetBrain()->GetNeuronState("forf", i, OUTPUT_VAR);
 				return i;
 			}
 		}
@@ -1290,20 +1310,18 @@ AgentHandle SensoryFaculty::GetNearestCreatureOrPointer()
 {
 	CreatureCollection &creatureCollection = theAgentManager.GetCreatureCollection();
 	int noCreatures = creatureCollection.size();
-	Creature &meCreature = myCreature.GetCreatureReference();
-	AgentHandle me = myCreature.GetAgentReference();
-	float nearest = meCreature.GetVisualRange()+1.0f; // detect @ <= visual range
+	float nearest = myCreatureAsAgent->GetVisualRange()+1.0f; // detect @ <= visual range
 	AgentHandle nearestAgent;
 
 	for(int c = 0; c != noCreatures; c++)
 	{
-		Creature &nearCreature = creatureCollection[c].GetCreatureReference();
+		AgentHandle nearCreature = creatureCollection[c];
 			
-		if(meCreature.CanSee(AgentHandle(nearCreature)))
+		if(myCreatureAsAgent->CanSee(nearCreature))
 		{
-			float f = fabsf( meCreature.GetPosition().x - nearCreature.GetPosition().x );	
+			float f = fabsf( myCreatureAsAgent->GetPosition().x - nearCreature.GetAgentFacultyInterfaceReference().GetPosition().x );
 			
-			if	(f<nearest)	
+			if (f<nearest)	
 			{
 				// detect at @ <=visual range
 				nearest = f;
@@ -1312,7 +1330,7 @@ AgentHandle SensoryFaculty::GetNearestCreatureOrPointer()
 		}
 	}
 
-	float f = fabsf( meCreature.GetPosition().x - thePointer.GetAgentReference().GetPosition().x );	
+	float f = fabsf( myCreatureAsAgent->GetPosition().x - thePointer.GetAgentFacultyInterfaceReference().GetPosition().x );	
 	if(f<nearest)	
 		nearestAgent = thePointer;
 	
@@ -1334,12 +1352,7 @@ int SensoryFaculty::PayAttentionToAgent(AgentHandle& agent)
 	if(agent.IsInvalid())
 		return id;
 
-	Creature& creature = myCreature.GetCreatureReference();
-
-
-
-
-	if(creature.CanSee(agent) && creature.Life()->GetWhetherAlert())
+	if(myCreatureAsAgent->CanSee(agent) && myCreature->Life()->GetWhetherAlert())
 	{
 		id = SensoryFaculty::GetCategoryIdOfAgent(agent);
 
@@ -1383,7 +1396,7 @@ void SensoryFaculty::SetSeenFriendOrFoe(AgentHandle& creatureOrPointer)
 	{
 		if(myFriendsAndFoeHandles[i] == creatureOrPointer)
 		{
-			myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", i, FIFTH_VAR, 1.0f);
+			myCreature->GetBrain()->SetNeuronState("forf", i, FIFTH_VAR, 1.0f);
 			return;
 		}
 	}	
@@ -1391,7 +1404,7 @@ void SensoryFaculty::SetSeenFriendOrFoe(AgentHandle& creatureOrPointer)
 	// not found try adding
 	int forfId = AddFriendOrFoe(creatureOrPointer);
 	if(forfId != -1)
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", forfId, FIFTH_VAR, 1.0f);
+		myCreature->GetBrain()->SetNeuronState("forf", forfId, FIFTH_VAR, 1.0f);
 
 	return;
 
@@ -1410,8 +1423,8 @@ void SensoryFaculty::ClearSeenFriendsOrFoes()
 
 	for(int i = 0; i != myFriendsAndFoeHandles.size(); i++)
 	{
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", i, FIFTH_VAR, 0.0f);
-		myCreature.GetCreatureReference().GetBrain()->SetNeuronState("forf", i, NGF_VAR, 0.0f);
+		myCreature->GetBrain()->SetNeuronState("forf", i, FIFTH_VAR, 0.0f);
+		myCreature->GetBrain()->SetNeuronState("forf", i, NGF_VAR, 0.0f);
 	}
 
 	return;
@@ -1428,7 +1441,6 @@ void SensoryFaculty::ClearSeenFriendsOrFoes()
 void SensoryFaculty::ResolveFriendAndFoe()
 {
 	CreatureCollection &creatureCollection = theAgentManager.GetCreatureCollection();
-	Creature& creature = myCreature.GetCreatureReference();
 	int noCreatures = creatureCollection.size();
 	int thisCreatureIsImported = true;	// presume posibility as default
 
@@ -1439,7 +1451,7 @@ void SensoryFaculty::ResolveFriendAndFoe()
 	{
 		if(myFriendsAndFoeHandles[i].IsValid())
 		{
-			myFriendsAndFoeLastEncounters[i] = creature.Life()->GetTickAge();
+			myFriendsAndFoeLastEncounters[i] = myCreature->Life()->GetTickAge();
 		
 			// if agent handles or valid must be loading a world
 			thisCreatureIsImported = false;
@@ -1452,16 +1464,14 @@ void SensoryFaculty::ResolveFriendAndFoe()
 				// matches world id, know this pointer already
 				// record tick age that you met this pointer before
 				myFriendsAndFoeHandles[i] = thePointer;
-				myFriendsAndFoeLastEncounters[i] = creature.Life()->GetTickAge();
+				myFriendsAndFoeLastEncounters[i] = myCreature->Life()->GetTickAge();
 
 				// must be inported so set name of pointer
 				// reset the name cos may have changed in creatures absence
-				int pointerCat = SensoryFaculty::GetCategoryIdOfClassifier(
-					&thePointer.GetPointerAgentReference().GetClassifier());
+				int pointerCat = SensoryFaculty::GetCategoryIdOfAgent(thePointer);
 
-				
-				creature.Linguistic()->ClearWordStrength(LinguisticFaculty::NOUN, pointerCat);
-				creature.Linguistic()->SetWord(LinguisticFaculty::NOUN, pointerCat, 
+				myCreature->Linguistic()->ClearWordStrength(LinguisticFaculty::NOUN, pointerCat);
+				myCreature->Linguistic()->SetWord(LinguisticFaculty::NOUN, pointerCat, 
 					thePointer.GetPointerAgentReference().GetName(), true);
 			}
 			else
@@ -1470,11 +1480,11 @@ void SensoryFaculty::ResolveFriendAndFoe()
 				for(int c = 0; c != noCreatures; c++)
 				{
 					if(myFriendsAndFoeMonikers[i] == 
-						creatureCollection[c].GetAgentReference().GetGenomeStore().MonikerAsString(0))
+						creatureCollection[c].GetAgentFacultyInterfaceReference().GetGenomeStore().MonikerAsString(0))
 					{
 						// met this creature before, record tick age that you met them again
 						myFriendsAndFoeHandles[i] = creatureCollection[c];
-						myFriendsAndFoeLastEncounters[i] = creature.Life()->GetTickAge();
+						myFriendsAndFoeLastEncounters[i] = myCreature->Life()->GetTickAge();
 					}
 				}
 			}
@@ -1492,12 +1502,12 @@ void SensoryFaculty::ResolveFriendAndFoe()
 		for(int c = 0; c != noCreatures; c++)
 		{
 			//  dont check imported creature against itself
-			if(myCreature != creatureCollection[c])
+			if (myCreatureAsAgent->GetAsAgentHandle() != creatureCollection[c])
 			{
-				creatureCollection[c].GetCreatureReference().Sensory()->
+				creatureCollection[c].GetCreatureFacultyInterfaceReference().Sensory()->
 					AssignFriendOrFoeByMoniker(
-					creature.GetGenomeStore().MonikerAsString(0),
-					myCreature);	
+					myCreatureAsAgent->GetGenomeStore().MonikerAsString(0),
+					myCreatureAsAgent->GetAsAgentHandle());
 			}
 		}
 	}
@@ -1514,15 +1524,14 @@ void SensoryFaculty::ResolveFriendAndFoe()
 //              AgentHandle& creatureOrPointer = 
 // Returns:     bool = 
 // ------------------------------------------------------------------------
-bool SensoryFaculty::AssignFriendOrFoeByMoniker(std::string moniker, AgentHandle& creatureOrPointer)
+bool SensoryFaculty::AssignFriendOrFoeByMoniker(std::string moniker, AgentHandle creatureOrPointer)
 {
 	for(int i = 0; i != myFriendsAndFoeHandles.size(); i++)
 	{
 		if(myFriendsAndFoeMonikers[i] == moniker)
 		{
-			Creature& creature = myCreature.GetCreatureReference();
 			myFriendsAndFoeHandles[i] = creatureOrPointer;
-			myFriendsAndFoeLastEncounters[i] = creature.Life()->GetTickAge();
+			myFriendsAndFoeLastEncounters[i] = myCreature->Life()->GetTickAge();
 			return true;
 		}
 	}
@@ -1538,7 +1547,7 @@ bool SensoryFaculty::AssignFriendOrFoeByMoniker(std::string moniker, AgentHandle
 // Description: Helper function for friend or foe stuff.
 // Arguments:   AgentHandle& creatureOrPointer = 
 // ------------------------------------------------------------------------
-void SensoryFaculty::RemoveFromAllFriendAndFoe(AgentHandle& creatureOrPointer)
+void SensoryFaculty::RemoveFromAllFriendAndFoe(AgentHandle creatureOrPointer)
 {
 	// recycle slots so keep as may friends from past worlds as posible
 	
@@ -1547,7 +1556,7 @@ void SensoryFaculty::RemoveFromAllFriendAndFoe(AgentHandle& creatureOrPointer)
 
 	// try all creatures against this moniker
 	for(int c = 0; c != noCreatures; c++)
-		creatureCollection[c].GetCreatureReference().Sensory()->RemoveFriendAndFoe(creatureOrPointer);
+		creatureCollection[c].GetCreatureFacultyInterfaceReference().Sensory()->RemoveFriendAndFoe(creatureOrPointer);
 }
 
 
@@ -1587,3 +1596,25 @@ void SensoryFaculty::CleanUpInvalidFriendAgentHandles()
 	for(int i = 0; i != myFriendsAndFoeHandles.size(); ++i)
 		myFriendsAndFoeHandles[i].IsValid();
 }
+
+
+
+
+void SensoryFaculty::SetupInitialCategoryRepresentativeAlgorithms()
+{
+	myCategoryRepresentativeAlgorithms.resize(ourNumCategories);
+	for (int i=0; i<ourNumCategories; i++)
+	{
+		myCategoryRepresentativeAlgorithms[i] = atoi(theCatalogue.Get("Category Representative Algorithms", i));
+	}
+}
+
+void SensoryFaculty::SetCategoryRepresentativeAlgorithm(int id, int setTo)
+{
+	myCategoryRepresentativeAlgorithms[id] = setTo;
+}
+int SensoryFaculty::GetCategoryRepresentativeAlgorithm(int id)
+{
+	return myCategoryRepresentativeAlgorithms[id];
+}
+

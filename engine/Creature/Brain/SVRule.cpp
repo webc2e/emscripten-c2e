@@ -177,9 +177,19 @@ void SVRule::InitFromDesc(std::istream &in)
 	{
 		SVRuleEntry& e = myRule[i];
 
-		in.get((char &)e.opCode);
-		in.get((char &)e.operandVariable);
-		in.get((char &)e.arrayIndex);
+		
+		if(BrainAccess::BrainDumpVersion() != 1.0f)
+		{
+			ReadDesc(&e.opCode, in);
+			ReadDesc(&e.operandVariable, in);
+			ReadDesc(&e.arrayIndex, in);
+		}
+		else
+		{
+			in.get((char &)e.opCode);
+			in.get((char &)e.operandVariable);
+			in.get((char &)e.arrayIndex);
+		}
 		ReadDesc(&e.floatValue, in);
 	}
 }
@@ -252,9 +262,18 @@ void SVRule::Dump(std::ostream& out)
 	for	(int i=0; i<length; i++) {
 		SVRuleEntry& e = myRule[i];
 
-		out.put(e.opCode);
-		out.put(e.operandVariable);
-		out.put(e.arrayIndex);
+		if(BrainAccess::BrainDumpVersion() != 1.0f)
+		{
+			WriteDesc(&e.opCode, out);
+			WriteDesc(&e.operandVariable, out);
+			WriteDesc(&e.arrayIndex, out);
+		}
+		else
+		{
+			out.put(e.opCode);
+			out.put(e.operandVariable);
+			out.put(e.arrayIndex);
+		}
 		WriteDesc(&e.floatValue, out);
 	}
 };
@@ -273,6 +292,7 @@ int SVRule::DumpSize()
 
 	for	(int i=0; i<length; i++) {
 		SVRuleEntry& e = myRule[i];
+
 #ifdef MSC_VER
 		length += 1+strlen(_itoa(e.opCode, string, 10));
 		length += 1+strlen(_itoa(e.operandVariable, string, 10));
@@ -286,6 +306,7 @@ int SVRule::DumpSize()
 		sprintf( string, "%d", e.arrayIndex );
 		length += 1+strlen( string );
 #endif
+
 		char floatStr[7];
 		sprintf(floatStr, "%1.3f", e.floatValue);
 		length = 1+strlen(floatStr);
@@ -473,3 +494,4 @@ void SVRule::HandleSetLTtoSTRateAndDoCalc( BrainComponent* myOwner, float operan
 		}
 	}
 }
+

@@ -15,38 +15,37 @@
 
 #include <string>
 #include <iostream>
-#ifndef C2E_OLD_CPP_LIB
 #include <sstream>
-#endif
-#include <strstream>
 #include <fstream>
 
+#include "../../modules/ModuleAPI.h"
 
 const bool CompressionFlag = true;
 
 class SimpleLexer;
 
-
-class PrayBuilder
+class C2E_MODULE_API PrayBuilder
 {
 public:
-	PrayBuilder(std::string& sourceFile, std::string& destFile);
-
-	bool SuccessfulBuild;
-	std::string Output;
+	PrayBuilder(std::string sourceFile, std::string destFile);
+	bool Successful();
+	std::string Output();
 
 private:
-#ifdef C2E_OLD_CPP_LIB
-	char myHackBuf[2048];
-	std::ostrstream outputStream;
-#else
-	std::ostringstream outputStream;
-#endif
-
 	void decodeType(int thisType,std::string& into);
 	bool expect(int thisType, std::string& thisToken, int expectedType, int linenumber);
 	void munchComment(int& currentTokenType, std::string& currentToken, SimpleLexer& inputLexer);
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
+	std::ostringstream myOutputStream;
+	bool mySuccessfulBuild;
+	std::string myOutput;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 };
 
 #endif // PRAYBUILDER_H
+

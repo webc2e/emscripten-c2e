@@ -7,11 +7,12 @@
 #endif
 
 #include "MusicFaculty.h"
-#include "Creature.h"
+#include "AgentFacultyInterface.h"
+#include "CreatureFacultyInterface.h"
 #include "../App.h"
 #include "../World.h"
 #include "LifeFaculty.h"
-#include "../Map/Map.h" // For Map::FastFloatToInteger
+#include "../Maths.h" // For Map::FastFloatToInteger
 																		    
 // Weights for drive calculations.
 const int YYY   = 4;
@@ -69,7 +70,7 @@ bool MusicFaculty::SelectableByUser() const
 	}
 
 	// Otherwise only Norns are selectable
-    return (myCreature.GetCreatureReference().GetClassifier().Genus() == G_NORN);
+    return (myCreatureAsAgent->GetClassifier().Genus() == G_NORN);
 }
 
 // ------------------------------------------------------------------------
@@ -80,7 +81,7 @@ bool MusicFaculty::SelectableByUser() const
 // ------------------------------------------------------------------------
 bool MusicFaculty::Hatching() const
 {
-    return (myCreature.GetCreatureReference().Life()->GetWhetherDreaming() && myCreature.GetCreatureReference().Life()->GetAge() == AGE_BABY);
+    return (myCreature->Life()->GetWhetherDreaming() && myCreature->Life()->GetAge() == AGE_BABY);
 }
 
 // ------------------------------------------------------------------------
@@ -91,8 +92,6 @@ bool MusicFaculty::Hatching() const
 // ------------------------------------------------------------------------
 float MusicFaculty::Mood() const
 {
-	Creature& c = myCreature.GetCreatureReference();
-
     static int InfluenceOnMood[14] =
 	{
         NNN,    //   0 PAIN,
@@ -111,7 +110,7 @@ float MusicFaculty::Mood() const
         YYY,    //  13 SEXDRIVE
 	};
 
-    if (c.Life()->GetWhetherDead())
+    if (myCreature->Life()->GetWhetherDead())
         return 0.0;
 
     int iMood = 0;
@@ -121,7 +120,7 @@ float MusicFaculty::Mood() const
     for (int i = 0; i < 14; i++)
     {
         int iK = InfluenceOnMood[i];
-        iMood += (int)(myCreature.GetCreatureReference().GetDriveLevel(i)*256.0f * -iK);
+        iMood += (int)(myCreature->GetDriveLevel(i)*256.0f * -iK);
 
 		
 		if (iK > 0)
@@ -156,7 +155,7 @@ float MusicFaculty::Mood() const
 // ------------------------------------------------------------------------
 float MusicFaculty::Threat()
 {
-	return myCreature.GetCreatureReference().GetDriveLevel(FEAR);
+	return myCreature->GetDriveLevel(FEAR);
 }
 
 
@@ -196,3 +195,4 @@ bool MusicFaculty::Read(CreaturesArchive &archive)
 	}
 	return true;
 }
+

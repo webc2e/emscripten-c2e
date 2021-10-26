@@ -19,7 +19,7 @@
 #include "PrayChunk.h"
 #include "PrayManager.h"
 
-const uint8_t* PrayChunk::GetData() const
+const uint8* PrayChunk::GetData() const
 {
 	return myPtr;
 }
@@ -28,11 +28,12 @@ PrayChunk::PrayChunk(uint32 sizeOf, PrayManager* manager)
 {
 	myManager = manager;
 	myCount = 0;
-	myPtr = new uint8_t[sizeOf];
+	myPtr = new uint8[sizeOf];
 	mySize = sizeOf;
 }
 
-const int PrayChunk::GetSize() const
+int PrayChunk::GetSize() const
 {
 	return mySize;
 }
+

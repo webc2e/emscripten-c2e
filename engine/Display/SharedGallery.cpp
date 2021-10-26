@@ -28,21 +28,16 @@
 
 #include "Gallery.h"
 #include "SharedGallery.h"
-#include "NormalGallery.h"
-#include "CompressedGallery.h"
-#include "BackGroundGallery.h"
-#include "ClonedGallery.h"
+#include "CreatureGallery.h"
 #include "DisplayEngine.h"		// for displaying errors
 #include "../General.h"
-#include "../App.h"
 #include "ErrorMessageHandler.h"
 #include <algorithm>
-#include <locale.h> //need non-template tolower
+#include "../../common/StringFuncs.h"
 #include <fstream>
+#include "DisplayErrorConstants.h"
 
-#ifndef _WIN32
-#include "../unix/FileFuncs.h"
-#endif
+#include "../../common/FileFuncs.h"
 ////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////
@@ -99,57 +94,59 @@ SharedGallery::~SharedGallery()
 //				Now if you get an S16 extension check if there is a 
 //				C16 version to use which will be preferred
 // ----------------------------------------------------------------------
-Gallery* SharedGallery::CreateGallery(FilePath const &galleryIn)
+Gallery* SharedGallery::CreateGallery(std::string const &galleryIn)
 {
-	FilePath galleryPath = galleryIn;
-	std::string galleryName = galleryPath.GetFullPath();
-	int x = galleryName.find_last_of(".");
+	// see if we already have this gallery open
+	std::string galleryName = galleryIn;
+	std::string testString = galleryName;
+
+	int x = testString.find_last_of(".");
 
 	if(x == -1)
 	{
-		if(galleryName.empty())
+		if(testString.empty())
 		{
-			ErrorMessageHandler::Show(theDisplayErrorTag,
-								(int)DisplayEngine::sidEmptyGalleryString,
-								std::string("SharedGallery::CreateGallery"));
+			ErrorMessageHandler::Throw(theDisplayErrorTag,
+								(int)sidEmptyGalleryString,
+								std::string("SharedGallery::DoCreateGallery"));
 		}
 		else
 		{
-			ErrorMessageHandler::Show(theDisplayErrorTag,
-									(int)DisplayEngine::sidNoGalleryFound,
-									std::string("SharedGallery::CreateGallery"),
-									galleryName.c_str());
+			ErrorMessageHandler::Throw(theDisplayErrorTag,
+									(int)sidNoGalleryFound,
+									std::string("SharedGallery::DoCreateGallery"),
+									testString.c_str());
 		}
 
 	
 		return NULL;
 	}
 
-	std::string ext = galleryName.substr(x, 3);
+	std::string ext = testString.substr(x, 4);
 
 	// check for a preferred C16 version
-	if(ext[1] == 'S' || ext[1] == 's')	
+	if(ext[1] == 's')	
 	{
 		// not compressed sprite gallery
-		std::string tempGalleryName = galleryName;
-		tempGalleryName[x+1] = 'C';
-#ifdef _WIN32
-		int32 attributes = GetFileAttributes(tempGalleryName.data());
-		if(attributes != -1)
-#else
-		if(FileExists(tempGalleryName.data()))
-#endif
+
+		std::string tempGalleryName = testString;
+		tempGalleryName[x+1] = 'c';
+
+		if(FileExists(tempGalleryName.c_str()))
 		{
-			galleryName = tempGalleryName;
+			testString = tempGalleryName;
 			// get the revised extension
-			ext = galleryName.substr(x, 3);
-			galleryPath.SetExtension( "C16" );
+
+			ext = testString.substr(x, 4);
+	//		galleryName.SetExtension( "c16" );
+			galleryName = galleryName.substr( 0, x + 1 );
+			galleryName += "c16";
+
 		}
 	}
 
-	// see if we already have this gallery open
-	std::string testString = galleryPath.GetFullPath();
-	std::transform( testString.begin(), testString.end(), testString.begin(), tolower );
+	testString = galleryName;
+
 	GALLERYMAP_ITERATOR it = myGalleries.find(testString);
 	
 	Gallery* gallery = NULL;
@@ -157,112 +154,20 @@ Gallery* SharedGallery::CreateGallery(FilePath const &galleryIn)
 	if(it == myGalleries.end())
 	{
 		// nobody should be asking for a creature gallery that doesn't exist
-		gallery = LookForCreatureGallery(galleryPath);
+		gallery = LookForCreatureGallery(testString);
 		
 		if(gallery)
 			return gallery;
-
-		try
-		{
-
 		
-		// see whether we are dealing with a compressed file or whatever 
-		// by looking at the file extension
 
-			if(ext[1] == 'S' || ext[1] == 's')	
-			{	// not compressed sprite gallery
-				std::string filename = galleryPath.GetFullPath();
-				std::string tmpFilePath = filename + ".tmp.s16";
-				std::string prevFileName;
-				DisplayEngine::theRenderer().SafeImageConvert(filename,
-								tmpFilePath,
-								DisplayEngine::theRenderer().GetMyPixelFormat(), 
-								prevFileName);
-				::DeleteFile(tmpFilePath.c_str());
-				gallery = new NormalGallery(galleryPath);
-			}
-			else if(ext[1] == 'b' || ext[1] == 'B')
-			{	// not compressed background tile gallery
-				std::string filename = galleryPath.GetFullPath();
-				std::string tmpFilePath = filename + ".tmp.blk";
-				std::string prevFileName;
-				DisplayEngine::theRenderer().SafeImageConvert(filename,
-								tmpFilePath,
-								DisplayEngine::theRenderer().GetMyPixelFormat(), 
-								prevFileName);
-				::DeleteFile(tmpFilePath.c_str());
-				gallery = new BackgroundGallery(galleryPath);
-			}
-			else if(ext[1] == 'C' || ext[1] == 'c')
-			{	//compressed sprite gallery
-				std::string filename = galleryPath.GetFullPath();
-				std::string tmpFilePath = filename + ".tmp.c16";
-				std::string prevFileName;
-				DisplayEngine::theRenderer().SafeImageConvert(filename,
-								tmpFilePath,
-								DisplayEngine::theRenderer().GetMyPixelFormat(), 
-								prevFileName);
-				::DeleteFile(tmpFilePath.c_str());
-				gallery = new CompressedGallery(galleryPath);
-			}
-			else
-			{
-				if(galleryName.empty())
-				{
-					ErrorMessageHandler::Show(theDisplayErrorTag,
-								(int)DisplayEngine::sidEmptyGalleryString,
-								std::string("DisplayEngine::CreateGallery"));
-				}
-				else
-				{
-					ErrorMessageHandler::Format(theDisplayErrorTag,
-									(int)DisplayEngine::sidNoGalleryFound,
-									std::string("SharedGallery::CreateGallery"),
-									galleryName.c_str());
-				}
+		gallery = DoCreateGallery(testString, 
+											0,
+											0,
+											false);
 
-				// what are you doing giving me an unknown gallery?
-				return NULL;
-			}
-
-			// this is just a warning for physics stuff
-			if(!gallery->ValidateBitmapSizes(MINIMUM_BITMAP_WIDTH, MINIMUM_BITMAP_HEIGHT))
-			{
-				ErrorMessageHandler::Show(theDisplayErrorTag, 
-					(int)DisplayEngine::sidBitmapSizeTooSmall,
-				std::string("SharedGallery::CreateGallery"), 
-				galleryName.c_str(),MINIMUM_BITMAP_WIDTH,MINIMUM_BITMAP_HEIGHT);
-
-			
-			}
-		}
-		catch(Gallery::GalleryException& e)
+		if(gallery && gallery->IsValid())
 		{
-			ErrorMessageHandler::Show(e, std::string("SharedGallery::CreateGallery"));
-			return gallery;
-		}
-		catch(File::FileException& e)
-		{
-			ErrorMessageHandler::Show(e, std::string("SharedGallery::CreateGallery"));
-			return gallery;
-		}
-
-		if(gallery->IsValid())
-		{
-
-			/*
-#ifdef _DEBUG
-			OutputFormattedDebugString( "adding gallery \"%s\": count before %d",
-				gallery->GetName().GetFullPath().c_str(), myGalleries.size());
-#endif*/
-			std::string testString = galleryPath.GetFullPath();
-			std::transform( testString.begin(), testString.end(), testString.begin(), tolower );
 			myGalleries[testString] = gallery;
-			/*
-#ifdef _DEBUG
-			OutputFormattedDebugString( " and after: %d\n", myGalleries.size());
-#endif
-	*/
 			return gallery;
 		}
 		else
@@ -281,22 +186,22 @@ Gallery* SharedGallery::CreateGallery(FilePath const &galleryIn)
 }
 
 
-Gallery* SharedGallery::LookForCreatureGallery(FilePath const& galleryName)
+Gallery* SharedGallery::LookForCreatureGallery(std::string const& galleryName)
 {
 
-	CREATUREGALLERYMAP_ITERATOR it;// = myCreatureGalleries.find(galleryName);
+	CREATUREGALLERYMAP_ITERATOR it;
 
 	for(it = myCreatureGalleries.begin(); it!= myCreatureGalleries.end(); it++)
 	{
-		if((*it).second == galleryName.GetFullPath())
+		if((*it).second == galleryName)
 		{
-		 //return (*it).first;
 			break;
 		}
 	}
 
 	if(it == myCreatureGalleries.end())
 	{
+		const char *c = galleryName.c_str();
 		return NULL;
 	}
 	else
@@ -320,79 +225,21 @@ return NULL;
 //				
 //			
 // ----------------------------------------------------------------------
-Gallery* SharedGallery::CreateClonedGallery(FilePath const &galleryIn,
+Gallery* SharedGallery::CreateClonedGallery(std::string const &galleryIn,
 											uint32 baseImage,
 											uint32 numImages)
 {
-	FilePath galleryName = galleryIn;
-	std::string fileName = galleryName.GetFullPath();
-	int x = fileName.find_last_of(".");
+	std::string testString = galleryIn;
 
-	if(x == -1)
-	{
-		if(fileName.empty())
-		{
-			ErrorMessageHandler::Show(theDisplayErrorTag,
-								(int)DisplayEngine::sidEmptyGalleryString,
-								std::string("SharedGallery::CreateClonedGallery"));
-		}
-		else
-		{
-			ErrorMessageHandler::Show(theDisplayErrorTag,
-									(int)DisplayEngine::sidNoGalleryFound,
-									std::string("SharedGallery::CreateClonedGallery"),
-									fileName.c_str());
-		}
-
-	
-		return NULL;
-	}
-
-	std::string ext = fileName.substr(x, 3);
-
-	// check for a preferred C16 version
-	if(ext[1] == 'S' || ext[1] == 's')	
-	{
-		// not compressed sprite gallery
-		std::string tempGalleryName = fileName;
-		tempGalleryName[x+1] = 'C';
-#ifdef _WIN32
-		int32 attributes = GetFileAttributes(tempGalleryName.data());
-		if(attributes != -1)
-#else
-		if(FileExists(tempGalleryName.data()))
-#endif
-		{
-			fileName = tempGalleryName;
-			// get the revised extension
-			ext = fileName.substr(x, 3);
-			galleryName.SetExtension( "C16" );
-		}
-	}
-
-
-
-
-
-	Gallery* gallery = NULL;
-	try
-	{
-		// keep track of cloned images
-		gallery = new ClonedGallery(galleryName,
-									baseImage,
-									numImages);
-
-	}
-	catch(Gallery::GalleryException& e)
-	{
-		ErrorMessageHandler::Show(e, std::string("SharedGallery::CreateClonedGallery"));
-		return gallery;
-	}
+	Gallery* gallery = DoCreateGallery(testString, 
+											baseImage,
+											numImages,
+											true);//clone
 
 	if(gallery->IsValid())
 	{
 		// the key this time is the gallery pointer
-		myClonedGalleries[gallery] = galleryName.GetFullPath();
+		myClonedGalleries[gallery] = galleryIn;
 		return gallery;
 	}
 	else
@@ -405,7 +252,103 @@ Gallery* SharedGallery::CreateClonedGallery(FilePath const &galleryIn,
 	return NULL;
 }
 
-void SharedGallery::AddClonedGallery( ClonedGallery *gallery )
+Gallery* SharedGallery::DoCreateGallery(std::string const& galleryIn,
+											uint32 baseImage, 
+											uint32 numImages,
+											bool clone)
+{
+	std::string galleryName = galleryIn;
+	int x = galleryName.find_last_of(".");
+
+	if(x == -1)
+	{
+		if(galleryName.empty())
+		{
+			ErrorMessageHandler::Throw(theDisplayErrorTag,
+								(int)sidEmptyGalleryString,
+								std::string("SharedGallery::DoCreateGallery"));
+		}
+		else
+		{
+			ErrorMessageHandler::Throw(theDisplayErrorTag,
+									(int)sidNoGalleryFound,
+									std::string("SharedGallery::DoCreateGallery"),
+									galleryName.c_str());
+		}
+
+	
+		return NULL;
+	}
+
+	std::string ext = galleryName.substr(x, 4);
+
+	// check for a preferred C16 version
+	if(ext[1] == 'S' || ext[1] == 's')	
+	{
+		// not compressed sprite gallery
+		std::string tempGalleryName = galleryName;
+		tempGalleryName[x+1] = 'c';
+		if(FileExists(tempGalleryName.c_str()))
+		{
+			galleryName = tempGalleryName;
+			// get the revised extension
+			ext = galleryName.substr(x, 4);
+		}
+ 	}
+
+	if (!FileExists(galleryName.c_str()))
+	{
+		ErrorMessageHandler::Throw(theDisplayErrorTag,
+								(int)sidNoGalleryFound,
+								std::string("SharedGallery::DoCreateGallery"),
+								galleryName.c_str());
+		return NULL;
+	}
+
+	// assume it is an s16 format file
+	std::string tmpFilePath = galleryName + ".tmp.s16";
+	std::string prevFileName;
+
+	std::transform( ext.begin(), ext.end(), ext.begin(), tolower );
+
+		
+	if(ext == ".blk")
+	{	// not compressed background tile gallery
+		tmpFilePath = galleryName + ".tmp.blk";
+	}
+	else if(ext == ".c16")
+	{	//compressed sprite gallery
+		tmpFilePath = galleryName + ".tmp.c16";
+	}
+
+	// convert the images to 555 or 565 format if necessary
+	DisplayEngine::theRenderer().SafeImageConvert(galleryName,
+					tmpFilePath,
+					DisplayEngine::theRenderer().GetMyPixelFormat(), 
+					prevFileName);
+	::DeleteFile(tmpFilePath.c_str());
+
+	Gallery* gallery =  new Gallery(galleryName,
+								baseImage,
+								numImages,
+								clone);
+
+	// TODO: this is just a warning for physics stuff
+	// do you still use this???
+/*	if(!gallery->ValidateBitmapSizes(MINIMUM_BITMAP_WIDTH, MINIMUM_BITMAP_HEIGHT))
+	{
+		ErrorMessageHandler::Throw(theDisplayErrorTag, 
+			(int)sidBitmapSizeTooSmall,
+		std::string("SharedGallery::CreateGallery"), 
+		galleryName.GetFullPath().c_str(),MINIMUM_BITMAP_WIDTH,MINIMUM_BITMAP_HEIGHT);
+
+	
+	}*/
+
+	return gallery;
+}
+
+void SharedGallery::AddClonedGallery( Gallery *gallery )
 {
 	myClonedGalleries[gallery] = "Anon";
 }
@@ -420,14 +363,13 @@ void SharedGallery::AddClonedGallery( ClonedGallery *gallery )
 // ----------------------------------------------------------------------
 bool SharedGallery::RemoveGallery(Gallery* gallery)
 {
-	ASSERT(gallery);
+	_ASSERT(gallery);
 
 	if( RemoveClonedGallery( gallery ) ) return true;
 
 	// see if we already have this gallery open
 
-	std::string testString = gallery->GetName().GetFullPath();
-	std::transform( testString.begin(), testString.end(), testString.begin(), tolower );
+	std::string testString = gallery->GetName();
 	GALLERYMAP_ITERATOR it = myGalleries.find(testString);
 
 	bool found = ( it != myGalleries.end() );
@@ -487,7 +429,7 @@ bool SharedGallery::RemoveCreatureGallery(Gallery*& gallery)
 	{		
 
 			delete (*it).first;
-			//(*it).first = NULL;
+		
 			myCreatureGalleries.erase(it);
 
 	}
@@ -555,146 +497,108 @@ void SharedGallery::DestroyGalleries()
 // ----------------------------------------------------------------------
 Gallery* SharedGallery::CreateGallery(std::string moniker,
 									  uint32 uniqueID,
-									  int32 PVariantGenus[NUMPARTS],
-									  int32 PVariant[NUMPARTS],
 									  uint32 ValidParts,
-									  uint8_t Sex,
-									  uint8_t Age,
+									  uint8 Sex,
+									  uint8 Age,
 									  int32 BodySprites[NUMPARTS],
 									  CreatureGallery* bodyPartGallery,
-									   CompressedGallery creatureParts[NUMPARTS],
-										int32 numSpritesInFile,
-										bool onePassOnly /*= false*/)
+									  Gallery creatureParts[NUMPARTS],
+									  int32 numSpritesInFile,
+									   bool onePassOnly /*= false*/)
 {
 
 
 	if(!bodyPartGallery)
 		return NULL;
 
-	try
+	Gallery* gallery = NULL;
+
+	if(onePassOnly)
 	{
-
-		Gallery* gallery = NULL;
-
-		if(onePassOnly)
+		// gallery is null and creature gallery is not yet complete
+		while (gallery == NULL && !bodyPartGallery->IsComplete())
 		{
-			// gallery is null and creature gallery is not yet complete
-			while (gallery == NULL && !bodyPartGallery->IsComplete())
-			{
-				// try having compressed Norns now
-				// pass the request to the composite file handler
-				gallery =  bodyPartGallery->
-										AddCompressedCreature(moniker,
-									   uniqueID,
-									   PVariantGenus,
-									   PVariant,
-									   ValidParts,
-									   Sex,
-									   Age,
-									   BodySprites,
-									   creatureParts,
-									   numSpritesInFile);
-			}
+			// try having compressed Norns now
+			// pass the request to the composite file handler
+			gallery =  bodyPartGallery->
+									AddCompressedCreature(moniker,
+								   uniqueID,
+								   ValidParts,
+								   Sex,
+								   Age,
+								   BodySprites,
+								   creatureParts,
+								   numSpritesInFile);
+		}
+	}
+	else
+	{
+	// try having compressed Norns now
+		// pass the request to the composite file handler
+	gallery =  bodyPartGallery->
+									AddCompressedCreature(moniker,
+								   uniqueID,
+								   ValidParts,
+								   Sex,
+								   Age,
+								   BodySprites,
+								   creatureParts,
+								   numSpritesInFile);
+	}
+
+	if(gallery)
+	{
+		std::string newName = gallery->GetName();
+		gallery->SetName(newName);
+
+
+		if(gallery->IsValid())
+		{
+			gallery->SetFileSpec(uniqueID );
+			// this gallery is new nobody should be using it yet
+			gallery->ResetReferenceCount();
+
+			ReplaceCreatureGallery(gallery);
+			// the key this time is the gallery pointer
+			return gallery;
 		}
 		else
 		{
-		// try having compressed Norns now
-			// pass the request to the composite file handler
-		gallery =  bodyPartGallery->
-										AddCompressedCreature(moniker,
-									   uniqueID,
-									   PVariantGenus,
-									   PVariant,
-									   ValidParts,
-									   Sex,
-									   Age,
-									   BodySprites,
-									   creatureParts,
-									   numSpritesInFile);
+
+			std::string name("A creature gallery");
+			ErrorMessageHandler::Throw(theDisplayErrorTag,
+				(int)sidGalleryNotCreated,
+				std::string("SharedGallery::CreateGallery"),
+				name.c_str());
+
+			delete gallery;
+			return NULL;
 		}
-
-		if(gallery)
-		{
-			// now tag the unique id on to the file name to get a unique
-			// set of sprites
-			FilePath newName = gallery->GetName();
-			gallery->SetName(newName);
-
-
-			if(gallery->IsValid())
-			{
-				gallery->SetFileSpec(uniqueID );
-				// this gallery is new nobody should be using it yet
-				gallery->ResetReferenceCount();
-
-				ReplaceCreatureGallery(gallery);
-				// the key this time is the gallery pointer
-				return gallery;
-			}
-			else
-			{
-
-				std::string name("A creature gallery");
-				ErrorMessageHandler::Show(theDisplayErrorTag,
-					(int)DisplayEngine::sidGalleryNotCreated,
-					std::string("SharedGallery::CreateGallery"),
-					name.c_str());
-
-				delete gallery;
-				return NULL;
-			}
-		}
-	}
-	catch(CreatureGallery::CreatureGalleryException& e)
-	{
-		ErrorMessageHandler::Show(e, std::string("SharedGallery::CreateCreatureGallery"));
-		return NULL;
 	}
 	return NULL;
 }
 
-void SharedGallery::ConvertGallery(FilePath const& galleryPath, uint32 to)
+void SharedGallery::ConvertGallery(std::string const& galleryPath, uint32 to)
 {
-	std::string galleryName = galleryPath.GetFullPath();
-	Gallery* gallery = NULL;
+	std::string galleryName = galleryPath;
+
 	// see whether we are dealing with a compressed file by looking
 	// at the file extension
 	int x = galleryName.find_last_of(".");
 
 	if(x == -1)
 	{
-		ErrorMessageHandler::Show(theDisplayErrorTag,
-			(int)DisplayEngine::sidGalleryNotFound,
+		ErrorMessageHandler::Throw(theDisplayErrorTag,
+			(int)sidGalleryNotFound,
 			std::string("SharedGallery::ConvertGallery"),
 			galleryName.c_str());
 		return;
 	}
 	
-	std::string ext = galleryName.substr(x, 3);
+	std::string ext = galleryName.substr(x, 4);
 
-	if(ext[1] == 'S' || ext[1] == 's')	
-	{	// not compressed sprite gallery
-		gallery = new NormalGallery(galleryPath);
-	}
-	else if(ext[1] == 'b' || ext[1] == 'B')
-	{	// not compressed background tile gallery
-		gallery = new BackgroundGallery(galleryPath);
-	}
-	else if(ext[1] == 'C' || ext[1] == 'c')
-	{	//compressed sprite gallery
-		gallery = new CompressedGallery(galleryPath);
-	}
-	else
-	{
-		ErrorMessageHandler::Show(theDisplayErrorTag,
-			(int)DisplayEngine::sidGalleryUnknownType,
-			std::string("SharedGallery::ConvertGallery"),
-			galleryName.c_str());
-
-		// what are you doing giving me an unknown
-		// gallery?
-		return;
-	}
+	// true at the end for write access
+	Gallery* gallery = new Gallery(galleryPath, 0, 0, false, 10, 10, true);
 
 	if(gallery)
 	{
@@ -716,7 +620,7 @@ void SharedGallery::ReplaceCreatureGallery(Gallery* gallery)
 	for(it = myCreatureGalleries.begin(); it!= myCreatureGalleries.end(); it++)
 	{
 		std::string name = (*it).second;
-		if(name == gallery->GetName().GetFullPath())
+		if(name == gallery->GetName())
 		{
 			break;
 		}
@@ -733,7 +637,7 @@ void SharedGallery::ReplaceCreatureGallery(Gallery* gallery)
 
 	// add the new gallery whatever happened
 	// the key this time is the gallery pointer
-	myCreatureGalleries[gallery] = gallery->GetName().GetFullPath();
+	myCreatureGalleries[gallery] = gallery->GetName();
 
 }
 
@@ -741,20 +645,19 @@ void SharedGallery::CleanCreatureGalleryFolder()
 {
 	// before we do anything else delete all creature galleries
 	// that are not in use
-	char path[_MAX_PATH];
-	theApp.GetDirectory(CREATURE_DATABASE_DIR, path);
-	if (path[0] == 0)
+
+	if (myCreatureGalleriesFolder.empty())
 		return;
 
 	std::vector<std::string> files;
-	GetFilesInDirectory(path, files);
+	GetFilesInDirectory(myCreatureGalleriesFolder, files);
 
 	std::string fileName;
 	// no files in this directory!!!
 	int i;
 	for ( i = 0; i < files.size(); i++)
 	{
-		fileName = path + files[i];
+		fileName = myCreatureGalleriesFolder + files[i];
 		// delete only files ending in .creaturegallery
 		int len = fileName.size();
 		if (len >= 16)
@@ -766,17 +669,12 @@ void SharedGallery::CleanCreatureGalleryFolder()
 }
 
 // see if we already have this gallery open
-bool SharedGallery::QueryGalleryInUse(FilePath const &galleryPath)
+bool SharedGallery::QueryGalleryInUse(std::string const &galleryPath)
 {
-	std::string worldGalleryName;
-	if (galleryPath.GetWorldDirectoryVersionOfTheFile(worldGalleryName))
-	{
-		if (QueryGalleryInUseHelper(worldGalleryName))
-			return true;
-	}
-
-	std::string galleryName = galleryPath.GetFullPath();
-	return QueryGalleryInUseHelper(galleryName);
+	// NOTE: The shared gallery now no lnoger "knows" about
+	// world directories, it can only deal with path names so
+	// you must query the world directory version for yourself now
+	return QueryGalleryInUseHelper(galleryPath);
 }
 
 
@@ -789,13 +687,6 @@ bool SharedGallery::QueryGalleryInUseHelper(std::string galleryName)
 
 	GALLERYMAP_ITERATOR it;
 
-	std::transform( galleryName.begin(), galleryName.end(), galleryName.begin(), tolower );
-
-/*for(it = myGalleries.begin(); it != myGalleries.end(); it++)
-{
-	std::string name = it->first;
-}*/
-
 	it = myGalleries.find(galleryName + ".c16");
 	if (it != myGalleries.end())
 		return true;
@@ -807,26 +698,7 @@ bool SharedGallery::QueryGalleryInUseHelper(std::string galleryName)
 	return false;
 }
 
-void SharedGallery::PreloadBackgrounds()
-{
-	char path[_MAX_PATH];
-	theApp.GetDirectory(BACKGROUNDS_DIR, path);
-	if (path[0] == 0)
-		return;
 
-	std::vector<std::string> files;
-	GetFilesInDirectory(path, files);
-
-	std::string fileName;
-	// no files in this directory!!!
-	int i;
-	for ( i = 0; i < files.size(); i++)
-	{
-		// non background files in this folder will be rejected
-		CreateGallery(FilePath(files[i],BACKGROUNDS_DIR));
-	}
-	
-}
 
 void SharedGallery::DumpGalleries()
 {
@@ -843,20 +715,24 @@ void SharedGallery::DumpGalleries()
 	out << "myGalleries\n\n";
 	for( iter1=myGalleries.begin(); iter1!=myGalleries.end(); ++iter1 )
 	{
-		out << iter1->first << " " << iter1->second->GetName().GetFullPath() << "\n";
+		out << iter1->first << " " << iter1->second->GetName() << "\n";
 	}
 
 	out << "\n\nmyClonedGalleries\n\n";
 	for( iter2=myClonedGalleries.begin(); iter2!=myClonedGalleries.end(); ++iter2 )
 	{
-		out << iter2->second << " " << iter2->first->GetName().GetFullPath() << "\n";
+		out << iter2->second << " " << iter2->first->GetName() << "\n";
 	}
 
 	out << "\n\nmyCreatureGalleries\n\n";
 	for( iter3=myCreatureGalleries.begin(); iter3!=myCreatureGalleries.end(); ++iter3 )
 	{
-		out << iter3->second << " " << iter3->first->GetName().GetFullPath() << "\n";
+		out << iter3->second << " " << iter3->first->GetName() << "\n";
 	}
 }
 
+std::string SharedGallery::GetCreatureGalleriesFolder()
+{
+	return myCreatureGalleriesFolder;
+}
 

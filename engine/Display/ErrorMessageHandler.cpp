@@ -24,18 +24,32 @@
 
 #include "ErrorMessageHandler.h"
 #include "../C2eServices.h"
+#ifndef LINUX_PORT
 #include "DisplayEngine.h"
+#endif
 #include "../build.h"
+#include "../General.h"
+
 #ifdef _WIN32
 #include "Window.h"
 #include <lmcons.h> // for UNLEN 
 #endif
+
+#ifdef C2E_SDL
+#include "SDL/SDL_Main.h"
+#ifdef _WIN32
+
+#endif
+#endif
+
 #include <time.h> // for time()
 #include "ErrorDialog.h"
 
 
 #ifndef _WIN32
-#include <unistd.h>	// for getlogin()
+	#include <stdlib.h>	// for getenv()
+	#include <signal.h>
+	#include <errno.h>
 #endif
 
 #ifdef _MSC_VER
@@ -51,11 +65,16 @@ ErrorMessageHandler::ErrorMessageHandler()
 ErrorMessageHandler::ErrorMessageHandler() {}
 #endif
 
+#ifdef LINUX_PORT
+#include <stdarg.h>
+#endif
+
 
 // Private function to actually display message
 void ErrorMessageHandler::ShowErrorMessage( const std::string& message,
 			const std::string& source)
 {
+#ifndef LINUX_PORT
 	std::string spacedMessage = message;
 	if (message[message.size() - 1] != '\n')
 		spacedMessage += "\n";
@@ -73,24 +92,26 @@ void ErrorMessageHandler::ShowErrorMessage( const std::string& message,
 
 	if (ret == ErrorDialog::ED_QUIT)
 	{
-		theFlightRecorder.Log(16, "Quit button for the ShowErrorMessage() clicked... Signalling Termination...\n");
-#ifndef SignalTerminateApplication
-#warning "TODO: terminate application here"
-#else
+		theFlightRecorder.Log(FLIGHT_SHUTDOWN, "Quit button for the ShowErrorMessage() clicked... Signalling Termination...\n");
 		SignalTerminateApplication();
-#endif
 	}
 	else if (ret == ErrorDialog::ED_BRUTAL_ABORT)
 	{
-		theFlightRecorder.Log(16, "Erkity, BRUTAL ABORT!!!!!!!");
+		theFlightRecorder.Log(FLIGHT_SHUTDOWN, "Erkity, BRUTAL ABORT!!!!!!!");
 #ifdef _WIN32
 		HANDLE hProcess = GetCurrentProcess();
-		TerminateProcess(hProcess, -1);
+		TerminateProcess(hProcess, -1);	// Francis you dozy fuckwit, at least I've finally found who's fault the
+						// disappearing server is!!!!
 #else
-_exit(1);
-#warning "TODO: Brutal abort for non-win32"
+		if (kill(0, SIGKILL) == -1) 
+			std::cerr << "Failed to kill self, error " << errno << std::endl;
+		else
+			std::cerr << "Killed self" << std::endl;
 #endif
 	}
+#else
+	fprintf(stderr,"Something so very bad has happened");
+#endif
 }
 
 ErrorMessageHandler& ErrorMessageHandler::theHandler()
@@ -113,6 +134,7 @@ void ErrorMessageHandler::SetWindow(HWND window)
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 void ErrorMessageHandler::Show(std::string baseTag, int offsetID, std::string source, ...)
 {
+#ifndef LINUX_PORT
 	// Read from catalogue
 	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
 	
@@ -121,18 +143,21 @@ void ErrorMessageHandler::Show(std::string baseTag, int offsetID, std::string so
 	va_start(args, source);
 	char szBuffer[4096];
 	int nBuf = vsprintf(szBuffer, unformatted.c_str(), args);
+	szBuffer[nBuf] = '\0';
 	ASSERT(nBuf >= 0 && nBuf < sizeof(szBuffer) / sizeof(szBuffer[0]));
 	va_end(args);
 
 	std::string message(szBuffer);
 
 	theHandler().ShowErrorMessage(message, source);
+#endif
 }
 
 // Don't pass std::strings as the variable parameters to this -
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 std::string ErrorMessageHandler::Format(std::string baseTag, int offsetID, std::string source, ...)
 {
+#ifndef LINUX_PORT
 	// Read from catalogue
 	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
 
@@ -141,10 +166,34 @@ std::string ErrorMessageHandler::Format(std::string baseTag, int offsetID, std::
 	va_start(args, source);
 	char szBuffer[4096];
 	int nBuf = vsprintf(szBuffer, unformatted.c_str(), args);
+	szBuffer[nBuf] = '\0';
 	ASSERT(nBuf >= 0 && nBuf < sizeof(szBuffer) / sizeof(szBuffer[0]));
 	va_end(args);
 
 	return source + std::string("\n\n") + std::string(szBuffer);
+#endif
+}
+
+// Don't pass std::strings as the variable parameters to this -
+// do a .c_str() to make them char* first.  vsprintf only understands char*.
+void ErrorMessageHandler::Throw(std::string baseTag, int offsetID, std::string source, ...)
+{
+#ifndef LINUX_PORT
+	// Read from catalogue
+	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
+
+	// Get variable argument list
+	va_list args;
+	va_start(args, source);
+	char szBuffer[4096];
+	int nBuf = vsprintf(szBuffer, unformatted.c_str(), args);
+	szBuffer[nBuf] = '\0';
+	ASSERT(nBuf >= 0 && nBuf < sizeof(szBuffer) / sizeof(szBuffer[0]));
+	va_end(args);
+
+	std::string full = source + std::string("\n\n") + std::string(szBuffer);
+	throw BasicException(full.c_str());
+#endif
 }
 
 // This is for strings which are needed before the catalogues are initialised.
@@ -155,30 +204,40 @@ std::string ErrorMessageHandler::Format(std::string baseTag, int offsetID, std::
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 void ErrorMessageHandler::NonLocalisable(std::string unformatted, std::string source, ...)
 {
+#ifndef LINUX_PORT
 	// Get variable argument list
 	va_list args;
 	va_start(args, source);
 	char szBuffer[4096];
 	int nBuf = vsprintf(szBuffer, unformatted.c_str(), args);
+	szBuffer[nBuf] = '\0';
 	ASSERT(nBuf >= 0 && nBuf < sizeof(szBuffer) / sizeof(szBuffer[0]));
 	va_end(args);
 
 	std::string message(szBuffer);
 
 	theHandler().ShowErrorMessage(message, source);
+#endif
 }
 
 // Display message from exception
-void ErrorMessageHandler::Show(BasicException& e, std::string source)
+void ErrorMessageHandler::Show(std::exception& e, std::string source)
 {
 	theHandler().ShowErrorMessage(e.what(), source);
 }
 
-
 // Add useful information to all error messages
 std::string ErrorMessageHandler::ErrorMessageFooter()
 {
+
+	
 	std::string header;
+#ifndef LINUX_PORT
+	// OS
+	header += OperatingSystemString() + "\n";
+
+	// modules
+	header += DisplayAndModuleString() + "\n";
 
 	// date / time
 	time_t aclock;
@@ -198,15 +257,27 @@ std::string ErrorMessageHandler::ErrorMessageFooter()
 		header += name;
 	}
 #else
-	// POSIX version:
+	// POSIX
 	header += " - ";
-	header += getlogin();
+	const char* name = getenv( "LOGNAME" );
+	if( name )
+		header += name;
+	else
+		header += "Mr X";
 #endif
 
 	// version
 	header += " - ";
 	header += GetEngineVersion();
 
+	// build number if available
+	if (theCatalogue.TagPresent("build_number"))
+		header += std::string(" b") + theCatalogue.Get("build_number", 0);
+
+	// port number if available
+	if (theCatalogue.TagPresent("port_number"))
+		header += std::string(" p") + theCatalogue.Get("port_number", 0);
+#endif
 	return header;
 } 
 

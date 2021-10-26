@@ -263,3 +263,4 @@ class MusicTrack : public MusicUpdatable
 	};
 
 #endif
+

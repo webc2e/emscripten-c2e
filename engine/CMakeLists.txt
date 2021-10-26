@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.19)
+cmake_policy(SET CMP0015 NEW)
+project(engine)
+
+add_subdirectory(Creature)
+add_subdirectory(Agents)
+add_subdirectory(Caos)
+add_subdirectory(Display)
+add_subdirectory(Map)
+add_subdirectory(Sound)
+add_subdirectory(unix)
+add_subdirectory(AgentDisplay)
+add_subdirectory(Camera)

@@ -1,0 +1,13 @@
+# NetBabel.catalogue
+#
+# Catalogue file - Error messages used by Babel network subsystem
+#
+# Created 23Feb00 FAI
+
+
+TAG "net_babel"
+
+"A user needs to be set before you can go online"
+"User can't change while you're online"
+"Either no sending user specified, or destination user id string looks invalid \"%s\""
+"Problem while formatting history for upload"

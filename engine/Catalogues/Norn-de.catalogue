@@ -6,51 +6,51 @@
 # learnt words added 20 Aug 99 dkb
 
 
-ARRAY "Learnt Specials" 12
+ARRAY OVERRIDE "Learnt Specials" 12
 "Ja"			# posative reward/statement
 "Nein"			# negative punish
 "guck"			# look
 "was"			# what
-"zufrieden"		# personal state
+"glücklich"		# personal state
 "mag"			# posative preferance
-"mag nicht"		# negative preference
+"verabscheut"		# negative preference
 "liebt"			# big posative preferance
 "haßt"			# big negative preference
-"weiß nicht"		# unsure of decision
+"vielleicht"		# unsure of decision
 "sicher"		# sure of decision
 "krank"			# sick
 
  
-ARRAY "Learnt Nice Drives" 20   #TRANSLATOR'S NOTE - for this array please use the comments to convey the meaning rather than straight translation of words
+ARRAY OVERRIDE "Learnt Nice Drives" 20   #TRANSLATOR'S NOTE - for this array please use the comments to convey the meaning rather than straight translation of words
 "gesund"	# not hurt
 "satt"		# full of protein
 "satt" 		# full of carbohydrate
 "satt" 		# full of fat
-"gemütlich"	# not cold              #TRANSLATOR'S NOTE - should reflect this, but not state warm specifically
-"kuschelig" 	# not hot               #TRANSLATOR'S NOTE - same as above, but use a different word
+"genügend warm"	# not cold              #TRANSLATOR'S NOTE - should reflect this, but not state warm specifically
+"kühl genug" 	# not hot               #TRANSLATOR'S NOTE - same as above, but use a different word
 "ausgeruht"	# not tired
 "wach"		# not sleepy
-"glücklich"	# not lonely
-"gelassen"	# not crowded
+"fröhlich"	# not lonely
+"zufrieden"	# not crowded
 "geborgen"	# not scared
 "aufgeregt"	# not bored
 "friedlich"	# not angry
-"grantig"	# not friendly
-"stabil"	# not home sick
+"gereizt"	# not friendly
+"daheim"	# not home sick
 "entspannt"	# not low down (the next four are random)
 "ruhig"		# not high up
 "frei"		# not trapped
-"still"		# not trapped 2
+"gelassen"		# not trapped 2
 "relaxed"	# not patient (but not impatient.. just something positive..)
 
 
 
-ARRAY "Learnt Qualifiers" 5
-"ein bißchen"			
+ARRAY OVERRIDE "Learnt Qualifiers" 5
+"etwas"			
 "ziemlich"			
 "sehr"		
-"furchtbar"
-"ganz schrecklich"		
+"extrem"
+"wahnsinnig"		
 
 ARRAY "Learnt Personals" 1
 "Ich"			#me 
@@ -157,3 +157,5 @@ ARRAY "Default Ettin Speak" 28
 "u"					# qualifier
 "etn"				# "me"
 "buup"				# nice drive
+
+

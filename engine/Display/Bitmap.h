@@ -29,8 +29,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include	"System.h"
-#include	"../PersistentObject.h"
+#include	"../../common/C2eTypes.h"
 #include	"Position.h"
 #include	<vector>
 
@@ -41,9 +40,8 @@ const int BitsPerPixel = 2;
 class MemoryMappedFile;
 class File;
 
-class Bitmap : public PersistentObject
+class Bitmap 
 {
-	CREATURES_DECLARE_SERIAL( Bitmap )
 public:
 // ----------------------------------------------------------------------
 // Method:      Constructors 
@@ -70,11 +68,7 @@ public:
 	virtual ~Bitmap();
 ////////////////////////////////////////////////////////////////////////////
 // Load Bitmap Data from specified file formats...
-////////////////////////////////////////////////////////////////////////////
-#ifdef THIS_FUNCTION_IS_NOT_USED
-	bool LoadFromBmp(char* name);
-#endif // THIS_FUNCTION_IS_NOT_USED
-	
+///////////////////////////////////////////////////////////////////////////
 	void LoadFromS16(File& name);
 
 ////////////////////////////////////////////////////////////////////////////
@@ -91,16 +85,14 @@ public:
 		return myYOffset;
 	}
 
-	int32 GetWidth()
+	int32 GetWidth() const
 	{
 		return myWidth;
-		//return GetUINT16At(myWidthHeight);
 	}
 
-	int32 GetHeight()
+	int32 GetHeight() const
 	{
 		return myHeight;
-	//	return GetUINT16At(myWidthHeight + 2);
 	}
 
 	void SetWidth(int32 width)
@@ -136,7 +128,7 @@ public:
 //				data begins.
 //			
 // ----------------------------------------------------------------------
-	virtual void SetData(uint8_t*& dataPtr);
+	virtual void SetData(uint8*& dataPtr);
 
 	virtual void SetData(MemoryMappedFile& file);
 
@@ -152,7 +144,7 @@ public:
 		return myData;
 	}
 
-	void SetOffset(uint8_t*& dataPtr)
+	void SetOffset(uint8*& dataPtr)
 	{
 		myOffset = GetUINT32At(dataPtr);
 		dataPtr +=4;
@@ -163,7 +155,7 @@ public:
 		myOffset = offset;
 	}
 
-	uint32 GetOffset()
+	uint32 GetOffset() const
 	{
 		return	myOffset;
 	}
@@ -180,6 +172,7 @@ public:
 //				
 //			
 // ----------------------------------------------------------------------
+virtual bool Read(CreaturesArchive &archive);
 
 
 
@@ -188,7 +181,7 @@ public:
 		myPosition = pos;
 	}
 
-	Position&  GetPosition()
+	Position  GetPosition() const
 	{
 		return myPosition;
 	}
@@ -218,16 +211,16 @@ public:
 	virtual void Convert(uint32 from,
 							uint32 to);
 
-	virtual uint32 SaveData(uint8_t*& data);
-	uint32 SaveHeader(uint8_t*& data);
+	void Scale(float scaleBy);
+
+	virtual uint32 SaveData(File& file);
+	uint32 SaveHeader(File& file);
 
 	uint32 SaveHeader(MemoryMappedFile& file);
 	virtual uint32 SaveData(MemoryMappedFile& file);
 
 	virtual void Draw();
 	virtual void DrawWholeBitmapRegardless();
-
-	void OffsetDraw(Position& pos, RECT& clip);
 
 	virtual bool IsPixelTransparent(Position pixelPos);
 
@@ -237,10 +230,9 @@ public:
 	virtual void InitHeader(MemoryMappedFile& file);
 	void DecompressC16(File& file);
 
-	virtual bool Write(CreaturesArchive &archive) const;
+	virtual void Copy(Bitmap & bitmap);
 
-
-	virtual bool Read(CreaturesArchive &archive);
+	void CreatePixelData(uint16* data);
 
 	void SetClippedDimensions(int32& w, int32& h)
 	{myClippedWidth = w;
@@ -271,14 +263,8 @@ protected:
 	int32	myXOffset;
 	int32	myYOffset;
 
-//	std::vector<uint8_t*> myScanLines;
-
 	Position myPosition;
-
-	// Are we reading from a compressed file?
-//	bool myCompressedFlag;
-
-//	void CreateTest(int32 width,int32 height,int32 index);
 };
 
 #endif		// BITMAP_H
+

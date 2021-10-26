@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libmap.a CMakeFiles/map.dir/Map.cpp.o CMakeFiles/map.dir/CARates.cpp.o CMakeFiles/map.dir/MapCA.cpp.o CMakeFiles/map.dir/RoomCA.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libmap.a

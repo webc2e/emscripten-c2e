@@ -81,10 +81,10 @@ public:
 	void AttachLimbChain(int32 position,Limb* limbChain);	// attach a chain of Limbs to
 											// this joint (after constructn)
 
-	void UpdatePosn(uint8_t currentDirection,
+	void UpdatePosn(uint8 currentDirection,
 							  int32 Expression,
 							  int32 Eyes,
-							  uint8_t& earSet);
+							  uint8& earSet);
 
 	void GetHeadData( int32 Part,			// part number
 					   int32 Genus,			// Genus (NORN, GRENDEL, ETTIN SIDE)
@@ -94,10 +94,10 @@ public:
 
 	void SetCurrentPoseString(int direction, int32 Expression,
 										  int32 Eyes,
-										  uint8_t& earSet);
+										  uint8& earSet);
 
 	void SetHeadImage(int32 Expression, int32 Eyes, 
-								uint8_t& currentEarSet);
+								uint8& currentEarSet);
 	int GetOverlayIndex(int bodypart);
 
 	Vector2D GetMouthMapPosition();
@@ -142,9 +142,10 @@ private:
 	Limb* myLimbs[MAX_HEAD_LIMBS];
 	HeadData myHeadData;
 
-	uint8_t myCurrentDirection;
+	uint8 myCurrentDirection;
 	HairStates myHairState;
 
 	int32 myHeadSpritesCount;
 };
 #endif //CREATURE_HEAD
+

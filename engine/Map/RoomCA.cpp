@@ -39,3 +39,4 @@ void UpdateDoorCA(float tempValue1, CARates const &rates1, float relativeDoorSiz
 	newValue2 +=
 		relativeDoorSize2*(tempValue2*diffusionRateInverted + temp);
 }
+

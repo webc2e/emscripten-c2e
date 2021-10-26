@@ -21,13 +21,11 @@
 #ifndef AGENT_MANAGER_H
 #define AGENT_MANAGER_H
 
-
 #ifdef _MSC_VER
 // turn off warning about symbols too long for debugger
 #pragma warning (disable : 4786 4503)
 #endif // _MSC_VER
 
-#include "Map/Map.h"
 #include "../common/C2eTypes.h"
 
 #include <map>
@@ -38,6 +36,8 @@
 
 #include "Caos/CAOSVar.h"
 #include "Classifier.h"
+#include "../modules/ModuleAPI.h"
+#include "FilePath.h"
 
 ////////////////////////////////////////////////////////////////////////////
 // Foward Declarations all types of agent we can create
@@ -47,7 +47,7 @@ class Agent;
 class Creature;
 class SimpleAgent;
 class PointerAgent;
-class Skeleton;
+class SkeletalCreature;
 class MainCamera;
 class EntityImage;
 class CompoundAgent;
@@ -75,7 +75,7 @@ typedef TaxonomicalHelperMap::iterator TaxonomicalHelperIterator;
 // so that calls to the agent manager are tidy
 #define theAgentManager AgentManager::GetAgentManager()
 
-class AgentManager
+class C2E_MODULE_API AgentManager
 {
 public:
 // constructor made private to ensure only one agent manager exists
@@ -94,7 +94,7 @@ while (true);
 ////////////////////////////////////////////////////////////////////////////
 
 // ----------------------------------------------------------------------
-// Method:      CreateCreature
+// Method:      CreateCreatureAgent
 // Arguments:   None 		
 //
 // Returns:     pointer to the newly created agent
@@ -103,8 +103,29 @@ while (true);
 //				immediately adds this to the agent update list
 //						
 // ----------------------------------------------------------------------
-	AgentHandle CreateCreature(int family,
+AgentHandle CreateCreatureAgent(
+					int family,
+				    AgentHandle gene, int gene_index,
+					int   sex,
+					int   variant,
+					FilePath const& gallery,
+					int numimages,
+					int baseimage,
+					int plane);
+
+// ----------------------------------------------------------------------
+// Method:      CreateSkeletalCreature
+// Arguments:   None 		
+//
+// Returns:     pointer to the newly created agent
+//
+// Description: The only way to create a creature.  Note that this no longer
+//				immediately adds this to the agent update list
+//						
+// ----------------------------------------------------------------------
+	AgentHandle CreateSkeletalCreature(int family,
 		AgentHandle& gene, int gene_index, int8 sex, int8 variant=0);
+
 
 // ----------------------------------------------------------------------
 // Method:      AddCreatureToUpdateList
@@ -169,7 +190,6 @@ AgentHandle CreateVehicle
 	int32 baseimage,
 	int32 plane);
 
-
 AgentHandle CreatePointer();
 
 
@@ -205,6 +225,7 @@ AgentHandle CreatePointer();
 	void FindBySightAndFGS( AgentHandle const& viewer,
 		AgentList& agents,
 		const Classifier& c );
+
 
 // ----------------------------------------------------------------------
 // Method:      WhoAmITouching
@@ -289,8 +310,9 @@ void CalculateMoodAndThreat(uint32& iSelectableCount,
 	static void KillAgent(const AgentHandle& agent);
 	void UpdateAllAgents();
 	void KillAllAgents();
-	void ExecuteScriptOnAllAgents(int event, AgentHandle& from, const CAOSVar& p1, const CAOSVar& p2);
-	void ExecuteScriptOnAllAgentsDeferred(int event, AgentHandle& from, const CAOSVar& p1, const CAOSVar& p2);
+	void ExecuteScriptOnAllAgents(int event, const CAOSVar& from, const CAOSVar& p1, const CAOSVar& p2);
+	void ExecuteScriptOnAllAgentsDeferred(int event, const CAOSVar& from, const CAOSVar& p1, const CAOSVar& p2);
+	void ExecuteScriptOnAgent(AgentHandle agent, int event, const CAOSVar& from, const CAOSVar& p1, const CAOSVar& p2);
 	void ExecuteDeferredScripts();
 
 // ----------------------------------------------------------------------
@@ -352,7 +374,7 @@ void CalculateMoodAndThreat(uint32& iSelectableCount,
 // ----------------------------------------------------------------------
 	AgentHandle GetAgentFromID(uint32 id);
 
-	AgentListIterator GetAgentIteratorStart(){return ourAgentList.begin();}
+	AgentListIterator GetAgentIteratorStart();
 
 	AgentHandle FindCreatureAgentForMoniker(std::string moniker);
 	AgentHandle FindAgentForMoniker(std::string moniker);
@@ -366,33 +388,22 @@ void CalculateMoodAndThreat(uint32& iSelectableCount,
 // Description: Sometimes it's just easier to allow access to the map
 //						
 // ----------------------------------------------------------------------
-	static AgentMap& GetAgentIDMap()
-	{return ourAgentMap;}
-
-	static CreatureCollection& GetCreatureCollection()
-	{return ourCreatureCollection;}
+	static AgentMap& GetAgentIDMap();
+	static CreatureCollection& GetCreatureCollection();
 
 	AgentHandle FindNextAgent(AgentHandle& was, const Classifier& c);
 	AgentHandle FindPreviousAgent(AgentHandle& was, const Classifier& c);
 
-	AgentHandle GetCreatureByIndex(uint32 index)
-	{
-	if(index < ourCreatureCollection.size())
-		return ourCreatureCollection[index];
-	else
-		return NULLHANDLE;
-	}
-
-	int GetCreatureCount()
-	{
-	return ourCreatureCollection.size();
-	}
+	AgentHandle GetCreatureByIndex(uint32 index);
+	int GetCreatureCount();
 
 	void RegisterClone(AgentHandle& clone);
 
-	bool IsEnd(AgentListIterator& it){return (it == ourAgentList.end());}
+	bool IsEnd(AgentListIterator& it);
 
-
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void RestoreAllTints();
+#endif
 
 	// ----------------------------------------------------------------------
 	// Method:		Write
@@ -411,19 +422,21 @@ void CalculateMoodAndThreat(uint32& iSelectableCount,
 	// ----------------------------------------------------------------------
 	virtual bool Read(CreaturesArchive &archive);
 
-//	This *should* be private, but for an annoying 'feature' of friend declarations
+// This *should* be private, but for an annoying 'feature' of friend declarations
 	struct DeferredScript
 	{
 		DeferredScript() {}
-		DeferredScript(int theEvent, const AgentHandle &theFrom,
+		DeferredScript(int theEvent, const CAOSVar &theFrom,
 			const CAOSVar &theP1, const CAOSVar &theP2)
 			:event( theEvent), from( theFrom ), p1( theP1 ), p2( theP2 )
 		{}
 		int event;
-		AgentHandle from;
+		CAOSVar from;
 		CAOSVar p1;
 		CAOSVar p2;
 	};
+
+	static FilePath MakeGalleryPath( std::string const& name);
 
 private:
 
@@ -443,11 +456,7 @@ private:
 // Description: Creates a unique id for the caller
 //						
 // ----------------------------------------------------------------------
-	static uint32 CreateUniqueAgentID()
-    {
-		if(( ++ourBaseUniqueID)==0x80000000) ourBaseUniqueID=1;
-		return ourBaseUniqueID;
-	}
+	static uint32 CreateUniqueAgentID();
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -460,6 +469,9 @@ private:
 // Members
 ////////////////////////////////////////////////////////////////////////////
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
 	static AgentManager ourAgentManager;
 	static AgentMap ourAgentMap;
 	static AgentList ourAgentList;
@@ -467,15 +479,22 @@ private:
 	static TaxonomicalHelperMap ourFGSHelperMap;
 
 	static AgentMapIteratorList ourKillList;
-	static int ourCategoryIdsForSmellIds[CA_PROPERTY_COUNT];
+	static std::vector<int> ourCategoryIdsForSmellIds;
 	static CreatureCollection ourCreatureCollection;
 	static uint32 ourBaseUniqueID;
+
+	static int ourDummyInitVar;
+	static int InitCategorySmellMap();
 	
 	typedef std::list< DeferredScript > DeferredScriptList;
 	DeferredScriptList myDeferredScripts;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 };
 
 CreaturesArchive& operator<<( CreaturesArchive &ar, AgentManager::DeferredScript const &script );
 CreaturesArchive& operator>>( CreaturesArchive &ar, AgentManager::DeferredScript &script );
 
 #endif //AGENT_MANAGER
+

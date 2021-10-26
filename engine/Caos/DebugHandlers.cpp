@@ -17,12 +17,9 @@
 
 #include <string>
 #include <vector>
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#else
 #include <sstream>
-#endif
 
+#include "../AgentManager.h"
 #include "DebugHandlers.h"
 #include "CAOSMachine.h"
 #include "../Agents/Agent.h"
@@ -30,49 +27,30 @@
 #include "DebugInfo.h"
 #include "../App.h"
 #include "../Display/ErrorMessageHandler.h"
-#include "Orderiser.h"
 #include "../World.h"
 #include "../CustomHeap.h"
-#include "../Display/SharedGallery.h"
 
 std::vector<std::string> theDebugLog;
 
 void DebugHandlers::SubCommand_DBG_PAWS( CAOSMachine& vm )
 {
-#ifdef _WIN32
-	bool bResult = SetMultimediaTimer(false);
-#else
-	#warning "TODO: Pause ticker here"
-#endif
+	SetGameTicking(false);
 }
 
 void DebugHandlers::SubCommand_DBG_PLAY( CAOSMachine& vm )
 {
-#ifdef _WIN32
-	bool bResult = SetMultimediaTimer(true);
-#else
-	#warning "TODO: Start Ticker Here"
-#endif
+	SetGameTicking(true);
 	SetSingleStepAgent(NULLHANDLE);
 }
 
 int DebugHandlers::IntegerRV_PAWS( CAOSMachine& vm )
 {
-#ifdef _WIN32
-	return GetMultimediaTimer() ? 0 : 1;
-#else
-	#warning "TODO: Read the timer state and return 0 for going, 1 paused"
-	return 0;
-#endif	
+	return GetGameTicking() ? 0 : 1;
 }
 
 void DebugHandlers::SubCommand_DBG_TOCK( CAOSMachine& vm )
 {
-#ifdef _WIN32
-	bool bResult = SendTickMessage();
-#else
-	#warning "TODO: Send a tick here"
-#endif
+	SendTickMessage();
 }
 
 void DebugHandlers::SubCommand_DBG_TACK( CAOSMachine& vm )
@@ -105,14 +83,6 @@ void DebugHandlers::SubCommand_DBG_OUTV( CAOSMachine& vm )
 	bool intnotfloat;
 	vm.FetchNumericRV(i, f, intnotfloat);
 
-#ifdef C2E_OLD_CPP_LIB
-	char buf[64];
-	if (intnotfloat)
-		sprintf( buf, "%d", i );
-	else
-		sprintf( buf, "%f", f );
-	theDebugLog.push_back( std::string(buf) );
-#else
 	std::ostringstream out;
 	if (intnotfloat)
 		out << i;
@@ -120,7 +90,6 @@ void DebugHandlers::SubCommand_DBG_OUTV( CAOSMachine& vm )
 		out << f;
 
 	theDebugLog.push_back(out.str());
-#endif
 }
 
 void DebugHandlers::SubCommand_DBG_POLL( CAOSMachine& vm )
@@ -234,12 +203,7 @@ void DebugHandlers::StringRV_DBG( CAOSMachine& vm, std::string& str )
 	int variable = vm.FetchIntegerRV();
 	CAOSMachine& cm = vm.GetTarg().GetAgentReference().GetVirtualMachine();
 
-#ifdef C2E_OLD_CPP_LIB
-	char buf[512];
-	std::ostrstream out(buf, sizeof(buf) );
-#else
 	std::ostringstream out;
-#endif
 
 	if (variable == -1)
 		out << (cm.myInstFlag ? 1 : 0);
@@ -250,7 +214,7 @@ void DebugHandlers::StringRV_DBG( CAOSMachine& vm, std::string& str )
 	else if (variable == -4)
 		StreamAgent(out, cm.myOwner);
 	else if (variable == -5)
-		StreamAgent(out, cm.myFrom);
+		StreamVariable(out, &cm.myFrom);
 	else if (variable == -6)
 		StreamAgent(out, cm.myIT);
 	else if (variable == -7)
@@ -263,11 +227,7 @@ void DebugHandlers::StringRV_DBG( CAOSMachine& vm, std::string& str )
 		StreamVariable(out, &(cm.myLocalVariables[variable]));
 	else 
 		out << theCatalogue.Get("caos", CAOSMachine::sidInvalidDebugParameter) << variable;
-#ifdef C2E_OLD_CPP_LIB
-	str = std::string( buf );
-#else
 	str = out.str();
-#endif
 }
 
 void DebugHandlers::StreamVariable(std::ostream& out, CAOSVar* var)
@@ -323,12 +283,7 @@ void DebugHandlers::StringRV_DBGA( CAOSMachine& vm, std::string& str )
 	vm.ValidateTarg();
 	int variable = vm.FetchIntegerRV();
 
-#ifdef C2E_OLD_CPP_LIB
-	char buf[512];
-	std::ostrstream out(buf, sizeof(buf));
-#else
 	std::ostringstream out;
-#endif
 
 	if (variable >= 0 && variable < 100)
 		StreamVariable(out, &vm.GetTarg().GetAgentReference().GetReferenceToVariable(variable));
@@ -337,11 +292,7 @@ void DebugHandlers::StringRV_DBGA( CAOSMachine& vm, std::string& str )
 	else 
 		out << theCatalogue.Get("caos", CAOSMachine::sidInvalidDebugParameter) << variable;
 
-#ifdef C2E_OLD_CPP_LIB
-	str = std::string(buf);
-#else
 	str = out.str();
-#endif
 }
 
 
@@ -503,7 +454,7 @@ void DebugHandlers::Command_MEMX( CAOSMachine& vm )
     (*out) << memStatus.dwTotalVirtual << ",";
 	(*out) << memStatus.dwAvailVirtual;
 #else
-	// stub
+	// stub - documented as Windows only
 	(*out) << "0,0,0,0,0,0,0";
 #endif // _WIN32
 }

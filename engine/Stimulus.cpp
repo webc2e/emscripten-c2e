@@ -3,12 +3,18 @@
 #endif
 
 #include "Stimulus.h"
+#include "CreaturesArchive.h"
 #include "Creature/Creature.h"
 #include "AgentManager.h"
 #include "Creature/Genome.h"
 #include "Creature/SensoryFaculty.h"
 
 
+
+#include "Caos/AutoDocumentationTable.h"
+
+//extern TableSpec ourStimulusNumbers[];
+//extern int sizeOurStimulusNumbers;
 
 
 TableSpec ourStimulusNumbers[] =
@@ -175,7 +181,7 @@ Stimulus::Stimulus() {
 void Stimulus::InitFromGenome(Genome& g) {
 	nounStim = g.GetFloat();
 	verbIdToStim = g.GetByteWithInvalid();
-	verbStim = 0.0f; g.GetFloat();		//gtb!temp! (will be verb stim)
+	verbStim = 0.0f; g.GetFloat();		//(was supposed to be verb stim but never enabled)
 
 	bitFlags = g.GetCodon(0,255);
 
@@ -279,3 +285,4 @@ bool Stimulus::Read(CreaturesArchive &archive) {
 	}
 	return true;
 }
+

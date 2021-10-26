@@ -41,11 +41,13 @@ MusicScript::MusicScript(LPCTSTR script)
 	if (script!=NULL)
 		{
 		// Copy the text of the script
-		text = script;
+
+		text = new char[ strlen(script) + 1];
+		strcpy( text, script );
 		}
 
 	// Point to the beginning
-	currentPos = text.data();
+	currentPos = text;
 
 	// Parse the first token, and point to the next
 	Advance();
@@ -60,7 +62,7 @@ MusicScript::MusicScript(LPCTSTR script)
 void MusicScript::Restart()
 	{
 	// Point to the beginning
-	currentPos = text.data();
+	currentPos = text;
 
 	// Parse the first token, and point to the next
 	Advance();
@@ -414,3 +416,4 @@ MusicError MusicScript::ParseArgument(std::string &value)
 	// Successfully parsed
 	return MUSIC_OK;
 	}
+

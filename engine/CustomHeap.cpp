@@ -7,13 +7,14 @@
 //              allow monitoring during debugging, to test memory usage.
 //
 //              Define CUSTOM_HEAP to use it.  Should be undefined for release.
+//				(it isn't as reliable as the runtime libraries own heap).
 //
 // Author:		Francis Irving
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "CustomHeap.h"
 
-//#define CUSTOM_HEAP
+// #define CUSTOM_HEAP
 
 #ifdef CUSTOM_HEAP
 
@@ -67,3 +68,4 @@
 		return -1;
 	}
 #endif // CUSTOM_HEAP
+

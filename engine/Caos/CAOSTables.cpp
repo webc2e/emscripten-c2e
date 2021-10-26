@@ -3,7 +3,7 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include "CAOSTables.h"
+#include "CAOSConstants.h"
 #include "OpSpec.h"
 
 #include "CAOSDescription.h"
@@ -26,22 +26,19 @@
 
 #include "TableSpec.h"
 #include "../Agents/AgentConstants.h"
-
-#ifndef C2E_OLD_CPP_LIB
-// dubious stringstream use by PACE documenation...
-#include <sstream>
-#endif
+#include "../ModuleImporter.h"
 
 // Categories for ordering the manual better - 
 // they will be sorted in this order.
 // So please add in alphabetical order!
-// enum in CAOSTables.h must be in the same order
+// enum in CAOSConstants.h must be in the same order
 std::string ourCategoryText[] =
 {
 	"No Need to Document",
 	"Agents",
 	"Brain",
 	"Camera",
+	"CD Player",
 	"Compounds",
 	"Creatures",
 	"Debug",
@@ -52,6 +49,7 @@ std::string ourCategoryText[] =
 	"Input",
 	"Map",
 	"Motion",
+	"Net",
 	"Ports",
 	"Resources",
 	"Scripts",
@@ -60,7 +58,6 @@ std::string ourCategoryText[] =
 	"Variables",
 	"Vehicles",
 	"World",
-	"Not Implemented"
 };
 
 // Extra tables and things we'll need to deliver in a CAOS manual:
@@ -81,222 +78,257 @@ std::string ourCategoryText[] =
 // #: label
 // -: insert a zero placeholder int in the bytecode stream
 
+OpSpec ourSubCommandTable_NEW[] =
+{
+	OpSpec( "SIMP", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryAgents, "Create a new simple agent, using the specified sprite file. The agent will have image_count sprites available, starting at first_image in the file. The plane is the screen depth to show the agent at - the higher the number, the nearer the camera."),
+	OpSpec( "COMP", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryCompound, "Create a new compound agent. The sprite file is for the first part, which is made automatically.  Similarly, image_count and first_image are for that first part.  The plane is the absolute plane of part 1 - the planes of other parts are relative to the first part." ),
+	OpSpec( "VHCL", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryVehicles, "Create a new vehicle.  Parameters are the same as @#NEW: COMP@." ),
+	OpSpec( "CREA", "iaiii", "family gene_agent gene_slot sex variant", categoryCreatures, "Makes a creature using the genome from the given gene slot in another agent.  You'll want to use @#GENE CROS@ or @#GENE LOAD@ to fill that slot in first.  The gene slot is cleared, as control of that genome is moved to the special slot 0 of the new creature, where it is expressed.  Sex is 1 for male, 2 for female or 0 for random.  The variant can also be 0 for a random value between 1 and 8.  See also @#NEWC@."),
+	OpSpec( "CRAG", "iaiiisiii", "family gene_agent gene_slot sex variant sprite_file image_count first_image plane", categoryCreatures, "Makes a non-skeletal creature.  The first five arguments are the same as @#NEW: CREA@.  The last four, starting from the sprite file, are exactly as in @#NEW: COMP@."),
+};
+
 OpSpec ourSubCommandTable_HIST[] =
 {
-	OpSpec( 0, "EVNT", "siss", "moniker event_type related_moniker_1 related_moniker_2", categoryHistory, "Triggers a life event of the given type.  Some events are triggered automatically by the engine, some events need triggering from CAOS, others are custom events that you can use for your own purposes.  See @#HIST TYPE@ for details of the event numbers.  All new events made call the @#Life Event@ script."),
-	OpSpec( 1, "UTXT", "sis", "moniker event_no new_value", categoryHistory, "For the given life event, sets the user text."),
-	OpSpec( 2, "NAME", "ss", "moniker new_name", categoryHistory, "Renames the creature with the given moniker."),
-	OpSpec( 3, "WIPE", "s", "moniker", categoryHistory, "Purge the creature history for the given moniker.  Only applies if the genome isn't referenced by any slot, and the creature is fully dead or exported.  Use @#OOWW@ to test this first."),
-	OpSpec( 4, "FOTO", "sis", "moniker event_no new_value", categoryHistory, "For the given life event, sets the associated photograph.  Use @#SNAP@ to take the photograph first.<p>If there was already a photograph for the event, then it is automatically marked for the attic as in @#LOFT@, and overwritten with the new photo.  Hence you can use an empty string to clear a photo.  If @#HIST WIPE@ is used to clear the event, the photo is similarly stored in the attic.<p>It is considered an error to send a photograph that is in use (unless cloned with @#TINT@) to the attic.  If this happens, you will get a runtime error.  You should either be confident that no agents are using the photo, or call @#LOFT@ first to test if they are."),
+	OpSpec( "EVNT", "siss", "moniker event_type related_moniker_1 related_moniker_2", categoryHistory, "Triggers a life event of the given type.  Some events are triggered automatically by the engine, some events need triggering from CAOS, others are custom events that you can use for your own purposes.  See @#HIST TYPE@ for details of the event numbers.  All new events made call the @#Life Event@ script."),
+	OpSpec( "UTXT", "sis", "moniker event_no new_value", categoryHistory, "For the given life event, sets the user text."),
+	OpSpec( "NAME", "ss", "moniker new_name", categoryHistory, "Renames the creature with the given moniker."),
+	OpSpec( "WIPE", "s", "moniker", categoryHistory, "Purge the creature history for the given moniker.  Only applies if the genome isn't referenced by any slot, and the creature is fully dead or exported.  Use @#OOWW@ to test this first."),
+	OpSpec( "FOTO", "sis", "moniker event_no new_value", categoryHistory, "For the given life event, sets the associated photograph.  Use @#SNAP@ to take the photograph first.<p>If there was already a photograph for the event, then it is automatically marked for the attic as in @#LOFT@, and overwritten with the new photo.  Hence you can use an empty string to clear a photo.  If @#HIST WIPE@ is used to clear the event, the photo is similarly stored in the attic.<p>It is considered an error to send a photograph that is in use (unless cloned with @#TINT@) to the attic.  If this happens, you will get a runtime error.  You should either be confident that no agents are using the photo, or call @#LOFT@ first to test if they are."),
 };
 
 OpSpec ourSubIntegerRVTable_HIST[] =
 {
-	OpSpec( 0, "COUN", "s", "moniker", categoryHistory, "Returns the number of life events that there are for the given moniker.  Returns 0 of there are no events, or the moniker doesn't exist."),
-	OpSpec( 1, "TYPE", "si", "moniker event_no", categoryHistory, "For the given life event, returns its type.<p>All histories begin with one of the following four events.  You can read the associated monikers with @#HIST MON1@ and @#HIST MON2@.<br>0 Conceived - a natural start to life, associated monikers are the mother's and father's<br>1 Spliced - created using @#GENE CROS@ to crossover the two associated monikers<br>2 Engineered - from a human made genome with @#GENE LOAD@, the first associated moniker is blank, and the second is the filename<br>14 Cloned - such as when importing a creature that already exists in the world and reallocating the new moniker, when @#TWIN@ing or @#GENE CLON@ing; associated moniker is who we were cloned from<p>The following events happen during a creature's life:<br>3  Born - triggered by the @#BORN@ command, associated monikers are the parents.<br>4 Aged - reached the next life stage, either naturally from the ageing loci or with @#AGES@<br>5 Exported - emmigrated to another world<br>6 Imported - immigrated back again<br>7 Died - triggered naturally with the death trigger locus, or by the @#DEAD@ command<br>8 Became pregnant - the first associated moniker is the child, and the second the father<br>9 Impregnated - first associated moniker is the child, second the mother<br>10 Child born - first moniker is the child, second the other parent<br>15 Clone source - someone was cloned from you, first moniker is whom<p>These events aren't triggered by the engine, but reserved for CAOS to use with these numbers:<br>11 Laid by mother<br>12 Laid an egg<br>13 Photographed<p>Other numbers can also be used for custom life events.  Start with numbers 100 and above, as events below that are reserved for the engine.  You send your own events using @#HIST EVNT@."),
-	OpSpec( 2, "WTIK", "si", "moniker event_no", categoryHistory, "Returns the world tick when the life event happened, for the world that the event happened in. "),
-	OpSpec( 3, "TAGE", "si", "moniker event_no", categoryHistory, "Returns the age in ticks of the creature when the given life event happened to it.  If the creature was not in the world, wasn't born yet, or was fully dead, then -1 is returned.  If the creature was dead, but its body still in the world, then its age on death is returned.  See also @#TAGE@."),
-	OpSpec( 4, "RTIM", "si", "moniker event_no", categoryHistory, "Returns the real world time when the given life event happened.  This is measured in seconds since midnight, 1 January 1970 in UTC.  To display, use @#RTIF@."),
-	OpSpec( 5, "CAGE", "si", "moniker event_no", categoryHistory, "Returns the life stage of the creature when the given life event happened."),
-	OpSpec( 6, "GEND", "s", "moniker", categoryHistory, "Returns the sex that the creature with the given moniker has or had.  1 for male, 2 for female.  If the creature hasn't been born yet, returns -1."),
-	OpSpec( 7, "GNUS", "s", "moniker", categoryHistory, "Returns the genus of the moniker.  This is 1 for Norn, 2 for Grendel, 3 for Ettin by convention."),
-	OpSpec( 8, "VARI", "s", "moniker", categoryHistory, "Returns the variant that the creature with the given moniker has or had.  If the creature hasn't been born yet, returns -1."),
-	OpSpec( 9, "FIND", "sii", "moniker event_type from_index", categoryHistory, "Searches for a life event of a certain @#HIST TYPE@ for the given moniker.  The search begins at the life event <b>after</b> the from index.  Specify -1 to find the first event.  Returns the event number, or -1 if there is no matching event."),
-	OpSpec( 10, "FINR", "sii", "moniker event_type from_index", categoryHistory, "Reverse searches for a life event of a certain @#HIST TYPE@ for the given moniker.  The search begins at the life event <b>before</b> the from index.  Specify -1 to find the last event.  Returns the event number, or -1 if there is no matching event."),
-	OpSpec( 11, "SEAN",  "i", "world_tick", categoryTime, "Returns the current season for a given world tick.  This is the same as @#SEAN@.  See also @#WTIK@ and @#HIST WTIK@." ),
-	OpSpec( 12, "TIME",  "i", "world_tick", categoryTime, "Returns the time of day for a given world tick.  This is the same as @#TIME@.  See also @#WTIK@ and @#HIST WTIK@." ),
-	OpSpec( 13, "YEAR",  "i", "world_tick", categoryTime, "Returns the number of game years elapsed for a given world tick.  This is the same as @#YEAR@.  See also @#WTIK@ and @#HIST WTIK@." ),
-	OpSpec( 14, "DATE",  "i", "world_tick", categoryTime, "Returns the day within the current season.  This is the same as @#DATE@.  See also @#WTIK@ and @#HIST WTIK@." ),
-	OpSpec( 15, "MUTE", "s", "moniker", categoryHistory, "Returns the number of point mutations the genome received during crossover from its parents."),
-	OpSpec( 16, "CROS", "s", "moniker", categoryHistory, "Returns the number of crossover points when the genome was made by splicing its parents genomes."),
+	OpSpec( "COUN", "s", "moniker", categoryHistory, "Returns the number of life events that there are for the given moniker.  Returns 0 of there are no events, or the moniker doesn't exist."),
+	OpSpec( "TYPE", "si", "moniker event_no", categoryHistory, "For the given life event, returns its type.<p>All histories begin with one of the following four events.  You can read the associated monikers with @#HIST MON1@ and @#HIST MON2@.<br>0 Conceived - a natural start to life, associated monikers are the mother's and father's<br>1 Spliced - created using @#GENE CROS@ to crossover the two associated monikers<br>2 Engineered - from a human made genome with @#GENE LOAD@, the first associated moniker is blank, and the second is the filename<br>14 Cloned - such as when importing a creature that already exists in the world and reallocating the new moniker, when @#TWIN@ing or @#GENE CLON@ing; associated moniker is who we were cloned from<p>The following events happen during a creature's life:<br>3  Born - triggered by the @#BORN@ command, associated monikers are the parents.<br>4 Aged - reached the next life stage, either naturally from the ageing loci or with @#AGES@<br>5 Exported - emmigrated to another world<br>6 Imported - immigrated back again<br>7 Died - triggered naturally with the death trigger locus, or by the @#DEAD@ command<br>8 Became pregnant - the first associated moniker is the child, and the second the father<br>9 Impregnated - first associated moniker is the child, second the mother<br>10 Child born - first moniker is the child, second the other parent<br>15 Clone source - someone was cloned from you, first moniker is whom<br>16 Warped out - exported through a worm hole with @#NET: EXPO@<br>17 Warped in - imported through a worm hole<p>These events aren't triggered by the engine, but reserved for CAOS to use with these numbers:<br>11 Laid by mother<br>12 Laid an egg<br>13 Photographed<p>Other numbers can also be used for custom life events.  Start with numbers 100 and above, as events below that are reserved for the engine.  You send your own events using @#HIST EVNT@."),
+	OpSpec( "WTIK", "si", "moniker event_no", categoryHistory, "Returns the world tick when the life event happened, for the world that the event happened in. "),
+	OpSpec( "TAGE", "si", "moniker event_no", categoryHistory, "Returns the age in ticks of the creature when the given life event happened to it.  If the creature was not in the world, wasn't born yet, or was fully dead, then -1 is returned.  If the creature was dead, but its body still in the world, then its age on death is returned.  See also @#TAGE@."),
+	OpSpec( "RTIM", "si", "moniker event_no", categoryHistory, "Returns the real world time when the given life event happened.  This is measured in seconds since midnight, 1 January 1970 in UTC.  To display, use @#RTIF@."),
+	OpSpec( "CAGE", "si", "moniker event_no", categoryHistory, "Returns the life stage of the creature when the given life event happened."),
+	OpSpec( "GEND", "s", "moniker", categoryHistory, "Returns the sex that the creature with the given moniker has or had.  1 for male, 2 for female.  If the creature hasn't been born yet, returns -1."),
+	OpSpec( "GNUS", "s", "moniker", categoryHistory, "Returns the genus of the moniker.  This is 1 for Norn, 2 for Grendel, 3 for Ettin by convention."),
+	OpSpec( "VARI", "s", "moniker", categoryHistory, "Returns the variant that the creature with the given moniker has or had.  If the creature hasn't been born yet, returns -1."),
+	OpSpec( "WVET", "s", "moniker", categoryHistory, "Returns 1 if the Creature is a warp hole veteran, 0 otherwise.  The creature is a veteran if they have ever been exported with @#NET: EXPO@.  They must have been the main exported creature - warping as an embryo doesn't make you a veteran."),
+	OpSpec( "FIND", "sii", "moniker event_type from_index", categoryHistory, "Searches for a life event of a certain @#HIST TYPE@ for the given moniker.  The search begins at the life event <b>after</b> the from index.  Specify -1 to find the first event.  Returns the event number, or -1 if there is no matching event."),
+	OpSpec( "FINR", "sii", "moniker event_type from_index", categoryHistory, "Reverse searches for a life event of a certain @#HIST TYPE@ for the given moniker.  The search begins at the life event <b>before</b> the from index.  Specify -1 to find the last event.  Returns the event number, or -1 if there is no matching event."),
+	OpSpec( "SEAN",  "i", "world_tick", categoryTime, "Returns the current season for a given world tick.  This is the same as @#SEAN@.  See also @#WTIK@ and @#HIST WTIK@." ),
+	OpSpec( "TIME",  "i", "world_tick", categoryTime, "Returns the time of day for a given world tick.  This is the same as @#TIME@.  See also @#WTIK@ and @#HIST WTIK@." ),
+	OpSpec( "YEAR",  "i", "world_tick", categoryTime, "Returns the number of game years elapsed for a given world tick.  This is the same as @#YEAR@.  See also @#WTIK@ and @#HIST WTIK@." ),
+	OpSpec( "DATE",  "i", "world_tick", categoryTime, "Returns the day within the current season.  This is the same as @#DATE@.  See also @#WTIK@ and @#HIST WTIK@." ),
+	OpSpec( "MUTE", "s", "moniker", categoryHistory, "Returns the number of point mutations the genome received during crossover from its parents."),
+	OpSpec( "CROS", "s", "moniker", categoryHistory, "Returns the number of crossover points when the genome was made by splicing its parents genomes."),
 };
 
 OpSpec ourSubStringRVTable_HIST[] =
 {
-	OpSpec( 0, "MON1", "si", "moniker event_no", categoryHistory, "For the given life event, returns the first associated moniker."),
-	OpSpec( 1, "MON2", "si", "moniker event_no", categoryHistory, "For the given life event, returns the second associated moniker."),
-	OpSpec( 2, "UTXT", "si", "moniker event_no", categoryHistory, "For the given life event, returns the user text."),
-	OpSpec( 3, "WNAM", "si", "moniker event_no", categoryHistory, "Returns the name of the world the given life event happened in."),
-	OpSpec( 4, "WUID", "si", "moniker event_no", categoryHistory, "Returns the unique identifier of the world the given life event happened in."),
-	OpSpec( 5, "NAME", "s", "moniker", categoryHistory, "Returns the name of the creature with the given moniker."),
-	OpSpec( 6, "NEXT", "s", "moniker", categoryHistory, "Returns the next moniker which has a history, or an empty string if we're at the end already.  If the specified moniker is an empty string or doesn't have a history, then the first moniker with a history entry is returned, or an empty string if there isn't one."),
-	OpSpec( 7, "PREV", "s", "moniker", categoryHistory, "Returns the previous moniker which has a history.  If the specified moniker is an empty string or doesn't have a history, then the last moniker with a history entry is returned, or an empty string if there isn't one."),
-	OpSpec( 8, "FOTO", "si", "moniker event_no", categoryHistory, "For the given life event, returns the filename of the associated photograph, or an empty string if there is no photo."),
+	OpSpec( "MON1", "si", "moniker event_no", categoryHistory, "For the given life event, returns the first associated moniker."),
+	OpSpec( "MON2", "si", "moniker event_no", categoryHistory, "For the given life event, returns the second associated moniker."),
+	OpSpec( "UTXT", "si", "moniker event_no", categoryHistory, "For the given life event, returns the user text."),
+	OpSpec( "WNAM", "si", "moniker event_no", categoryHistory, "Returns the name of the world the given life event happened in."),
+	OpSpec( "WUID", "si", "moniker event_no", categoryHistory, "Returns the unique identifier of the world the given life event happened in."),
+	OpSpec( "NAME", "s", "moniker", categoryHistory, "Returns the name of the creature with the given moniker."),
+	OpSpec( "NEXT", "s", "moniker", categoryHistory, "Returns the next moniker which has a history, or an empty string if we're at the end already.  If the specified moniker is an empty string or doesn't have a history, then the first moniker with a history entry is returned, or an empty string if there isn't one."),
+	OpSpec( "PREV", "s", "moniker", categoryHistory, "Returns the previous moniker which has a history.  If the specified moniker is an empty string or doesn't have a history, then the last moniker with a history entry is returned, or an empty string if there isn't one."),
+	OpSpec( "FOTO", "si", "moniker event_no", categoryHistory, "For the given life event, returns the filename of the associated photograph, or an empty string if there is no photo."),
+	OpSpec( "NETU", "si", "moniker event_no", categoryHistory, "Returns the network identifier of the user when the given life event happened."),
 };
 
 OpSpec ourSubCommandTable_FILE[] =
 {
-	OpSpec( 0, "OOPE", "isi", "directory filename append", categoryFiles, "Sets the file for the output stream of the current virtual machine - there is a virtual machine for each agent, so this is much the same as setting it for @#OWNR@.  Use @#OUTV@ and @#OUTS@ or various other commands to send text data to the stream.  The filename should include any file extension.<p>You should use @#FILE OCLO@ to close the file, although this happens automatically if you set a new file, if the virtual machine is destroyed, or if the engine exits.<p>Directory is 0 for the current world's journal directory, or 1 for the main journal directory.  Set append to 1 to add to the end of the file, or 0 to replace any existing file."),
-	OpSpec( 1, "OCLO", "", "", categoryFiles, "Disconnects anything which is attached to the output stream.  If this is a file, then the file is closed."),
-	OpSpec( 2, "OFLU", "", "", categoryFiles, "Flush output stream.  If it is attached to a disk file, this will force any data in the buffer to be written to disk."),
-	OpSpec( 3, "IOPE", "is", "directory filename", categoryFiles, "Sets the file for the input stream of the current virtual machine - there is a virtual machine for each agent, so this is much the same as setting it for @#OWNR@.  Use @#INNL@, @#INNI@ and @#INNF@ to get data from the stream, and @#INOK@ to check validity of the stream.  The filename should include any file extension.<p>You should use @#FILE ICLO@ to close the file, although this happens automatically if you set a new file, if the virtual machine is destroyed, or if the engine exits.<p>Directory is 0 for the current world's journal directory, or 1 for the main journal directory."),
-	OpSpec( 4, "ICLO", "", "", categoryFiles, "Disconnects anything which is attached to the input stream.  If this is a file, then the file is closed."),
-	OpSpec( 5, "JDEL", "is", "directory filename", categoryFiles, "This deletes the file (filename) specified from the journal directory specified. If directory is zero, this is the current world's journal directory, otherwise it is the main journal directory.  It deletes the file immediately, rather than marking it for the attic."),
+	OpSpec( "OOPE", "isi", "directory filename append", categoryFiles, "Sets the file for the output stream of the current virtual machine - there is a virtual machine for each agent, so this is much the same as setting it for @#OWNR@.  Use @#OUTV@ and @#OUTS@ or various other commands to send text data to the stream.  The filename should include any file extension.<p>You should use @#FILE OCLO@ to close the file, although this happens automatically if you set a new file, if the virtual machine is destroyed, or if the engine exits.<p>Directory is 0 for the current world's journal directory, 1 for the main journal directory, or 2 for the @#GAME@ @#engine_other_world@ world's journal directory.  Set append to 1 to add to the end of the file, or 0 to replace any existing file."),
+	OpSpec( "OCLO", "", "", categoryFiles, "Disconnects anything which is attached to the output stream.  If this is a file, then the file is closed."),
+	OpSpec( "OFLU", "", "", categoryFiles, "Flush output stream.  If it is attached to a disk file, this will force any data in the buffer to be written to disk."),
+	OpSpec( "IOPE", "is", "directory filename", categoryFiles, "Sets the file for the input stream of the current virtual machine - there is a virtual machine for each agent, so this is much the same as setting it for @#OWNR@.  Use @#INNL@, @#INNI@ and @#INNF@ to get data from the stream, and @#INOK@ to check validity of the stream.  The filename should include any file extension.<p>You should use @#FILE ICLO@ to close the file, although this happens automatically if you set a new file, if the virtual machine is destroyed, or if the engine exits.<p>Directory is 0 for the current world's journal directory, 1 for the main journal directory, or 2 for the @#GAME@ @#engine_other_world@ world's journal directory."),
+	OpSpec( "ICLO", "", "", categoryFiles, "Disconnects anything which is attached to the input stream.  If this is a file, then the file is closed."),
+	OpSpec( "JDEL", "is", "directory filename", categoryFiles, "This deletes the file (filename) specified from the journal directory specified. If directory is zero, this is the current world's journal directory, otherwise it is the main journal directory.  It deletes the file immediately, rather than marking it for the attic."),
+	OpSpec( "GLOB", "is", "directory filespec", categoryFiles, "This globs a journal directory (0 for world one, 1 for main one) for the filespec provided. As all this can do is list files, it does not worry about where you look relative to the journal directory in question. Use this with care. <p>Having globbed a directory, the listing is available on the input stream as a number, followed by the names of each file. To read - ise @#INOK@, @#INNI@ and @#INNL@. Once you have finished, remember to do a @#FILE ICLO@ to remove the glob output from the VM."),
 };
 
 OpSpec ourSubCommandTable_GENE[] =
 {
-	OpSpec( 0, "CROS", "aiaiaiiiii", "child_agent child_slot mum_agent mum_slot dad_agent dad_slot mum_chance_of_mutation mum_degree_of_mutation dad_chance_of_mutation dad_degree_of_mutation.", categoryGenetics, "Crosses two genomes with mutation, and fills in a child geneme slot.  Mutation variables may be in the range of 0 to 255."),
-	OpSpec( 1, "MOVE", "aiai", "dest_agent dest_slot source_agent source_slot", categoryGenetics, "Moves a genome from one slot to another."),
-	OpSpec( 2, "KILL", "ai", "agent slot", categoryGenetics, "Clears a genome slot."),
-	OpSpec( 3, "LOAD", "ais", "agent slot gene_file", categoryGenetics, "Loads an engineered gene file into a slot.  Slot 0 is a special slot used only for creatures, and contains the moniker they express.  Only the @#NEW: CREA@ command fills it in.  Other slot numbers are used in pregnant creatures, in eggs, or to temporarily store a genome before expressing it with @#NEW: CREA@.  You can use them as general purpose genome stores.<p>The gene file can have any name, and is loaded from the main genetics file.  A new moniker is generated, and a copy of the gene file put in the world directory. You can use * and ? wildcards in the name, and a random matching file will be used.<p>You can also load monikered files from the world genetics directory with this command.  If so, the file is copied and a new moniker generated.  Wildcards are matched first in the main genetics directory, and only if none match is the world genetics directory searched."),
-	OpSpec( 4, "CLON", "aiai", "dest_agent dest_slot source_agent source_slot", categoryGenetics, "Clones a genome, creating a new moniker and copying the genetics file."),
+	OpSpec( "CROS", "aiaiaiiiii", "child_agent child_slot mum_agent mum_slot dad_agent dad_slot mum_chance_of_mutation mum_degree_of_mutation dad_chance_of_mutation dad_degree_of_mutation.", categoryGenetics, "Crosses two genomes with mutation, and fills in a child geneme slot.  Mutation variables may be in the range of 0 to 255."),
+	OpSpec( "MOVE", "aiai", "dest_agent dest_slot source_agent source_slot", categoryGenetics, "Moves a genome from one slot to another."),
+	OpSpec( "KILL", "ai", "agent slot", categoryGenetics, "Clears a genome slot."),
+	OpSpec( "LOAD", "ais", "agent slot gene_file", categoryGenetics, "Loads an engineered gene file into a slot.  Slot 0 is a special slot used only for creatures, and contains the moniker they express.  Only the @#NEW: CREA@ command fills it in.  Other slot numbers are used in pregnant creatures, in eggs, or to temporarily store a genome before expressing it with @#NEW: CREA@.  You can use them as general purpose genome stores.<p>The gene file can have any name, and is loaded from the main genetics file.  A new moniker is generated, and a copy of the gene file put in the world directory. You can use * and ? wildcards in the name, and a random matching file will be used.<p>You can also load monikered files from the world genetics directory with this command.  If so, the file is copied and a new moniker generated.  Wildcards are matched first in the main genetics directory, and only if none match is the world genetics directory searched."),
+	OpSpec( "CLON", "aiai", "dest_agent dest_slot source_agent source_slot", categoryGenetics, "Clones a genome, creating a new moniker and copying the genetics file."),
 };
 
 OpSpec ourSubCommandTable_PRAY[] =
 {
-	OpSpec( 0, "REFR", "","",categoryResources,"This command refreshes the engine's view of the Resource directory. Execute this if you have reason to believe that the files in the directory may have changed. This forces a @#PRAY GARB@ to happen automatically"),
-	OpSpec( 1, "GARB", "i","force",categoryResources,"This command clears the manager's cached resource data. Execute this after a lot of resource accesses (E.g. installing an agent) to clean up the memory used during the process. If you don't do this, excess memory can be held for a while, If the parameter is zero (the most usual) then the manager will only forget resources which are not in use at the moment. If force is non-zero, then the manager will forget all the previously loaded resources. As the resources currently in use go out of scope, they are automatically garbage collected."),
+	OpSpec( "REFR", "","",categoryResources,"This command refreshes the engine's view of the Resource directory. Execute this if you have reason to believe that the files in the directory may have changed. It only detects changes if there is a new file or a deleted file - if a file has only changed it won't notice.  This is awkward during development, you can use @#PRAY KILL@ to kill the old file before copying the new one over.  PRAY REFR forces a @#PRAY GARB@ to happen automatically."),
+	OpSpec( "GARB", "i","force",categoryResources,"This command clears the manager's cached resource data. Execute this after a lot of resource accesses (E.g. installing an agent) to clean up the memory used during the process. If you don't do this, excess memory can be held for a while, If the parameter is zero (the most usual) then the manager will only forget resources which are not in use at the moment. If force is non-zero, then the manager will forget all the previously loaded resources. As the resources currently in use go out of scope, they are automatically garbage collected."),
 };
 
 OpSpec ourSubIntegerRVTable_PRAY[] =
 {
-	OpSpec( 0,"COUN", "s","resource_type",categoryResources,"This returns the number of resource chunks which are tagged with the resource type passed in. Resource types are four characters only. Anything over that length will be silently truncated."),
-	OpSpec( 1,"AGTI", "ssi","resource_name integer_tag default_value",categoryResources,"This returns the value of the integer tag associated with the named resource. If the resource does not contain such a tag, then the default value specified is returned. This call pairs with @#PRAY AGTS@."),
-	OpSpec( 2,"DEPS", "si","resource_name do_install",categoryResources,"This performs a scan of the specified resource, and checks out the dependency data. The primary use for this would be in the preparation for injection of agents. If you pass zero in the do_install parameter, then the dependencies are only checked. If do_install is non-zero, then they are installed also. The return values are as follows:<br>0 = Success<br>-1 = Agent Type not found<br>-2 = Dependency Count not found<br>-3 to -(2 + count) is the dependency string missing<br>-(3+count) to -(2+2*count) is the dependency type missing<br>2*count to 3*count is the category ID for that dependency being invalid<br>1 to count is the dependency failing"),
-	OpSpec( 3,"FILE", "sii","resource_name resource_type do_install",categoryResources,"This performs the \"installation\" of one file from the resource files. The resource_type is defined in the agent resource guide. If do_install is zero, the command simply checks if the file install should succeed. Return value is 0 for success, 1 for error."),
-	OpSpec( 4,"TEST", "s","resource_name",categoryResources,"This checks for the existence of a chunk, returning zero if it is not found, and a value from 1-3 indicating the cost to load if it is.<br>Return values are currently defined as:<br>0 - Chunk not available at this time<br>1 - Chunk Available, Cached and ready for use<br>2 - Chunk available, on disk uncompressed and fine for loading<br>3 - Chunk available, on disk compressed and ready for loading. <p>Thus the return value could be thought of as the cost of loading, where 1 is no cost, and 3 is high cost."),
-	OpSpec( 5,"INJT", "siv","resource_name do_install report_var",categoryResources,"This command injects an agent. The agent must be in the chunk named. If do_install is zero, the command simply checks for the presence of the required scripts and dependencies. If non-zero, it attempts to inject the agent. The report var is a string variable, and is set to the name of the offending script if the injection/check fails. <br>Return is 0 for success, -1 for \"Script not found\" and if injecting, -2 for \"Injection failed\". <br>Return value -3 indicates that a dependency evaluation failed, and in this case, the report var is the return code from @#PRAY DEPS@"),
-	OpSpec( 6,"SIZE", "s","resource_name", categoryResources, "The return value for this is the size of the chunk. This can be used to determine chunk information for decisions on time criteria. E.g. a large compressed chunk will take a short while to decompress."),
-	OpSpec( 7,"EXPO", "s","chunk_name", categoryResources, "This function exports the target creature. If the creature is exported successfully then it has been removed from the world. Returns value is one of the following:<br>0 for success<br>1 if the creature, or if pregnant any of its offspring, are already on disk in some form.<p>The chunk name should be used to find the creature again to import it.  In Creatures 3, most exported creatures have a chunk name EXPC, and the starter family uses SFAM."),
-	OpSpec( 8,"IMPO", "sii","moniker actually_do_it keep_file", categoryResources, "This function imports the creature with the requested moniker. Returns one of the following codes:<br>0 - success<br>1 - couldn't reconcile histories so creature was cloned<br>2 - moniker not found in PRAY system<br>3 - related genome files could not be loaded<p>Set actually_do_it to 1 to try and perform the import, or 0 to perform a query giving just the return value.  You can use the query to test if the creature is available, and if the creature would have to be cloned upon importing, and warn the user.  The new creature is @#TARG@etted after import.  If you set keep file to 1, then the exported file won't be deleted (moved to the porch)."),
-	OpSpec( 9,"MAKE", "isisv", "which_journal_spot journal_name which_pray_spot pray_name report_destination", categoryResources, "<b>Please see the documentation accompanying the praybuilder on CDN</b><p>Suffice it to say: return value is zero for success, otherwise non-zero, and report is set to the praybuilder output for you<p>Also, the which_journal_spot is zero for world journal, 1 for global journal. Also the which_pray_spot is zero for \"My Agents\" and 1 for \"My Creatures\""),
+	OpSpec( "COUN", "s","resource_type",categoryResources,"This returns the number of resource chunks which are tagged with the resource type passed in. Resource types are four characters only. Anything over that length will be silently truncated."),
+	OpSpec( "AGTI", "ssi","resource_name integer_tag default_value",categoryResources,"This returns the value of the integer tag associated with the named resource. If the resource does not contain such a tag, then the default value specified is returned. This call pairs with @#PRAY AGTS@."),
+	OpSpec( "DEPS", "si","resource_name do_install",categoryResources,"This performs a scan of the specified resource, and checks out the dependency data. The primary use for this would be in the preparation for injection of agents. If you pass zero in the do_install parameter, then the dependencies are only checked. If do_install is non-zero, then they are installed also. The return values are as follows:<br>0 = Success<br>-1 = Agent Type not found<br>-2 = Dependency Count not found<br>-3 to -(2 + count) is the dependency string missing<br>-(3+count) to -(2+2*count) is the dependency type missing<br>2*count to 3*count is the category ID for that dependency being invalid<br>1 to count is the dependency failing"),
+	OpSpec( "FILE", "sii","resource_name resource_type do_install",categoryResources,"This performs the \"installation\" of one file from the resource files. The resource_type is defined in the agent resource guide. If do_install is zero, the command simply checks if the file install should succeed. Return value is 0 for success, 1 for error."),
+	OpSpec( "TEST", "s","resource_name",categoryResources,"This checks for the existence of a chunk, returning zero if it is not found, and a value from 1-3 indicating the cost to load if it is.<br>Return values are currently defined as:<br>0 - Chunk not available at this time<br>1 - Chunk Available, Cached and ready for use<br>2 - Chunk available, on disk uncompressed and fine for loading<br>3 - Chunk available, on disk compressed and ready for loading. <p>Thus the return value could be thought of as the cost of loading, where 1 is no cost, and 3 is high cost."),
+	OpSpec( "INJT", "siv","resource_name do_install report_var",categoryResources,"This command injects an agent. The agent must be in the chunk named. If do_install is zero, the command simply checks for the presence of the required scripts and dependencies. If non-zero, it attempts to inject the agent. The report var is a string variable, and is set to the name of the offending script if the injection/check fails. <br>Return is 0 for success, -1 for \"Script not found\" and if injecting, -2 for \"Injection failed\". <br>Return value -3 indicates that a dependency evaluation failed, and in this case, the report var is the return code from @#PRAY DEPS@"),
+	OpSpec( "EXPO", "s","chunk_type", categoryResources, "This function exports the target creature. If the creature is exported successfully then it has been removed from the world. Returns value is one of the following:<br>0 for success<br>1 if the creature, or if pregnant any of its offspring, are already on disk in some form.<p>The chunk type should be used to find the creature again to import it.  In Creatures 3, most exported creatures have a chunk type EXPC, and the starter family uses SFAM.<p>For new games, you should not use SFAM, as its data would get confused with that of an EXPC with the same moniker. This is for backwards compatibility with Creatures 3's use of SFAM, which works because the CAOS code guarantees different monikers.<p>For other chunk names, creatures exported with a different type are kept entirely separately, and will not get confused with each other. The chunk type is added to the end of the moniker to form the chunk name.<p>"
+		"The exported creature has some fields associated with it, that can be read by @#PRAY AGTI@ or @#PRAY AGTS@ before importing:<br>\"Exported At World Time\" <i>integer</i>	<br>\"Creature Age In Ticks\" <i>integer</i>	<br>\"Exported At Real Time\" <i>integer</i>	<br>\"Creature Life Stage\" <i>integer</i>	<br>\"Exported From World Name\" <i>string</i>	<br>\"Exported From World UID\" <i>string</i>	<br>\"Native Network User\" <i>string</i>	<br>\"Last Network User\" (could be faked, @#NET: FROM@ is safer) <i>string</i>	<br>\"Creature Name\" <i>string</i>	<br>\"Gender\" <i>integer</i>	<br>\"Genus\" <i>integer</i>	<br>\"Variant\" <i>integer</i>	<br>\"Head Gallery\" <i>string</i> (this is calculated on the sending computer, so the file may be missing on the receiving one - try @#LIMB@ instead)<br>\"Pregnancy Status\" <i>integer</i><p>In addition you can add custom fields by setting @#NAME@ variables on the Creature before export.  Any strings or integers whose name begin \"Pray Extra \" are added as entries to the export file."),
+	OpSpec( "IMPO", "sii","moniker_chunk actually_do_it keep_file", categoryResources, "This function imports the creature with the requested moniker and chunk type. Returns one of the following codes:<br>0 - success<br>1 - couldn't reconcile histories so creature was cloned<br>2 - moniker not found in PRAY system<br>3 - unused error code<br>4 - internal / file format error<p>Set actually_do_it to 1 to try and perform the import, or 0 to perform a query giving just the return value.  You can use the query to test if the creature is available, and if the creature would have to be cloned upon importing, and warn the user.  The new creature is @#TARG@etted after import.  If you set keep file to 1, then the exported file won't be deleted (moved to the porch).  The creature will appear in the same place that it was exported, but as with @#NEW: CREA@, it will be in limbo, and won't function until moved to a valid place."),
+	OpSpec( "MAKE", "isisv", "which_journal_spot journal_name which_pray_spot pray_name report_destination", categoryResources, "<b>Please see the documentation accompanying the praybuilder on CDN</b><p>Suffice it to say: return value is zero for success, otherwise non-zero, and report is set to the praybuilder output for you<p>Also, the which_journal_spot is zero for world journal, 1 for global journal. Also the which_pray_spot is zero for \"My Agents\" and 1 for \"My Creatures\""),
+	OpSpec( "KILL", "s", "resource_name", categoryResources, "Deletes the resource file which contains the specified chunk. This is permanent and irreversible. Returns 1 if there was such a chunk and file, or 0 if there wasn't."),
 };
 
 OpSpec ourSubStringRVTable_PRAY[] =
 {
-	OpSpec( 0,"PREV", "ss","resource_type last_known",categoryResources,"This returns the name of the resource chunk directly before the named one, given that they are of the same type. If the named resource cannot be found in the list of resources of the type specified, then the first resource of that type is returned. This call pairs with @#PRAY NEXT@."),
-	OpSpec( 1,"NEXT", "ss","resource_type last_known",categoryResources,"This returns the name of the resource chunk directly after the named one, given that they are of the same type. If the named resource cannot be found in the list of resources of the type specified, then the last resource of that type is returned. This call pairs with @#PRAY PREV@."),
-	OpSpec( 2,"AGTS", "sss","resource_name string_tag default_value",categoryResources,"This returns the value of the string tag associated with the named resource. If the resource does not contain such a tag, then the default value specified is returned. This call pairs with @#PRAY AGTI@."),
+	OpSpec( "PREV", "ss","resource_type last_known",categoryResources,"This returns the name of the resource chunk directly before the named one, given that they are of the same type. It loops when it reaches the end.  If the named resource cannot be found in the list of resources of the type specified, then the first resource of that type is returned. This call pairs with @#PRAY NEXT@.  Compare @#PRAY BACK@."),
+	OpSpec( "NEXT", "ss","resource_type last_known",categoryResources,"This returns the name of the resource chunk directly after the named one, given that they are of the same type. It loops when it reaches the end.  If the named resource cannot be found in the list of resources of the type specified, then the last resource of that type is returned. This call pairs with @#PRAY PREV@.  Compare @#PRAY FORE@."),
+	OpSpec( "AGTS", "sss","resource_name string_tag default_value",categoryResources,"This returns the value of the string tag associated with the named resource. If the resource does not contain such a tag, then the default value specified is returned. This call pairs with @#PRAY AGTI@."),
+	OpSpec( "BACK", "ss","resource_type last_known",categoryResources,"Like @#PRAY PREV@, only doesn't loop at the end.  If you go beyond the first entry then it returns an empty string."),
+	OpSpec( "FORE", "ss","resource_type last_known",categoryResources,"Like @#PRAY NEXT@, only doesn't loop at the end.  If you go beyond the last entry then it returns an empty string."),
 };
-
-OpSpec ourSubCommandTable_NEW[] =
-{
-	OpSpec( 0,"SIMP", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryAgents, "Create a new simple agent, using the specified sprite file. The agent will have image_count sprites available, starting at first_image in the file. The plane is the screen depth to show the agent at - the higher the number, the nearer the camera."),
-	OpSpec( 1,"COMP", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryCompound, "Create a new compound agent. The sprite file is for the first part, which is made automatically.  Similarly, image_count and first_image are for that first part.  The plane is the absolute plane of part 1 - the planes of other parts are relative to the first part." ),
-	OpSpec( 2,"VHCL", "iiisiii", "family genus species sprite_file image_count first_image plane", categoryVehicles, "Create a new vehicle.  Parameters are the same as @#NEW: COMP@." ),
-	OpSpec( 3,"CREA", "iaiii", "family gene_agent gene_slot sex variant", categoryCreatures, "Makes a creature using the genome from the given gene slot in another agent.  You'll want to use @#GENE CROS@ or @#GENE LOAD@ to fill that slot in first.  The gene slot is cleared, as control of that genome is moved to the special slot 0 of the new creature, where it is expressed.  Sex is 1 for male, 2 for female or 0 for random.  The variant can also be 0 for a random value between 1 and 8.  See also @#NEWC@."),
-};
-
 
 OpSpec ourSubCommandTable_MESG[] =
 {
-	OpSpec( 0,"WRIT", "ai", "agent message_id", categoryAgents, "Send a message to another agent.  The message_id is from the table of @#Message Numbers@; remember that early @#Message Numbers@ differ slightly from @#Script Numbers@.  If used from an install script, then @#FROM@ for the message to @#NULL@ rather than @#OWNR@." ),
-	OpSpec( 1,"WRT+", "aimmi", "agent message_id param_1 param_2 delay", categoryAgents, "Send a message with parameters to another agent.  Waits delay ticks before sending the message.  The message_id is from the table of @#Message Numbers@." ),
+	OpSpec( "WRIT", "ai", "agent message_id", categoryAgents, "Send a message to another agent.  The message_id is from the table of @#Message Numbers@; remember that early @#Message Numbers@ differ slightly from @#Script Numbers@.  If used from an install script, then @#FROM@ for the message to @#NULL@ rather than @#OWNR@." ),
+	OpSpec( "WRT+", "aimmi", "agent message_id param_1 param_2 delay", categoryAgents, "Send a message with parameters to another agent.  Waits delay ticks before sending the message.  The message_id is from the table of @#Message Numbers@." ),
 };
 
 OpSpec ourSubCommandTable_STIM[] =
 {
-	OpSpec( 0,"SHOU", "if", "stimulus strength", categoryCreatures, "Shout a stimulus to all creatures who can hear @#OWNR@.  The strength is a multiplier for the stimulus.  Set to 1 for a default stimulation, 2 for a stronger stimulation and so on.  It is important you use this, rather than send several stims, as it affects learning.  Set strength to 0 to prevent learning altogether, and send a strength 1 chemical change.  See the table of @#Stimulus Numbers@." ),
-	OpSpec( 1,"SIGN", "if", "stimulus strength", categoryCreatures, "Send a stimulus to all creatures who can see @#OWNR@." ),
-	OpSpec( 2,"TACT", "if", "stimulus strength", categoryCreatures, "Send a stimulus to all creatures who are touching @#OWNR@." ),
-	OpSpec( 3,"WRIT", "aif", "creature stimulus strength", categoryCreatures, "Send stimulus to a specific creature.  Can be used from an install script, but the stimulus will be from @#NULL@, so the creature will react but not learn." ),
+	OpSpec( "SHOU", "if", "stimulus strength", categoryCreatures, "Shout a stimulus to all creatures who can hear @#OWNR@.  The strength is a multiplier for the stimulus.  Set to 1 for a default stimulation, 2 for a stronger stimulation and so on.  It is important you use this, rather than send several stims, as it affects learning.  Set strength to 0 to prevent learning altogether, and send a strength 1 chemical change.  See the table of @#Stimulus Numbers@." ),
+	OpSpec( "SIGN", "if", "stimulus strength", categoryCreatures, "Send a stimulus to all creatures who can see @#OWNR@." ),
+	OpSpec( "TACT", "if", "stimulus strength", categoryCreatures, "Send a stimulus to all creatures who are touching @#OWNR@." ),
+	OpSpec( "WRIT", "aif", "creature stimulus strength", categoryCreatures, "Send stimulus to a specific creature.  Can be used from an install script, but the stimulus will be from @#NULL@, so the creature will react but not learn." ),
 };
 
 OpSpec ourSubCommandTable_URGE[] =
 {
-	OpSpec( 0,"SHOU", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who can hear @#OWNR@ to perform the verb_id action on @#OWNR@.  Stimuli can range from -1 to 1, ranging from discourage to encourage." ),
-	OpSpec( 1,"SIGN", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who can see @#OWNR@ to perform an action on @#OWNR@."),
-	OpSpec( 2,"TACT", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who are touching @#OWNR@ to perform an action on @#OWNR@."),
-	OpSpec( 3,"WRIT", "aifif", "creature noun_id noun_stim verb_id verb_stim", categoryCreatures, "Urge a specific creature to perform a specific action on a specific noun.  A stimulus greater than 1 will <i>force</i> the Creature to perform an action, or to set its attention (mind control!).  Use an id -1 and stim greater than 1 to unforce it."),
+	OpSpec( "SHOU", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who can hear @#OWNR@ to perform the verb_id action on @#OWNR@.  Stimuli can range from -1 to 1, ranging from discourage to encourage." ),
+	OpSpec( "SIGN", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who can see @#OWNR@ to perform an action on @#OWNR@."),
+	OpSpec( "TACT", "fif", "noun_stim verb_id verb_stim", categoryCreatures, "Urge all creatures who are touching @#OWNR@ to perform an action on @#OWNR@."),
+	OpSpec( "WRIT", "aifif", "creature noun_id noun_stim verb_id verb_stim", categoryCreatures, "Urge a specific creature to perform a specific action on a specific noun.  A stimulus greater than 1 will <i>force</i> the Creature to perform an action, or to set its attention (mind control!).  Use an id -1 and stim greater than 1 to unforce it."),
 };
 
 OpSpec ourSubCommandTable_SWAY[] =
 {
-	OpSpec( 0,"SHOU", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that can hear @#OWNR@ to adjust four drives by the given amounts."),
-	OpSpec( 1,"SIGN", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that can see @#OWNR@ to adjust four drives by the given amounts."),
-	OpSpec( 2,"TACT", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that are touching @#OWNR@ to adjust four drives by the given amounts."),
-	OpSpec( 3,"WRIT", "aifififif", "creature drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate a specific creature to adjust four drives by the given amounts."),
+	OpSpec( "SHOU", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that can hear @#OWNR@ to adjust four drives by the given amounts."),
+	OpSpec( "SIGN", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that can see @#OWNR@ to adjust four drives by the given amounts."),
+	OpSpec( "TACT", "ifififif", "drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate all creatures that are touching @#OWNR@ to adjust four drives by the given amounts."),
+	OpSpec( "WRIT", "aifififif", "creature drive adjust drive adjust drive adjust drive adjust", categoryCreatures, "Stimulate a specific creature to adjust four drives by the given amounts."),
 };
 
 OpSpec ourSubCommandTable_ORDR[] =
 {
-	OpSpec( 0,"SHOU", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that can hear it." ),
-	OpSpec( 1,"SIGN", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that can see it." ),
-	OpSpec( 2,"TACT", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that are touching it." ),
-	OpSpec( 3,"WRIT", "as", "creature speech", categoryCreatures, "Sends a spoken command from target to the specified creature." ),
+	OpSpec( "SHOU", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that can hear it.  As well as the usual speech that Creatures can understand, there is a special syntax that can be used for learning machines.  This is as follows:<p><pre>learn|perfect verb|noun|drive|qualifier|special|personal|nice_drive [number] [word]</pre> <p>Here the | means \"or\", the [number] is the id slot to learn, and [word] is the new text to fill that word in with.  \"perfect\" makes the Creature learn it perfectly straight away, whereas \"learn\" does a gradually learning.  See the Creatures 3 learning machine cos file for an example use." ),
+	OpSpec( "SIGN", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that can see it." ),
+	OpSpec( "TACT", "s", "speech", categoryCreatures, "Sends a spoken command from target to all creatures that are touching it." ),
+	OpSpec( "WRIT", "as", "creature speech", categoryCreatures, "Sends a spoken command from target to the specified creature." ),
 };
 
 OpSpec ourSubCommandTable_GIDS[] =
 {
-	OpSpec( 0,"ROOT", "", "", categoryScripts, "Output the family numbers for which there are scripts in the scriptorium.  List is space delimited." ),
-	OpSpec( 1,"FMLY", "i", "family", categoryScripts, "Output the genus numbers for which there are scripts in the scriptorium for the given family.  List is space delimited." ),
-	OpSpec( 2,"GNUS", "ii", "family genus", categoryScripts, "Output the species numbers for which there are scripts in the scriptorium for the given family and genus.  List is space delimited." ),
-	OpSpec( 3,"SPCS", "iii", "family genus species", categoryScripts, "Output the event numbers of scripts in the scriptorium for the given classifier.  List is space delimited." ),
+	OpSpec( "ROOT", "", "", categoryScripts, "Output the family numbers for which there are scripts in the scriptorium.  List is space delimited." ),
+	OpSpec( "FMLY", "i", "family", categoryScripts, "Output the genus numbers for which there are scripts in the scriptorium for the given family.  List is space delimited." ),
+	OpSpec( "GNUS", "ii", "family genus", categoryScripts, "Output the species numbers for which there are scripts in the scriptorium for the given family and genus.  List is space delimited." ),
+	OpSpec( "SPCS", "iii", "family genus species", categoryScripts, "Output the event numbers of scripts in the scriptorium for the given classifier.  List is space delimited." ),
 };
 
 // PRT: subcommands:
 OpSpec ourSubCommandTable_PRT[] =
 {
-	OpSpec( 0,"INEW", "issiii", "id name description x y message_num", categoryPorts, "Create a new input port on target. You should number input port ids starting at 0.  The message_num is the message that will be sent to the agent when a signal comes in through the input port. _P1_ of that message will contain the data value of the signal. The position of the port, relative to the agent, is given by x, y." ),
-	OpSpec( 1,"IZAP", "i", "id", categoryPorts, "Remove the specified input port." ),
-	OpSpec( 2,"ONEW", "issii", "id name description x y", categoryPorts, "Create a new output port on target. You should number input port ids starting at 0.  The port's relative position is given by x, y." ),
-	OpSpec( 3,"OZAP", "i", "id", categoryPorts, "Remove the specified output port." ),
-	OpSpec( 4,"JOIN", "aiai", "source_agent output_id dest_agent input_id", categoryPorts, "Connect an output port on the source agent to an input port on the destination. An input may only be connected to one output at at time, but an output may feed any number of inputs." ),
-	OpSpec( 5,"SEND", "im", "id data", categoryPorts, "Send a signal from the specified output port to all connected inputs.  The data can be any integer."),
-	OpSpec( 6,"BANG", "i", "bang_strength", categoryPorts, "Breaks connections randomly with other machines (as if the machine had been 'banged'. Use a bang_strength of 100 to disconnect all ports, 50 to disconnect about half etc."),
-	OpSpec( 7,"KRAK", "aii", "agent in_or_out port_index", categoryPorts, "Breaks a specific connection on a machine. If in_or_out is zero, it is an input port whose connection is broken, if it is an output port, then all inputs are disconnected."),
+	OpSpec( "INEW", "issiii", "id name description x y message_num", categoryPorts, "Create a new input port on target. You should number input port ids starting at 0.  The message_num is the message that will be sent to the agent when a signal comes in through the input port. _P1_ of that message will contain the data value of the signal. The position of the port, relative to the agent, is given by x, y." ),
+	OpSpec( "IZAP", "i", "id", categoryPorts, "Remove the specified input port." ),
+	OpSpec( "ONEW", "issii", "id name description x y", categoryPorts, "Create a new output port on target. You should number input port ids starting at 0.  The port's relative position is given by x, y." ),
+	OpSpec( "OZAP", "i", "id", categoryPorts, "Remove the specified output port." ),
+	OpSpec( "JOIN", "aiai", "source_agent output_id dest_agent input_id", categoryPorts, "Connect an output port on the source agent to an input port on the destination. An input may only be connected to one output at at time, but an output may feed any number of inputs." ),
+	OpSpec( "SEND", "im", "id data", categoryPorts, "Send a signal from the specified output port to all connected inputs.  The data can be any integer."),
+	OpSpec( "BANG", "i", "bang_strength", categoryPorts, "Breaks connections randomly with other machines (as if the machine had been 'banged'. Use a bang_strength of 100 to disconnect all ports, 50 to disconnect about half etc."),
+	OpSpec( "KRAK", "aii", "agent in_or_out port_index", categoryPorts, "Breaks a specific connection on a machine. If in_or_out is zero, it is an input port whose connection is broken, if it is an output port, then all inputs are disconnected."),
 };
 
 OpSpec ourSubIntegerRVTable_PRT[] =
 {
-	OpSpec( 0,"ITOT", "", "", categoryPorts, "Returns the number of input ports, assuming they are indexed sequentially."),
-	OpSpec( 1,"OTOT", "", "", categoryPorts, "Returns the number of output ports, assuming they are indexed sequentially." ),
-	OpSpec( 2,"FROM", "i", "inputport", categoryPorts, "Returns the output port index on the source agent, feeding that input port on the @#TARG@ agent.<br>Return values are -ve for error."),
+	OpSpec( "ITOT", "", "", categoryPorts, "Returns the number of input ports, assuming they are indexed sequentially."),
+	OpSpec( "OTOT", "", "", categoryPorts, "Returns the number of output ports, assuming they are indexed sequentially." ),
+	OpSpec( "FROM", "i", "inputport", categoryPorts, "Returns the output port index on the source agent, feeding that input port on the @#TARG@ agent.<br>Return values are -ve for error."),
 };
 
 OpSpec ourSubStringRVTable_PRT[] =
 {
-	OpSpec( 0,"NAME", "aii", "agent in_or_out port_index", categoryPorts, "Returns the name of the indexed port (input port if in_or_out is zero, output port if non-zero) on the specified agent. Returns \"\" in error."),
+	OpSpec( "NAME", "aii", "agent in_or_out port_index", categoryPorts, "Returns the name of the indexed port (input port if in_or_out is zero, output port if non-zero) on the specified agent. Returns \"\" in error."),
 };
 
 OpSpec ourSubAgentRVTable_PRT[] =
 {
-	OpSpec( 0,"FRMA", "i", "inputport", categoryPorts, "Returns the agent from which the input port is fed. Returns NULLHANDLE if that port does not exist, or is not connected."),
+	OpSpec( "FRMA", "i", "inputport", categoryPorts, "Returns the agent from which the input port is fed. Returns NULLHANDLE if that port does not exist, or is not connected."),
 };
 
 // compoundpart subcommands
 OpSpec ourSubCommandTable_PAT[] =
 {
-	OpSpec( 0,"DULL", "isiddi", "part_id sprite_file first_image rel_x rel_y rel_plane", categoryCompound, "Create a dull part for a compound agent.  A dull part does nothing except show an image from the given sprite file.  You should number part ids starting at 1, as part 0 is automatically made when the agent is made.  The dull part's position is relative to part 0, as is its plane.  Use @#PART@ to select it before you change @#POSE@ or @#ANIM@, or use various other commands."),	
-	OpSpec( 1,"BUTT", "isiiddibii", "part_id sprite_file first_image image_count rel_x rel_y rel_plane anim_hover message_id option", categoryCompound, "Create a button on a compound agent.  anim_hover is an animation, as in the @#ANIM@ command, to use when the mouse is over the button - when the mouse is moved off, it returns to any previous animation that was going.  message_id is sent when the button is clicked.  option is 0 for the mouse to hit anywhere in the bounding box, 1 to hit only non-transparent pixels.<br>@#_P1_@ of the message is set to the part number of the buttons allowing you to overload your messages by button group and then switch on input value in the script."),
-	OpSpec( 2,"TEXT", "isiddiis","part_id sprite_file first_image rel_x rel_y rel_plane message_id font_sprite", categoryCompound, "Creates a text entry part.  Gains the focus when you click on it, or with the @#FCUS@ command.  Sends the message_id when tab or return are pressed - a good place to use @#PTXT@ to get the text out, and to set the focus elsewhere." ),
-	OpSpec( 3,"FIXD", "isiddis", "part_id sprite_file first_image rel_x rel_y rel_plane font_sprite", categoryCompound, "Create a fixed text part. The text is wrapped on top of the supplied gallery image. new-line characters may be used.  Use @#PTXT@ to set the text." ),
-	OpSpec( 4,"CMRA", "isiddiiiii","part_id overlay_sprite baseimage relx rely relplane viewWidth viewHeight cameraWidth cameraHeight",categoryCompound, "Create a camera with possible overlay sprite whose name may be blank.  Use @#SCAM@ to change the camera's view."),
-	OpSpec( 5,"GRPH", "isiddii","part_id overlay_sprite baseimage relx rely relplane numValues",categoryCompound, "Creates a graph part on a compound agent. Use @#GRPL@ to add a line to the graph and @#GRPV@ to add a value to a graph line."),
-	OpSpec( 6,"KILL", "i", "part_id", categoryCompound, "Destroys the specified part of a compound agent.  You can't destroy part 0."),
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "DULL", "isiddii", "part_id sprite_file first_image rel_x rel_y rel_plane number_of_images", categoryCompound, "Create a dull part for a compound agent.  A dull part does nothing except show an image from the given sprite file.  You should number part ids starting at 1, as part 0 is automatically made when the agent is made.  The dull part's position is relative to part 0, as is its plane.  Use @#PART@ to select it before you change @#POSE@ or @#ANIM@, or use various other commands."),	
+#else
+	OpSpec( "DULL", "isiddi", "part_id sprite_file first_image rel_x rel_y rel_plane", categoryCompound, "Create a dull part for a compound agent.  A dull part does nothing except show an image from the given sprite file.  You should number part ids starting at 1, as part 0 is automatically made when the agent is made.  The dull part's position is relative to part 0, as is its plane.  Use @#PART@ to select it before you change @#POSE@ or @#ANIM@, or use various other commands."),	
+#endif
+	OpSpec( "BUTT", "isiiddibii", "part_id sprite_file first_image image_count rel_x rel_y rel_plane anim_hover message_id option", categoryCompound, "Create a button on a compound agent.  anim_hover is an animation, as in the @#ANIM@ command, to use when the mouse is over the button - when the mouse is moved off, it returns to any previous animation that was going.  message_id is sent when the button is clicked.  option is 0 for the mouse to hit anywhere in the bounding box, 1 to hit only non-transparent pixels.<br>@#_P1_@ of the message is set to the part number of the buttons allowing you to overload your messages by button group and then switch on input value in the script."),
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "TEXT", "isiddiisiiiiii","part_id sprite_file first_image rel_x rel_y rel_plane message_id font_sprite font_width fontHeight red blue green bold", categoryCompound, "Creates a text entry part.  Gains the focus when you click on it, or with the @#FCUS@ command.  Sends the message_id when tab or return are pressed - a good place to use @#PTXT@ to get the text out, and to set the focus elsewhere." ),
+	OpSpec( "FIXD", "isiddisiiiiii", "part_id sprite_file first_image rel_x rel_y rel_plane font_sprite font_width fontHeight red blue green bold", categoryCompound, "Create a fixed text part. The text is wrapped on top of the supplied gallery image. new-line characters may be used.  Use @#PTXT@ to set the text." ),
+#else
+	OpSpec( "TEXT", "isiddiis","part_id sprite_file first_image rel_x rel_y rel_plane message_id font_sprite", categoryCompound, "Creates a text entry part.  Gains the focus when you click on it, or with the @#FCUS@ command.  Sends the message_id when return is pressed - a good place to use @#PTXT@ to get the text out, and to set the focus elsewhere.  Set message_id to 0 to not call any script, or to -1 to not send any message and instead insert a carriage return." ),
+	OpSpec( "FIXD", "isiddis", "part_id sprite_file first_image rel_x rel_y rel_plane font_sprite", categoryCompound, "Create a fixed text part. The text is wrapped on top of the supplied gallery image. new-line characters may be used.  Use @#PTXT@ to set the text." ),
+#endif
+	OpSpec( "CMRA", "isiddiiiii","part_id overlay_sprite baseimage relx rely relplane viewWidth viewHeight cameraWidth cameraHeight",categoryCompound, "Create a camera with possible overlay sprite whose name may be blank.  Use @#SCAM@ to change the camera's view."),
+	OpSpec( "GRPH", "isiddii","part_id overlay_sprite baseimage relx rely relplane numValues",categoryCompound, "Creates a graph part on a compound agent. Use @#GRPL@ to add a line to the graph and @#GRPV@ to add a value to a graph line."),
+	OpSpec( "KILL", "i", "part_id", categoryCompound, "Destroys the specified part of a compound agent.  You can't destroy part 0."),
+	OpSpec( "MOVE", "idd", "part_id rel_x rely", categoryCompound, "Moves a compound part to the new relative position specified."),
 };
 
 
 OpSpec ourSubCommandTable_BRN[] =
 {
-	OpSpec( 0,"SETN", "iiif", "lobe_number neuron_number state_number new_value", categoryBrain, "Sets a neuron weight." ),
-	OpSpec( 1,"SETD", "iiif", "tract_number dendrite_number weight_number new_value", categoryBrain, "Sets a dendrite weight."),
-	OpSpec( 2,"SETL", "iif", "lobe_number line_number new_value", categoryBrain, "Sets a lobe's SV rule float value." ),
-	OpSpec( 3,"SETT", "iif", "tract_number line_number new_value", categoryBrain, "Sets a tract's SV rule float value." ),
-	OpSpec( 4,"DMPB", "", "", categoryBrain, "Dumps the sizes of the binary data dumps for current lobes and tracts." ),
-	OpSpec( 5,"DMPL", "i", "lobe_number", categoryBrain, "Dumps a lobe as binary data." ),
-	OpSpec( 6,"DMPT", "i", "tract_number", categoryBrain, "Dumps a tract as binary data." ),
-	OpSpec( 7,"DMPN", "ii", "lobe_number neuron_number", categoryBrain, "Dumps a neuron as binary data." ),
-	OpSpec( 8,"DMPD", "ii", "tract_number dendrite_number", categoryBrain, "Dumps a dendrite as binary data." ),
+	OpSpec( "SETN", "iiif", "lobe_number neuron_number state_number new_value", categoryBrain, "Sets a neuron weight." ),
+	OpSpec( "SETD", "iiif", "tract_number dendrite_number weight_number new_value", categoryBrain, "Sets a dendrite weight."),
+	OpSpec( "SETL", "iif", "lobe_number line_number new_value", categoryBrain, "Sets a lobe's SV rule float value." ),
+	OpSpec( "SETT", "iif", "tract_number line_number new_value", categoryBrain, "Sets a tract's SV rule float value." ),
+	OpSpec( "DMPB", "", "", categoryBrain, "Dumps the sizes of the binary data dumps for current lobes and tracts." ),
+	OpSpec( "DMPL", "i", "lobe_number", categoryBrain, "Dumps a lobe as binary data." ),
+	OpSpec( "DMPT", "i", "tract_number", categoryBrain, "Dumps a tract as binary data." ),
+	OpSpec( "DMPN", "ii", "lobe_number neuron_number", categoryBrain, "Dumps a neuron as binary data." ),
+	OpSpec( "DMPD", "ii", "tract_number dendrite_number", categoryBrain, "Dumps a dendrite as binary data." ),
 };
 
 OpSpec ourSubCommandTable_DBG[] =
 {
-	OpSpec( 0,"PAWS", "", "", categoryDebug, "This pauses everything in the game. No game driven ticks will occur until a @#DBG: PLAY@ command is issued, so this command is only useful for debugging.  Use @#PAUS@ for pausing of specific agents, which you can use to implement a pause button." ),
-	OpSpec( 1,"PLAY", "", "", categoryDebug, "This command undoes a previously given @#DBG: PAWS@ and allows game time to flow as normal." ),
-	OpSpec( 2,"TOCK", "", "", categoryDebug, "This command forces a tick to occur. It is useful in external apps to drive the game according to a different clock instead of the game clock." ),
-	OpSpec( 3,"FLSH", "", "", categoryDebug, "This flushes the system's input buffers - usually only useful if @#DBG: PAWS@ed." ),	
-	OpSpec( 4,"POLL", "", "", categoryDebug, "This takes all of the @#DBG: OUTV@ and @#DBG: OUTS@ output to date and writes it to the output stream." ),
-	OpSpec( 5,"OUTV", "d", "value", categoryDebug, "Send a number to the debug log - use @#DBG: POLL@ to retrieve."),
-	OpSpec( 6,"OUTS", "s", "value", categoryDebug, "Send a string to the debug log - use @#DBG: POLL@ to retrieve."),
-	OpSpec( 7,"PROF", "", "", categoryDebug, "Sends agent profile information to the output stream.  This gives you data about the time the engine spends running the update and message handling code for each classifier.  The data is measured from engine startup, or the point marked with @#DBG: CPRO@.  It's output in comma separated value (CSV) format, so you can load it into a spreadsheet for sorting and summing." ),
-	OpSpec( 8,"CPRO", "", "", categoryDebug, "Clears agent profiling information.  Measurements output with @#DBG: PROF@ start here."),
-	OpSpec( 9,"HTML", "i", "sort_order", categoryDebug, "Sends CAOS documentation to the output stream.  Sort order is 0 for alphabetical, 1 for categorical."),
-	OpSpec( 10,"ASRT", "c", "condition", categoryDebug, "Confirms that a condition is true.  If it isn't, it displays a runtime error dialog."),
-	OpSpec( 11, "WTIK", "i", "new_world_tick", categoryDebug, "Changes the world tick @#WTIK@ to the given value.  This should only be used for debugging, as it will potentially leave confusing information in the creature history, and change the time when delayed messages are processed.  Its main use is to jump to different seasons and times of day."),
-	OpSpec( 12, "TACK", "a", "follow", categoryDebug, "Pauses the game when the given agent next executes a single line of CAOS code.  This pause is mid-tick, and awaits incoming requests, or the pause key.  Either another DBG: TACK or a @#DBG: PLAY@ command will make the engine carry on.  Any other incoming requests will be processed as normal.  However, the virtual machine of the tacking agent is effectively in mid-processing, so some CAOS commands may cause unpredictable results, and even crash the engine.  In particular, you shouldn't @#KILL@ the tacking agent.  You can see which agent is being tracked with @#TACK@."),
+	OpSpec( "PAWS", "", "", categoryDebug, "This pauses everything in the game. No game driven ticks will occur until a @#DBG: PLAY@ command is issued, so this command is only useful for debugging.  Use @#PAUS@ for pausing of specific agents, which you can use to implement a pause button." ),
+	OpSpec( "PLAY", "", "", categoryDebug, "This command undoes a previously given @#DBG: PAWS@ and allows game time to flow as normal." ),
+	OpSpec( "TOCK", "", "", categoryDebug, "This command forces a tick to occur. It is useful in external apps to drive the game according to a different clock instead of the game clock." ),
+	OpSpec( "FLSH", "", "", categoryDebug, "This flushes the system's input buffers - usually only useful if @#DBG: PAWS@ed." ),	
+	OpSpec( "POLL", "", "", categoryDebug, "This takes all of the @#DBG: OUTV@ and @#DBG: OUTS@ output to date and writes it to the output stream." ),
+	OpSpec( "OUTV", "d", "value", categoryDebug, "Send a number to the debug log - use @#DBG: POLL@ to retrieve."),
+	OpSpec( "OUTS", "s", "value", categoryDebug, "Send a string to the debug log - use @#DBG: POLL@ to retrieve."),
+	OpSpec( "PROF", "", "", categoryDebug, "Sends agent profile information to the output stream.  This gives you data about the time the engine spends running the update and message handling code for each classifier.  The data is measured from engine startup, or the point marked with @#DBG: CPRO@.  It's output in comma separated value (CSV) format, so you can load it into a spreadsheet (e.g. Gnumeric or Excel) for sorting and summing." ),
+	OpSpec( "CPRO", "", "", categoryDebug, "Clears agent profiling information.  Measurements output with @#DBG: PROF@ start here."),
+	OpSpec( "HTML", "i", "sort_order", categoryDebug, "Sends CAOS documentation to the output stream.  Sort order is 0 for alphabetical, 1 for categorical."),
+	OpSpec( "ASRT", "c", "condition", categoryDebug, "Confirms that a condition is true.  If it isn't, it displays a runtime error dialog."),
+	OpSpec( "WTIK", "i", "new_world_tick", categoryDebug, "Changes the world tick @#WTIK@ to the given value.  This should only be used for debugging, as it will potentially leave confusing information in the creature history, and change the time when delayed messages are processed.  Its main use is to jump to different seasons and times of day."),
+	OpSpec( "TACK", "a", "follow", categoryDebug, "Pauses the game when the given agent next executes a single line of CAOS code.  This pause is mid-tick, and awaits incoming requests, or the pause key.  Either another DBG: TACK or a @#DBG: PLAY@ command will make the engine carry on.  Any other incoming requests will be processed as normal.  However, the virtual machine of the tacking agent is effectively in mid-processing, so some CAOS commands may cause unpredictable results, and even crash the engine.  In particular, you shouldn't @#KILL@ the tacking agent.  You can see which agent is being tracked with @#TACK@."),
 };
+
+
+OpSpec ourSubIntegerRVTable_CD[] =
+{
+	OpSpec( "FRQL", "", "", categoryCDPlayer, "Returns the average value for the lowest frequencies detected in the CD player for the current tick."),
+	OpSpec( "FRQM", "", "", categoryCDPlayer, "Returns the average value for the medium frequencies detected in the CD player for the current tick."),
+	OpSpec( "FRQH", "", "", categoryCDPlayer, "Returns the average value for the highest frequencies detected in the CD player for the current tick."),
+};
+
+OpSpec ourSubCommandTable_CD[] =
+{
+	OpSpec( "INIT", "", "", categoryCDPlayer, "Let the game know that you wish to use the cd player.  This will shut down all in game sounds and music as the mixer is needed to gauge the frequency spectrum."),
+	OpSpec( "PLAY", "ii", "first_track last_track", categoryCDPlayer, "Tell the CD Player to play the given track."),
+	OpSpec( "STOP", "", "", categoryCDPlayer, "Stop the cd player."),
+	OpSpec( "PAWS", "i", "on_off", categoryCDPlayer, "Pause the CD player if the parameter is greater than zero, to continue playing a previous paused track set the parameter to 1."),
+	OpSpec( "EJCT", "", "", categoryCDPlayer, "Open the CD tray."),
+	OpSpec( "SHUT", "", "", categoryCDPlayer, "Tell the game that you have finished with the cd player.  This will reinstate the in game sounds and music."),
+};
+
 
 OpSpec ourCommandTable[] =
 {
@@ -323,7 +355,6 @@ OpSpec ourCommandTable[] =
 	OpSpec( "STOP", GeneralHandlers::Command_STOP, "", "", categoryScripts, "Stops running the current script.  Compare @#STPT@." ),
 	OpSpec( "GSUB", GeneralHandlers::Command_GSUB, "#", "destination", categoryFlow, "Jumps to a subroutine defined by @#SUBR@. Execution will continue at the instruction after the GSUB when the subroutine hits a @#RETN@ command." ),
 	OpSpec( "RETN", GeneralHandlers::Command_RETN, "", "", categoryFlow, "Return from subroutine. Do not use this instruction from inside a block of code (eg a @#LOOP@#..@#EVER@ or @#ENUM@...@#NEXT@ etc...)!  See @#SUBR@ and @#GSUB@." ),
-	OpSpec( "NEW:", AgentHandlers::Command_NEW, idSubCommandTable_NEW, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "TARG", CAOSMachine::Command_TARG, "a", "agent", categoryVariables, "This sets the TARG variable to the agent specified." ),
 	OpSpec( "KILL", AgentHandlers::Command_KILL, "a", "agent", categoryAgents, "Destroys an agent.  The pointer won't be destroyed.  For creatures, you probably want to use @#DEAD@ first." ),
 	OpSpec( "TICK", AgentHandlers::Command_TICK, "i", "tick_rate", categoryAgents, "Start agent timer, calling @#Timer@ script every tick_rate ticks.  Set to 0 to turn off the timer." ),
@@ -335,7 +366,6 @@ OpSpec ourCommandTable[] =
 	OpSpec( "NEGV", GeneralHandlers::Command_NEGV, "v", "var", categoryVariables, "Reverse the sign of the given integer or float variable, so var = 0 - var." ),
 	OpSpec( "ANDV", GeneralHandlers::Command_ANDV, "vi", "var value", categoryVariables, "Peform a bitwise AND on an integer variable, so var = var & value." ),
 	OpSpec( "ORRV", GeneralHandlers::Command_ORRV, "vi", "var value", categoryVariables, "Peform a bitwise OR on an integer variable, so var = var | value." ),
-	OpSpec( "STIM", CreatureHandlers::Command_STIM, idSubCommandTable_STIM, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "SETV", GeneralHandlers::Command_SETV, "vd", "var value", categoryVariables, "Stores an integer or float in a variable." ),
 	OpSpec( "STAR", AgentHandlers::Command_STAR, "iii" ,"family genus species", categoryAgents, "Randomly chooses an agent which matches the given classifier and can be seen by the owner of the script. It then sets @#TARG@ to that agent.  See @#ESEE@ for an explanation of seeing."),
 	OpSpec( "RTAR", AgentHandlers::Command_RTAR, "iii", "family genus species", categoryAgents, "Randomly chooses an agent which matches the given classifier, and targets it." ),
@@ -352,13 +382,10 @@ OpSpec ourCommandTable[] =
 	OpSpec( "MVSF", AgentHandlers::Command_MVSF, "ff", "x y", categoryMotion, "Move the target agent into a safe map location somewhere in the vicinity of x, y. Only works on autonomous agents - see @#MOVS@.  Works like a safe @#MVFT@ for creatures."),
 	OpSpec( "MVBY", AgentHandlers::Command_MVBY, "ff", "delta_x delta_y", categoryMotion, "Move the target agent by relative distances, which can be negative or positive."),
 	OpSpec( "MVFT", CreatureHandlers::Command_MVFT, "ff", "x y", categoryCreatures, "Move creature's down foot to position x,y.  Use this instead of @#MVTO@ for creatures." ),
-	OpSpec( "ABSV", GeneralHandlers::Command_ABSV, "v", "var", categoryVariables, "Set a variable to its absolute value, so if var is negative var = 0 - var, otherwise var is left alone."),
-	OpSpec( "MESG", AgentHandlers::Command_MESG, idSubCommandTable_MESG, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "URGE", CreatureHandlers::Command_URGE, idSubCommandTable_URGE, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "PRT:", PortHandlers::Command_PRT, idSubCommandTable_PRT, "subcommand", categoryNoNeedToDocument, "X" ),
+	OpSpec( "ABSV", GeneralHandlers::Command_ABSV, "v", "var", categoryVariables, "Makes a variable positive (its absolute value), so if var is negative var = 0 - var, otherwise var is left alone."),
 	OpSpec( "DELR", MapHandlers::Command_DELR, "i", "room_id", categoryMap, "Deletes the specified room from the map." ),
 	OpSpec( "DELM", MapHandlers::Command_DELM, "i", "metaroom_id", categoryMap, "Deletes the specified metaroom from the map."),	
-	OpSpec( "PART", AgentHandlers::Command_PART, "i", "part_id", categoryCompound, "Sets the working part number.  Future command such as @#POSE@ and @#ANIM@, amongst others, act on that part of a compound agent."),
+	OpSpec( "PART", AgentHandlers::Command_PART, "i", "part_id", categoryCompound, "Sets the working part number.  Future command such as @#POSE@ and @#ANIM@, amongst others, act on that part of a compound agent.  To find what parts there are on an agent use @#PNXT@."),
 	OpSpec( "CABN", AgentHandlers::Command_CABN, "iiii", "left top right bottom", categoryVehicles, "Set a vehicles cabin rectangle.  The cabin is the area in which agents inside the vehicle are kept.  The rectangle is relative to the position of the vehicle.  Default cabin is the bounding rectangle of part 0.  You might want to use @#ATTR@ to set attribute @#Greedy Cabin@, on the vehicle.  This will make it automatically pick up items which are dropped in the cabin." ),
 	OpSpec( "DPAS", AgentHandlers::Command_DPAS, "iii", "family genus species", categoryVehicles, "Drop all passengers matching classifier." ),
 	OpSpec( "GPAS", AgentHandlers::Command_GPAS, "iiii", "family genus species rect_to_use", categoryVehicles, "Collect all nearby agents matching the classifier as passengers. <br>rect_to_use 0 : Nearby means touching bounding rectangle of agent<br>rect_to_use 1 : Nearby means touching cabin rectangle"),
@@ -380,12 +407,13 @@ OpSpec ourCommandTable[] =
 	OpSpec( "SAYN", CreatureHandlers::Command_SAYN, "", "", categoryCreatures, "Creature expresses need, by speaking."),
 	OpSpec( "LTCY", CreatureHandlers::Command_LTCY, "iii", "action min max", categoryCreatures, "Sets latency time on involuntary actions to a random value between min and max.  After an involuntary action occurs, the same action will not be able to kick in again until after that many ticks.  Min and max must range between 0 and 255. " ),
 	OpSpec( "DREA", CreatureHandlers::Command_DREA, "i", "dream", categoryCreatures, "Set to 1 to make the creature fall asleep and dream, 0 to stop the creature dreaming.  When dreaming, a creature's instincts are processed.  See also @#ASLP@." ),
-	OpSpec( "GIDS", GeneralHandlers::Command_GIDS, idSubCommandTable_GIDS, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "MATE", CreatureHandlers::Command_MATE, "", "", categoryCreatures, "Male creature mates with the IT agent - if IT is a female of the same genus!  The female doesn't need to be in reach.  If successful, the sperm is transmitted to the female and there is a chance of conception.  If pregnancy occurs, gene slot 1 of the mother contains the genome of the child."),
 	OpSpec( "OUTS", GeneralHandlers::Command_OUTS, "s", "text", categoryFiles, "Sends a string to the output stream.  When running a script, the stream is null and this command does nothing.  For an externally injected command, the data from the stream is returned to the calling process.  For the @#CAOS@ command, the text is returned as a string.  You can use @#FILE OOPE@ to set the stream to a journal file."),
 	OpSpec( "OUTX", GeneralHandlers::Command_OUTX, "s", "text", categoryFiles, "This sends the string <i>text</i> to the output stream. However it first transforms any escapes into quoted escapes, and it also quotes the entire string for you.<p>e.g.:<p>outx \"Moooose\\n\"<p>Would produce:<p>\"Moooose\\n\"<p>on the output stream instead of:<p>Moooose<br>"),
 	OpSpec( "OUTV", GeneralHandlers::Command_OUTV, "d", "value", categoryFiles, "Similar to @#OUTS@ only outputs a float or integer as a decimal string." ),
 	OpSpec( "DELG", GeneralHandlers::Command_DELG, "s", "variable_name", categoryVariables, "Deletes the specified @#GAME@ variable." ),
+	OpSpec( "DELN", AgentHandlers::Command_DELN, "m", "variable_name", categoryVariables, "Deletes the specified @#NAME@ variable on @#TARG@." ),
+	OpSpec( "DELE", GeneralHandlers::Command_DELE, "s", "variable_name", categoryVariables, "Deletes the specified @#EAME@ variable." ),
 	OpSpec( "DIRN", CreatureHandlers::Command_DIRN, "i","direction", categoryCreatures, "Change creature to face a different direction. North 0, South 1, East 2, West 3." ),
 	OpSpec( "SCRX", GeneralHandlers::Command_SCRX, "iiii", "family genus species event", categoryScripts, "Remove specified script from the scriptorium."),
 	OpSpec( "LOCK", CAOSMachine::Command_LOCK, "", "", categoryScripts, "Prevent the current script being interrupted until @#UNLK@.  Normally, events other than timer scripts interrupt (abort) currently running scripts.  You can also use @#INST@ for similar, stronger protection." ),
@@ -393,8 +421,6 @@ OpSpec ourCommandTable[] =
 	OpSpec( "FRIC", AgentHandlers::Command_FRIC,  "i", "friction", categoryMotion, "Set physics friction percentage, normally from 0 to 100.  Speed is lost by this amount when an agent slides along the floor."),
 	OpSpec( "SETS", GeneralHandlers::Command_SETS,  "vs", "var value", categoryVariables, "Sets a variable to a string value." ),
 	OpSpec( "ADDS", GeneralHandlers::Command_ADDS,  "vs", "var append", categoryVariables, "Concatenates two strings, so var = var + append." ),
-	OpSpec( "PAT:", CompoundHandlers::Command_PAT,  idSubCommandTable_PAT, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "DBG:", DebugHandlers::Command_DBG,  idSubCommandTable_DBG, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "MAPK", MapHandlers::Command_MAPK,  "", "", categoryMap, "Resets the map to be empty."),
 	OpSpec( "DOOR", MapHandlers::Command_DOOR,  "iii", "room_id1 room_id2 permiability", categoryMap, "Sets the permiability of the door between two rooms.  This is used for both CAs and physical motion.  See also @#PERM@."),
 	OpSpec( "MAPD", MapHandlers::Command_MAPD,  "ii", "width height", categoryMap, "Sets the dimensions of the map.  These are the maximum world coordinates.  Metarooms are rectangles within this area."),
@@ -424,7 +450,6 @@ OpSpec ourCommandTable[] =
 	OpSpec( "LINE", DisplayHandlers::Command_LINE,  "iiiiiiiii", "x1 y1 x2 y2 r g b stipple_on stipple_off", categoryCamera, "Adds a line to target's drawing list.  The line goes between the start and end points (world coordinates) in the specified colour.  Set stipple_on and stipple_off to 0 to draw a solid line, or to the number of pixels to alternate for a stippled line.  To clear all the lines for an agent, call LINE with the start and end points the same."),
 	OpSpec( "PLNE", AgentHandlers::Command_PLNE,  "i", "plane", categoryAgents, "Sets the target agent's principal drawing plane.  The higher the value, the nearer the camera.  For compound agents, the principal plane is the one for the automatically made first part.  The plane of other parts is relative to this one."),
 	OpSpec( "RNGE", AgentHandlers::Command_RNGE,  "f", "distance", categoryAgents, "Sets the distance that the target can see and hear, and the distance used to test for potential collisions.  See also @#ESEE@, @#OBST@." ),
-	OpSpec( "BRN:", CreatureHandlers::Command_BRN,  idSubCommandTable_BRN, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "CHAR", GeneralHandlers::Command_CHAR,  "vii", "string index character", categoryVariables, "Sets a character in a string.  String indices begin at 1." ),
 	OpSpec( "VELO", AgentHandlers::Command_VELO,  "ff", "x_velocity y_velocity", categoryMotion, "Set velocity, measured in pixels per tick." ),
 	OpSpec( "RPAS", AgentHandlers::Command_RPAS,  "aa", "vehicle passenger", categoryVehicles, "Specified vehicle drops the specified passenger." ),
@@ -433,7 +458,6 @@ OpSpec ourCommandTable[] =
 	OpSpec( "CABP", AgentHandlers::Command_CABP,  "i", "plane", categoryVehicles, "Set the plane that vehicle passengers are at.  This is relative to the vehicle's plane."),
 	OpSpec( "TRCK", DisplayHandlers::Command_TRCK,  "aiiii", "agent x% y% style transition", categoryCamera, "Camera follows the given agent.  Set to @#NULL@ to stop tracking. x% and y% are percentages (0-100) of the screen size.  They describe a rectangle centred on the screen which the target stays within. <br> Style 0 is brittle - if you move the camera so the target is out of the rectangle, then the tracking is broken.<br>Style 1 is flexible - you can move the camera away from the target.  If you move it back, then tracking resumes.<br>Style 2 is hard - you can't move the camera so the target is out of the rectangle.<br> The transition is the sort of fade to use if the tracking causes a change in meta room.  The values are the same as for the transition in the @#META@ command."),
 	OpSpec( "GALL", AgentHandlers::Command_GALL,  "si", "sprite_file first_image", categoryAgents, "Changes the gallery (sprite file) used by an agent.  This works for simple and compound agents (using the current @#PART@).  The current @#POSE@ is kept the same in both galleries."),
-	OpSpec( "SWAY", CreatureHandlers::Command_SWAY, idSubCommandTable_SWAY, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "ASLP", CreatureHandlers::Command_ASLP,  "i", "asleep", categoryCreatures, "Make the creature asleep or awake.  1 for asleep, 0 for awake." ),
 	OpSpec( "UNCS", CreatureHandlers::Command_UNCS,  "i", "unconscious", categoryCreatures, "Make the creature conscious or unconscious.  0 for conscious, 1 for unconscious."),
 	OpSpec( "BODY", CreatureHandlers::Command_BODY,  "ii", "set_number layer", categoryCreatures, "Similar to @#WEAR@, only puts the given set of clothes on every body part." ),
@@ -444,9 +468,8 @@ OpSpec ourCommandTable[] =
 	OpSpec( "FACE", CreatureHandlers::Command_FACE,  "i", "set_number", categoryCreatures, "Sets a facial expression on target creature." ),
 	OpSpec( "MCLR", SoundHandlers::Command_MCLR, "ii", "x y", categorySounds, "Clear the music for the metaroom at the given location."  ),
 	OpSpec( "MMSC", SoundHandlers::Command_MMSC, "iis", "x y track_name", categorySounds, "Associates a music track with the meta room at the specified coordinates." ),
-	OpSpec( "PTXT", CompoundHandlers::Command_PTXT,  "s", "text", categoryCompound, "Set string of current text part.  Use @#PAT: TEXT@ or @#PAT: FIXD@ to make a text part, and @#PART@ to set the current part."),
-	OpSpec( "ORDR", CreatureHandlers::Command_ORDR,  idSubCommandTable_ORDR, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "NORN", CreatureHandlers::Command_NORN,  "a", "creature", categoryCreatures, "Chooses the active creature.  Script 120 is executed on that creature, to inform them that they've been selected."),
+	OpSpec( "PTXT", CompoundHandlers::Command_PTXT,  "s", "text", categoryCompound, "Set string of current text part.  Use @#PAT: TEXT@ or @#PAT: FIXD@ to make a text part, and @#PART@ to set the current part.<p>In the original display engine, you can use special tags to set @#TINT@ colours for characters. Use something like &lt;tint 255 255 0&gt; to begin colouring, and &lt;tint&gt; to end.  The tint tag takes up to five parameters as the @#TINT@ command, they all default to 128 if not specified.  Less than and greater than symbols are still printed if not within a tint tag.  The tags also apply to text entry parts, but only when the text is initially set with @#PTXT@; they are obeyed in a character count fashion during editing, but not updated."),
+	OpSpec( "NORN", CreatureHandlers::Command_NORN,  "a", "creature", categoryCreatures, "Chooses the active creature.  Script 120 (@#Selected Creature Changed@) is then executed on all agents which have it."),
 	OpSpec( "FLTO", AgentHandlers::Command_FLTO, "ff", "screen_x screen_y", categoryMotion, "Move the top left corner of target to either the given screen coordinates, or the given coordinates relative to the agent it is @#FREL@ to.  Useful for floating agents."),
 	OpSpec( "VOCB", CreatureHandlers::Command_VOCB, "", "", categoryCreatures, "Learn all vocabulary instantly." ),
 	OpSpec( "CLIK", AgentHandlers::Command_CLIK,  "iii", "message_1 message_2 message_3", categoryInput, "Sets a chain of three message ids to cycle through as the agent is clicked on.  Entries of -1 are ignored.  Overriden by @#CLAC@."),
@@ -454,9 +477,9 @@ OpSpec ourCommandTable[] =
 	OpSpec( "SPNL", CreatureHandlers::Command_SPNL,  "sif", "lobe_moniker neuron_id value", categoryCreatures, "This sets the input of the neuron in the lobe specified to be the value given."),
 	OpSpec( "HAIR", CreatureHandlers::Command_HAIR,  "i", "stage", categoryCreatures, "Tidies or ruffles hair.  Positive means tidy, negative untidy.  There can be multiple stages of tidiness or untidiness; the more extreme the value the tidier or untidier."),
 	OpSpec( "TRAN", DisplayHandlers::Command_TRAN,  "ii", "transparency part_no", categoryInput, "Sets pixel transparency awareness.  1 for pixel perfect, so transparent parts of the agent can't be clicked.  0 to allow anywhere on the agent rectangle to be clicked.  See also the option parameter on @#PAT: BUTT@ which overrides this."),
-	OpSpec( "VOLM", SoundHandlers::Command_VOLM,  "i", "volume", categorySounds, "Set overall the volume of the MIDI and the sound effects."),
+	OpSpec( "VOLM", SoundHandlers::Command_VOLM,  "ii", "channel volume", categorySounds, "Set overall the volume of the sound effects (channel 0), the MIDI (channel 1) or the generated music (channel 2).  Values range from -10000 (silent) to 0 (loudest)."),
 	OpSpec( "SAVE", GeneralHandlers::Command_SAVE,  "", "", categoryWorld, "Saves the current world at the start of the next tick.  See also @#QUIT@ for important information about using @#INST@."),
-	OpSpec( "LOAD", GeneralHandlers::Command_LOAD,  "s", "world_name", categoryWorld, "Loads the specified world at the start of the next tick.  See also @#QUIT@ for important information about using @#INST@."), 
+	OpSpec( "LOAD", GeneralHandlers::Command_LOAD,  "s", "world_name", categoryWorld, "Loads the specified world at the start of the next tick.  See also @#QUIT@ for important information about using @#INST@.  See @#BOOT@ and @#engine_no_auxiliary_bootstrap_nnn@ for extra information about bootstrapping a world."), 
 	OpSpec( "PURE", AgentHandlers::Command_PURE,  "i", "value", categoryInput, "Enables or disables the default clicking and moving behaviour of the pointer.  This default behaviour is to implement @#CLAC@ and @#CLIK@, and to operate ports.  Set to 1 to enable, 0 to disable.  When disabled, use @#IMSK@ to hook mouse events."),
 	OpSpec( "DELW", GeneralHandlers::Command_DELW,  "s",  "world_name", categoryWorld, "Deletes the specified world directory."),
 	OpSpec( "PAUS", AgentHandlers::Command_PAUS,  "i", "paused", categoryAgents, "Stops the target agent from running - it'll freeze completely, scripts and physics.  Set to 1 to pause, 0 to run.  You might want to use @#WPAU@ with this to implement a pause game option."),
@@ -468,20 +491,16 @@ OpSpec ourCommandTable[] =
 	OpSpec( "LINK", MapHandlers::Command_LINK,  "iii", "room1 room2 permiability", categoryMap, "Sets the permiability of the link between the rooms specified, creating the link if none exists before.  Set to 0 to close (destroy) the link.  This is used for CAs.  See also @#DOOR@."),
 	OpSpec( "FRAT", AgentHandlers::Command_FRAT,  "i", "FrameRate", categoryAgents, "This command sets the frame rate on the @#TARG@ agent. If it is a compound agent, then the part affected can be set with the @#PART@ command. Valid rates are from 1 to 255. 1 is Normal rate, 2 is half speed etc..."),
 	OpSpec( "WRLD", GeneralHandlers::Command_WRLD,  "s", "world_name", categoryWorld, "Creates a new world directory for the specified world. "),
-	OpSpec( "PRAY", PrayHandlers::Command_PRAY,  idSubCommandTable_PRAY, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "FCUS", CompoundHandlers::Command_FCUS,  "", "", categoryCompound, "Set keyboard focus to the current @#PART@ of the targetted agent.  The part should be a @#PAT: TEXT@.  If you TARG NULL first, then no part will have the focus."),
 	OpSpec( "WPAU", GeneralHandlers::Command_WPAU,  "i", "paused", categoryTime, "Stops world ticks from running.  Days, seasons and years won't change and any delayed messages are paused, as are CAs and some sound effects.  Set to 1 to pause, 0 to run.  Use along with @#PAUS@."),
 	OpSpec( "FREL", AgentHandlers::Command_FREL, "a", "relative", categoryMotion, "Sets an agent for target to float relative to.  To make target actually float, you need to set attribute @#Floatable@ as well.  Set @#FREL@ to @#NULL@ to make the target float relative to the main camera - this is the default.  Use @#FLTO@ to set the relative position of the top left corner of the floating agent to the top left corner of the agent it is floating relative to."),
 	OpSpec( "GRPL", CompoundHandlers::Command_GRPL,  "iiiff", "red green blue min_y max_y", categoryCompound, "Add a line to a graph (previously created with @#PAT: GRPH@). The first line you add will be line 0."),
 	OpSpec( "GRPV", CompoundHandlers::Command_GRPV,  "if", "line_index value", categoryCompound, "Add a value to a line on a graph. after you have added a value to each line on the graph, it will be updated by scrolling the current values to the left"),
-	OpSpec( "PSWD", GeneralHandlers::Command_PSWD,  "s", "world_name", categoryWorld, "Sets the password of the current world. "),
+	OpSpec( "PSWD", GeneralHandlers::Command_PSWD,  "s", "password", categoryWorld, "Sets the password for the next world loaded.  The world must be loaded (and saved) before it is actually set."),
 	OpSpec( "SHOW", AgentHandlers::Command_SHOW,  "i", "visibility", categoryAgents, "Set the parameter to 0 to hide the agent and to 1 to show the agent on camera.  This removes or adds the agent to the main camera and any remote cameras.  A non-shown agent can still be visible to creatures, and can still be clicked on or picked up.  It just doesn't appear on the cameras."),
-	OpSpec( "GENE", CreatureHandlers::Command_GENE,  idSubCommandTable_GENE, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "FILE", GeneralHandlers::Command_FILE,  idSubCommandTable_FILE, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "FRMT", CompoundHandlers::Command_FRMT,  "iiiiiii", "left_margin top_margin right_margin bottom_margin line_spacing character_spacing justification", categoryCompound, "Use this command to alter the appearance of the current text part. The line and character spacing values are expressed in number of extra pixels to insert between characters. Values for justification are 0 - Left, 1 - Right, 2 - Center, 4 - Bottom, 8 - Middle (you may add mutually compatible numbers).  The default format values are 8 8 8 8 0 0 0." ),
-	OpSpec( "SNAP", DisplayHandlers::Command_SNAP,  "siiiii", "filename x_centre y_centre width height zoom_factor", categoryCamera, "This takes a photograph of the world at a particular place. The zoom parameter should be <= 100. 100 means at original size, 50 means half size etc.  It makes a new image file in the world images directory - you can use it to make agents and parts as with any image file.  Call @#SNAX@ first to check your filename isn't already in use in any images directory.  When you have finished with the file, call @#LOFT@." ),
+	OpSpec( "FRMT", CompoundHandlers::Command_FRMT,  "iiiiiii", "left_margin top_margin right_margin bottom_margin line_spacing character_spacing justification", categoryCompound, "Use this command to alter the appearance of the current text part. The line and character spacing values are expressed in number of extra pixels to insert between characters. Values for justification are 0 - Left, 1 - Right, 2 - Center, 4 - Bottom, 8 - Middle, 16 - Last Page Scroll (if you add extra text to the part and show the last page, it will scroll upwards).  You may add mutually compatible numbers.  The default format values are 8 8 8 8 0 0 0." ),
+	OpSpec( "SNAP", DisplayHandlers::Command_SNAP,  "siiiii", "filename x_centre y_centre width height zoom_factor", categoryCamera, "This takes a photograph of the world at a particular place. The zoom parameter should be between 0 and 100. 100 means at original size, 50 means half size etc.  It makes a new image file in the world images directory - you can use it to make agents and parts as with any image file.  Call @#SNAX@ first to check your filename isn't already in use in any images directory.  When you have finished with the file, call @#LOFT@." ),
 	OpSpec( "BORN", CreatureHandlers::Command_BORN, "", "", categoryCreatures, "Signals the target creature as having been born - this sends a birth event, and sets the @#TAGE@ ticking." ),
-	OpSpec( "HIST", HistoryHandlers::Command_HIST,  idSubCommandTable_HIST, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "NOHH", CreatureHandlers::Command_NOHH,  "", "", categoryAgents, "Tell the creature to immediately stop holding hands with the pointer.  Useful when you are about to teleport a norn, it prevents the pointer from continuosly changing his position back to where it was."),
 	OpSpec( "VOIS", AgentHandlers::Command_VOIS, "s", "voice_name", categorySounds, "Sets the @#TARG@ agent's voice to the specified value. The voice name must be valid in the catalogue. If it fails, then \"DefaultVoice\" will be reloaded.  Use @#SEZZ@ to actually say something."),
 	OpSpec( "VOIC", AgentHandlers::Command_VOIC, "iii", "genus gender age", categorySounds, "This sets the @#TARG@ agent's voice to the specified creature voice, using standard cascade techniques to select the nearest match.  On failure, \"DefaultVoice\" will be reloaded.  Use @#SEZZ@ to actually say something."),
@@ -489,7 +508,7 @@ OpSpec ourCommandTable[] =
 	OpSpec( "SEZZ", AgentHandlers::Command_SEZZ, "s", "text", categorySounds, "Makes the @#TARG@ agent speak the specified text with voice as set by @#VOIS@ or @#VOIC@. If @#TARG@ is a creature then it will be spoken properly (speech bubble et al)."),
 	OpSpec( "WTNT", DisplayHandlers::Command_WTNT, "iiiiii", "index red_tint green_tint blue_tint rotation swap", categoryWorld, "This sets up the world (global) tint table. The index is the number associated with the tint table - (keep it small please) and the r,g,b is the tint level. Rotation and Swap work as for pigment bleed genes."),
 	OpSpec( "TNTW", DisplayHandlers::Command_TNTW, "i", "index", categoryWorld, "This tints the @#TARG@ agent with the global tint manager at index.  Specify the @#PART@ first for compound agents.  See also @#TINT@."),
-	OpSpec( "TINT", DisplayHandlers::Command_TINT, "iiiii", "red_tint green_tint blue_tint rotation swap", categoryAgents, "This tints the @#TARG@ agent with the r,g,b tint and applies the colour rotation and swap as per pigment bleed genes.  Specify the @#PART@ first for compound agents.  The tinted agent or part now uses a cloned gallery, which means it takes up more memory, and the save world files are larger.  However it also no longer needs the sprite file.  Also, tinting resets camera shy and other properties of the gallery."),
+	OpSpec( "TINT", DisplayHandlers::Command_TINT, "iiiii", "red_tint green_tint blue_tint rotation swap", categoryAgents, "This tints the @#TARG@ agent with the r,g,b tint and applies the colour rotation and swap as per pigment bleed genes.  Specify the @#PART@ first for compound agents.  The tinted agent or part now uses a cloned gallery, which means it takes up more memory, and the save world files are larger.  However it also no longer needs the sprite file.  Also, tinting resets camera shy and other properties of the gallery. See @#TINO@ for a quicker version that tints only one frame."),
 	OpSpec( "RGAM", GeneralHandlers::Command_RGAM,  "", "", categoryWorld, "Refresh all settings that are always read from game variables at start up e.g. the length of a day.  This allows you to change such setting on the fly."),
 	OpSpec( "REAF", GeneralHandlers::Command_REAF, "", "", categoryVariables, "Refreshes the catalogue from files on disk, from the main catalogue directory and the world catalogue directory.  These are normally read in at startup, when a new world is read in, or when the PRAY resources system installs a catalogue file.  Use while developing CAOS programs to refresh the catalogue as you add entries." ),
 	OpSpec( "NEWC", AgentHandlers::Command_NEWC,  "iaiii", "family gene_agent gene_slot sex variant", categoryCreatures, "This version of @#NEW: CREA@ executes over a series of ticks, helping to prevent the pause caused by the creation of a creature with the @#NEW: CREA@ command. However, it cannot be used in install scripts (e.g. the bootstrap) and so @#NEW: CREA@ should be used for that."),
@@ -510,7 +529,55 @@ OpSpec ourCommandTable[] =
 	OpSpec( "MANN", DebugHandlers::Command_MANN, "s", "command", categoryDebug, "Outputs help on the given command to the output stream."),
 	OpSpec( "HELP", DebugHandlers::Command_HELP, "", "", categoryDebug, "Lists all command names to the output stream."),
 	OpSpec( "APRO", DebugHandlers::Command_APRO, "s", "search_text", categoryDebug, "Lists all command names whose help contains the text."),
-	OpSpec( "MEMX", DebugHandlers::Command_MEMX, "", "", categoryDebug, "Sends information about the memory allocated to the output stream.  In order, these are the Memory Load (unknown), Total Physical (size in bytes of physical memory), Available Physical (free physical space), Total Page File (maximum possible size of page file), Available Page File (size in bytes of space available in paging file), Total Virtual (size of user mode portion of the virtual address space of the engine), Available Virtual (size of unreserved and uncommitted memory in the user mode portion of the virtual address space of the engine)."),
+	OpSpec( "MEMX", DebugHandlers::Command_MEMX, "", "", categoryDebug, "Windows only.  Sends information about the memory allocated to the output stream.  In order, these are the Memory Load (unknown), Total Physical (size in bytes of physical memory), Available Physical (free physical space), Total Page File (maximum possible size of page file), Available Page File (size in bytes of space available in paging file), Total Virtual (size of user mode portion of the virtual address space of the engine), Available Virtual (size of unreserved and uncommitted memory in the user mode portion of the virtual address space of the engine)."),
+	OpSpec( "CALL", AgentHandlers::Command_CALL,  "imm", "event_no param_1 param_2", categoryAgents, "Calls a subroutine script on the owner with the specified event number.  When that script finishes the current script is resumed.  No variables are shared between the two scripts so any return values must go through OVs.  The called script starts in the same INST state as the calling script, however, it may use SLOW or INST to override this initial state.  In addition, when the script returns to the calling script, the INST state is reset to what it was before the CALL command, so CALL preserves INSTness in the calling script.  So if the caller script is in an INST then the called script will inherit that, any change in the called script to cancel this (such as OVER, WAIT, SLOW etc) will only affect the called script... when execution returns to the caller script it will still be in whatever state it was in before."),
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "BLCK", AgentHandlers::Command_BLCK,  "ii", "block_width block_height", categoryAgents, "Set the block width and height for the current agent and create the Animation strip to display the agent.  This command is only for the direct display engine."),
+	OpSpec( "SCLE", DisplayHandlers::Command_SCLE, "fi", "scaleBy yesOrNo", categoryAgents, "Scales an image from the @#TARG@ agent's sprite file by the given percentage. The scale factor always refers to the original size of the image.  The second parameter turns scaling on or off.  For the direct display engine scaling is done on the fly.  Otherwise the whole sprite file will be cloned and scaled, note that this takes up lots of memory."),
+#endif
+	OpSpec( "ALPH", DisplayHandlers::Command_ALPH, "ii", "alpha_value yesOrNo", categoryAgents, "The agent will be drawn alpha blended against the background by the given value - from 256 for invisible to 0 for completely solid.  For compound agents set the @#PART@ to affect a particular part or to -1 to affect all parts.  The second parameter switches alpha blending on (1) or off (0).  Alpha graphics are drawn much slower, so use sparingly and turn it off completely rather than using an intensity value of 0 or 256.  At the moment alpha channels only work on compressed, non-mirrored, non-zoomed sprites."),
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "SHAD", DisplayHandlers::Command_SHAD, "iiii", "shadow_value x_offset y_offset yesOrNo", categoryAgents, "A shadow will be drawn offset from the agent by the given x y co-ordinates.  The intensity of the shadow depends on the shadow_intensity value.  This only works when using the direct display engine.  The second parameter switches the shadow on or off."),
+	OpSpec( "STRC", DisplayHandlers::Command_STRC, "iii", "stretched_width stretched_height yesOrNo", categoryAgents, "The agent will be drawn stretched widthways, given the new stretched width.  This only works when using the direct display engine.  The second parameter switches stretching on or off."),
+	OpSpec( "FLIP", AgentHandlers::Command_FLIP, "i", "onOroff", categoryAgents, "Tell the agent to draw the current sprite vertically flipped (send 1 as a parameter) or normally (send 0 as a parameter). This only works when using the direct display engine."),
+	OpSpec( "ROTA", AgentHandlers::Command_ROTA, "i", "angle", categoryAgents, "DirectDraw version does not work will try to find another way.  Tell the agent to draw the current sprite rotated clockwise by the given angle a value between 0 and 360. This only works when using the direct display engine.  "),
+	OpSpec( "OUTL", AgentHandlers::Command_OUTL, "iiii", "onOroff red green blue", categoryAgents, "Detect and outline the edges of an agent with a specified colour."),
+#endif
+	OpSpec( "PLMD", CreatureHandlers::Command_PLMD,  "is", "tract_index, filename", categoryCreatures, "Dumps out all the dendrite learned information of the specified tract to a file (will be changed to sync with Palm)." ),
+	OpSpec( "PLMU", CreatureHandlers::Command_PLMU,  "is", "tract_index, filename", categoryCreatures, "Configures the dendrites in the specified tract with the data in the file (will be changed to sync with Palm)." ),
+	OpSpec( "NOTV", GeneralHandlers::Command_NOTV, "v", "var", categoryVariables, "Peform a bitwise NOT on an integer variable." ),
+	OpSpec( "BANG", GeneralHandlers::Command_BANG, "", "", categoryDebug, "Causes a division by zero exception in the processor, to test the engine's error handling routines."),
+	OpSpec( "BUZZ", GeneralHandlers::Command_BUZZ, "i", "interval", categoryTime, "Sets the ideal interval in milliseconds between each tick.  However fast the machine, it won't tick quicker than this, but it might tick slower.  You can find the actual time taken with @#RACE@.  Changing this from the default value of 50 midgame will damage profiling and seasons.  Things such as creature brains are designed for the default 50 millisecond update interval.  Change this with caution!"),
+	OpSpec( "CALG", CreatureHandlers::Command_CALG,  "ii", "category_id category_representative_algorithm_id", categoryCreatures, "Choose how a creature (TARG) decides which particular object in a category to look at.  PICK_NEAREST_IN_X_DIRECTION=0, PICK_A_RANDOM_ONE=1, PICK_NEAREST_IN_CURRENT_ROOM=2, PICK_NEAREST_TO_GROUND=3, PICK_RANDOM_NEAREST_IN_X_DIRECTION=4."),
+	OpSpec( "NAMN", AgentHandlers::Command_NAMN, "v", "previous", categoryVariables, "Enumerates through @#NAME@ variable names, roughly as @#GAMN@ does through @#GAME@ variables.  Start and end with an empty string." ),
+	OpSpec( "FVEL", AgentHandlers::Command_FVEL,  "f", "amount_in_pixels", categoryMotion, "Set forwards velocity."),
+	OpSpec( "SVEL", AgentHandlers::Command_SVEL,  "f", "amount_in_pixels", categoryMotion, "Set sideways velocity."),
+	OpSpec( "AVEL", AgentHandlers::Command_AVEL,  "f", "amount_in_fraction_of_whole_circle", categoryMotion, "Set angular velocity."),
+	OpSpec( "SPIN", AgentHandlers::Command_SPIN,  "f", "amount_in_fraction_of_whole_circle", categoryMotion, "Rotate to a particular facing."),
+	OpSpec( "ADMP", AgentHandlers::Command_ADMP,  "f", "damping_factor", categoryMotion, "Damp angular velocity by this much each tick.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "FDMP", AgentHandlers::Command_FDMP,  "f", "damping_factor", categoryMotion, "Damp forward velocity by this much each tick.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "SDMP", AgentHandlers::Command_SDMP,  "f", "damping_factor", categoryMotion, "Damp sideways velocity by this much each tick.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "ROTN", AgentHandlers::Command_ROTN,  "ff", "no_of_sprites_for_each_rotation no_of_rotations", categoryMotion, "For automatic change of sprite when the agent rotates the engine assumes that the sprite file is stored with all the sprites for one rotation together starting with pointing north."),
+	OpSpec( "VARC", AgentHandlers::Command_VARC,  "f", "view_arc_size", categoryMotion, "[not implemented yet]"),
+	OpSpec(	"DROP", AgentHandlers::Command_DROP,  "", "", categoryAgents, "Force the @#TARG@ to drop what it is carrying.  this will try to find a safe place for the agent to fall."),
+#ifndef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "TINO", DisplayHandlers::Command_TINO, "iiiii", "red_tint green_tint blue_tint rotation swap", categoryAgents, "Like @#TINT@ but only tints the current frame.  The other frames are no longer available in the gallery, it becomes a one frame sprite file.  Original display engine only."),
+#endif
+	OpSpec( "DOIN", CreatureHandlers::Command_DOIN,  "i", "no_of_instincts_to_process", categoryBrain, "Make the creature TARG process N instincts."),
+	OpSpec( "ADIN", CreatureHandlers::Command_ADIN,  "iifi", "verb noun qualifier drive", categoryBrain, "Add an instinct to the creature's brain queue.  (The instinct is not processed immediately).  Example:  ADIN 3 4 0.5 7 encourages (by a factor of 0.5) the creature to do action 3 on category 4 when drive 7 is high."),
+	OpSpec( "BOOT", GeneralHandlers::Command_BOOT,  "iii", "subboot_number folder_number_sum clear_world", categoryCreatures, "Loads in a list of numbered bootstrap folders contained within a folder called subboot. Bootstraps folders numbers are powers of 2, sum the folder numbers to load those folders.  There is provision for more than one subboot folder, these should be uniquely numbered. "),
+	OpSpec( "WEBB", GeneralHandlers::Command_WEBB,  "s", "http_url", categoryFiles, "Launches an external URL in the user's browser. The game engine adds http:// at the beginning to prevent malicious launching of programs, so you just need to specify the domain name and path."),
+	OpSpec( "CATO", CreatureHandlers::Command_CATO,  "i", "category", categoryAgents, "Change the target's category to the one specified.  The default is -1 which means the category is based on classifier and the catalogue as described in @#CATI@.  See also @#CATX@ and @#CATA@."),
+	OpSpec( "CALC", MapHandlers::Command_CALC, "", "", categoryMap, "Recalculates all the navigational CAs (warning: slow)."),
+	OpSpec( "UCLN", AgentHandlers::Command_UCLN, "", "", categoryAgents, "Make sure that an agent isn't cloned anymore, this releases the memory taken up by @#TINT@ing it. Agents are usually cloned for purposes such as tinting. Don't forget to set the relevant @#PART@ number for compound agents."),
+	OpSpec( "MIND", CreatureHandlers::Command_MIND, "i", "state", categoryCreatures, "Enable (1) or disable (0) the creature's brain (unlike @#ZOMB#@ in that the brain actually stops processing and it's output is frozen onto the one noun and verb)."),
+	OpSpec(	"CORE", AgentHandlers::Command_CORE,  "ffff", "topY bottomY leftX rightX", categoryAgents, "Sets the bounding box of the physical core of the object TARG.  May be set to smaller (or larger) than the sprite's rectangle."),
+	OpSpec(	"DCOR", AgentHandlers::Command_DCOR,  "i", "core_on", categoryAgents, "Debug command to show the physical core of the TARG agent graphically."),
+	OpSpec( "MOTR", CreatureHandlers::Command_MOTR, "i", "state", categoryCreatures, "Enable (1) or disable (0) the creature's motor faculty, i.e. whether it sets the IT object and fires off scripts."),
+	OpSpec(	"DSEE", CreatureHandlers::Command_DSEE,  "i", "can_see_on", categoryAgents, "Debug command to show all the agents which can be seen by any creature."),
+	OpSpec( "SOUL", CreatureHandlers::Command_SOUL, "ii", "facultyId on", categoryCreatures, "Enable (1) or disable (0) the update on the creature's faculty as given by type id as follows: Sensory Faculty (0), Brain (1), Motor Faculty (2), Linguistic Faculty (3), Biochemistry (4), Reproductive Faculty (5), Expressive Faculty (6), Music Faculty (7), Life Faculty (8)"),
+	OpSpec( "STEP", CreatureHandlers::Command_STEP, "i", "facultyId", categoryCreatures, "Does one update of the specified faculty (for faculty id see @#SOUL#@)."),
+	OpSpec( "JECT", GeneralHandlers::Command_JECT, "si", "cos_file flags", categoryScripts, "Injects a COS file from the bootstrap directory.  The file is searched for (case insensitively) in all bootstrap subdirectories.  You must specify the file extension (it doesn't have to be .cos).  Flags is a combination of what you want to inject:<p>1 - Remove sctipt<br>2 - Event scripts<br>4 - Install script<p>The scripts (if present) are injected in that order.  So, setting flags to 7 will fully uninstall and reinstall the cos file.  Error messages and output are written to the current output stream."),
 };
 
 
@@ -525,7 +592,7 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "GRID", MapHandlers::IntegerRV_GRID, "ai","agent direction", categoryMap, "Returns the ID of a room adjacent to the agent in the given direction.  A straight line is drawn from the centre of the agent until it hits a room.  Directions are @#LEFT@, @#RGHT@, @#_UP_@, or @#DOWN@. A value of -1 is returned if no room can be found."),
 	OpSpec( "WDTH", AgentHandlers::IntegerRV_WDTH,  "", "", categoryAgents, "Returns the width of target." ),
 	OpSpec( "HGHT", AgentHandlers::IntegerRV_HGHT,  "", "", categoryAgents, "Returns the height of target." ),
-	OpSpec( "UNID", AgentHandlers::IntegerRV_UNID,  "", "", categoryDebug, "Returns unique identifier for target agent.  @#AGNT@ goes the opposite way.  NOTE: This should only be used for external programs to persistently refer to an agent.  Variables can use @#SETA@ to store agent r-values directly for internal use." ),
+	OpSpec( "UNID", AgentHandlers::IntegerRV_UNID,  "", "", categoryDebug, "Returns unique identifier for target agent.  @#AGNT@ goes the opposite way.  NOTE: This should only be used for external programs to persistently refer to an agent for a session.  Variables can use @#SETA@ to store agent r-values directly for internal use.  The unique identifier of an agent can change if you save a world and load it in again." ),
 	OpSpec( "WALL", AgentHandlers::IntegerRV_WALL,  "", "", categoryMotion, "Returns the direction of the last wall the agent collided with.  Directions are @#LEFT@, @#RGHT@, @#_UP_@, or @#DOWN@." ),
 	OpSpec( "TICK", AgentHandlers::IntegerRV_TICK,  "", "", categoryAgents, "Returns the current timer rate set by the command TICK." ),
 	OpSpec( "CABL", AgentHandlers::IntegerRV_CABL,  "", "", categoryVehicles, "Returns relative position of left side of cabin." ),
@@ -580,8 +647,8 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "LORP", MapHandlers::IntegerRV_LORP,  "iii", "room_id ca_index directions", categoryMap, "Returns id of the room adjacent to this one with the lowest concentration of the given CA.  direction is 0 for left/right, 1 for any direction."),
 	OpSpec( "STRL", GeneralHandlers::IntegerRV_STRL,  "s", "string", categoryVariables, "Returns the length of a string."),
 	OpSpec( "CHAR", GeneralHandlers::IntegerRV_CHAR,  "si", "string index", categoryVariables, "Returns a character from a string.  String indicies begin at 1." ),
-	OpSpec( "PUPT", AgentHandlers::IntegerRV_PUPT,  "ii", "pose x_or_y", categoryAgents, "Returns the x or y coordinate of the place where target picks agents up for the given pose.  x_or_y is 1 for x, 2 for y."),
-	OpSpec( "PUHL", AgentHandlers::IntegerRV_PUHL,  "ii", "pose x_or_y", categoryAgents, "Returns the x or y coordinate of the handle that target is picked up by for the given pose.  x_or_y is 1 for x, 2 for y."),
+	OpSpec( "PUPT", AgentHandlers::IntegerRV_PUPT,  "ii", "pose x_or_y", categoryAgents, "Returns the x or y coordinate of the place where target picks agents up for the given pose.  x_or_y is 1 for x, 2 for y.  The pose is measured from the absolute base specified in the NEW: command, rather than the relative base specified by the @#BASE@ command."),
+	OpSpec( "PUHL", AgentHandlers::IntegerRV_PUHL,  "ii", "pose x_or_y", categoryAgents, "Returns the x or y coordinate of the handle that target is picked up by for the given pose.  x_or_y is 1 for x, 2 for y.  The pose is measured from the absolute base specified in the NEW: command, rather than the relative base specified by the @#BASE@ command."),
 	OpSpec( "CABP", AgentHandlers::IntegerRV_CABP,  "", "", categoryVehicles, "Returns the plane that passengers of the vehicle are at." ),
 	OpSpec( "BVAR", CreatureHandlers::IntegerRV_BVAR,  "", "", categoryCreatures, "Returns the variant number for target creature."),
 	OpSpec( "ASLP", CreatureHandlers::IntegerRV_ASLP,  "", "", categoryCreatures, "Returns 1 if the creature is asleep, 0 otherwise." ),
@@ -603,12 +670,11 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "WTIK", GeneralHandlers::IntegerRV_WTIK, "", "", categoryTime, "Returns the number of ticks since the world was first made.  For debugging purposes only you can change this value with @#DBG: WTIK@."),
 	OpSpec( "ETIK", GeneralHandlers::IntegerRV_ETIK, "", "", categoryTime, "Returns the number of ticks since the engine was loaded in."),
 	OpSpec( "PURE", AgentHandlers::IntegerRV_PURE, "", "", categoryInput, "Returns whether default pointer behaviour is disabled or enabled.  1 if enabled, 0 if disabled."),
-	OpSpec( "CATI", CreatureHandlers::IntegerRV_CATI, "iii", "family genus species", categoryAgents, "Return the category id for the given classifier.  The catalogue tag \"Agent Classifiers\" specifies these, and you can have more than 40.  They are tested in order until the first match is found.  39 (or \"unclassified\") is always returned if none match."),
+	OpSpec( "CATI", CreatureHandlers::IntegerRV_CATI, "iii", "family genus species", categoryAgents, "Return the category id for the given classifier.  The catalogue tag \"Agent Classifiers\" specifies these, and you can have more than 40.  They are tested in order until the first match is found.  -1 is always returned if none match.  Agents can override their classifier category with @#CATO@."),
 	OpSpec( "NWLD", GeneralHandlers::IntegerRV_NWLD,  "", "", categoryWorld, "Returns the number of world directories." ),
 	OpSpec( "PAUS", AgentHandlers::IntegerRV_PAUS,  "", "", categoryAgents, "Returns 1 if the target agent is paused, or 0 otherwise."),
 	OpSpec( "GRAP", MapHandlers::IntegerRV_GRAP,  "ff", "x y", categoryMap, "Returns the room id at point x,y on the map. If the point is outside the room system, it returns -1."),
 	OpSpec( "LINK", MapHandlers::IntegerRV_LINK,  "ii", "room1 room2", categoryMap, "Returns the permiability of the link between the rooms specified or 0 if no link exists."),
-	OpSpec( "PRAY", PrayHandlers::IntegerRV_PRAY,  idSubIntegerRVTable_PRAY, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "VMNR", GeneralHandlers::IntegerRV_VMNR,  "", "", categoryVariables, "Returns the minor version number of the engine."),
 	OpSpec( "VMJR", GeneralHandlers::IntegerRV_VMJR,  "", "", categoryVariables, "Returns the major version number of the engine."),
 	OpSpec( "WPAU", GeneralHandlers::IntegerRV_WPAU,  "", "", categoryTime, "Returns 1 if world ticks are paused, or 0 otherwise."),
@@ -619,20 +685,18 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "BODY", CreatureHandlers::IntegerRV_BODY, "i","bodyPart", categoryCreatures, "Return the set number of the outfit the norn is wearing on the outer most layer or -1 if it is not wearing anything "),
 	OpSpec( "STOI", GeneralHandlers::IntegerRV_STOI, "s", "value", categoryVariables, "Converts a string in decimal to an integer.  Characters in the string after an initial number are quietly ignored.  If there is no obvious number then zero is returned." ),
 	OpSpec( "TAGE", CreatureHandlers::IntegerRV_TAGE, "", "", categoryCreatures, "Returns the age in ticks since the target creature was @#BORN@.  Ticking stops when the creature dies - see @#DEAD@." ),
-	OpSpec( "HIST", HistoryHandlers::IntegerRV_HIST,  idSubIntegerRVTable_HIST, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "RTIM", GeneralHandlers::IntegerRV_RTIM, "", "", categoryTime, "Returns the current real world time.  This is measured in seconds since midnight, 1 January 1970 in UTC. To display, use @#RTIF@."),
 	OpSpec( "MOWS", AgentHandlers::IntegerRV_MOWS, "", "", categoryAgents, "Returns whether the lawn was cut last Sunday or not."),
 	OpSpec( "OOWW", HistoryHandlers::IntegerRV_OOWW, "s", "moniker", categoryHistory, "Returns the status of the moniker.<p>0 - never existed, or history purged<br>1 - genome referenced by a slot, for example an egg<br>2 - creature made with @#NEW: CREA@<br>3 - creature properly @#BORN@<br>4 - out of world, exported<br>5 - dead, body still exists<br>6 - dead, body @#KILL@ed<br>7 - unreferenced genome"),
 	OpSpec( "REAN", GeneralHandlers::IntegerRV_REAN, "s", "catalogue_tag", categoryVariables, "Returns the number of entries in the catalogue for the given tag.  For the same tag, you can @#READ@ values from 0 to one less than REAN returns." ),
 	OpSpec( "REAQ", GeneralHandlers::IntegerRV_REAQ, "s", "catalogue_tag", categoryVariables, "Returns 1 if the catalogue tag is present, 0 if not." ),
-	OpSpec( "PRT:", PortHandlers::IntegerRV_PRT, idSubIntegerRVTable_PRT, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "GMAP", MapHandlers::IntegerRV_GMAP,  "ff", "x y", categoryMap, "Returns the metaroom id at point x,y on the map. If the point is outside the room system, it returns -1."),
 	OpSpec( "DATE", GeneralHandlers::IntegerRV_DATE,  "", "", categoryTime, "Returns the day within the current season, from 0 to @#GAME@ \"engine_LengthOfSeasonInDays\" - 1.  See also @#HIST DATE@." ),
 	OpSpec( "LOFT", DisplayHandlers::IntegerRV_LOFT,  "s", "filename", categoryCamera, "Declares that you have finished with a photograph image file taken by @#SNAP@.  If the file is in use in a gallery, this function fails and returns 1.  Otherwise it returns 0.  The file will be marked for the attic, and moved there later." ),
 	OpSpec( "SNAX", DisplayHandlers::IntegerRV_SNAX,  "s", "filename", categoryCamera, "Returns 1 if the specified image file exists, or 0 if it doesn't.  Use with @#SNAP@ to find a unique filename to use." ),
 	OpSpec( "INNI", GeneralHandlers::IntegerRV_INNI,  "", "", categoryFiles, "Retrieves an integer from the input stream, delimited by white space.  Defaults to 0 if no valid data." ),
 	OpSpec( "INOK", GeneralHandlers::IntegerRV_INOK,  "", "", categoryFiles, "Returns 1 if the input stream is good, or 0 if it is bad.  A bad stream could be a non existent file, or the end of file reached.  If the stream has never been opened at all, an error is displayed." ),
-	OpSpec( "EXPR", CreatureHandlers::IntegerRV_EXPR,  "", "", categoryCreatures, "Returns the current facial expression index for the creature.  Expressions are as follows:   EXPR_NORMAL = 0, EXPR_HAPPY =1, EXPR_SAD = 2, EXPR_ANGRY= 3, EXPR_SURPRISE = 4, EXPR_SLEEPY = 5, EXPR_VERY_SLEEPY = 6, EXPR_VERY_HAPPY = 7, EXPR_MISCHEVIOUS = 8, EXPR_SCARED = 9, EXPR_ILL = 10, EXPR_HUNGRY = 11"),	
+	OpSpec( "EXPR", CreatureHandlers::IntegerRV_EXPR,  "", "", categoryCreatures, "Returns the current facial expression index for the creature."),	
 	OpSpec( "DAYT", GeneralHandlers::IntegerRV_DAYT,"" , "", categoryTime, "Returns the current day of the month" ),
 	OpSpec( "MONT", GeneralHandlers::IntegerRV_MONT,"" , "", categoryTime, "Returns the month of the year" ),
 	OpSpec( "PAGE", CompoundHandlers::IntegerRV_PAGE, "", "", categoryCompound, "Returns the current page for current text part.  See the @#PAGE@ command for more information."),
@@ -642,9 +706,9 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "FTOI", GeneralHandlers::IntegerRV_FTOI, "f", "number_to_convert", categoryVariables, "Converts a floating-point value into its integer equivalent." ),
 	OpSpec( "MUTE", GeneralHandlers::IntegerRV_MUTE, "ii", "andMask eorMask", categorySounds, "This returns (and potentially sets) the mute values for the sound managers in the game. Sensible settings for the parameters are as follows:<p><table border=1><tr><th>andMask</th><th>eorMask</th><th>returns</th></tr><tr><td>0</td><td>3</td><td>3 - Mutes both sound and music</td></tr><tr><td>3</td><td>0</td><td>0 for no mute<br>1 for sound muted<br>2 for music muted<br>3 for both muted<br>Sets nothing</td></tr><tr><td>1</td><td>2</td><td>Returns 2 for music muted, or 3 for both muted<br>Only sets mute on music, leaves sound alone</td></tr></table>"),
 	OpSpec( "WOLF", GeneralHandlers::IntegerRV_WOLF, "ii", "kanga_mask eeyore_mask", categoryTime, "Provides various functions to distort space-time and otherwise help with wolfing runs.  Set an AND and an EOR mask, to control the following bits:<p>1 - Display rendering.  Turning it off speeds the game up.<br>2 - Fastest ticks.  The game usually runs at a maximum of 20 frames per second.  If this is set, it instead runs as fast as it can.<br>4 - Refresh display at end of tick.  If set, then the display is updated at the end of the tick, and the flag is cleared.<br>8 - Autokill.  If set, agents which generate run errors are automatically killed, as the command line option.<p>"),
-	OpSpec( "RACE", GeneralHandlers::IntegerRV_RACE, "", "", categoryTime, "Returns the time in milliseconds which the last tick took overall.  This differs from @#PACE@ in that on fast machines it will have a minimum of 50 milliseconds.  It accounts for all the time in the tick, including event handling and window processing."),
+	OpSpec( "RACE", GeneralHandlers::IntegerRV_RACE, "", "", categoryTime, "Returns the time in milliseconds which the last tick took overall.  This differs from @#PACE@ in that on fast machines it will have a minimum of 50 milliseconds, or the value set by @#BUZZ@.  It accounts for all the time in the tick, including event handling and window processing."),
 	OpSpec( "WDOW", DisplayHandlers::IntegerRV_WDOW,  "", "", categoryCamera, "Returns 1 if in full screen mode, or 0 if in windowed mode." ),
-	OpSpec( "SCOL", GeneralHandlers::IntegerRV_SCOL, "iibb", "and_mask eor_mask up_speeds down_speeds", categoryTime, "Set an AND and an EOR mask, to control the following scrolling functions:<p>1 - Screen edge nudgy scrolling<br>2 - Keyboard scrolling<br>4 - Middle mouse button screen dragging<br>8 - Mouse wheel screen scrolling<p>The byte strings is used for nudgy and keyboard scrolling.  The defaults are [1 2 4 8 16 32 64] and [0 1 2 4 8 16 32].  They represent the number of pixels scrolled each consecutive tick, as the scrolling gets slower and faster.<p>If you use [] for a byte string, then the string won't be changed at all."),
+	OpSpec( "SCOL", GeneralHandlers::IntegerRV_SCOL, "iibb", "and_mask eor_mask up_speeds down_speeds", categoryTime, "Set an AND and an EOR mask, to control the following scrolling functions:<p>1 - Screen edge nudgy scrolling<br>2 - Keyboard scrolling<br>4 - Middle mouse button screen dragging<br>8 - Mouse wheel screen scrolling<p>The byte strings is used for nudgy and keyboard scrolling.  The defaults are [1 2 4 8 16 32 64] and [0 1 2 4 8 16 32].  They represent the number of pixels scrolled each consecutive tick, as the scrolling gets slower and faster.<p>If you use [] for a byte string, then the string won't be changed at all.  See also the @#EAME@ variables @#engine_nudge_border_t@ etc."),
 	OpSpec( "SORQ", GeneralHandlers::IntegerRV_SORQ, "iiii", "family genus species event", categoryScripts, "Returns 1 if the script is in the scriptorium, or if there is a general event script for the entire genus, or family.  Returns 0 if there is no matching script." ),
 	OpSpec( "MSEC", GeneralHandlers::IntegerRV_MSEC, "", "", categoryTime, "Returns a time stamp measured in milliseconds.  It is not specified when the time is measured from; the stamp is only guaranteed to be consistent during one session."),
 	OpSpec( "DREA", CreatureHandlers::IntegerRV_DREA,  "", "", categoryCreatures, "Returns 1 if the creature is asleep and dreaming, 0 otherwise." ),
@@ -653,6 +717,25 @@ OpSpec ourIntegerRVTable[] =
 	OpSpec( "WNTI", GeneralHandlers::IntegerRV_WNTI, "s", "world", categoryWorld, "This returns the index of the <i>world</i>. If you pass in a world name which is not within the system, -1 is returned."),
 	OpSpec( "CABV", AgentHandlers::IntegerRV_CABV,  "", "", categoryVehicles, "Returns the cabin room number."),
 	OpSpec( "HEAP", DebugHandlers::IntegerRV_HEAP,  "i", "index", categoryDebug, "Returns heap and garbage collection information.<br>0 - current allocated heap memory (development builds only)<br>1 - total agents, including ones waiting to be garbage collected<br>2 - similar, but just for creatures"),
+	OpSpec( "SINS", GeneralHandlers::IntegerRV_SINS, "sis", "main index_to_search_from search", categoryVariables, "Looks for the search string as an exact substring of the main string (<b>s</b>tring <b>in</b> <b>s</b>tring).  Starts searching at the given index into the main string - to find the first occurence, set this to 1.  String indices begin at 1.  Returns the index of the position of the substring, if found, or -1 otherwise.  The search is case sensitive - use @#UPPA@ and @#LOWA@ to convert all strings first, for a case insensitive search."),
+	OpSpec( "PART", CompoundHandlers::IntegerRV_PART, "i", "part_id", categoryCompound, "Returns 1 if the given part number exists on the @#TARG@ agent and 0 if it does not."),
+	OpSpec( "BUZZ", GeneralHandlers::IntegerRV_BUZZ, "", "", categoryTime, "Returns the ideal interval in milliseconds between each tick.  You can find the actual interval with @#RACE@."),
+	OpSpec( "CALG", CreatureHandlers::IntegerRV_CALG,  "i", "category_id", categoryCreatures, "Find out which algorithm is currently being used for the creature TARG to decide which particular object in a category to look at."),
+	OpSpec( "ABBA", AgentHandlers::IntegerRV_ABBA, "", "", categoryAgents, "Returns the absolute base for the current agent/part.  Returns -1 if an invalid part.  The absolute base is the value passed into @#NEW: SIMP@ and so on, it is different from the @#BASE@." ),
+	OpSpec( "PNXT", AgentHandlers::IntegerRV_PNXT, "i", "previous_part", categoryCompound, "Returns the next compound @#PART@ on an agent.  Start by calling it with -1 to get the first part, and it finishes by returning -1 when it reaches the end."),
+	OpSpec( "TINT", AgentHandlers::IntegerRV_TINT,  "i", "attribute", categoryAgents, "Returns a tint value for an agent - currently it works only on Skeletal Creatures.  Attribute can be:<br>1 - Red<br>2 - Green<br>3 - Blue<br>4 - Rotation<br>5 - Swap" ),
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	OpSpec( "FLIP", AgentHandlers::IntegerRV_FLIP, "", "", categoryAgents, "Is the current sprite for this agent vertically flipped (returns 1) or not (returns 0)"),
+	OpSpec( "ROTA", AgentHandlers::IntegerRV_ROTA, "", "", categoryAgents, "By what angle is the current sprite for this agent rotated returns angle between 0 and 360."),
+#endif
+	OpSpec( "CATA", CreatureHandlers::IntegerRV_CATA,  "", "", categoryAgents, "Returns the target's category.  This either depends on its classifier as described in @#CATI@, or is its own individual override set with @#CATO@."),
+	OpSpec( "TRAN", AgentHandlers::IntegerRV_TRAN, "ii", "xpos ypos", categoryAgents, "Test for a transparent pixel, returns 1 if the given x y position coincides with a transparent pixel on the @#TARG@ agent, otherwise it will return 0.  This does not work for creatures."),
+	OpSpec( "VOLM", SoundHandlers::IntegerRV_VOLM,  "i", "channel", categorySounds, "Returns the overall the volume of the sound effects (channel 0), the MIDI (channel 1) or the generated music (channel 2).  Values range from -10000 (silent) to 0 (loudest)."),
+	OpSpec( "HOTP", AgentHandlers::IntegerRV_HOTP,  "", "", categoryInput, "Returns the number of the compound part under the pointer.  Returns -1 if no agent is under the pointer, and 0 if the agent is simple or a skeletal creature.  Transparency of the parts is ignored, so each part is a rectangle.  Transparency of the agent as a whole is, however, obeyed.  Planes are also ignored, except later part numbers are treated as above earlier ones.  See also @#HOTS@ to find the agent under the pointer."),
+	OpSpec( "MIND", CreatureHandlers::IntegerRV_MIND,  "", "", categoryCreatures, "Returns whether the creature TARG's brain is being processed or not."),
+	OpSpec( "TCOR", AgentHandlers::IntegerRV_TCOR, "ffff", "topY bottomY leftX rightX", categoryAgents, "Tests setting the bounding box of the physical core of the object TARG.  May be set to smaller (or larger) than the sprite's rectangle.  Returns 1 if OK to set (using @#CORE@), 0 if not."),
+	OpSpec( "MOTR", CreatureHandlers::IntegerRV_MOTR,  "", "", categoryCreatures, "Returns whether the creature TARG's motor faculty is being processed or not."),
+	OpSpec( "SOUL", CreatureHandlers::IntegerRV_SOUL,  "i", "facultyId", categoryCreatures, "Returns whether the creature faculty of the type specified is being processed or not."),
 };
 
 
@@ -662,8 +745,8 @@ OpSpec ourStringRVTable[] =
 	OpSpec( "SORC", GeneralHandlers::StringRV_SORC, "iiii", "family genus species event", categoryScripts, "Returns the source code for the specified script.  Use the @#GIDS@ commands to find available scripts." ),	
 	OpSpec( "BKGD", MapHandlers::StringRV_BKGD, "i", "metaroom_id", categoryCamera, "Returns the name of the background file currently shown by the given camera." ),
 	OpSpec( "READ", GeneralHandlers::StringRV_READ, "si", "catalogue_tag offset", categoryVariables, "Returns a string from the catalogue.  This is used for localisation.  offset 0 is the first string after the TAG command in the catalogue file.  See also @#REAN@ and @#WILD@." ),
-	OpSpec( "SUBS", GeneralHandlers::StringRV_SUBS, "sii", "value start count", categoryVariables, "Slices up a string, returing the substring starting at position start, with length count.  String indices begin at 1." ), 
-	OpSpec( "FACE", CreatureHandlers::StringRV_FACE, "", "", categoryCreatures, "Returns the name of the sprite file for the target creature's face.  Currently automatically gives you the youngest age version of the gallery but soon will work in the following way: If you set the parameter to -1 you will get the name of the file the creature is currently using.  Note that when the creature ages, this file name will change (the @#GALL@ command could be useful here).  If you set the parameter to a particular age then the filename returned will be the gallery that best matches that age.  Use the @#FACE@ integer rvalue to get the pose number for facing forwards."),
+	OpSpec( "SUBS", GeneralHandlers::StringRV_SUBS, "sii", "value start count", categoryVariables, "Slices up a string, returning the substring starting at position start, with length count.  String indices begin at 1." ), 
+	OpSpec( "FACE", CreatureHandlers::StringRV_FACE, "", "", categoryCreatures, "Returns the name of the sprite file for the target creature's face.  Currently automatically gives you the youngest age version of the gallery but soon will work in the following way: If you set the parameter to -1 you will get the name of the file the creature is currently using.  Note that when the creature ages, this file name will change (the @#GALL@ command could be useful here).  If you set the parameter to a particular age then the filename returned will be the gallery that best matches that age.  Use the @#FACE@ integer rvalue to get the pose number for facing forwards.  See also @#LIMB@."),
 	OpSpec( "BUTY", GeneralHandlers::StringRV_BUTY, "", "", categoryNoNeedToDocument, "X"), // probably shouldn't document this :-) hence the X
 	OpSpec( "RMSC", SoundHandlers::StringRV_RMSC, "ii", "x y", categorySounds, "Returns the name of the music track played at the room in the given location."),
 	OpSpec( "MMSC", SoundHandlers::StringRV_MMSC, "ii", "x y", categorySounds, "Returns the name of the music track played at the metaroom in the given location."),
@@ -680,21 +763,24 @@ OpSpec ourStringRVTable[] =
 	OpSpec( "RLOC", MapHandlers::StringRV_RLOC, "i", "room_id", categoryMap, "Returns the location of the specified room as a string formated as follows: xLeft xRight yLeftCeiling yRightCeiling yLeftFloor yRightFloor." ),
 	OpSpec( "MLOC", MapHandlers::StringRV_MLOC, "i", "metaroom_id", categoryMap, "Returns the location of the specified metaroom as a string formated as follows: x y width height." ),
 	OpSpec( "BKDS", MapHandlers::StringRV_BKDS, "i", "metaroom_id", categoryMap, "Returns a string containing all the background names for the specified metaroom in a comma seperated list." ),
-	OpSpec( "PRAY", PrayHandlers::StringRV_PRAY, idSubStringRVTable_PRAY, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "WNAM", GeneralHandlers::StringRV_WNAM, "", "", categoryWorld, "Returns the name of the currently loaded world." ),
 	OpSpec( "GNAM", GeneralHandlers::StringRV_GNAM, "", "", categoryVariables, "Returns the game name.  For example \"Creatures 3\"." ),
 	OpSpec( "PSWD", GeneralHandlers::StringRV_PSWD, "i", "worldIndex", categoryWorld, "Returns the password for the specified world.  If the world is not password protected the return value will be an empty string." ),
 	OpSpec( "GTOS", CreatureHandlers::StringRV_GTOS, "i", "slot", categoryGenetics, "Returns the target's moniker in the given gene variable slot.  This universally unique identifier is the name of a genetics file.  Slot 0 is a creature's actual genome.  Other slots are used in pregnant creatures, eggs and other places." ),
 	OpSpec( "WUID", GeneralHandlers::StringRV_WUID, "", "", categoryWorld, "Returns the unique identifier of the currently loaded world." ),
-	OpSpec( "HIST", HistoryHandlers::StringRV_HIST, idSubStringRVTable_HIST, "subcommand", categoryNoNeedToDocument, "X" ),
-	OpSpec( "VOIS", AgentHandlers::StringRV_VOIS, "", "", categorySounds, "This returns the voice name for the @#TARG@ agent."),
+	OpSpec( "VOIS", AgentHandlers::StringRV_VOIS, "", "", categorySounds, "This returns the voice name for the @#TARG@ agent. (Unless it has been serialised in :( In which case it returns \"Lozenged\" if the agent had a voice before the save, or \"\" as normal if the agent can't speak.)"),
 	OpSpec( "RTIF", GeneralHandlers::StringRV_RTIF, "is", "real_time format", categoryTime, "Takes a real world time, as returned by @#RTIM@ or @#HIST RTIM@ and converts it to	a localised string for display.  The format string is made up of any text, with the following special codes:<p>%a - Abbreviated weekday name<br>%A - Full weekday name<br>%b - Abbreviated month name<br>%B - Full month name<br>%c - Date and time representation appropriate for locale<br>%d - Day of month as decimal number (01 - 31)<br>%H - Hour in 24-hour format (00 - 23)<br>%I - Hour in 12-hour format (01 - 12)<br>%j - Day of year as decimal number (001 - 366)<br>%m - Month as decimal number (01 - 12)<br>%M - Minute as decimal number (00 - 59)<br>%p - Current locale’s AM/PM indicator for 12-hour clock<br>%S - Second as decimal number (00 - 59)<br>%U - Week of year as decimal number, with Sunday as first day of week (00 - 53)<br>%w - Weekday as decimal number (0 - 6; Sunday is 0)<br>%W - Week of year as decimal number, with Monday as first day of week (00 - 53)<br>%x - Date representation for current locale<br>%X - Time representation for current locale<br>%y - Year without century, as decimal number (00 - 99)<br>%Y - Year with century, as decimal number<br>%z, %Z - Time-zone name or abbreviation; no characters if time zone is unknown<br>%% - Percent sign<p>The # flag may prefix any formatting code, having the following meanings:<br>%#a, %#A, %#b, %#B, %#p, %#X, %#z, %#Z, %#% # flag is ignored. <br>%#c Long date and time representation, appropriate for current locale. For example: Tuesday, March 14, 1995, 12:41:29. <br>%#x Long date representation, appropriate to current locale. For example: Tuesday, March 14, 1995. <br>%#d, %#H, %#I, %#j, %#m, %#M, %#S, %#U, %#w, %#W, %#y, %#Y Remove leading zeros (if any).<p>You probably want to @#READ@ any formatted string you use from a catalogue file." ),
-	OpSpec( "PRT:", PortHandlers::StringRV_PRT, idSubStringRVTable_PRT, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "INNL", GeneralHandlers::StringRV_INNL,  "", "", categoryFiles, "Retrieves a line of text from the input stream." ),
 	OpSpec( "GAMN", GeneralHandlers::StringRV_GAMN, "s", "previous", categoryVariables, "Enumerates through game variable names.  Pass in an empty string to find the first one, and then the previous one to find the next.  Empty string is returned at the end." ),
-	OpSpec( "FVWM", GeneralHandlers::StringRV_FVWM, "s", "name", categoryFiles, "This returns a guaranteed-safe filename for use in world names, jornal file names, etc."),
+	OpSpec( "EAMN", GeneralHandlers::StringRV_EAMN, "s", "previous", categoryVariables, "Enumerates through @#EAME@ variable names, roughly as @#GAMN@ does through @#GAME@ variables.  Start and end with an empty string."),
+	OpSpec( "FVWM", GeneralHandlers::StringRV_FVWM, "s", "name", categoryFiles, "This returns a guaranteed-safe filename for use in world names, journal file names, etc."),
 	OpSpec( "HAND", AgentHandlers::StringRV_HAND, "", "", categoryAgents, "This returns the name of the hand."),
-
+	OpSpec( "UPPA", GeneralHandlers::StringRV_UPPA, "s", "any_old", categoryVariables, "Converts the given string into all upper case letters."),
+	OpSpec( "LOWA", GeneralHandlers::StringRV_LOWA, "s", "any_old", categoryVariables, "Converts the given string into all lower case letters."),
+	OpSpec( "GALL", AgentHandlers::StringRV_GALL,  "", "", categoryAgents, "Returns the gallery (sprite file) used by an agent.  This works for simple and compound agents (using the current @#PART@)."),
+	OpSpec( "UFOS", GeneralHandlers::StringRV_UFOS, "", "", categoryVariables, "This returns the equivalent of \"uname -a\" on compatible systems, or a description of your operating system on others. This is a descriptive string and should not be taken as fixed format, or parseable." ),
+	OpSpec( "MODU", GeneralHandlers::StringRV_MODU, "", "", categoryVariables, "Returns a string listed the loaded modules, and the display engine type.  You can use @#SINS@ to parse this for particular values."),
+	OpSpec( "LIMB", GeneralHandlers::StringRV_LIMB, "iiiii", "body_part genus gender age variant", categoryCreatures, "Returns the filename for the specified part of a creature.  If the exact part isn't present, a 'nearby' file which is on the disk is returned."),
 };
 
 
@@ -730,15 +816,7 @@ OpSpec ourFloatRVTable[] =
 	OpSpec( "OBST", AgentHandlers::FloatRV_OBST,  "i", "direction", categoryMotion, "Returns the distance from the agent to the nearest wall that it might collide with in the given direction. Directions are @#LEFT@, @#RGHT@, @#_UP_@, or @#DOWN@. If the distance to the collsion is greater than @#RNGE@ then a very large number is returned." ),
 	OpSpec( "TORX", MapHandlers::FloatRV_TORX,  "i", "room_id", categoryMap, "Returns relative X position of the centre of the given room from target's top left corner."), 
 	OpSpec( "TORY", MapHandlers::FloatRV_TORY,  "i", "room_id", categoryMap, "Returns relative Y position of the centre of the given room from target's top left corner."),
-#ifdef C2E_OLD_CPP_LIB
-// can't use stringstream...
-	OpSpec( "PACE", GeneralHandlers::FloatRV_PACE, "", "", categoryTime, "Returns the tick rate satisfaction factor.<br>Factor 1 - ticks are taking the time we would expect them to, which is ????  secs.<br>Factor more than 1 - the engine is running too slowly.<br>Factor less than 1 - the engine is leaving spare processing time.<br>This is averaged over the last ????  ticks.<p>Agents can look at this to adjust the resources they use according to current spare processing time.  For example, if you have a random snowflake generator in winter, you could increase the chance of generation if PACE is low, and decrease the chance if PACE is high.  When you do this remember that computers will be arbitarily faster in the future, so you should place an extra upper limit on the number of snowflakes to stop them filling the whole screen.<p>Note that PACE only measures the time the engine takes for tick processing, not for handling requests from external applications, or adding Windows events to its internal queue.  Because of this, you should aim for a value which is a bit less than 1.<p>Compare @#RACE@." ),
-#else
-// original stringstream version:
-// should really just use constants here anyway!
-// The documentation shouldn't change with ingame settings!
-	OpSpec( "PACE", GeneralHandlers::FloatRV_PACE, "", "", categoryTime, ((std::ostringstream*)(&(std::ostringstream() << "Returns the tick rate satisfaction factor.<br>Factor 1 - ticks are taking the time we would expect them to, which is " << (float)App::GetWorldTickInterval() / 1000 << " secs.<br>Factor more than 1 - the engine is running too slowly.<br>Factor less than 1 - the engine is leaving spare processing time.<br>This is averaged over the last " << App::ourTickLengthsAgo << " ticks.<p>Agents can look at this to adjust the resources they use according to current spare processing time.  For example, if you have a random snowflake generator in winter, you could increase the chance of generation if PACE is low, and decrease the chance if PACE is high.  When you do this remember that computers will be arbitarily faster in the future, so you should place an extra upper limit on the number of snowflakes to stop them filling the whole screen.<p>Note that PACE only measures the time the engine takes for tick processing, not for handling requests from external applications, or adding Windows events to its internal queue.  Because of this, you should aim for a value which is a bit less than 1.<p>Compare @#RACE@.")))->str() ),
-#endif
+	OpSpec( "PACE", GeneralHandlers::FloatRV_PACE, "", "", categoryTime, "Returns the tick rate satisfaction factor.<br>Factor 1 - ticks are taking the time we would expect them to, which is set by @#BUZZ@.<br>Factor more than 1 - the engine is running too slowly.<br>Factor less than 1 - the engine is leaving spare processing time.<br>This is averaged over the last 10 ticks.<p>Agents can look at this to adjust the resources they use according to current spare processing time.  For example, if you have a random snowflake generator in winter, you could increase the chance of generation if PACE is low, and decrease the chance if PACE is high.  When you do this remember that computers will be arbitarily faster in the future, so you should place an extra upper limit on the number of snowflakes to stop them filling the whole screen.<p>Note that PACE only measures the time the engine takes for tick processing, not for handling requests from external applications, or adding Windows events to its internal queue.  Because of this, you should aim for a value which is a bit less than 1.<p>Compare @#RACE@." ),
 	OpSpec( "STOF", GeneralHandlers::FloatRV_STOF, "s", "value", categoryVariables, "Converts a string in decimal to a floating point number.  Characters in the string after an initial number are quietly ignored.  If there is no obvious number then zero is returned." ),
 	OpSpec( "MTHX", CreatureHandlers::FloatRV_MTHX, "", "", categoryAgents, "This returns the X position of the @#TARG@ creature's mouth attachment point in absolute (map) coordinates."),
 	OpSpec( "MTHY", CreatureHandlers::FloatRV_MTHY, "", "", categoryAgents, "This returns the Y position of the @#TARG@ creature's mouth attachment point in absolute (map) coordinates."),
@@ -748,31 +826,41 @@ OpSpec ourFloatRVTable[] =
 	OpSpec( "ORGF", CreatureHandlers::FloatRV_ORGF, "ii", "organ_number data", categoryCreatures, "Returns floating point data about the specified organ.  The organ number is from 0 to @#ORGN@ - 1.  The data parameter specifies what information is returned:<p>0 - Clock rate in updates per tick (as locus)<br>1 - Short term life force as a proportion of intial (as locus)<br>2 - Factor to modulate rate of repair (as locus)<br>3 - Injury to apply (as locus)<br>4 - Initial life force, a million is the largest initial value<br>5 - Short term life force, temporary damage<br>6 - Long term life force, permanent damage<br>7 - Long term rate damage during repair<br>8 - Energy cost to run this organ, calculated from the number of receptors, emitters and reactions<br>9 - Damage done to the organ if no energy is available" ),
 	OpSpec( "ITOF", GeneralHandlers::FloatRV_ITOF, "i", "number_to_convert", categoryVariables, "Converts an integer value into its floating-point equivalent."),
 	OpSpec( "DISQ", AgentHandlers::FloatRV_DISQ,  "a", "other", categoryAgents, "Returns the square of the distance between the centre points of the target agent, and the other agent.  It is quicker to compare this square against a squared constant directly, or if you need the actual distance use @#SQRT@."),
+	OpSpec( "FVEL", AgentHandlers::FloatRV_FVEL,  "", "", categoryMotion, "Get current forwards velocity."),
+	OpSpec( "SVEL", AgentHandlers::FloatRV_SVEL,  "", "", categoryMotion, "Get current sideways velocity."),
+	OpSpec( "AVEL", AgentHandlers::FloatRV_AVEL,  "", "", categoryMotion, "Get current angular velocity."),
+	OpSpec( "SPIN", AgentHandlers::FloatRV_SPIN,  "", "", categoryMotion, "Get current facing angle."),
+	OpSpec( "ANGL", AgentHandlers::FloatRV_ANGL,  "ff", "x y", categoryMotion, "Gets the angle (as a fraction of a circle) from TARG's position to the position specified."),
+	OpSpec( "VECX", AgentHandlers::FloatRV_VECX,  "f", "angle", categoryMotion, "Returns a normalised vector for the given angle (X coordinate)."),
+	OpSpec( "VECY", AgentHandlers::FloatRV_VECY,  "f", "angle", categoryMotion, "Returns a normalised vector for the given angle (Y coordinate)."),
+	OpSpec( "ADMP", AgentHandlers::FloatRV_ADMP,  "", "", categoryMotion, "Get current angular damping.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "FDMP", AgentHandlers::FloatRV_FDMP,  "", "", categoryMotion, "Get current forwards damping.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "SDMP", AgentHandlers::FloatRV_SDMP,  "", "", categoryMotion, "Get current sideways damping.  The value is from 0.0 to 1.0 where 0.0 means no damping, 1.0 maximum."),
+	OpSpec( "VARC", AgentHandlers::FloatRV_VARC,  "", "", categoryMotion, "[not implemented yet]"),
 };
 
 OpSpec ourAgentRVTable[] =
 {
 	OpSpec( "TARG", 	CAOSMachine::AgentRV_TARG,  "", "", categoryAgents, "Returns current target, on whom many commands act." ),
 	OpSpec( "OWNR", CAOSMachine::AgentRV_OWNR,  "", "", categoryAgents, "Returns the agent who's virtual machine the script is running on.  Returns @#NULL@ for injected or install scripts."),
-	OpSpec( "FROM", CAOSMachine::AgentRV_FROM,  "", "", categoryAgents, "If we're processing a message, this is the @#OWNR@ who sent the message.  @#NULL@ if the message was sent from an injected script or an install script." ),
 	OpSpec( "_IT_", CAOSMachine::AgentRV_IT,  "", "", categoryAgents, "Returns the agent @#OWNR@'s attention was on <i>when the current script was entered</i>.  This is only valid if OWNR is a creature.  Compare @#IITT@." ),
 	OpSpec( "PNTR", AgentHandlers::AgentRV_PNTR,  "", "", categoryAgents, "Returns the mouse pointer, which is also known as the hand." ),
 	OpSpec( "NORN", AgentHandlers::AgentRV_NORN,  "", "", categoryCreatures, "Returns the creature currently selected by the user." ),
 	OpSpec( "NULL", AgentHandlers::AgentRV_NULL, "", "", categoryAgents, "Returns a null agent pointer." ),
 	OpSpec( "HELD", AgentHandlers::AgentRV_HELD,  "", "", categoryAgents, "Returns the item currently held by the target.  For vehicles this returns a random carried agent if carrying more than one.  Consider using @#EPAS@ instead." ),
 	OpSpec( "CARR", AgentHandlers::AgentRV_CARR,  "", "", categoryAgents, "Returns the the agent currently holding the target, or @#NULL@ if there is none." ),
-	OpSpec( "AGNT", AgentHandlers::AgentRV_AGNT,  "i", "unique_id", categoryDebug, "Given a unique identifier, returns the corresponding agent.  Returns @#NULL@ if the agent no longer exists.  @#UNID@ extracts the unique id.  NOTE: This should only be used for external programs to persistently refer to an agent. Variables can use @#SETA@ to store agent r-values directly for internal use." ),
+	OpSpec( "AGNT", AgentHandlers::AgentRV_AGNT,  "i", "unique_id", categoryDebug, "Given a unique identifier, returns the corresponding agent.  Returns @#NULL@ if the agent no longer exists.  @#UNID@ extracts the unique id.  NOTE: This should only be used for external programs to persistently refer to an agent during a session. Variables can use @#SETA@ to store agent r-values directly for internal use.  Unique identifiers can change across saved sessions." ),
 	OpSpec( "TRCK", DisplayHandlers::AgentRV_TRCK,  "", "", categoryCamera, "Returns the agent being tracked by the camera, if any."),
-	OpSpec( "HOTS", AgentHandlers::AgentRV_HOTS,  "", "", categoryInput, "Returns the agent nearest the screen under the hotspot of the pointer.  For each agent, @#TRAN@ decides whether this allows for transparent pixels."),
+	OpSpec( "HOTS", AgentHandlers::AgentRV_HOTS,  "", "", categoryInput, "Returns the agent nearest the screen under the hotspot of the pointer.  For each agent, @#TRAN@ decides whether this allows for transparent pixels.  See also @#HOTP@, which does the same for compound parts."),
 	OpSpec( "TWIN", AgentHandlers::AgentRV_TWIN,  "ai", "original agent_null", categoryAgents, "Clones an agent, and returns the replica.  If agent_null is set to 1 the agents that this agent points to (in OVxx, or VAxx in its running script) are set to NULL in the clone.  If agent_null is 0, then the clone points to the same agents as the original.  When using agent_null 1, you might want to call @#STPT@ first so variables being used mid-script aren't cleared under the agent's nose."),
 	OpSpec( "NCLS", AgentHandlers::AgentRV_NCLS,  "aiii", "previous family genus species", categoryAgents, "Finds the next agent in the agent list which also matches the given classifier.  If the previous agent doesn't exist or doesn't match the classifier then the first agent matching it is returned.  If none match the classifier, then @#NULL@ is returned."),
 	OpSpec( "PCLS", AgentHandlers::AgentRV_PCLS,  "aiii", "next family genus species", categoryAgents, "Same as @#NCLS@, only cycles the other way."),
 	OpSpec( "IITT", CreatureHandlers::AgentRV_IITT, "", "", categoryAgents, "Returns the target creature's current agent of attention.  Compare @#_IT_@."),
 	OpSpec( "MTOC", CreatureHandlers::AgentRV_MTOC, "s", "moniker", categoryGenetics, "Returns the creature with the given moniker.  If there is no agent alive with that moniker, then returns @#NULL@.  See also @#MTOA@."),
 	OpSpec( "MTOA", CreatureHandlers::AgentRV_MTOA, "s", "moniker", categoryGenetics, "Returns the agent which references the given moniker.  The moniker could be stored in any of the gene slots for that agent, including the special slot 0 for a creature.  If the moniker is not currently used in the game, then returns @#NULL@.  This command can be slow - use @#MTOC@ if possible."),
-	OpSpec( "PRT:", PortHandlers::AgentRV_PRT, idSubAgentRVTable_PRT, "subcommand", categoryNoNeedToDocument, "X" ),
 	OpSpec( "HHLD", CreatureHandlers::AgentRV_HHLD, "", "", categoryCreatures, "Returns the creature currently holding hands with the pointer agent. NULL if no agent is holding hands."),
 	OpSpec( "TACK", DebugHandlers::AgentRV_TACK, "", "", categoryDebug, "Returns the agent currently being @#DBG: TACK@ed."), 
+	OpSpec( "SEEN", CreatureHandlers::AgentRV_SEEN, "i", "category", categoryCreatures, "Returns the agent which the creature TARG has currently in mind for the category specified."),
 };
 
 #define TEN_VA_DEFS( nameprefix )\
@@ -847,79 +935,96 @@ OpSpec ourVariableTable[] =
 	TEN_MV_DEFS( "MV9" )	// MV90..MV99
 	OpSpec( "VELX", AgentHandlers::Variable_VELX, "", "", categoryMotion, "Horizontal velocity in pixels per tick - floating point." ),
 	OpSpec( "VELY", AgentHandlers::Variable_VELY, "", "", categoryMotion, "Vertical velocity in pixels per tick - floating point." ),
-	OpSpec( "GAME", GeneralHandlers::Variable_GAME, "s", "variable_name", categoryVariables, "A game variable is a global variable which can be referenced by name.  <blockquote>eg: SETV GAME \"pi\" 3.142</blockquote>Game variables are stored as part of the world and so will be saved out in the world file. If a script uses a non-existant game variable, that variable will be created automatically (with undefined contents).  Agents, integers, floats and strings can be stored in game variables.  Variable names are case sensitive.  <p>There are some conventions for the variable names:<br> engine_ for Creatures Engine<br> cav_ for Creatures Adventures<br> c3_	for Creatures 3<p>It's important to follow these, as 3rd party developers will just use whatever names they fancy.  @#DELG@ deletes a game variable.  See also the table of engine @#Game Variables@." ),
+	OpSpec( "GAME", GeneralHandlers::Variable_GAME, "s", "variable_name", categoryVariables, "A game variable is a global variable which can be referenced by name.  <blockquote>eg: SETV GAME \"pi\" 3.142</blockquote>Game variables are stored as part of the world and so will be saved out in the world file. If a script uses a non-existant game variable, that variable will be created automatically (with value integer zero).  Agents, integers, floats and strings can be stored in game variables.  Variable names are case sensitive.  When a new world is loaded, all the game variables are cleared.<p>There are some conventions for the variable names:<br> engine_ for Creatures Engine<br> cav_ for Creatures Adventures<br> c3_	for Creatures 3<p>It's important to follow these, as 3rd party developers will just use whatever names they fancy.  @#DELG@ deletes a game variable.  See also the table of engine @#Game Variables@." ),
 	OpSpec( "_P1_", CAOSMachine::Variable_P1,  "", "", categoryVariables, "Returns the first parameter sent to a script." ),
 	OpSpec( "_P2_", CAOSMachine::Variable_P2,  "", "", categoryVariables, "Returns the second parameter sent to a script." ),
 	OpSpec( "AVAR", AgentHandlers::Variable_AVAR, "ai", "agent index", categoryVariables, "This is the OVnn variable of the agent passed in.  It is equivalent to target agent, OVnn, but means that you don't need to target it first :)  You can also use them to implement primitive arrays."),
+	OpSpec( "FROM", CAOSMachine::Variable_FROM,  "", "", categoryAgents, "If we're processing a message, this is the @#OWNR@ who sent the message.  @#NULL@ if the message was sent from an injected script or an install script.  If the message was sent over the network using @#NET: WRIT@, then this contains the user id of the sender, as a string." ),
+	OpSpec( "NAME", AgentHandlers::Variable_NAME, "m", "variable_name", categoryVariables, "This is a named variable, similar to a @#GAME@ variable, only local to the target agent.  See also @#MAME@. The \"name\" of the variable is not limited to strings, but can be anything stored in a variable. i.e. integer, float, string, even an agent."),
+	OpSpec( "MAME", AgentHandlers::Variable_MAME, "m", "variable_name", categoryVariables, "Machine variable version of @#NAME@. Accesses the same variables, only via @#OWNR@ rather than @#TARG@.  This is the same difference as between @#MVxx@ and @#OVxx@."),
+	OpSpec( "EAME", GeneralHandlers::Variable_EAME, "s", "variable_name", categoryVariables, "Very similar to @#GAME@ variables only they aren't saved or loaded with the world; they keep their value between worlds for one session of the engine.  The E in EAME stands for for Engine.  See the table of engine @#Eame Variables@." ),
 };
 
-
-void CAOSDescription::LoadDefaultTables()
+void GeneralPushTables(CAOSDescription& caosDescription)
 {
-	myTables.clear();
+	caosDescription.PushTable(idCommandTable, ourCommandTable, sizeof(ourCommandTable) / sizeof(OpSpec));
 	
-	PushTable(idCommandTable, ourCommandTable, sizeof(ourCommandTable) / sizeof(OpSpec));
+	caosDescription.PushTable(idIntegerRVTable, ourIntegerRVTable, sizeof(ourIntegerRVTable) / sizeof(OpSpec));
+	caosDescription.PushTable(idVariableTable, ourVariableTable, sizeof(ourVariableTable) / sizeof(OpSpec));
+	caosDescription.PushTable(idFloatRVTable, ourFloatRVTable, sizeof(ourFloatRVTable) / sizeof(OpSpec));
+	caosDescription.PushTable(idStringRVTable, ourStringRVTable, sizeof(ourStringRVTable) / sizeof(OpSpec));
+	caosDescription.PushTable(idAgentRVTable, ourAgentRVTable, sizeof(ourAgentRVTable) / sizeof(OpSpec));
 	
-	PushTable(idIntegerRVTable, ourIntegerRVTable, sizeof(ourIntegerRVTable) / sizeof(OpSpec));
-	PushTable(idVariableTable, ourVariableTable, sizeof(ourVariableTable) / sizeof(OpSpec));
-	PushTable(idFloatRVTable, ourFloatRVTable, sizeof(ourFloatRVTable) / sizeof(OpSpec));
-	PushTable(idStringRVTable, ourStringRVTable, sizeof(ourStringRVTable) / sizeof(OpSpec));
-	PushTable(idAgentRVTable, ourAgentRVTable, sizeof(ourAgentRVTable) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_NEW, ourSubCommandTable_NEW, sizeof(ourSubCommandTable_NEW) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_MESG, ourSubCommandTable_MESG, sizeof(ourSubCommandTable_MESG) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_STIM, ourSubCommandTable_STIM, sizeof(ourSubCommandTable_STIM) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_URGE, ourSubCommandTable_URGE, sizeof(ourSubCommandTable_URGE) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_SWAY, ourSubCommandTable_SWAY, sizeof(ourSubCommandTable_SWAY) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_ORDR, ourSubCommandTable_ORDR, sizeof(ourSubCommandTable_ORDR) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_GIDS, ourSubCommandTable_GIDS, sizeof(ourSubCommandTable_GIDS) / sizeof(OpSpec));
+	caosDescription.PushTable(AgentHandlers::Command_NEW, idCommandTable, "NEW:", ourSubCommandTable_NEW, sizeof(ourSubCommandTable_NEW) / sizeof(OpSpec));
 
-	PushTable(idSubCommandTable_PRT, ourSubCommandTable_PRT, sizeof(ourSubCommandTable_PRT) / sizeof(OpSpec));
+	caosDescription.PushTable(AgentHandlers::Command_MESG, idCommandTable, "MESG", ourSubCommandTable_MESG, sizeof(ourSubCommandTable_MESG) / sizeof(OpSpec));
+	caosDescription.PushTable(CreatureHandlers::Command_STIM, idCommandTable, "STIM", ourSubCommandTable_STIM, sizeof(ourSubCommandTable_STIM) / sizeof(OpSpec));
+	caosDescription.PushTable(CreatureHandlers::Command_URGE, idCommandTable, "URGE", ourSubCommandTable_URGE, sizeof(ourSubCommandTable_URGE) / sizeof(OpSpec));
+	caosDescription.PushTable(CreatureHandlers::Command_SWAY, idCommandTable, "SWAY", ourSubCommandTable_SWAY, sizeof(ourSubCommandTable_SWAY) / sizeof(OpSpec));
+	caosDescription.PushTable(CreatureHandlers::Command_ORDR, idCommandTable, "ORDR", ourSubCommandTable_ORDR, sizeof(ourSubCommandTable_ORDR) / sizeof(OpSpec));
+	caosDescription.PushTable(GeneralHandlers::Command_GIDS, idCommandTable, "GIDS", ourSubCommandTable_GIDS, sizeof(ourSubCommandTable_GIDS) / sizeof(OpSpec));
 
-	PushTable(idSubCommandTable_PAT, ourSubCommandTable_PAT, sizeof(ourSubCommandTable_PAT) / sizeof(OpSpec));
-	PushTable(idSubCommandTable_DBG, ourSubCommandTable_DBG, sizeof(ourSubCommandTable_DBG) / sizeof(OpSpec));	
-	PushTable(idSubCommandTable_BRN, ourSubCommandTable_BRN, sizeof(ourSubCommandTable_BRN) / sizeof(OpSpec));	
+	caosDescription.PushTable(PortHandlers::Command_PRT, idCommandTable, "PRT:", ourSubCommandTable_PRT, sizeof(ourSubCommandTable_PRT) / sizeof(OpSpec));
 
-	PushTable(idSubCommandTable_PRAY, ourSubCommandTable_PRAY, sizeof(ourSubCommandTable_PRAY) / sizeof(OpSpec));	
-	PushTable(idSubIntegerRVTable_PRAY, ourSubIntegerRVTable_PRAY, sizeof(ourSubIntegerRVTable_PRAY) / sizeof(OpSpec));	
-	PushTable(idSubStringRVTable_PRAY, ourSubStringRVTable_PRAY, sizeof(ourSubStringRVTable_PRAY) / sizeof(OpSpec));
+	caosDescription.PushTable(CompoundHandlers::Command_PAT, idCommandTable, "PAT:", ourSubCommandTable_PAT, sizeof(ourSubCommandTable_PAT) / sizeof(OpSpec));
+	caosDescription.PushTable(DebugHandlers::Command_DBG, idCommandTable, "DBG:", ourSubCommandTable_DBG, sizeof(ourSubCommandTable_DBG) / sizeof(OpSpec));	
+	caosDescription.PushTable(CreatureHandlers::Command_BRN, idCommandTable, "BRN:", ourSubCommandTable_BRN, sizeof(ourSubCommandTable_BRN) / sizeof(OpSpec));	
 
-	PushTable(idSubCommandTable_GENE, ourSubCommandTable_GENE, sizeof(ourSubCommandTable_GENE) / sizeof(OpSpec));	
-	PushTable(idSubCommandTable_FILE, ourSubCommandTable_FILE, sizeof(ourSubCommandTable_FILE) / sizeof(OpSpec));	
+	caosDescription.PushTable(PrayHandlers::Command_PRAY, idCommandTable, "PRAY", ourSubCommandTable_PRAY, sizeof(ourSubCommandTable_PRAY) / sizeof(OpSpec));	
+	caosDescription.PushTable(PrayHandlers::IntegerRV_PRAY, idIntegerRVTable, "PRAY", ourSubIntegerRVTable_PRAY, sizeof(ourSubIntegerRVTable_PRAY) / sizeof(OpSpec));	
+	caosDescription.PushTable(PrayHandlers::StringRV_PRAY, idStringRVTable, "PRAY", ourSubStringRVTable_PRAY, sizeof(ourSubStringRVTable_PRAY) / sizeof(OpSpec));
 
-	PushTable(idSubCommandTable_HIST, ourSubCommandTable_HIST, sizeof(ourSubCommandTable_HIST) / sizeof(OpSpec));	
-	PushTable(idSubIntegerRVTable_HIST, ourSubIntegerRVTable_HIST, sizeof(ourSubIntegerRVTable_HIST) / sizeof(OpSpec));	
-	PushTable(idSubStringRVTable_HIST, ourSubStringRVTable_HIST, sizeof(ourSubStringRVTable_HIST) / sizeof(OpSpec));
+	caosDescription.PushTable(CreatureHandlers::Command_GENE, idCommandTable, "GENE", ourSubCommandTable_GENE, sizeof(ourSubCommandTable_GENE) / sizeof(OpSpec));	
+	caosDescription.PushTable(GeneralHandlers::Command_FILE, idCommandTable, "FILE", ourSubCommandTable_FILE, sizeof(ourSubCommandTable_FILE) / sizeof(OpSpec));	
 
-	PushTable(idSubIntegerRVTable_PRT, ourSubIntegerRVTable_PRT, sizeof(ourSubIntegerRVTable_PRT) / sizeof(OpSpec));
-	PushTable(idSubStringRVTable_PRT, ourSubStringRVTable_PRT, sizeof(ourSubStringRVTable_PRT) / sizeof(OpSpec));
-	PushTable(idSubAgentRVTable_PRT, ourSubAgentRVTable_PRT, sizeof(ourSubAgentRVTable_PRT) / sizeof(OpSpec));
+	caosDescription.PushTable(HistoryHandlers::Command_HIST, idCommandTable, "HIST", ourSubCommandTable_HIST, sizeof(ourSubCommandTable_HIST) / sizeof(OpSpec));	
+	caosDescription.PushTable(HistoryHandlers::IntegerRV_HIST, idIntegerRVTable, "HIST", ourSubIntegerRVTable_HIST, sizeof(ourSubIntegerRVTable_HIST) / sizeof(OpSpec));	
+	caosDescription.PushTable(HistoryHandlers::StringRV_HIST, idStringRVTable, "HIST", ourSubStringRVTable_HIST, sizeof(ourSubStringRVTable_HIST) / sizeof(OpSpec));
 
-	ASSERT(myTables.size() == DEFAULT_NUMBER_OF_TABLES);
+	caosDescription.PushTable(PortHandlers::IntegerRV_PRT, idIntegerRVTable, "PRT:", ourSubIntegerRVTable_PRT, sizeof(ourSubIntegerRVTable_PRT) / sizeof(OpSpec));
+	caosDescription.PushTable(PortHandlers::StringRV_PRT, idStringRVTable, "PRT:", ourSubStringRVTable_PRT, sizeof(ourSubStringRVTable_PRT) / sizeof(OpSpec));
+	caosDescription.PushTable(PortHandlers::AgentRV_PRT, idAgentRVTable, "PRT:", ourSubAgentRVTable_PRT, sizeof(ourSubAgentRVTable_PRT) / sizeof(OpSpec));
 
-	myCAOSEngineVersion = GetEngineVersion();
+	caosDescription.PushTable(SoundHandlers::Command_CD, idCommandTable, "_CD_", ourSubCommandTable_CD, sizeof(ourSubCommandTable_CD) / sizeof(OpSpec));	
+	caosDescription.PushTable(SoundHandlers::IntegerRV_CD, idIntegerRVTable, "_CD_", ourSubIntegerRVTable_CD, sizeof(ourSubIntegerRVTable_CD) / sizeof(OpSpec));	
+
+	// Generate version including modules
+	std::string version = GetEngineVersion();
+	std::string modules = ModuleImporter::GetModulesDescriptiveList();
+	if (!modules.empty())
+		version += " (" + modules + ")";
+
+	// Store engine version so it can be serialised out,
+	caosDescription.SetEngineVersion(version);
 
 	// If this ASSERTs:
 	// Make sure you've added a category string for each category type in the enumeration, and vice versa
-	ASSERT(categoryMax == sizeof(ourCategoryText) / sizeof(std::string));
-	myCategoryText = std::vector<std::string>(ourCategoryText, ourCategoryText + sizeof(ourCategoryText) / sizeof(std::string));
+	const int categoryTextSize = sizeof(ourCategoryText);
+	const int stringSize = sizeof(std::string);
+	ASSERT(categoryMax == categoryTextSize / stringSize);
+	caosDescription.SetCategoryText(std::vector<std::string>(ourCategoryText, ourCategoryText + sizeof(ourCategoryText) / sizeof(std::string)));
 
-	myScriptNames.resize(256);
+	// Store the script names , so they can be serialised out 
+	// and accessed programmatically in the CAOS tool, for display 
+	// in the scriptorium browser
+	std::vector< std::string > scriptNames;
+	scriptNames.resize(256);
 	for (int i = 2; i < sizeOurScriptNumbers; ++i)
 	{
 		TableSpec* spec = ourScriptNumbers + i;
 		if (spec->entries.size() > 0)
 		{
 			int entry = atoi(spec->entries[0].c_str());
-			ASSERT(entry >= 0 && entry < myScriptNames.size());
+			ASSERT(entry >= 0 && entry < scriptNames.size());
 			std::string str = spec->entries[1];
 			for (int i = 0; i < str.size(); ++i)
 				if (str[i] != '@')
-					myScriptNames[entry] += str[i];
+					scriptNames[entry] += str[i];
 
 		}
 	}
-
-#ifdef _DEBUG
-	SanityCheck();
-#endif // _DEBUG 
+	caosDescription.SetScriptNames(scriptNames);
 }
+
+int dummyGeneralPushTables = CAOSDescription::AddTableRegisterFunction(&GeneralPushTables);
+

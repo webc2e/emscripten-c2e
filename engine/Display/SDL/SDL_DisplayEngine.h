@@ -1,10 +1,8 @@
 // --------------------------------------------------------------------------
 // Filename:	SDL_DisplayEngine.h
 // --------------------------------------------------------------------------
-#ifndef		SDL_DISPLAYENGINE_H
-#define		SDL_DISPLAYENGINE_H
-
-
+#ifndef SDL_DISPLAYENGINE_H
+#define SDL_DISPLAYENGINE_H
 
 #ifndef C2E_SDL
 #error not C2E_SDL not defined
@@ -13,75 +11,64 @@
 #include <SDL/SDL.h>
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #ifndef _WIN32
 #include <string.h>
-inline void ZeroMemory( void* mem, size_t count )
-	{ memset( mem, 0, count ); }
+inline void ZeroMemory(void *mem, size_t count) { memset(mem, 0, count); }
 #endif
 
-#include	"../Bitmap.h"
-#include	"../Position.h"
+#include "../Bitmap.h"
+#include "../Gallery.h"
+#include "../Position.h"
 
-#define		DISPLAY_MONITOR		(1<<0)
-#define		DISPLAY_BACKGROUND	(1<<1)
-#define		DISPLAY_SPRITES		(1<<2)
+#define DISPLAY_MONITOR (1 << 0)
+#define DISPLAY_BACKGROUND (1 << 1)
+#define DISPLAY_SPRITES (1 << 2)
 
-const std::string theDisplayErrorTag("display_engine");
+// const std::string theDisplayErrorTag("display_engine");
 
 ///////////////////////////////////////////////////////////////////////////
 // Code to switch between pixel formats taken from C2 Renderer
 ///////////////////////////////////////////////////////////////////////////
 
-	enum PIXEL_FORMAT
-	{
-		RGB_UNKNOWN	=0,
-		RGB_555,
-		RGB_565,
-	};
+enum PIXEL_FORMAT {
+  RGB_UNKNOWN = 0,
+  RGB_555,
+  RGB_565,
+};
 
-	struct RGB
-	{
-		uint8_t red;
-		uint8_t green;
-		uint8_t blue;
-	};
+struct RGB {
+  uint8 red;
+  uint8 green;
+  uint8 blue;
+};
 
-
-#define REG_DISPLAY_TYPE_KEY "Display Type"
 // C16 file flags.
 const DWORD C16_FLAG_565 = 0x00000001;
 const DWORD C16_16BITFLAG = 0x00000002;
 
-#define RGB_TO_565(r, g, b, result) \
-	result = (((r) & 0xf8) << 8) | (((g) & 0xfc) << 3)|(((b) & 0xf8) >> 3); 
+#define RGB_TO_565(r, g, b, result)                                            \
+  result = (((r)&0xf8) << 8) | (((g)&0xfc) << 3) | (((b)&0xf8) >> 3);
 
+#define RGB_TO_555(r, g, b, result)                                            \
+  result = (((r)&0xf8) << 7) | (((g)&0xf8) << 2) | (((b)&0xf8) >> 3);
 
-#define RGB_TO_555(r, g, b, result) \
-	result = (((r) & 0xf8) << 7) | (((g) & 0xf8) << 2)|(((b) & 0xf8) >> 3); 
+#define P565_TO_RGB(pixel, r, g, b)                                            \
+  (r) = ((pixel) >> 8);                                                        \
+  (g) = ((pixel) >> 3);                                                        \
+  (b) = ((pixel) << 3);
 
-
-#define P565_TO_RGB(pixel, r, g, b) \
-	(r) = ((pixel) >> 8); \
-	(g) = ((pixel) >> 3); \
-	(b) = ((pixel) << 3) ; 
-
-#define P555_TO_RGB(pixel, r, g, b) \
-	(r) = ((pixel) >> 7); \
-	(g) = ((pixel) >> 2) ; \
-	(b) = ((pixel) << 3) ; 
-
-
-
+#define P555_TO_RGB(pixel, r, g, b)                                            \
+  (r) = ((pixel) >> 7);                                                        \
+  (g) = ((pixel) >> 2);                                                        \
+  (b) = ((pixel) << 3);
 
 class Background;
 class Bitmap;
 class CompressedBitmap;
 class NormalGallery;
-class FastDrawingObject;
-class FastEntityImage;
 class MapImage;
 class DrawableObjectHandler;
 class EntityImage;
@@ -89,540 +76,340 @@ class EntityImage;
 class DisplayEngine //: public Engine
 {
 public:
-DisplayEngine(int do_not_call_me,int as_i_never_return) { while (true);}
-	PIXEL_FORMAT GetMyPixelFormat() { return myPixelFormat; };
-
-	enum SIDText
-	{
-		sidNoBackgroundCreated=0,
-		sidNoGalleryCreated,
-		sidNoGalleryFound,
-		sidGeneralDirectDrawError,
-		sidGeneralBackgroundDrawingError,
-		sidGeneralSpriteDrawingError,
-		sidNoImagesDirectory,
-		sidEmptyGalleryString,
-		sidConvertingGraphics,
-		sidDirectDrawNotCreated,
-		sidGalleryNotCreated,
-		sidGalleryNotFound,
-		sidGalleryUnknownType,
-		sidMapImageNotCreated,
-		sidMissingGallery,
-		sidGalleryNotSpecified,
-		sidCreatureGalleryCorrupt,
-		sidNoSecondaryCameraCreated,
-		sidBitmapSizeTooSmall,
-		sidInvalidBasePose,
-		sidDodgyPixelFormat
-	};
+  DisplayEngine(int do_not_call_me, int as_i_never_return) {
+    while (true)
+      ;
+  }
+
+  enum SIDText {
+    sidNoBackgroundCreated = 0,
+    sidNoGalleryCreated,
+    sidNoGalleryFound,
+    sidGeneralDirectDrawError,
+    sidGeneralBackgroundDrawingError,
+    sidGeneralSpriteDrawingError,
+    sidNoImagesDirectory,
+    sidEmptyGalleryString,
+    sidConvertingGraphics,
+    sidDirectDrawNotCreated,
+    sidGalleryNotCreated,
+    sidGalleryNotFound,
+    sidGalleryUnknownType,
+    sidMapImageNotCreated,
+    sidMissingGallery,
+    sidGalleryNotSpecified,
+    sidCreatureGalleryCorrupt,
+    sidNoSecondaryCameraCreated,
+    sidBitmapSizeTooSmall,
+    sidInvalidBasePose,
+    sidDodgyPixelFormat
+  };
+
+  // constructors are private to ensure only one object
+  // ever exists
+
+  // destructor
+  virtual ~DisplayEngine(void);
+
+  static DisplayEngine &theRenderer();
+
+  void CreateTest();
+
+  void Stop(void);
 
-	// constructors are private to ensure only one object 
-	// ever exists
+  //	bool Check16BitFormat(uint32 storedDisplayType,
+  //						std::vector<std::string>&
+  //foldersToConvert);
 
-	// destructor
-	virtual ~DisplayEngine(void);
+  //	void DoConversion(std::string& imagepath);
 
-	static DisplayEngine& theRenderer();
+  void DrawSpriteToBitmap(Bitmap *destination, Position pos,
+                          Bitmap *const source, uint16 textColourRef = 0,
+                          uint16 backgroundColourRef = 0);
 
+  void DrawLine(int32 x1, int32 y1, int32 x2, int32 y2, uint8 lineColourRed = 0,
+                uint8 lineColourGreen = 0, uint8 lineColourBlue = 0,
+                uint8 stippleon = 0, uint8 stippleoff = 0,
+                uint32 stipplestartAt = 0);
 
+  void DrawLineToBitmap(Bitmap *bitmap, int32 x1, int32 y1, int32 x2, int32 y2,
+                        uint8 lineColourRed = 0, uint8 lineColourGreen = 0,
+                        uint8 lineColourBlue = 0);
 
+  void GetNextWord(std::string &sentence, std::string &word);
 
+  ////////////////////////////////////////////////////////////////////////////
+  // Get and Set Methods...
+  ////////////////////////////////////////////////////////////////////////////
 
-	void CreateTest();
+  inline uint32 &Flags(void);
 
-	void Stop(void);
+  inline void SetFlags(uint32 flags);
 
-	void Check16BitFormat();
-	void DoConversion(std::string& imagepath);
+  int32 GetSurfaceWidth(void) { return mySurfaceArea.right; }
+  int32 GetSurfaceHeight(void) { return mySurfaceArea.bottom; }
 
+  void GetSurfaceArea(RECT &rect) {
+    rect.top = mySurfaceArea.top;
+    rect.bottom = mySurfaceArea.bottom;
+    rect.left = mySurfaceArea.left;
+    rect.right = mySurfaceArea.right;
+  }
 
+  void ClientToScreen(int32 &x, int32 &y);
+  void ScreenToClient(int32 &x, int32 &y);
 
-	void DrawSpriteToBitmap( Bitmap* destination,
-								 Position pos,
-								 Bitmap* const source,
-								 uint16 textColourRef = 0,
-								uint16 backgroundColourRef = 0);
+  inline bool IsFullScreen();
 
-	void DrawString(	Bitmap* destination,
-					std::string text,
-					bool centred,
-					uint16 textColour,
-					uint16 backgroundColour);
+  bool ProgressBarAlreadyStarted() { return myProgressBarHasBeenStarted; }
 
-	void DrawStringToBackBuffer(int x,
-								int y,
-								std::string text,
-								bool centred,
-								uint16 textColour,
-								uint16 backgroundColour);
+  ////////////////////////////////////////////////////////////////////////////
+  // Rendering Methods
+  ////////////////////////////////////////////////////////////////////////////
 
-	void DrawLine( int32 x1,
-					int32 y1,
-					int32 x2,
-					int32 y2 ,	 
-					uint8_t lineColourRed = 0,
-					uint8_t lineColourGreen= 0,
-					uint8_t lineColourBlue = 0,
-					uint8_t stippleon  =0,
-					uint8_t stippleoff = 0, 
-					uint32 stipplestartAt = 0   ) ;
+  // dummy function needed because is a pure
+  // virtual in the base class.  Must decide
+  // whether to remove it from engine.
+  virtual void Update() {}
 
-	void DrawLineToBackBuffer( int32 x1, int32 y1, int32 x2, int32 y2,
-							 uint8_t lineColourRed /*= 0*/,
-							 uint8_t lineColourGreen/*= 0*/,
-							 uint8_t lineColourBlue /*= 0*/);
+  void DrawToFrontBuffer();
 
-	void DrawLineToBitmap( Bitmap* bitmap,
-									 int32 x1, int32 y1, int32 x2, int32 y2,
-							 uint8_t lineColourRed = 0,
-							 uint8_t lineColourGreen = 0,
-							 uint8_t lineColourBlue = 0);
+  inline void DrawBitmap(Position &position, Bitmap &bitmap);
+  inline void DrawWholeBitmapRegardless(Position &position, Bitmap &bitmap);
 
-	void GetNextWord(std::string& sentence,std::string& word);
+  void DrawSprite(Position &position, Bitmap &bitmap);
+  void DrawCompressedSprite(Position &position, CompressedBitmap *bitmap);
+  void DrawMirroredCompressedSprite(Position &position,
+                                    CompressedBitmap *bitmap);
+  void DrawAlphaCompressedSprite(Position &position, CompressedBitmap *bitmap,
+                                 int intensity);
+  void DrawAlphaSprite(Position &position, Bitmap &bitmap, int intensity);
 
+  void DrawMirroredSprite(Position &position, Bitmap &bitmap);
 
-////////////////////////////////////////////////////////////////////////////
-// Get and Set Methods...
-////////////////////////////////////////////////////////////////////////////
+  uint16 *GetBackBufferPtr() {
+    if (myCurrentOffScreenBufferPtr)
+      return myCurrentOffScreenBufferPtr;
+    else
+      return OpenBackBuffer();
+  }
 
-	inline uint32& Flags(void);
+  // Switch to the next fullscreen mode
+  // (this function replaces directx version ChangeDisplayMode() )
+  void NextScreenMode();
 
-	inline void SetFlags(uint32 flags);
+  bool ToggleFullScreenMode();
 
-	inline int32 GetSurfaceWidth(void);
-	inline int32 GetSurfaceHeight(void);
+  // pass new width and height to display
+  void ResizeWindow(int w, int h);
 
-	void GetSurfaceArea(RECT& rect);
+  void MoveWindow();
+  void MoveWindow(int32 x, int32 y);
 
+  // store the file that is currently being converted
+  // so that if there are any interruptions we can deal
+  // with them.
+  static bool StoreFileBeingConverted(std::string &fileName);
 
-	void ClientToScreen(int32& x, int32& y);
-	void ScreenToClient(int32& x, int32&y);
+  static bool FileBeingConverted(std::string &fileName);
 
-	inline bool IsFullScreen();
+  bool SafeImageConvert(std::string &name, std::string &, PIXEL_FORMAT To,
+                        std::string &pPrevFileName);
 
-	bool ProgressBarAlreadyStarted(){return myProgressBarHasBeenStarted;}
+  void FadeScreen();
 
-////////////////////////////////////////////////////////////////////////////
-// Rendering Methods
-////////////////////////////////////////////////////////////////////////////
+  bool Start(uint32 storedDisplayType,
+             std::vector<std::string> &foldersToConvert,
+             std::string const &transitionGallery, bool fullScreen = false);
 
+  void Update(Background *background, DrawableObjectHandler *entityHandler,
+              bool completeRedraw, bool justBackBuffer,
+              SDL_Surface *surfaceToDrawOn = NULL);
 
-	// dummy function needed because is a pure
-	// virtual in the base class.  Must decide
-	// whether to remove it from engine.
-	virtual void Update();
+  //	void ResizeWindow(RECT& rect,UINT flags  = SWP_SHOWWINDOW);
+  //	static HRESULT CALLBACK EnumModesCallback(  LPDDSURFACEDESC2
+  //lpDDSurfaceDesc, 												LPVOID lpContext);
 
+  SDL_Rect ConvertRect(RECT &rect);
+  bool BlitToFrontBuffer(RECT &destination, SDL_Surface *image, RECT &source,
+                         bool transparencyAware);
 
- 	void DrawToFrontBuffer();
+  bool BlitToBackBuffer(RECT &destination, SDL_Surface *image, RECT &source,
+                        bool transparencyAware);
 
+  SDL_Surface *CreateSurface(int32 width, int32 height,
+                             bool tryVideoFirst = false);
 
-	
-	inline void DrawBitmap(Position& position,Bitmap& bitmap);
-	inline void DrawWholeBitmapRegardless(Position& position,Bitmap& bitmap);
+  void ReleaseSurface(SDL_Surface *&tempSurface);
 
+  bool FlipScreenHorizontally();
+  void FlipScreenVertically();
+  bool SlideScreen();
+  void Shrink(int32 x, int32 y);
+  void Burst();
 
+  inline void ChangeSuspend(bool start);
 
+  void PrepareForMessageBox();
+  void EndMessageBox();
 
-	void DrawSprite(Position& position,Bitmap& bitmap);
-	void DrawSpriteNoLeftClipping(Position& position,Bitmap& bitmap);
+  static bool ClipLine(RECT *mb, int &x0, int &y0, int &x1, int &y1,
+                       unsigned char colour);
 
+  static int CalcOutCode(RECT *mb, int x, int y);
 
+  uint16 ConvertRGB(int r, int g, int b);
 
-	void DrawCompressedSprite(Position& position,
-										 CompressedBitmap* bitmap);
+  bool CreateProgressBar(Bitmap *bitmap);
+  void StartProgressBar(int updateIntervals);
+  void UpdateProgressBar(int amount);
+  void EndProgressBar();
 
-	void DrawMirroredCompressedSprite(Position& position,
-												 CompressedBitmap*  bitmap);
+  bool RenderBitmapToFrontBuffer(Bitmap *bitmap);
 
-	
+  // TODO: merge these two fns. sigh.
+  PIXEL_FORMAT GetMyPixelFormat() { return myPixelFormat; }
+  bool GetPixelFormat(uint32 &format) {
+    format = (uint32)myPixelFormat;
+    return true;
+  }
 
-	void DrawMirroredSprite(Position& position,Bitmap& bitmap);
+  void SetDesiredRoundness(bool howFlat) { myDesiredWorldRoundness = howFlat; }
 
+  bool ShouldIRenderTheEntireMainCameraOrNot() {
+    return myDesiredWorldRoundness || myIsTheWorldRoundFlag;
+  }
 
-	inline void OffsetDrawTile(Position& position,
-								Bitmap& bitmap,
-							   RECT& clip);
-
-	inline uint16* GetBackBufferPtr();
-	inline uint32 GetPitch();
-
- 
-	bool ChangeDisplayMode(uint32 width, uint32 height, bool forceChange = false);
-
-
-	bool ToggleFullScreenMode();
-
-	void ResizeWindow();
-
-	void MoveWindow();
-	void MoveWindow(int32 x, int32 y);
-
-
-	bool CreateFastObject( EntityImage& entity,
-							int32 plane);
-	MapImage* CreateMapImage(int32 plane);
-
-	void FastObjectSigningOff(FastDrawingObject* heyNotSoFast);
-	void PutMeOnHold(FastDrawingObject* heyNotSoFast);
-	void TakeMeOffHold(FastDrawingObject* heyNotSoFast);
-
-	void DeleteAllFastObjects();
-
-
-	// store the file that is currently being converted
-	// so that if there are any interruptions we can deal
-	// with them.
-	static  bool StoreFileBeingConverted(std::string& fileName);
-
-	static  bool FileBeingConverted(std::string& fileName);
-
-	bool SafeImageConvert(std::string& name,
-						std::string&, 
-						PIXEL_FORMAT To, 
-						std::string& pPrevFileName);
-
-
-	void FadeScreen();
-
-
-	bool Start( bool fullScreen = false);
-		
-	void Update(Background* background,
-							DrawableObjectHandler* entityHandler,
-                            bool completeRedraw,
-							bool justBackBuffer,
-							SDL_Surface* surfaceToDrawOn = NULL);
-
-		
-//	void ResizeWindow(RECT& rect,UINT flags  = SWP_SHOWWINDOW);
-//	static HRESULT CALLBACK EnumModesCallback(  LPDDSURFACEDESC2 lpDDSurfaceDesc,  
-//												LPVOID lpContext);
-
-	bool BlitToFrontBuffer(RECT& destination, 
-									  SDL_Surface* image,
-									  RECT& source,
-									  bool transparencyAware);
-
-	bool BlitFromPrimaryToMe(RECT& destination,
-							SDL_Surface* dest,
-					RECT& source,
-					bool transparencyAware);
-
-	bool BlitFromBackBufferToMe(RECT& destination,
-							SDL_Surface* dest,
-							 RECT& BackgroundRect,
-							 bool transparencyAware);
-
-	bool BlitToBackBuffer(RECT& destination, 
-									  SDL_Surface* image,
-									  RECT& source,
-									  bool transparencyAware);
-
-
-//	HDC GetGDC(RECT &viewArea);
-//	void ReleaseGDC(HDC gdcHandle);
-
-	SDL_Surface* CreateSurface(int32 width,
-										int32 height,
-										bool tryVideoFirst=false);
-
-	void ReleaseSurface(SDL_Surface*& tempSurface);
-
-
-	bool FlipScreenHorizontally();
-	void FlipScreenVertically();
-	bool SlideScreen();
-	void Shrink(int32 x, int32 y);
-	void Burst();
-
-	inline bool ChangeSuspend(bool start);
-
-	bool DealingWithExceptions();
-
-	void PrepareForMessageBox();
-	void EndMessageBox();
-
-	static bool ClipLine( RECT *mb,
-								int &x0,
-								int &y0,
-								int &x1,
-								int &y1,
-								unsigned char colour);
-
-	static int CalcOutCode(RECT *mb, int x, int y );
-	
-	NormalGallery* GetTextGallery();
-
-	uint16 ConvertRGB( int r, int g, int b);
-
-
-	bool CreateProgressBar(Bitmap* bitmap);
-	void StartProgressBar(int updateIntervals);
-	void UpdateProgressBar();
-	void EndProgressBar();
-
-
-	bool IsRunning(){return myEngineRunningFlag;}
-
-	bool GetPixelFormat(uint32& format);
-
-	void SetDesiredRoundness(bool howFlat)
-	{
-		myDesiredWorldRoundness = howFlat;
-	}
-
-	bool ShouldIRenderTheEntireMainCameraOrNot()
-	{
-		return myDesiredWorldRoundness || myIsTheWorldRoundFlag;
-	}
+  void DrawGuttering(int width, int height);
 
 private:
+  // ----------------------------------------------------------------------
+  // Method:      Constructors
+  // Description: These are private so that only I can create the
+  //				single displayengine
+  //
+  // ----------------------------------------------------------------------
+  DisplayEngine();
 
-// ----------------------------------------------------------------------
-// Method:      Constructors 
-// Description: These are private so that only I can create the
-//				single displayengine
-//						
-// ----------------------------------------------------------------------
-	DisplayEngine();
+  DisplayEngine(uint32 flags);
 
-	DisplayEngine(uint32 flags);
+  // Copy constructor and assignment operator
+  // Declared but not implemented
+  DisplayEngine(const DisplayEngine &);
+  DisplayEngine &operator=(const DisplayEngine &);
 
+  // set up screenmode (modenum is index into
+  bool SetMode(int modenum);
+  // enter or resize windowed mode
+  bool SetModeWindowed(int w, int h);
 
-	// Copy constructor and assignment operator
-	// Declared but not implemented
-	DisplayEngine (const DisplayEngine&);
-	DisplayEngine& operator= (const DisplayEngine&);
+  bool GetDrawingParameters(Position &position, Bitmap *bitmap,
+                            uint32 &data_step, uint16 *&data_ptr,
+                            uint32 &screen_step, uint16 *&screen_ptr,
+                            int32 &bitmapWidth, int32 &bitmapHeight);
 
-	bool GetDrawingParameters(Position& position,
-										 Bitmap* bitmap,
-										 uint32& data_step,
-										 uint16*& data_ptr,
-										 uint32& screen_step,
-										 uint16*& screen_ptr,
-										 int32& bitmapWidth,
-										 int32& bitmapHeight);
+  bool GetCompressedDrawingParameters(
+      Position &position, CompressedBitmap *bitmap, uint32 &data_step,
+      uint8 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+      int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip,
+      bool &bottomClip, bool &topClip, bool &leftClip);
 
-	bool GetCompressedDrawingParameters(Position& position,
-										 CompressedBitmap*  bitmap,
-										 uint32& data_step,
-										 uint8_t*& compressedData_ptr,
-										 uint32& screen_step,
-										 uint16*& screen_ptr,
-										 int32& bitmapWidth,
-										 int32& bitmapHeight,
-										 bool& rightClip,
-										 bool& bottomClip,
-										  bool& topClip,
-										  bool& leftClip);
+  bool GetCompressedDrawingParameters16Bit(
+      Position &position, Bitmap *bitmap, uint32 &data_step,
+      uint16 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+      int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip,
+      bool &bottomClip, bool &topClip);
 
-	bool GetCompressedDrawingParameters16Bit(Position& position,
-										 Bitmap* bitmap,
-										 uint32& data_step,
-										 uint16*& compressedData_ptr,
-										 uint32& screen_step,
-										 uint16*& screen_ptr,
-										 int32& bitmapWidth,
-										 int32& bitmapHeight,
-										 bool& rightClip,
-										 bool& bottomClip,
-										 bool& topClip);
+  void CreateUserInterfaceGalleries();
 
-	uint16* OpenBackBuffer(void);
+  uint16 *OpenBackBuffer(void);
+  inline void CloseBackBuffer(void);
 
+  // fills front and back buffers with black
+  void ClearBuffers(void);
 
-	inline void CloseBackBuffer(void);
+  // merge these into one function?
+  bool CreateFullscreenDisplaySurfaces(void);
+  bool CreateWindowedDisplaySurfaces(void);
 
-	void CreateUserInterfaceGalleries();
+  bool DoChangeScreenMode(bool toWindowedMode);
 
+  void StarBurst();
 
-// ----------------------------------------------------------------------
-// Method:      ClearBuffers 
-// Arguments:   None			
-//
-// Returns:     None
-//
-// Description: fills all front and back buffers with black
-//						
-// ----------------------------------------------------------------------
-	void ClearBuffers(void);
+  // sets up myPixelFormat and myFullScreenModes
+  void SussScreenModes();
 
+  // the one and only display engine
+  // accessible by through me only
+  static DisplayEngine myRenderer;
 
-// ----------------------------------------------------------------------
-// Method:      CreateFullscreenDisplaySurfaces 
-// Arguments:   None
-// Returns:     true if display surface is created OK false otherwise
-//
-// Description: The interface to the directdraw object this method creates
-//				surface.  Full screen mode uses an intermediate surface
-//				for smoother results.
-//			
-// ----------------------------------------------------------------------
-	bool CreateFullscreenDisplaySurfaces(void);
-	
-// ----------------------------------------------------------------------
-// Method:      CreateWindowedDisplaySurfaces 
-// Arguments:   None
-// Returns:     None
-//
-// Description: Releases all the surfaces
-//			
-// ----------------------------------------------------------------------
-	bool CreateWindowedDisplaySurfaces(void);
+  // these tell me which components I should
+  // draw e.g background, sprites...
+  uint32 myFlags;
 
-	bool DoChangeScreenMode(bool toWindowedMode);
+  bool myWaitingForMessageBoxFlag;
 
+  // the size of my direct draw surfaces
+  static RECT ourSurfaceArea;
 
-	void AddFastObject(FastDrawingObject* obj);
-	void StarBurst();
+  // these 4 are set each Update()
+  // pointer to the start of the back buffer surface
+  uint16 *myCurrentOffScreenBufferPtr;
+  int32 myPitch; // in 16bit pixels?
+  int32 myPitchForBackgroundTiles;
+  RECT mySurfaceArea; // tempory copy set during update (may not be main suface)
 
-	// the one and only display engine 
-	// accessible by through me only
-	static DisplayEngine	myRenderer;
+  PIXEL_FORMAT myPixelFormat;
+  std::vector<SDL_Rect> myFullScreenModes;
+  bool myFullScreenFlag;
+  int myCurrentFullScreenMode;
+  int myWindowedModeW;
+  int myWindowedModeH;
 
-	struct Resolution
-	{
-		uint16 Width;
-		uint16 Height;
-		uint16 BitsPerPixel;
-	};
+  Gallery *myTransitionGallery;
 
-	// possible screen resolutions
-	static std::vector<struct Resolution> ourResolutions;
-	static struct Resolution ourCurrentResolution;
+  Bitmap *myProgressBitmap;
+  int myProgressMax;
+  int myProgressCount;
+  bool myProgressBarHasBeenStarted;
+  int myPreviousProgressRight;
 
-	static std::vector<FastDrawingObject*> ourFastObjects;
-	static std::vector<FastDrawingObject*> ourFastObjectsOnHold;
+  SDL_Surface *myProgressSurface;
+  SDL_Surface *mySpriteSurface;
 
+  // our virtual framebuffer
+  SDL_Surface *myBackBuffer;
 
-	// these tell me which components I should
-	// draw e.g background, sprites...
-	uint32					myFlags;
+  // note whether I have been started up properly
+  bool myEngineRunningFlag;
 
-	bool myWaitingForMessageBoxFlag;
-
-	// the size of my direct draw surfaces
-	static RECT				ourSurfaceArea;
-
-
-	static RECT				ourWindowRect;
-
-
-	// pointer to the start of the back buffer surface
-	uint16*					myCurrentOffScreenBufferPtr;
-
-	// memory pitch for nonlinear memory
-	int32 myPitch;	// in 16bit pixels?
-	int32 myPitchForBackgroundTiles;
-
-	// pixel format of the video card
-	PIXEL_FORMAT			myPixelFormat;
-
-	NormalGallery* myTextGallery;
-	NormalGallery* myTransitionGallery;
-
-
-	Bitmap* myProgressBitmap;
-	float	 myProgressIntervals;
-	float myProgressLessThanZeroCounter;
-	int myProgressIntervalsWholeBit;
-	int myProgressUpdateCount;
-	bool myProgressBarHasBeenStarted;
-
-
-	// everything gets drawn here first
-	SDL_Surface*		myProgressSurface;
-	SDL_Surface* mySpriteSurface;
-	
-//	HWND	myWindow;
-		// direct draw stuff
-//	IDirectDraw4*			myDirectDraw;
-//	IDirectDraw*	myDirectDrawInterface;
-	SDL_Surface*		myFrontBuffer;
-
-
-	// this additional buffer is used for full screen
-	// mode only
-	SDL_Surface*		myHWBackBuffer;
-	
-	// everything gets drawn here first
-	SDL_Surface*		myBackBuffer;
-	
-	// the clipper is only needed in windowed mode
-	// to tell DD which area should be drawn to
-//	IDirectDrawClipper*		myClipper;
-		
-//	void HRESULTtoCHAR(HRESULT hErr, char* pMsg);
-//	void ReleaseHelperDirectDrawStuff();
-
-	bool	myFullScreenFlag;
-	
-	// note whether I have been started up properly
-	bool	myEngineRunningFlag;
-
-	bool myCatchingExceptionFlag;
-	RECT mySurfaceArea; //tempory copy set during update (may not be main suface)
-
-	bool myIsTheWorldRoundFlag;     // These are for the EasterEgg
-	bool myDesiredWorldRoundness;   // Ask Frankie for more info :)
-
+  bool myIsTheWorldRoundFlag;   // These are for the EasterEgg
+  bool myDesiredWorldRoundness; // Ask Frankie for more info :)
 };
 
-inline int32 DisplayEngine::GetSurfaceWidth(void)
-{
-	return mySurfaceArea.right;
+// inline blit functions...
+// for non-sdl version this is included from Bitmap.cpp
+// for some reason...
+#include "../DisplayEnginePlotFunctions.h"
+
+inline bool DisplayEngine::IsFullScreen() {
+  return (myFullScreenFlag == true) ? true : false;
 }
 
-inline int32 DisplayEngine::GetSurfaceHeight(void)
-{
-	return mySurfaceArea.bottom;
+inline uint32 &DisplayEngine::Flags(void) { return myFlags; }
+
+inline void DisplayEngine::SetFlags(uint32 flags) { myFlags = flags; }
+
+inline void DisplayEngine::ChangeSuspend(bool start) {
+  //	OutputDebugString("ChangeSusp\n");
+  myEngineRunningFlag = start;
 }
 
-inline bool DisplayEngine::IsFullScreen()
-{
-	return (myFullScreenFlag==true) ? true:false; 
+inline void DisplayEngine::CloseBackBuffer(void) {
+  if (myBackBuffer) {
+    SDL_UnlockSurface(myBackBuffer);
+    myCurrentOffScreenBufferPtr = NULL;
+  }
 }
 
-
-inline uint32& DisplayEngine::Flags(void){return myFlags;}
-
-inline void DisplayEngine::SetFlags(uint32 flags)
-{
-	myFlags = flags;
-}
-
-inline void DisplayEngine::CloseBackBuffer(void)
-{
-	if(myBackBuffer)	// should be an ASSERT?
-	{
-		SDL_UnlockSurface( myBackBuffer );
-		myCurrentOffScreenBufferPtr = NULL;
-	}
-}
-
-inline uint32  DisplayEngine::GetPitch()
-{
-	return myPitch;
-}
-
-inline uint16* DisplayEngine::GetBackBufferPtr()
-{
-	if(myCurrentOffScreenBufferPtr)
-		return myCurrentOffScreenBufferPtr;
-	else 
-		return OpenBackBuffer();
-}
-
-inline bool DisplayEngine::ChangeSuspend(bool start)
-{
-//	OutputDebugString("ChangeSusp\n");
-	return myEngineRunningFlag = start;
-}
-
-
-
-
-
-
-#endif		// SDL_DISPLAYENGINE_H
+#endif // SDL_DISPLAYENGINE_H

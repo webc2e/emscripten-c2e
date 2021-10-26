@@ -7,13 +7,15 @@
 #endif
 
 #include "LifeFaculty.h"
-#include "Creature.h"
+#include "AgentFacultyInterface.h"
+#include "CreatureFacultyInterface.h"
 #include "MotorFaculty.h"
 #include "SensoryFaculty.h"
 #include "Biochemistry/Biochemistry.h"
 #include "Brain/Brain.h"
 #include "../App.h"
 #include "../World.h"
+#include "../Agents/AgentConstants.h"
 
 CREATURES_IMPLEMENT_SERIAL(LifeFaculty)
 
@@ -69,10 +71,10 @@ void LifeFaculty::Update() {
 	// count up the pending ageing requests and do them when we can
 	if(myNumberOfForceAgeingRequestsPending)
 	{
-		if(myCreature.GetCreatureReference().PrepareForAgeing(myNextAge))
+		if(myCreature->PrepareForAgeing(myNextAge))
 		{
 			myAge++;							// select new myAge & therefore a new, lower threshold
-			myCreature.GetCreatureReference().ExpressGenes();
+			myCreature->ReadFromGenome();
 			myNumberOfForceAgeingRequestsPending--;
 			myNextAge++;
 			SendAgeEvent();
@@ -126,10 +128,10 @@ void LifeFaculty::ForceAgeing()
 
 
 	if	(myAge<NUMAGES)	{					// if NEXT myAge receptor has turned on
-		if(myCreature.GetCreatureReference().PrepareForAgeing(myNextAge))
+		if(myCreature->PrepareForAgeing(myNextAge))
 		{
 			myAge++;							// select new myAge & therefore a new, lower threshold
-			myCreature.GetCreatureReference().ExpressGenes();		// then search genome for new genes to express
+			myCreature->ReadFromGenome();// then search genome for new genes to express
 			myNextAge++;
 			SendAgeEvent();
 		}
@@ -149,7 +151,7 @@ void LifeFaculty::ForceAgeing()
 // Returns:     float = 
 // ------------------------------------------------------------------------
 float LifeFaculty::Health() const {
-    return myCreature.GetCreatureReference().GetBiochemistry()->GetChemical(CHEM_GLYCOGEN);
+    return myCreature->GetBiochemistry()->GetChemical(CHEM_GLYCOGEN);
 }
 
 
@@ -157,7 +159,7 @@ float LifeFaculty::Health() const {
 
 // Kill this creature (death from old myAge, ill health or wounding).
 // Lie down, switch off brain, allow chemistry to fade, initiate Funeral kit,
-// Enter Death Row, etc.
+// Enter Death Row, etmyCreature->
 // ------------------------------------------------------------------------
 // Function:    SetWhetherDead
 // Class:       LifeFaculty
@@ -169,23 +171,21 @@ void LifeFaculty::SetWhetherDead(bool d) {
 	if (myState!=deadState) {					// unless already started
 
 		// Make sure we're not carrying anything
-		if (myCreature.GetCreatureReference().GetCarried().IsValid() )
+		if (myCreatureAsAgent->GetCarried().IsValid() )
 		{
-			myCreature.GetCreatureReference().GetCarried().GetAgentReference().TryToBeDropped
-				(myCreature, INTEGERZERO, INTEGERZERO, true);
+			myCreatureAsAgent->GetCarried().GetAgentFacultyInterfaceReference().TryToBeDropped
+				(myCreatureAsAgent->GetAsAgentHandle(), INTEGERZERO, INTEGERZERO, true);
 		}
 	
-		AgentHandle a = myCreature.GetAgentReference();
-		SensoryFaculty::RemoveFromAllFriendAndFoe(a);
+		SensoryFaculty::RemoveFromAllFriendAndFoe(myCreatureAsAgent->GetAsAgentHandle());
 
 		SetState(deadState);					// prevent re-entry (also acts as chemo-emitter)
-		myCreature.GetCreatureReference().GetVirtualMachine().StopScriptExecuting();
-		myCreature.GetCreatureReference().ExecuteScriptForEvent(SCRIPTDIE,myCreature, INTEGERZERO, INTEGERZERO);// do script, overwriting any existing
-		myCreature.GetCreatureReference().SetEyeState(0);				// Close creatures eyes.
+		myCreatureAsAgent->StopAllScripts();
+		myCreatureAsAgent->ExecuteScriptForEvent(SCRIPTDIE, myCreatureAsAgent->GetAsAgentHandle(), INTEGERZERO, INTEGERZERO);// do script, overwriting any existing
+		myCreature->SetEyeState(0);				// Close creatures eyes.
 
 		// trigger and store death event
-		Creature& creature = GetCreatureOwner().GetCreatureReference();
-		std::string moniker = creature.GetMoniker();
+		std::string moniker = myCreature->GetMoniker();
 		HistoryStore& historyStore = theApp.GetWorld().GetHistoryStore();
 		CreatureHistory& history = historyStore.GetCreatureHistory(moniker);
 		history.AddEvent(LifeEvent::typeDied, "", "");
@@ -280,35 +280,32 @@ void LifeFaculty::SetState(LifeState s) {
 	if (s==myState)
 		return;
 
-	Creature& c = myCreature.GetCreatureReference();
-
-
 	// if norn is going not alert:
 	if (myState==alertState)
 	{
-		c.Motor()->StopCurrentAction();	// reset action so it gets restarted later
-		c.SetIntrospective(true);
-		c.ResetAnimationString();
+		myCreature->Motor()->StopCurrentAction();	// reset action so it gets restarted later
+		myCreature->SetIntrospective(true);
+		myCreature->ResetAnimationString();
 	}
 
 	// if norn is going unconscious give it a suitable pose:
-	if (s==unconsciousState || s==zombieState)
+	if (s==unconsciousState)
 	{
-		c.GetVirtualMachine().StopScriptExecuting();
-		c.ShowPose(58, 0);
+		myCreatureAsAgent->StopAllScripts();
+		myCreatureAsAgent->ShowPose(58, 0);
 	}
 
 	// if the norn is waking up make sure it stops its involuntary action too:
 	if ((myState==asleepState || myState==dreamingState) && s==alertState)
 	{
-		c.Motor()->StopCurrentInvoluntaryAction();
-		c.GetVirtualMachine().StopScriptExecuting();
+		myCreature->Motor()->StopCurrentInvoluntaryAction();
+		myCreatureAsAgent->StopAllScripts();
 	}
 
 	if (s==dreamingState)
-		c.GetBrain()->SetWhetherToProcessInstincts(true);
+		myCreature->GetBrain()->SetWhetherToProcessInstincts(true);
 	if (myState==dreamingState)
-		c.GetBrain()->SetWhetherToProcessInstincts(false);
+		myCreature->GetBrain()->SetWhetherToProcessInstincts(false);
 
 	myState = s;
 }
@@ -341,8 +338,7 @@ float* LifeFaculty::GetLocusAddress(int type, int organ, int tissue, int locus) 
 				return &myDeathTriggerLocus;
 		} else {
 			if (locus==LOC_DEAD) {
-				static float myDeadFlagAsFloat = myState==deadState ? 1.0f : 0.0f;
-				return &myDeadFlagAsFloat;
+				return &myDeathTriggerLocus;
 			}
 		}
 	}
@@ -433,15 +429,26 @@ void LifeFaculty::SetProperlyBorn()
 	ASSERT(!myProperlyBorn);
 	myProperlyBorn = true;
 
-	Creature& child = GetCreatureOwner().GetCreatureReference();
-
-	std::string monikerChild = child.GetMoniker();
-	std::string monikerMum = child.GetMotherMoniker();
-	std::string monikerDad = child.GetFatherMoniker();
-
+	std::string monikerChild = myCreature->GetMoniker();
 	HistoryStore& historyStore = theApp.GetWorld().GetHistoryStore();
-	
 	CreatureHistory& childHistory = historyStore.GetCreatureHistory(monikerChild);
+	
+	// Find moniker of parents - either using conception event, or 
+	// defaulting to the one from the genetics file (the genetics file one
+	// is truncated to 32 characters, so is not as useful!)
+	std::string monikerMum = myCreature->GetMotherMoniker();
+	std::string monikerDad = myCreature->GetFatherMoniker();
+	LifeEvent* event = childHistory.GetLifeEvent(0);
+	// Sigh, we will have problems with cloned.  The 32 character truncated parent
+	// is the only one we are going to find - high generation clones won't recognise
+	// their genetic parents with love...
+	if (event && (event->myEventType == LifeEvent::typeConceived || event->myEventType == LifeEvent::typeSpliced))
+	{
+		monikerMum = event->myRelatedMoniker1;
+		monikerDad = event->myRelatedMoniker2;
+	}
+
+	// Add the birth events to all the monikers
 	CreatureHistory& mumHistory = historyStore.GetCreatureHistory(monikerMum);
 	CreatureHistory& dadHistory = historyStore.GetCreatureHistory(monikerDad);
 
@@ -459,9 +466,9 @@ void LifeFaculty::SetProperlyBorn()
 void LifeFaculty::SendAgeEvent()
 {
 	// trigger and store age event
-	Creature& creature = GetCreatureOwner().GetCreatureReference();
-	std::string moniker = creature.GetMoniker();
+	std::string moniker = myCreature->GetMoniker();
 	HistoryStore& historyStore = theApp.GetWorld().GetHistoryStore();
 	CreatureHistory& history = historyStore.GetCreatureHistory(moniker);
 	history.AddEvent(LifeEvent::typeNewLifeStage, "", "");
 }
+

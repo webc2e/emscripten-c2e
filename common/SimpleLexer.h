@@ -60,3 +60,4 @@ inline char SimpleLexer::Peek()
 
 
 #endif // SIMPLELEXER_H
+

@@ -65,7 +65,7 @@ virtual	~DrawableObject(){;}
 //				
 //			
 // ----------------------------------------------------------------------
-	virtual Position GetWorldPosition() = 0;
+//	virtual Position GetWorldPosition() = 0;
 
 	bool AreYouASprite()
 	{
@@ -80,6 +80,11 @@ virtual	~DrawableObject(){;}
 	bool AreYouALine()
 	{
 		return myAmIALineFlag;
+	}
+
+	bool AreYouARemoteCamera()
+	{
+		return myAmRemoteCameraFlag;
 	}
 
 	int32 GetScreenX(void)
@@ -109,7 +114,7 @@ virtual	~DrawableObject(){;}
 // Returns:     The plane that the entity exists on/None
 //			
 // ----------------------------------------------------------------------
-	int32 GetPlane(){return myPlane;}
+	int32 GetPlane() const {return myPlane;}
 
 	void SetPlane(int32 plane){myPlane = plane;}
 
@@ -123,9 +128,6 @@ virtual	~DrawableObject(){;}
 
 	virtual void SetCurrentBound(RECT* rect= NULL) = 0;
 
-	// new serialization stuff
-	virtual bool Write( CreaturesArchive &ar ) const;
-	virtual bool Read( CreaturesArchive &ar );
 
 	bool AreYouCameraShy() { return myCameraShyFlag;}
 	void YouAreCameraShy(bool really) { myCameraShyFlag = really; }
@@ -141,6 +143,9 @@ protected:
 	bool			myAmIASpriteFlag;
 	bool			myAmIALineFlag;
 	bool			myAmIACameraFlag;
+	bool			myAmRemoteCameraFlag;
+
+//	myWorldPosition;
 
 private:
 	// Copy constructor and assignment operator
@@ -151,3 +156,4 @@ private:
 
 
 #endif		// DRAWABLEOBJECT_H
+

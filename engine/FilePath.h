@@ -15,12 +15,20 @@ class FilePath
 {
 public:
 	FilePath() : myDirectory( 0 ),myUseLocalWorldDirectoryVersionOfTheFile(0) {}
-	FilePath( std::string name, int directory, bool checkLocallyFirst = true, bool forceLocal = false );
-	FilePath( DWORD fsp, char const *ext, int directory );
+
+	FilePath( std::string name,
+				int directory, 
+				bool checkLocallyFirst = true,
+				bool forceLocal = false );
+
+/*	FilePath( DWORD fsp, char const *ext, int directory );*/
+
+	void LowerCase();
 
 	void SetFilePath( std::string name, int directory );
 
-	bool GetWorldDirectoryVersionOfTheFile(std::string& path, bool forcecreate = false) const;
+	bool GetWorldDirectoryVersionOfTheFile(std::string& path,
+											bool forcecreate = false) const;
 
 	std::string GetFullPath() const;
 
@@ -28,6 +36,7 @@ public:
 
 	bool empty() const {return myName.empty();}
 	void SetExtension( std::string extension );
+	void GetExtension( std::string& extension );
 
 	FilePath operator+( std::string const &append ) const
 	{
@@ -62,6 +71,5 @@ private:
 	bool myUseLocalWorldDirectoryVersionOfTheFile;
 };
 
-int CaseInsensitiveCompare( const char *l, const char *r );
-
 #endif
+

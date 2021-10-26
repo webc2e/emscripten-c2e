@@ -6,8 +6,8 @@
 #endif
 
 #include "../../common/C2eTypes.h"
-// TODO: ServerSide should be fwd declaration
-#include "../../common/ServerSide.h"
+
+class ServerSide;
 
 class RequestManager
 {
@@ -16,3 +16,4 @@ public:
 };
 
 #endif // REQUEST_MANAGER_H
+

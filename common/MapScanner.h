@@ -1,20 +1,44 @@
 #ifndef MAPSCANNER_H
 #define MAPSCANNER_H
 
-#include <string>
+#ifdef _MSC_VER
+#pragma warning(disable:4786 4503)
+#endif
 
-// I will bring this up to coding standards as and when I have the time (Dan)
+#include <string>
+#include <vector>
+
+// With the linker option /MAPINFO:LINES it would be possible to
+// extend this class to give the exact line number and file which
+// the error happened at
 
 class MapScanner
 {
 public:
-	MapScanner(std::string _mapFile, unsigned int location);
+	struct FunctionData
+	{
+		unsigned int functionStart;
+		std::string functionName;
+		std::string mangledName;
+		std::string objectFile;
+		bool found;
 
-	std::string functionName;
-	std::string objectFile;
+		bool operator<(const FunctionData& other)
+		{
+			return functionStart < other.functionStart;
+		}
+		FunctionData::FunctionData()
+		{
+			found = false;
+		}
+	};
 
-	bool found;
+	MapScanner(const std::vector<std::string>& mapFiles, const unsigned int* addressStart, unsigned int addressCount, std::vector<FunctionData>& functionDatum);
 	bool nofile;
+
+private:
+	static std::string Unmangle(std::string mangled);
 };
 
 #endif
+

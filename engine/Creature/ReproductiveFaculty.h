@@ -12,8 +12,6 @@
 #include "Faculty.h"
 
 
-class Creature;
-
 class ReproductiveFaculty : public Faculty {
 	CREATURES_DECLARE_SERIAL(ReproductiveFaculty)
 public:
@@ -47,3 +45,4 @@ protected:
 	float myDegreeOfMutationLocus;		// [receptor] size of mutation during conception
 };
 #endif//ReproductiveFaculty_H
+

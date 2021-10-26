@@ -1,7 +1,3 @@
-#ifdef _WIN32
-#error // win32 version uses registry instead.
-#endif
-
 // -------------------------------------------------------------------------
 // Filename: Configurator.h
 // Class:    Configurator
@@ -36,7 +32,6 @@
 //
 // Usage:
 //
-//
 // History:
 // 09Aug99  BenC  Initial version
 // -------------------------------------------------------------------------
@@ -57,8 +52,9 @@
 
 #include <map>
 #include <string>
+#include "../modules/ModuleAPI.h"
 
-class Configurator
+class C2E_MODULE_API Configurator
 {
 public:
 	// ----------------------------------------------------------------------
@@ -158,8 +154,14 @@ private:
 		std::string& comment ) const;
 	std::string Expand( const std::string& str );
 
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
 	std::map< std::string, std::string > myData;
 	std::string myFilename;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 
 	bool myChangedFlag;
 };
@@ -187,3 +189,4 @@ inline bool Configurator::Exists( const std::string& name ) const
 
 
 #endif // CONFIGURATOR_H
+

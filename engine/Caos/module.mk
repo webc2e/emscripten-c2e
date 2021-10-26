@@ -1,6 +1,7 @@
+# -*- Makefile -*- module for Caos
+# $Id: module.mk,v 1.6 2001/01/31 18:05:09 firving Exp $
 
-
-SRC += engine/Caos/AgentHandlers.cpp \
+_SOURCES := engine/Caos/AgentHandlers.cpp \
 	engine/Caos/AutoDocumentationTable.cpp \
 	engine/Caos/CAOSDescription.cpp \
 	engine/Caos/CAOSException.cpp \
@@ -20,10 +21,22 @@ SRC += engine/Caos/AgentHandlers.cpp \
 	engine/Caos/OpSpec.cpp \
 	engine/Caos/Orderiser.cpp \
 	engine/Caos/PortHandlers.cpp \
-	engine/Caos/RequestManager.cpp \
-	engine/Caos/RuntimeErrorDialog.cpp \
 	engine/Caos/Scriptorium.cpp \
 	engine/Caos/SoundHandlers.cpp \
 	engine/Caos/TableSpec.cpp \
-	engine/Caos/VelocityVariable.cpp
+	engine/Caos/VelocityVariable.cpp \
+	engine/Caos/SockServer.cpp
 
+ifeq ($(ERROR_OUTPUT),console)
+	_SOURCES += engine/Caos/unix/RuntimeErrorDialog.cpp
+else
+	_SOURCES += engine/Caos/GTK/GTK_RuntimeErrorDialog.cpp
+endif
+
+SOURCES += $(_SOURCES)
+
+LIBRARIES += libCaos.so
+
+libCaos.so: $(patsubst %.cpp, %.o, $(_SOURCES))
+libCaos.do: $(patsubst %.cpp, %.od, $(_SOURCES))
+libCaos.ho: $(patsubst %.cpp, %.oh, $(_SOURCES))

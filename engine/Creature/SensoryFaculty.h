@@ -17,16 +17,14 @@
 #include "Definitions.h"
 #include "../Stimulus.h"
 #include "MotorFaculty.h"
-#include "Creature.h"
+#include "CreatureFacultyInterface.h"
 #include "Faculty.h"
+
+#include "../Agents/AgentHandle.h"
 
 #include <vector>
 #include <string>
 
-
-
-
-class Agent;
 
 class SensoryFaculty : public Faculty {
 	CREATURES_DECLARE_SERIAL(SensoryFaculty)
@@ -56,7 +54,10 @@ public:
 
 	int SetupDriveChemicals();
 	void AdjustChemicalLevel(int i, float f);
-	void AdjustChemicalLevelWithTraining(int i, float f, int fromScriptEventNo, AgentHandle const& fromAgent);
+	void AdjustChemicalLevelWithTraining(int i, float f, int fromScriptEventNo, AgentHandle fromAgent);
+	inline int GetNoOfKnownAgents() {
+		return myKnownAgents.size();
+	}
 	inline AgentHandle GetKnownAgent(int i) {
 		return myKnownAgents[i];
 	}
@@ -70,7 +71,9 @@ public:
 
 	static int GetNumCategories();
 	static bool SetupStaticVariablesFromCatalogue();
-	static int GetCategoryIdOfAgent(const AgentHandle& a);
+	static int GetCategoryIdOfAgent(AgentHandle a);
+	// Don't call this next one if you can avoid it - each agent
+	// can have its own category now
 	static int GetCategoryIdOfClassifier(const Classifier* a);
 
 	static std::string GetCategoryName(int i);
@@ -105,26 +108,32 @@ public:
 		}
 	}
 
-	float DistanceToNearestCreature(int sex, int genus);
 	AgentHandle GetNearestCreatureOrPointer();
 
 	int PayAttentionToCreature(int creatureNo);
 	int PayAttentionToCreature(AgentHandle& lookAtCreature);
 	int PayAttentionToAgent(AgentHandle& agent);
 
-	int AddFriendOrFoe(AgentHandle& creatureOrPointer);
-	
 	void SetCreatureActingUponMe(AgentHandle& creatureOrPointer);
 	int GetOpinionOfCreature(AgentHandle& creatureOrPointer, float &opinion, float &moodOpinion);
 
+	void ResolveFriendAndFoe();
+	static void RemoveFromAllFriendAndFoe(AgentHandle creatureOrPointer);
+
+	void SetCategoryRepresentativeAlgorithm(int id, int setTo);
+	int GetCategoryRepresentativeAlgorithm(int id);
+
+
+protected:
 	void SetSeenFriendOrFoe(AgentHandle& creautreOrPointer);
 	void ClearSeenFriendsOrFoes();
-	void ResolveFriendAndFoe();
-	bool AssignFriendOrFoeByMoniker(std::string moniker, AgentHandle& creatureOrPointer);
+	bool AssignFriendOrFoeByMoniker(std::string moniker, AgentHandle creatureOrPointer);
 
-	static void RemoveFromAllFriendAndFoe(AgentHandle& creatureOrPointer);
 	void RemoveFriendAndFoe(AgentHandle& creatureOrPointer);
 	void CleanUpInvalidFriendAgentHandles();
+	int AddFriendOrFoe(AgentHandle& creatureOrPointer);
+
+	float DistanceToNearestCreature(int sex, int genus);
 
 protected:
 	std::vector<AgentHandle> myKnownAgents;
@@ -139,6 +148,11 @@ protected:
 	std::vector<int> myFriendsAndFoeLastEncounters;
 	typedef std::vector<AgentHandle>::iterator FriendOrFoeIterator;
 	bool myAddedAFriendOnThisUpdate;
+
+	// new for Sea Monkeys:
+	void SetupInitialCategoryRepresentativeAlgorithms();
+	std::vector<int> myCategoryRepresentativeAlgorithms;
 };
 
 #endif//SensoryFaculty_H
+

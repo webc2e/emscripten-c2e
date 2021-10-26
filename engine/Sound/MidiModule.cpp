@@ -15,20 +15,25 @@
 #pragma warning(disable:4786 4503)
 #endif
 
+#ifdef C2E_SDL
+#error Not SDL
+#endif
+
 #include "MidiModule.h"
 #include "..\display\system.h"
 #include "..\display\ErrorMessageHandler.h"
-#include "..\App.h"
+#include "..\DirectoryManager.h"
 #include <wchar.h>
-#include "../../common/RegistryHandler.h"
-
+#include "../RegistryHandler.h"
+#include "../../common/FileFuncs.h"
+#include "../FilePath.h"
+#include <math.h>
 
 MidiModule::MidiModule()
 :myPerformance(NULL),
 myDirectMusic(NULL),
 myLoader(NULL),
 mySegment(NULL),
-mySegmentState(NULL),
 myMuteFlag(0)
 {
 
@@ -41,7 +46,6 @@ MidiModule::MidiModule(LPDIRECTSOUND directSoundObject,
 myDirectMusic(NULL),
 myLoader(NULL),
 mySegment(NULL),
-mySegmentState(NULL),
 myMuteFlag(0)
 {
 	StartUp(directSoundObject,window);
@@ -50,17 +54,8 @@ myMuteFlag(0)
 bool MidiModule::StartUp(LPDIRECTSOUND directSoundObject,
 						 HWND window)
 {
-	//	Before making any calls to DirectMusic, you have to 
+	// Before making any calls to DirectMusic, you have to 
 	// initialize COM as follows:
-
-	// should be calling ex version!!!
-	if (FAILED(CoInitialize(NULL )))
-	{
-		// Terminate the application.
-		return false;
-	}   // Else full speed ahead!
-
-
 
 	if(!CreatePerformance())
 		return false;
@@ -68,151 +63,90 @@ bool MidiModule::StartUp(LPDIRECTSOUND directSoundObject,
     if (FAILED(myPerformance->Init(&myDirectMusic, directSoundObject, window)))
 		return false;
 
-		myVolume = DSBVOLUME_MAX;
-
-	// find the best place for it
-	// set your volume according to any registry entry
-
-/*	int32 volume=0;
-	std::string testValue = "Volume";
-	std::string testKey = theRegistry.DefaultKey() + "\\ParentData";
-
-	if(theRegistry.DoesValueExist(testKey,
-								testValue,
-								sizeof(int32),
-								(uint8_t*)&volume,
-								HKEY_LOCAL_MACHINE))
-	{
-		// volume attenuates in hundredths of decibels
-		// some changes are not noticeable
-		if(volume < 25)
-		{
-			myVolume = -100;
-		}
-		else if(volume < 50)
-		{
-			myVolume = 0;
-		}
-		else if(volume < 75)
-		{
-			myVolume = 1000;
-		}
-		else
-		{
-		myVolume = 10000;
-		}
-	}
-	
-	else
-	{
-		myVolume = DSBVOLUME_MAX;
-	}
-		
-*/
-
-		SetVolume(myVolume);
-	
-	
-//	if (FAILED(myPerformance->AddPort(NULL )))
-	//	return false;
-
+	SetVolume(100);
+	 	
 	// Now you need to add a port to the performance.
 	// Calling AddPortwith a NULL parameter automatically
 	// adds the default port (normally the Microsoft Software 
 	// Synthesizer) with one channel group, and assigns PChannels 
 	// 0-15 to the group's MIDI channels.
 
+	IDirectMusicPort* pPort = NULL;
+	DMUS_PORTPARAMS dmos;DMUS_PORTCAPS dmpc;
 
+	GUID guidSynthGUID;
+	HRESULT hr = S_OK;
 
-IDirectMusicPort* pPort = NULL;
-DMUS_PORTPARAMS dmos;DMUS_PORTCAPS dmpc;
-
-GUID guidSynthGUID;
-HRESULT hr = S_OK;
-
-if ( !SUCCEEDED(myDirectMusic->GetDefaultPort(&guidSynthGUID)))
-{
-    return false;
-}
- 
-ZeroMemory(&dmos, sizeof(dmos));
-dmos.dwSize = sizeof(DMUS_PORTPARAMS);
-
-dmos.dwChannelGroups = 1;
-dmos.dwValidParams = DMUS_PORTPARAMS_CHANNELGROUPS; 
-
-if( !SUCCEEDED(myDirectMusic->CreatePort(guidSynthGUID,            &dmos,
-            &pPort,            NULL)))
-{
-    return false;
-} 
-
-ZeroMemory(&dmpc, sizeof(dmpc));dmpc.dwSize = sizeof(DMUS_PORTCAPS); 
-
-if( !SUCCEEDED(pPort->GetCaps(&dmpc)))
-{
-	// no default synth
-
-    if (pPort) pPort->Release();
-    
-	if (!pPort)
+	if ( !SUCCEEDED(myDirectMusic->GetDefaultPort(&guidSynthGUID)))
 	{
-		for (DWORD index = 0; hr == S_OK; index++)   
-		{
-        ZeroMemory(&dmpc, sizeof(dmpc));
-        dmpc.dwSize = sizeof(DMUS_PORTCAPS); 
-        hr = myDirectMusic->EnumPort(index, &dmpc);
-		if(hr == S_OK)
-        {  
-			if ( (dmpc.dwClass == DMUS_PC_OUTPUTCLASS) )           
-			{
-                CopyMemory(&guidSynthGUID, &dmpc.guidPort,
-                        sizeof(GUID)); 
-                ZeroMemory(&dmos, sizeof(dmos));
-                dmos.dwSize = sizeof(DMUS_PORTPARAMS);
-                dmos.dwChannelGroups = 1;
-                dmos.dwValidParams = DMUS_PORTPARAMS_CHANNELGROUPS; 
-                hr = myDirectMusic->CreatePort(guidSynthGUID, 
-                        &dmos, &pPort, NULL);              
-				break;         
-			}
-        }    
-		}
-		if (hr != S_OK) 
-		{  
-			if (pPort) pPort->Release();
-        return false;
-    }
+		return false;
 	}
-}
+ 
+	ZeroMemory(&dmos, sizeof(dmos));
+	dmos.dwSize = sizeof(DMUS_PORTPARAMS);
+
+	dmos.dwChannelGroups = 1;
+	dmos.dwValidParams = DMUS_PORTPARAMS_CHANNELGROUPS; 
+
+	if( !SUCCEEDED(myDirectMusic->CreatePort(guidSynthGUID,            &dmos,
+				&pPort,            NULL)))
+	{
+		return false;
+	} 
+
+	ZeroMemory(&dmpc, sizeof(dmpc));dmpc.dwSize = sizeof(DMUS_PORTCAPS); 
+
+	if( !SUCCEEDED(pPort->GetCaps(&dmpc)))
+	{
+		// no default synth
+
+		if (pPort) pPort->Release();
+    
+		if (!pPort)
+		{
+			for (DWORD index = 0; hr == S_OK; index++)   
+			{
+				ZeroMemory(&dmpc, sizeof(dmpc));
+				dmpc.dwSize = sizeof(DMUS_PORTCAPS); 
+				hr = myDirectMusic->EnumPort(index, &dmpc);
+				if(hr == S_OK)
+				{  
+					if ( (dmpc.dwClass == DMUS_PC_OUTPUTCLASS) )           
+					{
+						CopyMemory(&guidSynthGUID, &dmpc.guidPort,
+								sizeof(GUID)); 
+						ZeroMemory(&dmos, sizeof(dmos));
+						dmos.dwSize = sizeof(DMUS_PORTPARAMS);
+						dmos.dwChannelGroups = 1;
+						dmos.dwValidParams = DMUS_PORTPARAMS_CHANNELGROUPS; 
+						hr = myDirectMusic->CreatePort(guidSynthGUID, 
+								&dmos, &pPort, NULL);              
+						break;         
+					}
+				}    
+			}
+			if (hr != S_OK) 
+			{  
+				if (pPort) pPort->Release();
+				return false;
+			}
+		}
+	}
 
 	pPort->Activate(TRUE);
 	myPerformance->AddPort(pPort);
 
 	myPerformance->AssignPChannelBlock(0, pPort, 1);
 
-//	The original reference to the port can now be released. This call doesn't remove the port from the performance.
+	//	The original reference to the port can now be released. This call doesn't remove the port from the performance.
 
-if (pPort)
- pPort->Release();
-
-
-
-	
-	//   DMUS_PORTPARAMS     portParams;
-	  // ZeroMemory(&portParams, sizeof(portParams));
-
-	  // portParams.dwSize = sizeof(portParams);
-
-
-
-// END TESTING!!!
+	if (pPort)
+		pPort->Release();
 
 	if(!CreateLoader())
 		return false;
 
-
-return true;
+	return true;
 }
 
 // In order to load any object from disk, you first need 
@@ -221,9 +155,7 @@ return true;
 // sample function:
 IDirectMusicLoader* MidiModule::CreateLoader()
 {
-   
- 
-    if (FAILED(CoCreateInstance(
+     if (FAILED(CoCreateInstance(
             CLSID_DirectMusicLoader,
             NULL,
             CLSCTX_INPROC, 
@@ -234,28 +166,18 @@ IDirectMusicLoader* MidiModule::CreateLoader()
         myLoader = NULL;
     }
 
-	// we only need to do this once:  set the search directory for midi
+	// we only need to do this once:  set the search directories for midi
 	// files
-	char buf[200];
-	theApp.GetDirectory(SOUNDS_DIR,buf);
-
-	WCHAR wszDir[_MAX_PATH];
-
-  
-	std::string path(buf);
-	MULTI_TO_WIDE(wszDir, path.data());
-
-
-    HRESULT hr = myLoader->SetSearchDirectory(GUID_DirectMusicAllTypes,
-																wszDir,
-																FALSE);
-
-
-
-    if (FAILED(hr)) 
-    {
-        return NULL;
-    }
+	int n = theDirectoryManager.GetAuxDirCount( SOUNDS_DIR );
+	for (int i = 0; i < n; ++i)
+	{
+		std::string path = theDirectoryManager.GetAuxDir(SOUNDS_DIR, i);
+		WCHAR wszDir[_MAX_PATH];
+		MULTI_TO_WIDE(wszDir, path.c_str());
+		HRESULT hr = myLoader->SetSearchDirectory(GUID_DirectMusicAllTypes, wszDir, FALSE);
+		if (FAILED(hr)) 
+			return NULL;
+	}
  
 //	myLoader->EnableCache(CLSID_DirectMusicSegment, FALSE);
     return myLoader;
@@ -264,7 +186,6 @@ IDirectMusicLoader* MidiModule::CreateLoader()
 
 MidiModule::~MidiModule()
 {
-
 	FreeDirectMusic();
 }
 
@@ -316,6 +237,7 @@ IDirectMusicSegment* MidiModule::LoadMidiSegment(WCHAR  midiFileName[])
  
 		// Release the segment.
 		mySegment->Release();
+		mySegment = NULL;
 	}
 
 
@@ -382,8 +304,7 @@ IDirectMusicSegment* MidiModule::LoadMidiSegment(WCHAR  midiFileName[])
 
 //Before exiting, the program must unload the instruments,
 // release all the objects that have been created, and dereference 
-// COM (remember, every call to CoInitialize must have a matching call
-// to CoUninitialize).
+// COM
 //The following function performs the necessary cleanup:
 HRESULT MidiModule::FreeDirectMusic()
 {
@@ -406,6 +327,13 @@ HRESULT MidiModule::FreeDirectMusic()
 		mySegment = NULL;
 	}
 
+	if(myLoader)
+	{
+		// Release the loader object.
+		myLoader->Release();
+		myLoader = NULL;
+	}
+
 	if(myPerformance)
 	{
  
@@ -415,18 +343,12 @@ HRESULT MidiModule::FreeDirectMusic()
 		myPerformance = NULL;
 	}
  
-	if(myLoader)
+	if (myDirectMusic)
 	{
-		// Release the loader object.
-		myLoader->Release();
-		myLoader = NULL;
+		myDirectMusic->Release();
+		myDirectMusic = NULL;
 	}
-	// for some reason this causes the engine to crash witrh an 
-	// access violation???
 
-    // Release COM.
-  //  CoUninitialize();
- 
     return S_OK;
 }
 
@@ -436,49 +358,38 @@ bool MidiModule::PlayMidiFile(std::string& file)
 	if(file.empty() || myMuteFlag)
 		return false;
 
-///	SetVolume(-10000);
+	///	SetVolume(-10000);
 
 	if(file != myCurrentFile || myCurrentFile.empty())
 	{
-	//  DO NOT USE THE FULL PATH AS THIS HAS ALREADY BEEN
-	// ESTABLISHED DURING CONSTRUCTION
-	WCHAR wszDir[_MAX_PATH];
-	// check the file exists first - you won't catch me with
-	// that old chestnut oh no!
-	char buf[200];
-	theApp.GetDirectory(SOUNDS_DIR,buf);
+		// check the file exists first - you won't catch me with
+		// that old chestnut oh no!
 
-	// we expect the filename to be extensionless
-	std::string path(buf);
+		// we expect the filename to be extensionless
+		FilePath filePath(file + ".mid", SOUNDS_DIR);
+		if (!FileExists(filePath.GetFullPath().c_str()))
+		{
+			ErrorMessageHandler::Show("sound_error", 0, "MidiModule::PlayMidiFile", filePath.GetFullPath().c_str());
+			return false;
+		}
 
-	path+=file + ".mid";
+		// DO NOT USE THE FULL PATH AS THIS HAS ALREADY BEEN
+		// ESTABLISHED DURING CONSTRUCTION
+		std::string path = file + ".mid";
 
-	int attributes = GetFileAttributes(path.data());
+		// must change the string to wide characters
+		WCHAR wszDir[_MAX_PATH];
+		MULTI_TO_WIDE(wszDir, path.c_str());
+		LoadMidiSegment(wszDir);
 
-	if(attributes ==-1)
-	{
-		ErrorMessageHandler::Show("sound_error", 0, "MidiModule::PlayMidiFile", path.c_str());
-		return false;
-	}
+		if (mySegment)
+		{
+			mySegment->SetRepeats(4000000);
 
-
-	path=file + ".mid";
-
-	// must change the string to wide characters
-
-    MULTI_TO_WIDE(wszDir, path.data());
-
-	LoadMidiSegment(wszDir);
-
-	if (mySegment)
-	{
-	mySegment->SetRepeats(4000000);
-
-    myPerformance->PlaySegment(mySegment, 0, 0, &mySegmentState);
-	myCurrentFile = file;
-	return true;
-	}
-
+			myPerformance->PlaySegment(mySegment, 0, 0, NULL);
+			myCurrentFile = file;
+			return true;
+		}
 	}
 
 	return false;
@@ -504,49 +415,45 @@ void MidiModule::StopPlaying()
 		// CloseDown unloads all instruments, so this call is also not 
 		// strictly necessary.
 		mySegment->SetParam(GUID_Unload, -1, 0, 0, NULL);
- 
-		// Release the segment.
-	//	mySegment->Release();
 	}
-
 }
 
 
 void MidiModule::SetVolume(long volume)
 {
 	// volume attenuates in hundredths of decibels
-	// some changes are not noticeable
-	if(volume < 25)
-	{
-		myVolume = -100;
-	}
-	else if(volume < 50)
-	{
-		myVolume = 0;
-	}
-	else if(volume < 75)
-	{
-		myVolume = 1000;
-	}
-	else
-	{
-	myVolume = 10000;
-	}
+	myVolume = volume * 50 - 4000;
 
 	HRESULT res =0;
 	if(myPerformance)
 	{
 		res = myPerformance->SetGlobalParam( GUID_PerfMasterVolume,
-										&volume,
+										&myVolume,
 										sizeof(long));
-		if(res != DD_OK)
-		{
-			int alima = 0;
-		}
 	}
+}
+
+long MidiModule::GetVolume()
+{
+	return (myVolume + 4000) / 50;
 }
 
 void MidiModule::Mute(bool mute)
 {
+	if (myMuteFlag == mute)
+		return;
+
 	myMuteFlag = mute;
+
+	if(mute)
+	{
+		StopPlaying();
+	}
+	else
+	{
+		std::string resume = myCurrentFile;
+		myCurrentFile = "";
+		PlayMidiFile(resume);
+	}
 }
+

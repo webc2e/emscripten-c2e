@@ -349,3 +349,4 @@ class MusicAleotoricLayer : public MusicLayer
 	};
 
 #endif
+

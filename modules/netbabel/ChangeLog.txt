@@ -1,0 +1,246 @@
+Changes since 0-148:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-147:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-146:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-144:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-143:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-142:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-141:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-140:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-139:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-138:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-137:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-136:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-135:
+
+Francis: Fix for bug #651 ("Disconnectiong via GUI during Norn transfer freezes
+game until modem's finished")
+
+-------------------------------------------------------------------------------
+Changes since 0-133:
+
+Francis: Fixed crash which occured when a new life event was made
+while existing life events are being uploaded.
+
+-------------------------------------------------------------------------------
+Changes since 0-132:
+
+Francis: Offline detection works now (a brutally forced offline wasn't
+being detected since the async for NET: LINE changes)
+
+-------------------------------------------------------------------------------
+Changes since 0-131:
+
+Francis: Made NET: STAT asynchronous
+
+-------------------------------------------------------------------------------
+Changes since 0-130:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-128:
+
+Francis: Removed NET: PAZZ.  It's a security hole, and the bug it
+fixes was minor and not very relevant anyway.
+
+Francis: Lots of commands are now asynchronous.  In particular,
+history uploading, Norn and pray file sending, random user online,
+going online, get nickname, and add to whose wanted register.
+Some of these have a new syntax to cope with now being blocking
+commands - i.e. NET: RUSO, NET: UNIK. These and NET: WHON,
+NET: LINE,  can now block (i.e. take multiple ticks, not in an INST).
+
+-------------------------------------------------------------------------------
+Changes since 0-127:
+
+Francis: Added NET: PAZZ (to return current password, if saved).
+
+Francis: Speed up for NET: ULIN.  Now instant if the user is in the whose 
+wanted register (see NET: WHON).
+
+-------------------------------------------------------------------------------
+Changes since 0-126:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-125:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-124:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-123:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-122:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-121:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-120:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-119:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-118:
+
+Francis:  Passwords now saved in their own config file (so
+they don't get zapped by an update).  Server list from
+Babel is correctly saved for Babel in a config file.
+
+Francis: NET: HOST command improved to give lots of
+info about who we are connected to.
+
+-------------------------------------------------------------------------------
+Changes since 0-117:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-115:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-113:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-112:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-111:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-110:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-109:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-108:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-107:
+
+Francis: The current user is now saved between worlds.  Passwords are stored
+in the user.cfg file, if you set the eame variable "engine_netbabel_save_passwords" 
+to 1.
+
+Francis: NET: WHOZ commands deletes all entries in the whose wanted register for
+the target agent.
+
+-------------------------------------------------------------------------------
+Changes since 0-106:
+
+
+-------------------------------------------------------------------------------
+Changes since 0-105:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-104:
+
+Francis: TWINing network agents (using whose wanted register, or listening for
+direct messages) now works.
+
+-------------------------------------------------------------------------------
+Changes since 0-102:
+
+
+
+-------------------------------------------------------------------------------
+Changes since 0-10:
+
+Francis: Removed registration function NET:REGI.  Now the CRM from the web
+site will provide that functionality.
+
+Francis: History logging code, but disabled for now as it needs more work
+and testing and I don't want to get confused by everyone else logging
+history...
+
+-------------------------------------------------------------------------------
+
+Initial version
+
+Francis: Lots of NET: commands for core Babel functionality.  See the CAOS help
+for more information.
+
+-------------------------------------------------------------------------------

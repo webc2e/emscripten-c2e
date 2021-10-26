@@ -32,24 +32,30 @@
 #endif
 
 #include <string>
+#include <exception>
 
-class BasicException
+class BasicException : public std::exception
 {
 public:
 	BasicException( const char* msg )
-		{ myMessage = msg; }
+	{
+		myMessage = msg;
+	}
 	BasicException()
-		{ myMessage = ""; }
+	{
+		myMessage = "";
+	}
 
-	virtual const char* what() const
-		{ return myMessage.c_str(); }
+	virtual ~BasicException() throw() { }
+
+	virtual const char* what() const throw()
+	{
+		return myMessage.c_str();
+	}
 
 protected:
-	std::string myMessage;
+	mutable std::string myMessage;
 };
 
 #endif // BASICEXCEPTION_H
-
-
-
 

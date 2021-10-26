@@ -149,13 +149,18 @@ private:
 	typedef std::vector<FileInfo> file_list;
 
 	bool GetFileList( const std::string& path, file_list& files, const std::string& wildCard = "*");
-	file_list::iterator FindBestFile( file_list& files,
+	file_list::const_iterator FindBestFile(const file_list& files,
 		const std::string path,
 		const std::string name,
 		const std::string prilang,
 		const std::string seclang,
 		const std::string ext );
 
+	bool LocaliseFilename( std::string& filename,
+		const std::string& langid,
+		const std::string& wildCard,
+		const file_list& files);
 };
 
 #endif // FILELOCALISER_H
+

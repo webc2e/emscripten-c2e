@@ -172,3 +172,4 @@ void PortBundle::Trash()
 				myOutputs[i]->Trash();
 	}
 }
+

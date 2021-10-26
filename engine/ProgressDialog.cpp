@@ -8,7 +8,7 @@
 
 #include "ProgressDialog.h"
 
-#include "../engine/Display/System.h"
+#include "../common/C2eTypes.h"
 #include <commctrl.h>
 #include "../engine/resource.h"
 #include <winuser.h>
@@ -73,7 +73,7 @@ void ProgressDialog::FillProgressBar()
 
 void ProgressDialog::SetText(std::string& text)
 {
-	SetWindowText( GetDlgItem(myDialogBox,IDC_MESSAGE),text.data());
+	SetWindowText( GetDlgItem(myDialogBox,IDC_MESSAGE),text.c_str());
 }
 
 

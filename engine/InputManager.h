@@ -27,6 +27,7 @@
 #endif // _MSC_VER
 
 #include <vector>
+#include <string>
 
 class CreaturesArchive;
 
@@ -34,6 +35,8 @@ class TranslatedCharTarget
 {
 public:
 	virtual bool SendChar( int keyCode ) {return false;}
+	virtual bool RawKey( int keyCode ) {return false;}
+	virtual bool AllowScroll() { return true; }
 	virtual bool LoseFocus() {return false;}
 	virtual void GainFocus() {}
 	virtual ~TranslatedCharTarget();
@@ -75,6 +78,11 @@ public:
 
 	TranslatedCharTarget *GetTranslatedCharTarget() const;
 	void SetTranslatedCharTarget( TranslatedCharTarget *target, bool tellLoser = true );
+
+	// clipboard
+	std::string FetchTextFromClipboard();
+	void SendTextToClipboard(const std::string& text);
+
 private:
 	std::vector< InputEvent > myEventBuffer;
 	int myEventPendingMask;
@@ -105,3 +113,4 @@ inline int InputManager::GetMouseY()
 
 
 #endif // INPUTMANAGER_H
+

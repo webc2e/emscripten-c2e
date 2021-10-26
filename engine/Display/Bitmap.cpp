@@ -26,12 +26,26 @@
 #include	"DisplayEngine.h"
 #include	"MemoryMappedFile.h"
 #include	"../File.h"
+
+
+#ifndef C2E_SDL
+// why is this included here?
+// All the inlines in the .h file are members of DisplayEngine!
+// Addendum: It really does seem to need to be here
+// for things to link.  Moving to DisplayEngine just doesn't cut it
 #include    "DisplayEnginePlotFunctions.h"
-#include    "../CreaturesArchive.h"
+#endif
 
+// Externs for Nasm
+int32 bitmapWidth;
+int32 bitmapHeight;
+uint16* data_ptr;
+uint16* screen_ptr;
+uint32 data_step;
+uint32 screen_step;
+int dwordWidth;
+uint16* compressedData_ptr;
 
-
-CREATURES_IMPLEMENT_SERIAL( Bitmap )
 
 Bitmap::Bitmap()
 :myWidth(0),
@@ -58,59 +72,7 @@ Bitmap::~Bitmap()
 	}
 
 
-// #ifdef THIS_FUNCTION_IS_NOT_USED
-// // ----------------------------------------------------------------------
-// // Method:      LoadFromBmp 
-// // Arguments:   name - name (or id) of the file to load the bitmap from.
-// // Returns:     true if bitmap was loaded OK false otherwise
-// //
-// // Description: Loads bitmap from given file and copies the bits
-// //				
-// // ----------------------------------------------------------------------
-// bool Bitmap::LoadFromBmp(char* name)
-// {
-// 	bool	success=false;
-// 	BITMAP	bitmap;
-//  	HBITMAP	handle;
-	
-// 	handle=(HBITMAP)LoadImage(NULL,name,IMAGE_BITMAP,0,0,LR_LOADFROMFILE|LR_CREATEDIBSECTION);
 
-// 	if (handle)
-// 	{
-// 		GetObject(handle,sizeof bitmap,&bitmap);
-
-
-// 		// we only deal with 1 plane and 3 bytes per pixel
-// 		if (bitmap.bmPlanes==1 && bitmap.bmBitsPixel==24)
-// 		{
-// 			//update the width and height
-// 			myWidth=bitmap.bmWidth;
-// 			myHeight=bitmap.bmHeight;
-
-
-// 			//get the bits
-// 			uint8_t* src=(uint8_t*)bitmap.bmBits+(3*bitmap.bmWidth*(bitmap.bmHeight-1));
-// 			uint16* dst=new uint16[myWidth*myHeight];
-// 			myData=dst;
-
-// 			//change the bitmap format
-// 			for (int32 j=myHeight;j--;)
-// 			{
-// 				for (int32 i=myWidth;i--;)
-// 				{
-// 					uint32 b=*src++;
-// 					uint32 g=*src++;
-// 					uint32 r=*src++;
-// 					*dst++=(uint16)((r<<10)|(g<<5)|(b));
-// 				}
-// 				src-=2*3*bitmap.bmWidth;
-// 			}
-// 			success=true;
-// 		}
-// 	}
-// 	return success;
-// }
-// #endif // THIS_FUNCTION_IS_NOT_USED
 
 
 // ----------------------------------------------------------------------
@@ -124,6 +86,7 @@ Bitmap::~Bitmap()
 // ----------------------------------------------------------------------
 void Bitmap::LoadFromS16(File& file)
 {
+	myGalleryName = file.GetName();
 	myDataFlag = true;
 
 	const int bitsPerPixel = 2;
@@ -136,30 +99,10 @@ void Bitmap::LoadFromS16(File& file)
 	file.Read(myData,myWidth * myHeight * bitsPerPixel);
 	}
 	// for testing purposes
-	myXOffset=0;//myWidth>>1;
-	myYOffset=0;//myHeight;
+	myXOffset=0;
+	myYOffset=0;
 }
-/*
-void Bitmap::CreateTest(int32 width,int32 height,int32 index)
-{
-	uint16 colour0=gColourTable[index&(COLOUR_TABLE_SIZE-1)];
-	uint16 colour1=gColourTable[(index/COLOUR_TABLE_SIZE)&(COLOUR_TABLE_SIZE-1)];
-	myWidth=width;
-	myHeight=height;
-	uint16* ptr=new uint16[width*height];
-	myData=ptr;
-	for (int32 j=height;j--;)
-	{
-		for (int32 i=width>>1;i--;)
-		{
-			*ptr++=colour0;
-			*ptr++=colour1;
-		}
-		uint16 temp=colour0;
-		colour0=colour1;
-		colour1=temp;
-	}
-}*/
+
 
 // ----------------------------------------------------------------------
 // Method:      Save 
@@ -184,23 +127,18 @@ void Bitmap::Save(File& file)
 // Description: Saves S16 header data to the given memory location
 //			
 // ----------------------------------------------------------------------
-uint32 Bitmap::SaveHeader(uint8_t*& data)
+uint32 Bitmap::SaveHeader(File& file)
 {
 	uint32 bytesWritten = 0;
+	
+	file.Write(&myOffset,sizeof(myOffset));
+	bytesWritten += sizeof(uint32);
 
-	// write the offset
-	*((uint32*)data) = myOffset;
-	data+=4;
-	bytesWritten+=4;
+	file.Write(&myWidth,sizeof(uint16));
+	bytesWritten += sizeof(uint16);
 
-	// Now save in the width and height as shorts
-	*((uint16*)data) = myWidth;
-	data+=2;
-	bytesWritten+=2;
-
-	*((uint16*)data) = myHeight;
-	data+=2;
-	bytesWritten+=2;
+	file.Write(&myHeight,sizeof(uint16));
+	bytesWritten += sizeof(uint16);
 
 	return bytesWritten;
 }
@@ -239,23 +177,12 @@ uint32 Bitmap::SaveHeader(MemoryMappedFile& file)
 // Description: Saves pixel data to the given memory location
 //			
 // ----------------------------------------------------------------------
-uint32 Bitmap::SaveData(uint8_t*& data)
+uint32 Bitmap::SaveData(File& file)
 {
-	uint32 bytesWritten = 0;
-	uint16* pixels = myData;
-	static int count = 1;
-
-	for(uint32 i = 0; i < myWidth*myHeight;i++)
-	{
-
-		*((uint16*)data) = *pixels++;
-
-		data+=2;
-		bytesWritten+=2;
-	}
-	return bytesWritten;
+	uint32 bytes = myWidth*myHeight * sizeof(uint16);
+	file.Write(myData,bytes);
+	return bytes;
 }
-
 // ----------------------------------------------------------------------
 // Method:      SaveData 
 // Arguments:   file - memory mapped to save my data to
@@ -310,14 +237,6 @@ void Bitmap::DrawWholeBitmapRegardless()
 	DisplayEngine::theRenderer().DrawWholeBitmapRegardless(myPosition,*this);
 }
 
-
-// world position to start drawing on the screen
-void Bitmap::OffsetDraw(Position& pos ,RECT& clip)
-{
-	DisplayEngine::theRenderer().OffsetDrawTile(pos,*this,
-											   clip);
-}
-
 void Bitmap::Recolour(const uint16*& tintTable)
 {
 	// Replace each pixel with its tinted equivalent
@@ -349,7 +268,7 @@ bool Bitmap::IsPixelTransparent(Position pixelPos)
 	uint32 actualPixel = (myWidth*pixelPos.GetY()) + pixelPos.GetX(); 
 
 	ASSERT(actualPixel < myWidth*myHeight);
-	
+
 	return (myData[actualPixel] == 0 ? true : false );
 }
 
@@ -358,7 +277,7 @@ void Bitmap::SetData(MemoryMappedFile& file)
 	myDataFlag = false;
 
 	// point to your dfata in the gievn file
-	uint8_t* data;
+	uint8* data;
 	file.ReadUINT8Ptr(data);
 	myData = (uint16*)data;
 	file.Seek((myWidth * myHeight * BitsPerPixel)-1,File::Current);
@@ -446,7 +365,7 @@ void Bitmap::ResetCanvas()
 		ZeroMemory(myData,myWidth*myHeight*2);
 }
 
-void Bitmap::SetData(uint8_t*& dataPtr)
+void Bitmap::SetData(uint8*& dataPtr)
 {
 
 	myDataFlag = false;
@@ -469,6 +388,7 @@ void Bitmap::InitHeader(MemoryMappedFile& file)
 
 }
 
+/*
 bool Bitmap::Write(CreaturesArchive &archive) const
 {
 	archive << myGalleryName;
@@ -484,6 +404,7 @@ bool Bitmap::Write(CreaturesArchive &archive) const
 	archive.Write( (void *)myData, myWidth * myHeight * 2 );
 	return true;
 }
+*/
 
 bool Bitmap::Read(CreaturesArchive &archive)
 {
@@ -511,6 +432,14 @@ bool Bitmap::Read(CreaturesArchive &archive)
 		return false;
 	}
 	return true;
+}
+
+
+void Bitmap::CreatePixelData(uint16* data)
+{
+	myData = new uint16[myWidth * myHeight];
+	memcpy(myData,data,myWidth*myHeight*sizeof(uint16));
+	myDataFlag = true;
 }
 
 void Bitmap::DecompressC16(File& file)
@@ -581,3 +510,150 @@ void Bitmap::DecompressC16(File& file)
 		
 	}
 }
+
+void Bitmap::Scale(float scaleBy)
+{ 
+	int32 newWidth = myWidth;
+	int32 newHeight = myHeight;
+
+	// if we are shrinking the bitmap...
+	int32 hstep =0;
+
+	int32 vstep =0;
+
+	uint16* newData =NULL;
+	uint16* oldpixels = myData;
+	uint16* newpixels = NULL;
+
+	if(scaleBy < 1.0f)
+	{
+		newWidth = int32(float(myWidth) * float(scaleBy));
+		newHeight = int32(float(myHeight) * float(scaleBy));
+		
+		hstep = int32(float(myWidth)/float(newWidth));
+
+		vstep = int32(float(myHeight)/float(newHeight));
+
+		// the step must be an integer so we will have
+		// some percentages coming out at the same proportions
+		newWidth = myWidth / hstep;
+		newHeight = myHeight / vstep;
+
+
+		newData = new uint16[newWidth * newHeight];
+
+	
+		if(newData)
+		{
+			newpixels = newData;
+
+
+			int counth = 0;
+			int countv = 0;
+
+			for(int i = 0; i < myHeight;++i)
+			{
+
+				if(i % vstep == 0 && countv < newHeight)
+				{
+					counth=0;
+					for(int j = 0; j < myWidth; ++j )
+					{
+						if(j % hstep == 0 && counth < newWidth)
+						{
+							counth++;
+							*newpixels++ = *oldpixels++;
+						}
+						else
+						{
+							oldpixels++;
+						}
+					}
+
+				countv++;
+				}
+				else
+				{
+					oldpixels+=myWidth;
+				}
+				
+				
+			}
+		}
+
+	}
+	else
+	{
+		oldpixels = myData;
+
+		newWidth = int32(float(myWidth) * (scaleBy));
+		newHeight = int32(float(myHeight) * (scaleBy));
+
+		hstep = int32(float(newWidth)/float(myWidth));
+
+		vstep = int32(float(newHeight)/float(myHeight));
+
+		// make sure that the new dimensions fit properly
+		newWidth = hstep * myWidth;
+		newHeight = vstep * myHeight;
+
+		newData = new uint16[newWidth * newHeight];
+
+		if(newData)
+		{
+			newpixels = newData;
+
+			for(int i = 0; i < myHeight; ++i)
+			{
+				// do as many duplicates as we need
+				for(int s = 0; s < vstep; ++s)
+				{
+					for(int j = 0; j < myWidth; ++j )
+					{
+						uint16 value = *oldpixels++;
+						for(int t = 0; t < hstep; ++t)
+						{
+							*newpixels++ = value; 
+						}
+						
+					}
+
+					// go back one line
+					if(s != vstep-1)
+						oldpixels-=myWidth;
+					
+				}
+			}
+		}
+	}
+
+
+	delete [] myData;
+	myData = newData; 
+
+	myWidth = newWidth;
+	myHeight = newHeight;
+
+}
+
+void Bitmap::Copy(Bitmap& bitmap)
+{
+	myOffset = bitmap.GetOffset();
+	myWidth = bitmap.GetWidth();
+	myHeight = bitmap.GetHeight();
+	myDataFlag = true;
+	myGalleryName = bitmap.GetName();
+
+	myPosition = bitmap.GetPosition();
+	myClippedWidth = bitmap.GetClippedWidth();
+	myClippedHeight = bitmap.GetClippedHeight();
+
+	delete [] myData;
+	myData = new uint16[myWidth * myHeight];
+
+	if(myData)
+	{
+		memcpy(myData,bitmap.GetData(),myWidth*myHeight*sizeof(uint16));
+	}
+}
+

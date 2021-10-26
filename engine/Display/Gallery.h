@@ -1,202 +1,232 @@
 // --------------------------------------------------------------------------
-// Filename:	Gallery.h
+// Filename:	Gallery.cpp
 // Class:		Gallery
-// Purpose:		This class holds a series of bitmaps for an entity.
-//				The gallery is read on demand from a memory mapped file
-//			
-//				
+// Purpose:		This class holds a series of bitmaps for an entity or a
+//				background.
 //
-// Description: Sprite galleries create a bitmap shell for each sprite
-//				which contains its width and height
 //
-//				Each bitmap contains a pointer to the start of its data.
-//			
+//
+// Description:In the case of entities the bitmaps are a series
+//				of animations.  They can either be compressed or
+//uncompressed. 				By default they share pixel information with other galleries of
+//				the same name.  Memeory mapped files are used for
+//these galleries. 				Cloned galleries need to hold all their bitmap data locally
+//in 				an uncompressed state so that they can alter pixel data. 				These do not use
+//memory mapped files.  Also we must be provided 				with the base image and the
+//number of images that belong to this 				particular gallery since there may be
+//many sets of related sprites 				in a sprite file.
+//
+//				In the case of backgrounds each bitmap is a
+//tile.
 //
 // History:
-// -------  Chris Wylie		created
-// 11Nov98	Alima			Now reads galleries from memory mapped files.
+// -------
+// 23Feb2000	Alima			Created
 // --------------------------------------------------------------------------
-#ifndef		GALLERY_H
-#define		GALLERY_H
+#ifndef GALLERY_H
+#define GALLERY_H
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
-//#include	"Bitmap.h"
-//#include	"../File.h"
-#include	"MemoryMappedFile.h"
-#include	<string>
-#include	"../PersistentObject.h"
-#include	"../../common/BasicException.h"
-#include "../FilePath.h"
-
+#include "../../common/BasicException.h"
+#include "../PersistentObject.h"
+#include "MemoryMappedFile.h"
+#include <string>
 
 const int SpriteFileHeaderSize = 8;
 ////////////////////////////////////////////////////////////////////////////
 // Forward declarations
 ////////////////////////////////////////////////////////////////////////////
+class Bitmap;
+class CompressedBitmap;
 class Sprite;
 class EntityImage;
-class Bitmap;
+class ClonedGallery;
 
-// this will need to be a persistent
-class Gallery: public PersistentObject
-{
-	CREATURES_DECLARE_SERIAL( Gallery )
+class Gallery : public PersistentObject {
 
 public:
+  // This is the threshold number of entities above which we will do a complete
+  // screen redraw
+  enum { MAX_DIRTY_RECTS = 500 };
+  enum FileFormat { IAmUncompressed = 0, IAmCompressed, IAmTiled };
 
-////////////////////////////////////////////////////////////////////////////
-// Constructors
-////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+  // Constructors and destructor
+  ////////////////////////////////////////////////////////////////////////////
+  Gallery();
+  Gallery(std::string const &name, uint32 baseimage = 0, uint32 numImages = 0,
+          bool clone = false, uint32 defaultBitmapWidth = 10,
+          uint32 defaultBitmapHeight = 10, bool writeAccess = false);
 
-// ----------------------------------------------------------------------
-// Method:      Constructor 
-// Arguments:   name - the gallery file to read from
-//				background - create a background file
-//
-// Description: This memory maps the supplied file
-//						
-// ----------------------------------------------------------------------
-	Gallery(){InitUndefinableMembers();}
+  Gallery(ClonedGallery &gallery);
 
-//	Gallery(std::string name);
-//	Gallery(const char* name);
-	Gallery( FilePath const &name );
+  Gallery(std::string const &name, MemoryMappedFile::FileMapping memoryFile,
+          uint32 highOffset, uint32 lowOffset, uint32 numBytesToMap);
 
+  void SetUpGalleryShellForCloning(std::string path, uint32 baseImage,
+                                   uint32 pixelFormat, uint32 numBitmaps);
 
-	// intialise the variables that will be filled in by
-	// derived classes
-	void InitUndefinableMembers();
+  virtual ~Gallery();
 
-// ----------------------------------------------------------------------
-// Method:      Destructor 
-// Arguments:   none
-//
-// Description: Deletes the created bitmaps and unmaps and closes any
-//				memory mapped files
-//						
-// ----------------------------------------------------------------------
-	virtual ~Gallery();
+  void Trash();
 
-	// any gallery can create a normal sprite or a fast sprite
-	virtual Sprite* CreateSprite(EntityImage* owner);
-	virtual Sprite* CreateFastSprite(EntityImage* owner);
+  ////////////////////////////////////////////////////////////////////////////
+  // Loading
+  ////////////////////////////////////////////////////////////////////////////
+private:
+  bool InitialiseBitmaps(bool writeAccess = false);
+  bool InitialiseClonedBitmaps();
+  bool InitialiseCompressedBitmaps();
+  bool InitialiseTiledBitmaps(bool writeAccess = false);
 
+public:
+  bool LoadFromC16(std::string const &fileName);
 
-////////////////////////////////////////////////////////////////////////////
-// Get and Set Methods...
-////////////////////////////////////////////////////////////////////////////
+  bool ReloadFromC16(uint32 range_start, uint32 range_end);
 
-	virtual Bitmap* GetBitmap(uint32 index);
+  //	bool LoadFromS16(std::string fileName);
 
+  ////////////////////////////////////////////////////////////////////////////
+  // Background Tiles support
+  ////////////////////////////////////////////////////////////////////////////
+public:
+  void StartTileCount() { ClearTileArray(); }
+  void EndTileCount() { ClearTileArray(); }
 
-	virtual int32 GetBitmapWidth(uint32 index);
+  void ClearTileArray() { myDrawnTilesMap.clear(); }
 
-	virtual int32 GetBitmapHeight(uint32 index);
+  Bitmap *GetTile(uint32 index);
 
-	uint32  GetCount()
-	{
-		return myCount;
-	}
+  uint32 GetTileHeight() { return myTileHeight; }
 
-//	std::string& GetName(){return myName;}
-//	void SetName(std::string& name){myName = name;}
-	FilePath const&GetName() const {return myName;}
-	void SetName(FilePath const &name){myName = name;}
+  uint32 GetTileWidth() { return myTileWidth; }
 
-	virtual bool IsValid() ;
+  ////////////////////////////////////////////////////////////////////////////
+  // Altering the images in some way
+  ////////////////////////////////////////////////////////////////////////////
+  bool ConvertTo(uint32 format);
 
-	virtual bool IsPixelTransparent(uint32 x,
-							uint32 y,
-							int32 imageIndex);
+  bool DecompressC16(File &file);
 
-	virtual bool ValidateBitmapSizes(int32 minimumWidth, int32 minimumHeight);
+  void Recolour(const uint16 tintTable[65536]);
 
-	bool IsUsed()
-	{
-		return myReferenceCount!=0? true: false;
-	}
+  void Recolour(const uint16 tintTable[65536], uint32 range_start,
+                uint32 range_end);
 
-	void IncrementReferenceCount()
-	{
-		myReferenceCount++;
-	}
-	void DecrementReferenceCount()
-	{
-		myReferenceCount--;
-	}
+  void ScaleGallery(float scaleby);
 
-	void ResetReferenceCount(){myReferenceCount=0;}
+  ////////////////////////////////////////////////////////////////////////////
+  // Querying
+  ////////////////////////////////////////////////////////////////////////////
 
-	void SetFileSpec(uint32 uniqueID){myFileSpec = uniqueID;}
-	uint32 GetFileSpec(){return myFileSpec;}
+  int32 ClonedAbsoluteBase() const;
 
-	virtual uint32 Save(uint8_t*& data);
-	virtual uint32 Save(MemoryMappedFile& file);
+  void DecrementReferenceCount() { myReferenceCount--; }
 
+  Bitmap *GetBitmap(uint32 index);
 
-	virtual bool InitBitmaps() =0;
+  int32 GetBitmapWidth(uint32 index);
 
-#ifdef THIS_FUNCTION_IS_NOT_USED
-	bool LoadFromBmp(char* name,uint32 width,uint32 height);
-#endif // THIS_FUNCTION_IS_NOT_USED
+  int32 GetBitmapHeight(uint32 index);
 
+  uint32 GetCount() { return myNumberOfBitmaps; }
 
-	virtual bool Write(CreaturesArchive &archive) const;
+  std::string GetName() { return myName; }
+  void SetName(std::string const &newName) { myName = newName; }
 
+  uint32 GetPixelFormat() { return myPixelFormat; }
 
-	virtual bool Read(CreaturesArchive &archive);
+  FileFormat GetFileFormat() { return myFileFormat; }
 
-	virtual bool ConvertTo(uint32 format) =0;
+  void IncrementReferenceCount() { myReferenceCount++; }
 
-	virtual void CreateBitmaps();
+  bool IsPixelTransparent(uint32 x, uint32 y, int32 imageIndex);
 
-	virtual void Recolour(const uint16 tintTable[65536]);
+  bool IsUsed() { return myReferenceCount != 0 ? true : false; }
 
-//////////////////////////////////////////////////////////////////////////
-// Exceptions
-//////////////////////////////////////////////////////////////////////////
-	class GalleryException: public BasicException
-	{
-	public:
-		GalleryException(std::string what, uint32 line):
-		  BasicException(what.c_str()),
-		lineNumber(line){;}
+  bool IsValid();
 
-		uint32 LineNumber(){return lineNumber;}
-	private:
-		uint32 lineNumber;
+  bool ValidateBitmapSizes(int32 minimumWidth, int32 minimumHeight);
 
-	};
+  void ResetReferenceCount() { myReferenceCount = 0; }
 
-protected:
+  void SetFileSpec(uint32 uniqueID) { myFileSpec = uniqueID; }
+  uint32 GetFileSpec() { return myFileSpec; }
 
-	// how  many bitmaps do I have?
-	uint32	myCount;
+  bool AreYouCloned() { return myAmIClonedFlag; }
 
-	// pointer to the start of my array of bitmaps
-	Bitmap*	myBitmaps;
+  ////////////////////////////////////////////////////////////////////////////
+  // Saving
+  ////////////////////////////////////////////////////////////////////////////
+  uint32 Save(MemoryMappedFile &file);
+  uint32 Save(File &file);
+  uint32 SaveCompressedFile(MemoryMappedFile &file);
+  uint32 SaveCompressedFile(File &file);
+  uint32 SaveCompressedFileInALocalWorldFolder(std::string &filename);
+  uint32 SaveCompressedFile();
+  //
+  uint32 SaveUncompressedFile(MemoryMappedFile &file);
+  uint32 SaveUncompressedFile(File &file);
+  uint32 SaveUncompressedFileInALocalWorldFolder(std::string &filename);
+  uint32 SaveUncompressedFile();
+  //
+  uint32 SaveTiledFile(MemoryMappedFile &file);
 
-	// the start of the data in my memory mapped file
-//	unsigned char* myFileData;
+  virtual bool Read(CreaturesArchive &archive);
+  //	virtual bool Write(CreaturesArchive &archive) const;
 
-	// how many things are using me?
-	uint32 myReferenceCount;
-//	std::string myName;
-	FilePath myName;
-	uint32 myFileSpec;
+  //////////////////////////////////////////////////////////////////////////
+  // Exceptions
+  //////////////////////////////////////////////////////////////////////////
+  class GalleryException : public BasicException {
+  public:
+    GalleryException(std::string what, uint32 line)
+        : BasicException(what.c_str()), lineNumber(line) {
+      ;
+    }
 
-	// read this from the gallery file as you load
-	// should be either 0 - 565 or 1 555
-	uint32 myPixelFormat;
+    uint32 LineNumber() { return lineNumber; }
+
+  private:
+    uint32 lineNumber;
+  };
 
 private:
-	// Copy constructor and assignment operator
-	// Declared but not implemented
-	Gallery (const Gallery&);
-	Gallery& operator= (const Gallery&);
+  // Copy constructor and assignment operator
+  // Declared but not implemented
+  Gallery(const Gallery &);
+  Gallery &operator=(const Gallery &);
+
+  CompressedBitmap *myCompressedBitmaps;
+
+  MemoryMappedFile myMemoryMappedFile;
+
+  bool myAmIClonedFlag;
+
+  uint32 myReferenceCount;
+
+  uint32 myTileWidth;
+  uint32 myTileHeight;
+
+  // no need to serialise
+  std::map<uint32, bool> myDrawnTilesMap;
+
+  FileFormat myFileFormat;
+
+  std::string myName;
+
+  uint32 myFileSpec;
+
+protected:
+  // for backwards compatibility with cloned gallery
+  // make this protected
+  uint32 myBaseImage;
+  uint32 myPixelFormat;
+  uint32 myNumberOfBitmaps;
+  Bitmap *myBitmaps;
 };
 
-#endif		// GALLERY_H
+#endif // GALLERY_H

@@ -7,19 +7,27 @@
 #include "../World.h"
 #include "../App.h"
 #include "../AgentManager.h"
-#include "../Display/Gallery.h"
 
+#include "../AgentDisplay/EntityImageClone.h"
 
 
 
 CREATURES_IMPLEMENT_SERIAL( SimpleAgent)
-          
+
 
 
 // Basic initialisation used by constructors
 void SimpleAgent::Init()
 {
     myNormalPlane=0;
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	myWorldIndex=-1;
+	myRedTint=-1;
+	myGreenTint=-1;
+	myBlueTint=-1;
+	myRotation=-1;
+	mySwap=-1;
+#endif
 }
 
 
@@ -44,7 +52,7 @@ SimpleAgent::SimpleAgent()
 
 // changing the constructor to take the gallery name
 SimpleAgent::SimpleAgent(	int family, int genus, int species,uint32 id,
-						 FilePath const &gallery,		// Images us
+							FilePath const &gallery,		// Images us
 							int numimages,
 							int baseimage,
                             int plane,              // normal plot plane
@@ -56,6 +64,7 @@ SimpleAgent::SimpleAgent(	int family, int genus, int species,uint32 id,
 		myClassifier = c;
 		myID = id;
 		myAgentType = AgentHandle::agentNormal | AgentHandle::agentSimple;
+		myEntityImageIsCloned = cloneMyImages;
 		Init();						// defaults
 
 		// create a unique gallery for this agent as
@@ -65,15 +74,16 @@ SimpleAgent::SimpleAgent(	int family, int genus, int species,uint32 id,
 		// TODO: Rethink this coordinate (myPositionVector) passing in now we
 		// have myInvalidPosition in Agent.h?
 
-		if(cloneMyImages)
+		if(myEntityImageIsCloned)
 		{
-		myEntityImage =	new  ClonedEntityImage(gallery,
+		myEntityImage =	new ClonedEntityImage(gallery,
 				plane,
 				Map::FastFloatToInteger(myPositionVector.x),
 				Map::FastFloatToInteger(myPositionVector.y),
 				baseimage,
 				numimages,
 				baseimage );
+
 		}
 		else
 		{
@@ -88,8 +98,8 @@ SimpleAgent::SimpleAgent(	int family, int genus, int species,uint32 id,
 
 		myNormalPlane=plane;                              // remember changeable stuff
 		InitialisePickupPointsAndHandles();
-		myCurrentWidth = myEntityImage->GetWidth();
-		myCurrentHeight = myEntityImage->GetHeight();
+		SetWidth(myEntityImage->GetWidth());
+		SetHeight(myEntityImage->GetHeight());
 	}
 	catch (BasicException& e)
 	{
@@ -106,17 +116,16 @@ SimpleAgent::~SimpleAgent()
 {
 }
 
-
 // virtual
 void SimpleAgent::DrawLine( int32 x1,
 					int32 y1,
 					int32 x2,
 					int32 y2 ,	 
-					uint8_t lineColourRed /*= 0*/,
-					uint8_t lineColourGreen /*= 0*/,
-					uint8_t lineColourBlue /*= 0*/,
-						 uint8_t stippleon /* =0*/,
-							 uint8_t stippleoff/* = 0*/,
+					uint8 lineColourRed /*= 0*/,
+					uint8 lineColourGreen /*= 0*/,
+					uint8 lineColourBlue /*= 0*/,
+						 uint8 stippleon /* =0*/,
+							 uint8 stippleoff/* = 0*/,
 							 uint32 stippleStart /* =0*/) 
 {
 	_ASSERT(!myGarbaged);
@@ -146,11 +155,11 @@ void SimpleAgent::Update()
 
 	_ASSERT(!myGarbaged);
 
+
 	myEntityImage->Animate();
 
-	myCurrentWidth = myEntityImage->GetWidth();
-	myCurrentHeight = myEntityImage->GetHeight();
-
+	SetWidth(myEntityImage->GetWidth());
+	SetHeight(myEntityImage->GetHeight());
 }
 
 // retn message# (ACTIVATE1 etc) appropriate for a click at a given
@@ -182,7 +191,7 @@ int SimpleAgent::GetPlane(int part)
 
 // Helper function for ANIM macro - read a square bracketed string from ip[], 
 // and use as animation string for entity
-bool SimpleAgent::SetAnim(const uint8_t* anim, int length,int part)
+bool SimpleAgent::SetAnim(const uint8* anim, int length,int part)
 {
 	_ASSERT(!myGarbaged);
 
@@ -210,8 +219,9 @@ bool SimpleAgent::ShowPose(int pose,int part)
 		return false;
 	myEntityImage->SetPose(pose);
 
-	myCurrentWidth = myEntityImage->GetWidth();
-	myCurrentHeight = myEntityImage->GetHeight();
+	SetWidth(myEntityImage->GetWidth());
+	SetHeight(myEntityImage->GetHeight());
+
 	return true;
 }
 
@@ -222,7 +232,6 @@ int SimpleAgent::GetPose(int part)
 
 	return myEntityImage->GetPose();
 }
-
 
 
 // Helper fn for BASE macro - set base sprite for obj
@@ -238,6 +247,11 @@ int SimpleAgent::GetBaseImage(int part)
 	return myEntityImage->GetBaseAndCurrentIndex();
 }
 
+int SimpleAgent::GetAbsoluteBase(int part)
+{
+	_ASSERT(!myGarbaged);
+	return myEntityImage->GetAbsoluteBaseImage();
+}
 
 
 // IF YOU CHANGE THIS YOU *MUST* UPDATE THE VERSION SEE ::READ!!!!
@@ -246,6 +260,18 @@ bool SimpleAgent::Write(CreaturesArchive &archive) const
 	_ASSERT(!myGarbaged);
     base::Write( archive );
 	archive << myNormalPlane;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	archive << myWorldIndex;
+	archive << myRedTint;
+	archive << myGreenTint;
+	archive << myBlueTint;
+	archive << myRotation;
+	archive << mySwap;
+#endif
+	
+	archive <<	myEntityImageIsCloned;
+
 	return true;
 }
 
@@ -263,6 +289,34 @@ bool SimpleAgent::Read(CreaturesArchive &archive)
 			return false;
 
 		archive >> myNormalPlane;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	archive >> myWorldIndex;
+	archive >> myRedTint;
+	archive >> myGreenTint;
+	archive >> myBlueTint;
+	archive >> myRotation;
+	archive >> mySwap;
+
+	if(myWorldIndex != -1)
+	{
+		TintManager& tint = theApp.GetWorld().GetTintManager(myWorldIndex);	
+		Tint( tint.GetMyTintTable());
+	}
+	else if(myRedTint != 1 && myGreenTint != -1 
+		&& myBlueTint !=-1 && myRotation !=-1 
+		&& mySwap !=-1)
+	{
+		TintManager tintin;
+		tintin.BuildTintTable(myRedTint,myGreenTint,myBlueTint,myRotation,mySwap);
+		Tint( tintin.GetMyTintTable());
+	}
+
+#endif
+
+		if(version > 31)
+			archive >>	myEntityImageIsCloned;
+
 	}
 	else
 	{
@@ -307,7 +361,7 @@ void SimpleAgent::Trash()
 }
 
 
-void SimpleAgent::Tint(const uint16* tintTable, int part)
+void SimpleAgent::Tint(const uint16* tintTable, int part, bool oneImage)
 {
 	_ASSERT(!myGarbaged);
 
@@ -315,24 +369,185 @@ void SimpleAgent::Tint(const uint16* tintTable, int part)
 	// see whether we have a cloned entity already and reload?
 	if(myEntityImage)
 	{
+		bool wasVisible = myEntityImage->IsVisible();
+
+		int storedPose =  myEntityImage->GetPose();
+
+		if(CreateClonedEntityImage(oneImage))
+		{
+
+		myEntityImage->SetPose(oneImage ? 0 : storedPose);
+
+
+		//  wants to cancel a previous tint if no tintable is given
+		if(tintTable)
+		{
+			myEntityImage->RecolourGallery(tintTable);
+		}
+
+		if(wasVisible)
+			myEntityImage->Link(true);	
+		else
+			myEntityImage->Unlink();
+
+
+		DoSetCameraShyStatus();
+
+		}
+	}
+}
+
+bool SimpleAgent::CreateClonedEntityImage(bool oneImage/*= false*/)
+{
+		ClonedEntityImage* clone = NULL;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
 		// create a temporary cloned entity image
-		
-		ClonedEntityImage*	clone =	new  ClonedEntityImage(myEntityImage->GetGallery()->GetName(),
+		int savedBlockWidth = myEntityImage->GetBlockWidth();
+		int savedBlockHeight = myEntityImage->GetBlockHeight();
+
+		clone =	new  ClonedEntityImage(myEntityImage->GetFilePath(),
+				myEntityImage->GetPlane(),
+				Map::FastFloatToInteger(myPositionVector.x),
+				Map::FastFloatToInteger(myPositionVector.y),
+				savedBlockWidth,
+				myEntityImage->GetGalleryBitmapCount(),
+				savedBlockHeight );
+
+		if(clone)
+		{
+			delete myEntityImage;
+			myEntityImage = NULL; // note we delete again later in the common branch null is safe to delete
+			clone->CreateAnimStrip(savedBlockWidth,savedBlockHeight);
+		}
+
+#else
+
+		clone =	new  ClonedEntityImage(myEntityImage->GetFilePath(),
 				myEntityImage->GetPlane(),
 				Map::FastFloatToInteger(myPositionVector.x),
 				Map::FastFloatToInteger(myPositionVector.y),
 				myEntityImage->GetAbsoluteBaseImage(),
-				myEntityImage->GetGallery()->GetCount(),
+				oneImage ? 1 : myEntityImage->GetGalleryBitmapCount(),
 				myEntityImage->GetAbsoluteBaseImage() );
 
-		clone->SetPose(myEntityImage->GetPose());
+#endif
+
+		if(clone != NULL)
+		{
+			delete myEntityImage;
+			myEntityImage = clone;
+
+			myEntityImageIsCloned = true;
+			return true;
+		}
+
+		return false;
+}
+
+// restore the normal entity image from a memory sucking clone
+void SimpleAgent::UnClone(int part/* = 0*/)
+{
+
+	if(myEntityImageIsCloned)
+	{
+#ifdef C2D_DIRECT_DISPLAY_LIB
+		
+		int savedBlockWidth = myEntityImage->GetBlockWidth();
+		int savedBlockHeight = myEntityImage->GetBlockHeight();
+
+#endif
+
+		// create a normal entity image to be swapped in
+		EntityImage* ent =	new  EntityImage(myEntityImage->GetFilePath(),
+					myEntityImage->GetGalleryBitmapCount(),
+					myEntityImage->GetPlane(),
+					Map::FastFloatToInteger(myPositionVector.x),
+					Map::FastFloatToInteger(myPositionVector.y),
+					myEntityImage->GetAbsoluteBaseImage(),
+					0 );
 
 		delete myEntityImage;
-		myEntityImage = clone;
+		myEntityImage = NULL;
 
-		clone->GetGallery()->Recolour(tintTable);
-		clone->Link(true);	
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	
+		ent->CreateAnimStrip(savedBlockWidth,savedBlockHeight);
+#endif // C2D_DIRECT_DISPLAY_LIB
+
+	
+		myEntityImage = ent;
+
+
+		myEntityImageIsCloned = false;
+
+		DoSetCameraShyStatus();
 
 	}
 }
+
+bool SimpleAgent::SetFrameRate(const uint8 rate, int partid) 
+{
+	_ASSERT(!myGarbaged);
+	myEntityImage->SetFrameRate(rate); 
+	return true; 
+}
+
+void SimpleAgent::ChangePhysicalPlane(int p)
+{
+	_ASSERT(!myGarbaged);
+	myEntityImage->SetPlane(p);
+	if (myCarriedAgent.IsValid())
+		myCarriedAgent.GetAgentReference().
+						ChangePhysicalPlane(GetPlaneForCarriedAgent());
+
+}
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void SimpleAgent::RememberTintInformation(int worldIndex, 
+										  int part /*= 0*/,
+								int red/* =-1*/,
+								int green /*=-1*/, 
+								int blue /*=-1*/, 
+								int rot/*=-1*/, 
+								int swp/*=-1*/
+							)
+{
+	myWorldIndex = worldIndex;
+	myRedTint = red;
+	myGreenTint = green;
+	myBlueTint = blue;
+	myRotation = rot;
+	mySwap =swp;
+}
+
+void SimpleAgent::RestoreTint(int part /*=0*/)
+{
+	if(myWorldIndex != -1)
+	{
+		TintManager& tint = theApp.GetWorld().GetTintManager(myWorldIndex);	
+		Tint( tint.GetMyTintTable());
+	}
+	else if(myRedTint != 1 && myGreenTint != -1 
+		&& myBlueTint !=-1 && myRotation !=-1 
+		&& mySwap !=-1)
+	{
+		TintManager tintin;
+		tintin.BuildTintTable(myRedTint,myGreenTint,myBlueTint,myRotation,mySwap);
+		Tint( tintin.GetMyTintTable());
+	}
+}
+
+void SimpleAgent::DrawOutlineAroundImage(int red, int green, int blue)
+{
+
+		if(CreateClonedEntityImage())
+		{
+
+			myEntityImage->DrawOutlineAroundImage(red,green,blue);
+		}
+
+}
+
+#endif
 

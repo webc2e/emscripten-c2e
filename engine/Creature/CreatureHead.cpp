@@ -5,10 +5,9 @@
 
 
 #include "CreatureHead.h"
-#include "Skeleton.h"
 #include "../General.h"
 #include "../App.h"
-#include "../Display/MainCamera.h"
+#include "../Camera/MainCamera.h"
 #include "BodyPartOverlay.h"
 #include <fstream>
 
@@ -182,10 +181,10 @@ void CreatureHead::AttachLimbChain(int32 position,Limb* limbChain)
 }
 
 
-void CreatureHead::UpdatePosn(uint8_t currentDirection,
+void CreatureHead::UpdatePosn(uint8 currentDirection,
 							  int32 Expression,
 							  int32 Eyes,
-							  uint8_t& earSet)
+							  uint8& earSet)
 {
    myCurrentDirection = currentDirection;
     int32 i,OffsetX,OffsetY;
@@ -264,7 +263,8 @@ void CreatureHead::GetHeadData( int32 Part,			// part number
 
     if (Fsp)
     {
-	    std::ifstream in(BuildFsp(Fsp,BODY_DATA_EXTENSION,BODY_DATA_DIR));
+	    std::ifstream in(BuildFsp(Fsp,BODY_DATA_EXTENSION,BODY_DATA_DIR).c_str());
+	    ASSERT(in.good());
 	    for	(j=0; j<MAXVIEWS; j++) 
         {	
 				// the 1st set is the start of the limb data
@@ -317,7 +317,7 @@ void CreatureHead::GetHeadData( int32 Part,			// part number
 void CreatureHead::SetCurrentPoseString(int direction,
 										 int32 Expression,
 										  int32 Eyes,
-										  uint8_t& earSet)
+										  uint8& earSet)
 {
     int32 i,j;
     Limb* currentLimb;
@@ -358,14 +358,8 @@ void CreatureHead::SetCurrentPoseString(int direction,
 *********************************************************************/
 void CreatureHead::SetHeadImage(int32 Expression,
 								int32 Eyes, 
-								uint8_t& currentEarSet)
+								uint8& currentEarSet)
 {
-
-	 // if we are wearing a body suit through which the head should not show
-	 	// an item of clothing can opt to override all other sprites
-	// to by pass the layering effect.
-
-	CheckLayeringEffects();
 
 	// carry on and do facial expression stuff
 	// because other things may actually be displaying the
@@ -377,16 +371,33 @@ void CreatureHead::SetHeadImage(int32 Expression,
 	 int nSetSize =32;// number of heads in each expression
 	if(Expression == EXPR_NORMAL && Eyes == 1)
 	{
-		if (myView < 0 || myView >= myHeadSpritesCount)
+		int32 newView = 0;
+		
+		if(myMirroredFlag)
+		{
+			newView = myViewForMirroring;
+		}
+		else
+		{
+			newView = myView;
+		}
+
+		if (newView < 0 || newView >= myHeadSpritesCount)
 			throw BasicException(ErrorMessageHandler::Format("creature_head_sprite_out_of_range", 0, "CreatureHead::SetHeadImage", myView, myHeadSpritesCount).c_str());
-		SetCurrentIndex(myView);
+		SetCurrentIndex(newView);
 
 	}
 	else
 	{
 		int32 nExpressionOffset = Expression * nSetSize;
 		int32 nEyeOffset = (1 - Eyes) * (nSetSize / 2);
-		int32 newView = nExpressionOffset+nEyeOffset+myView;
+		int32 newView = 0;
+		
+		if(myMirroredFlag)
+			newView = nExpressionOffset+nEyeOffset+myViewForMirroring;
+		else
+			newView = nExpressionOffset+nEyeOffset+myView;
+	
 		if (newView < 0 || newView >= myHeadSpritesCount)
 			throw BasicException(ErrorMessageHandler::Format("creature_head_sprite_out_of_range", 1, "CreatureHead::SetHeadImage",
 			newView, myHeadSpritesCount, nExpressionOffset, Expression, nSetSize, Eyes, nEyeOffset, myView).c_str());
@@ -418,7 +429,7 @@ void CreatureHead::SetHeadImage(int32 Expression,
 			earSet = EARS_ANGRY;
 				break;
 		}
-	case EXPR_SURPRISE:
+	case EXPR_SCARED:
 		{
 			earSet = EARS_PRICKED;
 				break;
@@ -656,3 +667,4 @@ bool CreatureHead::Visibility(int scope)
 	}
 	return false;
 }
+

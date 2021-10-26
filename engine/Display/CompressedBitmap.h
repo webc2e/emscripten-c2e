@@ -44,29 +44,33 @@ public:
 	CompressedBitmap();
 	virtual ~CompressedBitmap();
 
-	virtual void SetData(uint8_t*& dataPtr);
+	virtual void SetData(uint8*& dataPtr);
 	virtual void SetData(MemoryMappedFile& file);
 	
 	inline void SetScanLines(MemoryMappedFile& file);
 
-	void SetScanLines(File& file);
-
-	virtual uint8_t* GetScanLine(uint32 index);
+	virtual uint8* GetScanLine(uint32 index);
 
 
 	virtual void Save(File& file);
 
-	virtual uint32 SaveData(uint8_t*& data);
+	virtual uint32 SaveData(uint8*& data);
 	virtual uint32 SaveData(MemoryMappedFile& file);
+
+	uint32 SaveHeaderAndOffsetData(File& file);
+	virtual uint32 SaveData(File& file);
+
 
 	virtual void Recolour(const uint16*&tintTable);
 
 	inline uint32 SaveHeaderAndOffsetData(MemoryMappedFile& file);
 
-	uint32 SaveOffsetData(uint8_t*& data);
+	uint32 SaveOffsetData(uint8*& data);
 	uint32 SaveOffsetData(MemoryMappedFile& file);
 
 	void LoadFromC16(MemoryMappedFile& file);
+
+	void DummyLoadFromC16(MemoryMappedFile& file);
 
 	void StoreLineLengths();
 
@@ -77,7 +81,7 @@ public:
 
 protected:
 
-	std::vector<uint8_t*> myScanLines;
+	std::vector<uint8*> myScanLines;
 	std::vector<uint32> myOffsetValues;
 
 private:
@@ -124,49 +128,49 @@ void CompressedBitmap::SetScanLines(MemoryMappedFile& file)
 		// scan line.
 		uint32 scanPosition = file.GetPosition(); 
 
-
-		uint8_t* data = NULL;
-		uint32 offset =0;
+		uint8* data = NULL;
+		uint32 offset = 0;
+		ASSERT(myOffsetValues.empty());
+		ASSERT(myScanLines.empty());
 		// we find the scan lines by calculating where the next
 		// scanline starts, using the previous offset.
+		myOffsetValues.resize(myHeight - 1);
+		myScanLines.resize(myHeight);
 		for(int i = 0 ; i< myHeight; i++)
 		{
-			
-		//	data =  fileStart;
 			// for the first offsetvalue use myOffset
 			if(i == 0)
 			{
-		
-			file.Seek(myOffset,File::Start);
-			file.ReadUINT8Ptr(data);
-			myScanLines.push_back(data);
+				file.Seek(myOffset, File::Start);
+				file.ReadUINT8Ptr(data);
+				myScanLines[i] = data;
 			}
 			else
 			{
-			// find the actual start of this line of data
-			// and store a pointer to it
+				// find the actual start of this line of data
+				// and store a pointer to it
 
-			// go to where the offset of the first
-			// line of data is stored
-			file.Seek(scanPosition,File::Start);
+				// go to where the offset of the first
+				// line of data is stored
+				file.Seek(scanPosition,File::Start);
 
-			// read the offset and point the pixel data there
-			offset = file.ReadUINT32();
-	
-			// store the next scan position
-			scanPosition = file.GetPosition();
+				// read the offset and point the pixel data there
+				offset = file.ReadUINT32();
+		
+				// store the next scan position
+				scanPosition = file.GetPosition();
 
-			// go to where the pixel data for this line
-			// is stored
-			file.Seek(offset,File::Start);
-			file.ReadUINT8Ptr(data);
+				// go to where the pixel data for this line
+				// is stored
+				file.Seek(offset,File::Start);
+				file.ReadUINT8Ptr(data);
 
-			myScanLines.push_back(data);
-			myOffsetValues.push_back(offset);
-
+				myScanLines[i] = data;
+				myOffsetValues[i - 1] = offset;
 			}
 		}
 		file.Seek(scanPosition,File::Start);
 	}
 
 #endif		// COMPRESSEDBITMAP_H
+

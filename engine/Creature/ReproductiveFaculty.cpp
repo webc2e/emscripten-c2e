@@ -7,16 +7,17 @@
 
 
 #include "ReproductiveFaculty.h"
-#include "Creature.h"
-#include "../Agents/Agent.h"
+#include "CreatureFacultyInterface.h"
+#include "AgentFacultyInterface.h"
 #include "Biochemistry/Biochemistry.h"
 #include "../App.h"
 #include "../World.h"
+#include "GenomeStore.h"
+#include "../Maths.h"
+#include "../Agents/AgentHandle.h"
 
 
 CREATURES_IMPLEMENT_SERIAL(ReproductiveFaculty)
-
-#include "../Agents/AgentHandle.h"
 
 
 // Threshold values for loc_ovulate receptor, controlling whether an egg/sperm is to be
@@ -109,7 +110,7 @@ void ReproductiveFaculty::Update() {
 // ------------------------------------------------------------------------
 bool ReproductiveFaculty::IsPregnant()
 {
-	return !(GetCreatureOwner().GetAgentReference().GetGenomeStore().MonikerAsString(1).empty());
+	return !(myCreatureAsAgent->GetGenomeStore().MonikerAsString(1).empty());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -126,13 +127,13 @@ void ReproductiveFaculty::DonateSperm()
 {
 	// IT object's classifier must be CREATURE:same genus as you:FEMALE:00
 	// if she's an acceptable target!
-	Classifier C(myCreature.GetCreatureReference().GetClassifier().Family(), myCreature.GetCreatureReference().GetClassifier().Genus(), FEMALE);
+	Classifier C(myCreatureAsAgent->GetClassifier().Family(), myCreatureAsAgent->GetClassifier().Genus(), FEMALE);
 	// if IT is a female of your genus
 
-	AgentHandle it = myCreature.GetCreatureReference().GetItAgent();
-	if ((it.IsValid()) && it.GetAgentReference().GetClassifier() == C) {
+	AgentHandle it = myCreature->GetItAgent();
+	if ((it.IsValid()) && it.GetAgentFacultyInterfaceReference().GetClassifier() == C) {
 		// send her any prepared sperm
-		it.GetCreatureReference().Reproductive()->AcceptSperm(GetCreatureOwner(), myChanceOfMutationLocus, myDegreeOfMutationLocus);
+		it.GetCreatureFacultyInterfaceReference().Reproductive()->AcceptSperm(myCreatureAsAgent->GetAsAgentHandle(), (byte)myChanceOfMutationLocus, (byte)myDegreeOfMutationLocus);
 		myGamete = false;					// shot your bolt now
 	}
 }
@@ -163,7 +164,7 @@ void ReproductiveFaculty::DonateSperm()
 void ReproductiveFaculty::AcceptSperm(AgentHandle dad, byte DadChanceOfMutation, byte DadDegreeOfMutation)
 {
 	if ((myGamete)&&							// If a fertile egg is present
-		(dad.GetCreatureReference().Reproductive()->myGamete)&&								// and a sperm is present
+		(dad.GetCreatureFacultyInterfaceReference().Reproductive()->myGamete)&&								// and a sperm is present
 		(!IsPregnant()))							// and not already pregnant
 	{											
 		if (RndFloat() < myReceptiveLocus)			// then probablistically,
@@ -205,10 +206,10 @@ void ReproductiveFaculty::AcceptSperm(AgentHandle dad, byte DadChanceOfMutation,
 				if (birth == 0 || !identical)
 				{
 					// non-identical twin, or first of identical set
-					bool result = GetCreatureOwner().GetAgentReference().GetGenomeStore().CrossoverFrom(birth + 1,		// genome store to contain zygote
-								GetCreatureOwner().GetAgentReference().GetGenomeStore(), 0,		// cross our actual genome
-								dad.GetAgentReference().GetGenomeStore(), 0, // with dad's actual one
-								myChanceOfMutationLocus, myDegreeOfMutationLocus,
+					bool result = myCreatureAsAgent->GetGenomeStore().CrossoverFrom(birth + 1,		// genome store to contain zygote
+								myCreatureAsAgent->GetGenomeStore(), 0,		// cross our actual genome
+								dad.GetAgentFacultyInterfaceReference().GetGenomeStore(), 0, // with dad's actual one
+								(byte)myChanceOfMutationLocus, (byte)myDegreeOfMutationLocus,
 								DadChanceOfMutation, DadDegreeOfMutation,
 								true);
 					ASSERT(result);
@@ -216,10 +217,10 @@ void ReproductiveFaculty::AcceptSperm(AgentHandle dad, byte DadChanceOfMutation,
 				else
 				{
 					// identical twin
-					bool result = GetCreatureOwner().GetAgentReference().GetGenomeStore().IdenticalTwinFrom(birth + 1,		// genome store to contain zygote
-								GetCreatureOwner().GetAgentReference().GetGenomeStore(), 0,		// cross our actual genome
-								dad.GetAgentReference().GetGenomeStore(), 0, // with dad's actual one
-								GetCreatureOwner().GetAgentReference().GetGenomeStore().MonikerAsString(1));
+					bool result = myCreatureAsAgent->GetGenomeStore().IdenticalTwinFrom(birth + 1,		// genome store to contain zygote
+								myCreatureAsAgent->GetGenomeStore(), 0,		// cross our actual genome
+								dad.GetAgentFacultyInterfaceReference().GetGenomeStore(), 0, // with dad's actual one
+								myCreatureAsAgent->GetGenomeStore().MonikerAsString(1));
 					ASSERT(result);
 				}
 			}
@@ -345,7 +346,8 @@ float ReproductiveFaculty::GetProgesteroneLevel()
 	// calculate a pregnancy state from the level of progesterone.
 	// the chemical level rises rapidly and then tails off towards 255
 	// so these stages will need tweaking
-	float progesterone = myCreature.GetCreatureReference().GetBiochemistry()->GetChemical(CHEM_PROGESTERONE);
+	float progesterone = myCreature->GetBiochemistry()->GetChemical(CHEM_PROGESTERONE);
 	return progesterone;
 }
  
+

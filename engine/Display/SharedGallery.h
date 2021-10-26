@@ -31,14 +31,13 @@
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
-//#include "Gallery.h"
+
 #include <map>
 #include <string>
-#include "CreatureGallery.h"
 #include "../Creature/Definitions.h"
 
 class Gallery;
-class ClonedGallery;
+class CreatureGallery;
 
 typedef std::map<std::string,Gallery*>::iterator GALLERYMAP_ITERATOR;
 typedef std::map<Gallery*,std::string >::iterator CLONEDGALLERYMAP_ITERATOR;
@@ -53,33 +52,37 @@ class SharedGallery
 public:
 
 	~SharedGallery();
-	Gallery* CreateGallery(FilePath const &galleryName);
+	Gallery* CreateGallery(std::string const &galleryName);
 	Gallery* CreateGallery(std::string moniker,
 									  uint32 uniqueID,
-									  int32 PVariantGenus[NUMPARTS],
-									  int32 PVariant[NUMPARTS],
 									  uint32 ValidParts,
-									  uint8_t Sex,
-									  uint8_t Age,
+									  uint8 Sex,
+									  uint8 Age,
 									  int32 BodySprites[NUMPARTS],
 									  CreatureGallery* gallery,
-									  CompressedGallery creatureParts[NUMPARTS],
+									  Gallery creatureParts[NUMPARTS],
 										int32 numSpritesInFile,
 										bool onePassOnly = false);
 
-	Gallery* CreateClonedGallery(FilePath const &galleryName,
+	Gallery* CreateClonedGallery(std::string const &galleryName,
 								uint32 baseimage,
 								uint32 numImages);
-	void AddClonedGallery( ClonedGallery *gallery );
 
-	Gallery* LookForCreatureGallery(FilePath const &galleryName);
+	Gallery* DoCreateGallery(std::string const& galleryIn,
+											uint32 baseimage, 
+											uint32 numImages,
+											bool clone);
+
+	void AddClonedGallery( Gallery *gallery );
+
+	Gallery* LookForCreatureGallery(std::string const &galleryName);
 
 	void ReplaceCreatureGallery(Gallery* gallery);
 
 
 	static SharedGallery& theSharedGallery();
 
-	void ConvertGallery(FilePath const & name, uint32 to);
+	void ConvertGallery(std::string const & name, uint32 to);
 
 // ----------------------------------------------------------------------
 // Method:      RemoveGallery
@@ -93,21 +96,21 @@ public:
 	static bool RemoveCreatureGallery(Gallery*& gallery);
 	static bool RemoveClonedGallery(Gallery*& gallery);
 
-	static bool QueryGalleryInUse(FilePath const &galleryPath);
+	static bool QueryGalleryInUse(std::string const &galleryPath);
 	static void DumpGalleries();
 
 	void DestroyGalleries();
 	void CleanCreatureGalleryFolder();
-	void PreloadBackgrounds();
+	
+	void SetCreatureGalleryFolder(std::string const & path){myCreatureGalleriesFolder = path;}
+	std::string GetCreatureGalleriesFolder();
 
 protected:
 	static bool QueryGalleryInUseHelper(std::string galleryName);
 
 private:
-
 	// private constructor to ensure only one exists
 	SharedGallery();
-
 
 	// Copy constructor and assignment operator
 	// Declared but not implemented
@@ -119,8 +122,11 @@ private:
 	static std::map< std::string, Gallery*> myGalleries;
 	static std::map<Gallery*,std::string> myClonedGalleries;
 	static std::map<Gallery*,std::string> myCreatureGalleries;
+
+	std::string myCreatureGalleriesFolder;
 };
 
 
 
 #endif //SHARED_GALLERY_H
+

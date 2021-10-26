@@ -37,24 +37,6 @@ const int FIRST_ANTIGEN = 82;
 const int LAST_ANTIGEN = 89;
 
 
-
-
-#include "../../Caos/AutoDocumentationTable.h"
-
-extern TableSpec ourReceptorLocusNumbers[];
-extern int sizeOurReceptorLocusNumbers;
-
-extern TableSpec ourReceptorLocusNumbers[];
-extern int sizeOurReceptorLocusNumbers;
-
-
-
-
-
-
-
-
-
 /*********************************************************************
 * Typedefs.
 *********************************************************************/
@@ -273,3 +255,4 @@ enum CreatureReceptorLocusIDs {			// ORGAN_CREATURE : <tissue> : receptor loci
 };
 
 #endif//BiochemistryConstants_H
+

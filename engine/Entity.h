@@ -41,7 +41,7 @@
 
 #include "../common/C2eTypes.h"
 #include "PersistentObject.h"
-#include "Display/EntityImage.h"
+#include "AgentDisplay/EntityImage.h"
 #include "Creature/SkeletonConstants.h"
 
 
@@ -237,7 +237,6 @@ public:
 				uint32 baseimage,
 				int age);
 
-	void CheckLayeringEffects();
 
 	virtual ~BodyPart();
 
@@ -266,6 +265,9 @@ public:
 
 	bool SetOverlay(int32 set, int32 layer);
 	int GetOverlay(int32 layer = -1);
+
+	void StoreCurrentOverlayState();
+	void RestoreOverlayState();
 
 
 
@@ -503,3 +505,4 @@ inline Body::Body()
 
 
 #endif // ENTITY_H
+

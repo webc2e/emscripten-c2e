@@ -6,21 +6,12 @@
 #include "../../common/C2eDebug.h"
 #include "CAOSDescription.h"
 
-#ifdef C2E_OLD_CPP_LIB
-// not too sure what is ansi.
-#include <iostream>
-#else
-#include <ostream>	// ok under visual c
-#endif
-
+#include <sstream>
 #include <algorithm>
-
-// std::vector< std::pair<TableSpec *, int> > AutoDocumentationTable::GetOurTables();
 
 int AutoDocumentationTable::RegisterTable(TableSpec *table, int sizeInBytes)
 {
 	int size = sizeInBytes / sizeof(TableSpec);
-//	ASSERT(size > 2); // first is heading, second titles for columns, others are rows
 	if (size <= 2)
 		return 0;
 
@@ -83,7 +74,6 @@ void AutoDocumentationTable::StreamTableAsHTML(std::ostream& out, TableSpec *tab
 		if ((table + rowNumberDo)->entries.size() == 0)
 		{
 			rowNumberDo = 1; 
-			// out << "</table><p>" << tableStartString << std::endl;
 		}
 
 		out << "<tr>";
@@ -108,3 +98,4 @@ AutoDocumentationTable::TableSpecTable& AutoDocumentationTable::GetOurTables()
 	static TableSpecTable ourmyTables;
 	return ourmyTables;
 }
+

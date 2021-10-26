@@ -1,0 +1,13 @@
+# NetBabel.catalogue
+#
+# Catalogue file - Error messages used by Babel network subsystem
+#
+# Created 23Feb00 FAI
+
+
+TAG "net_babel"
+
+"Bevor Sie online gehen, müssen Sie einen Benutzernamen eintragen"
+"Der Benutzernamen kann nicht gewechselt werden, während Sie online sind"
+"Entweder wurde kein absendender Benutzer bezeichnet, oder die Zielbenutzer-ID scheint ungültig zu sein \"%s\""
+"Es trat ein Problem auf bei der Upload-Formatierung der Wesensgeschichte"

@@ -92,3 +92,4 @@ class MusicVariable : public MusicNamedItem
 	};
 
 #endif
+

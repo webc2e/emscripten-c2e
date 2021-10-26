@@ -10,21 +10,32 @@
 #endif
 
 #include "Biochemistry/ChemicallyActive.h"
-#include "Biochemistry/BiochemistryConstants.h"
+//#include "Biochemistry/BiochemistryConstants.h"
 #include "../PersistentObject.h"
 
+// I'm afraid we need this one Gav - gcc gives
+// scary warnings otherwise
 #include "../Agents/AgentHandle.h"
 
 class Genome;
+class AgentFacultyInterface;
+class CreatureFacultyInterface;
 
 //class Faculty : public ChemicallyActive, public PersistentObject {
 class Faculty : public PersistentObject, public ChemicallyActive  {
 	CREATURES_DECLARE_SERIAL(Faculty)
+
+	// bit of an abuse of notion here:
+	typedef Faculty base;
 public:
 	Faculty();
 	virtual ~Faculty();
 
-	virtual void Init(AgentHandle c);
+	void SetActive(bool b);
+	bool IsActive();
+
+	virtual void SetCallback(AgentFacultyInterface* a, CreatureFacultyInterface* f);
+	virtual void Init();
 	virtual void Update();
 	virtual void ReadFromGenome(Genome& g);
 	virtual float* GetLocusAddress(int type, int organ, int tissue, int locus);
@@ -32,16 +43,13 @@ public:
 	virtual bool Write(CreaturesArchive &archive) const;
 	virtual bool Read(CreaturesArchive &archive);
 
-	AgentHandle GetCreatureOwner() {
-		return myCreature;
-	}
-
-	virtual void Trash()
-	{
-		myCreature = NULLHANDLE;
-	}
+	virtual void Trash() {}
 protected:
-	AgentHandle myCreature;
+	bool myActiveFlag;
+//	AgentHandle myCreature;
+	CreatureFacultyInterface* myCreature;
+	AgentFacultyInterface* myCreatureAsAgent;
 };
  
 #endif//Faculty_H
+

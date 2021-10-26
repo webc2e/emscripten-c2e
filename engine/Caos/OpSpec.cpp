@@ -17,10 +17,13 @@
 #endif
 
 #include "OpSpec.h"
-#include "CAOSTables.h"
+#include "../CreaturesArchive.h"
+#include "CAOSConstants.h"
 #include <string>
+#include "../../common/C2eDebug.h"
 
-
+// Only things needed or useful to CAOS tool are serialised out
+// Try not to change this, as it means you need a new CAOS tool
 bool OpSpec::Write(CreaturesArchive &archive) const
 {
 	archive << myOpcode << myName << myParameters << mySpecialCode;
@@ -33,7 +36,6 @@ bool OpSpec::Write(CreaturesArchive &archive) const
 
 bool OpSpec::Read(CreaturesArchive &archive)
 {
-		
 	int32 version = archive.GetFileVersion();
 
 	if(version >= 3)
@@ -55,14 +57,16 @@ bool OpSpec::Read(CreaturesArchive &archive)
 std::string OpSpec::GetPrettyName() const
 {
 	if (IsSubCommand())
-		return GetCommandTableString() + " " + myName;
-	return myName;
+		return mySuperName + " " + myName;
+	else
+		return myName;
 }
 
-std::string OpSpec::GetCommandTableString() const
+// static
+std::string OpSpec::GetTableType(int table)
 {
 	std::string type_string;
-	switch(myCommandTable)
+	switch(table)
 	{
 		case idCommandTable: type_string = "command";  break;
 		case idIntegerRVTable: type_string = "integer"; break;
@@ -70,52 +74,27 @@ std::string OpSpec::GetCommandTableString() const
 		case idFloatRVTable: type_string = "float"; break;
 		case idStringRVTable: type_string = "string"; break;
 		case idAgentRVTable: type_string = "agent"; break;
-		case idSubCommandTable_NEW: type_string = "NEW:"; break;
-		case idSubCommandTable_MESG: type_string = "MESG"; break;
-		case idSubCommandTable_STIM: type_string = "STIM"; break;
-		case idSubCommandTable_URGE: type_string = "URGE"; break;
-		case idSubCommandTable_SWAY: type_string = "SWAY"; break;
-		case idSubCommandTable_ORDR: type_string = "ORDR"; break;
-		case idSubCommandTable_GIDS: type_string = "GIDS"; break;
-		case idSubStringRVTable_PRT:
-		case idSubIntegerRVTable_PRT:
-		case idSubAgentRVTable_PRT:
-		case idSubCommandTable_PRT: type_string = "PRT:"; break;
-		case idSubCommandTable_PAT: type_string = "PAT:"; break;
-		case idSubCommandTable_DBG: type_string = "DBG:"; break;
-		case idSubCommandTable_BRN: type_string = "BRN:"; break;
-		case idSubIntegerRVTable_PRAY:
-		case idSubStringRVTable_PRAY:
-		case idSubCommandTable_PRAY: type_string = "PRAY"; break;
-		case idSubCommandTable_GENE: type_string = "GENE"; break;
-		case idSubCommandTable_FILE: type_string = "FILE"; break;
-		case idSubIntegerRVTable_HIST:
-		case idSubStringRVTable_HIST:
-		case idSubCommandTable_HIST: type_string = "HIST"; break;
-		
 		default : type_string = "unknown";
 	}
-
 	return type_string;
 }
 
-std::string OpSpec::GetPrettyCommandTableString() const
+
+std::string OpSpec::GetPrettyType() const
 {
-	if (!IsSubCommand())
-		return GetCommandTableString();
-	if (myCommandTable == idSubIntegerRVTable_PRAY ||
-		myCommandTable == idSubIntegerRVTable_HIST)
-		return "integer";
-	else if (myCommandTable == idSubStringRVTable_PRAY ||
-		myCommandTable == idSubStringRVTable_HIST)
-		return "string";
+	if (IsSubCommand())
+	{
+		ASSERT(mySuperCommandTable >= 0);
+		return GetTableType(mySuperCommandTable);
+	}
 	else
-		return "command";
+		return GetTableType(myCommandTable);
+
 }
 
 bool OpSpec::IsSubCommand() const
 {
-	return myCommandTable >= idSubCommandTable_NEW;
+	return myCommandTable >= FIRST_SUB_COMMAND_TABLE;
 }
 
 // static
@@ -161,3 +140,10 @@ bool OpSpec::CompareCommandsFirst(const OpSpec& a, const OpSpec& b)
 
 	return false;
 }
+
+void OpSpec::SetSuperCommand(const OpSpec& superSpec)
+{
+	mySuperName = superSpec.myName;
+	mySuperCommandTable = superSpec.myCommandTable;
+}
+

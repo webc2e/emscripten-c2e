@@ -116,3 +116,4 @@ private:
 };
 
 #endif		// POSITION_H
+

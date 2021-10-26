@@ -99,18 +99,13 @@ DWORD WINAPI ServerThread::HackedThreadStart( LPVOID ob )
 	return ((ServerThread*)ob)->ThreadMain();	// ob contains a "this" pointer
 }
 
-
 UINT ServerThread::ThreadMain()
 {
-	// Catch C style exceptions as C++ style ones
-	// for more informative messages
-	ConvertCStyleExceptionsToCppStyle();
-
 	DWORD dw;
 	bool quit=false;
 	HANDLE objects[2];
 
-	PulseEvent( myUpAndRunningObject );
+	SetEvent( myUpAndRunningObject );
 
 	objects[0] = myDieNowObject;
 	objects[1] = myObjectToWatch;
@@ -132,4 +127,5 @@ UINT ServerThread::ThreadMain()
 
 	return 0;
 }
+
 

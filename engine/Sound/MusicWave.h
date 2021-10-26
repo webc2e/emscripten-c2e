@@ -54,3 +54,4 @@ class MusicWave : public MusicNamedItem
 	};
 
 #endif
+

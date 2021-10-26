@@ -6,9 +6,11 @@
 #include "DebugInfo.h"
 #include "../C2eServices.h"	// for logging
 #include "Orderiser.h"
+#include "CAOSMachine.h"
 
 #include <stdlib.h>
 #include <memory.h>	// for memcpy()
+#include <sstream>
 
 
 CREATURES_IMPLEMENT_SERIAL( MacroScript )
@@ -124,7 +126,7 @@ bool MacroScript::Read(CreaturesArchive &archive)
 		archive >> myReferenceCount;
 		
 		archive >> mySize;
-		myCode = new uint8_t[mySize];
+		myCode = new uint8[mySize];
 		archive.Read( myCode, mySize );
 		
 		archive >> myDebugInfo;
@@ -136,8 +138,20 @@ bool MacroScript::Read(CreaturesArchive &archive)
 		MacroScript* newCAOS = o.OrderFromCAOS(src.c_str());
 		
 		// If the new CAOS is a different size to this CAOS then problems may ensue
-		_ASSERT(newCAOS);
-		_ASSERT(newCAOS->mySize == mySize);
+		if (!newCAOS || newCAOS->mySize != mySize)
+		{
+			std::ostringstream out;
+			myClassifier.StreamClassifier(out);
+			myClassifier.StreamAgentNameIfAvailable(out);
+			out << std::endl;
+			out << o.GetLastError() << std::endl;
+			CAOSMachine::FormatErrorPos(out, o.GetLastErrorPos(), src.c_str());
+			if (newCAOS)
+				out << std::endl << "Compiled script size has changed" << std::endl;
+			std::string text = out.str();
+			std::string formatted = ErrorMessageHandler::Format("script_error", 4, "MacroScript::Read", text.c_str());
+			throw BasicException(formatted.c_str());
+		}
 
 		delete [] myCode;
 		delete myDebugInfo;

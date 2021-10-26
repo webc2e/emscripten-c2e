@@ -8,8 +8,16 @@
 #include "../Creature/Creature.h"
 #include "../Creature/LifeFaculty.h"
 #include "../Creature/LinguisticFaculty.h"
+#include "CAOSMachine.h"
+#ifdef C2D_DIRECT_DISPLAY_LIB
 
+#else
 #include "../Display/SharedGallery.h"
+
+#endif
+
+#include "../AgentManager.h"
+#include "../FilePath.h"
 
 void HistoryHandlers::Command_HIST( CAOSMachine& vm )
 {
@@ -72,6 +80,65 @@ void HistoryHandlers::SubCommand_HIST_NAME( CAOSMachine& vm )
 	}
 }
 
+bool HistoryHandlers::WipeHistoryHelper(HistoryStore& historyStore, const std::string& moniker)
+{
+	// Check we can wipe photos
+	CreatureHistory& history = historyStore.GetCreatureHistory(moniker);
+	{
+		for (int i = 0; i < history.Count(); ++i)
+		{
+			LifeEvent* event = history.GetLifeEvent(i);
+			ASSERT(event);
+			if (!event->myPhoto.empty())
+			{
+#ifdef NETTY
+	theApp.Netty->TextOut("WipeHistoryHelper");
+#endif
+
+				FilePath filePath(event->myPhoto + ".s16", IMAGES_DIR);
+				// now the shared gallery does not know about world directories
+				// it only delas with full path names
+				std::string worldGalleryName;
+				bool inUse = false;
+
+	#ifdef C2D_DIRECT_DISPLAY_LIB
+	#else
+				if (filePath.GetWorldDirectoryVersionOfTheFile(worldGalleryName))
+					inUse = SharedGallery::QueryGalleryInUse(worldGalleryName);
+				else
+					inUse = SharedGallery::QueryGalleryInUse(filePath.GetFullPath());
+
+				if (inUse)
+					return false;
+	#endif // C2D_DIRECT_DISPLAY_LIB
+			}
+		}
+	}
+
+	// Attic any photos
+	{
+		for (int i = 0; i < history.Count(); ++i)
+		{
+			LifeEvent* event = history.GetLifeEvent(i);
+			ASSERT(event);
+			if (!event->myPhoto.empty())
+			{
+#ifdef NETTY
+	theApp.Netty->TextOut("AtticPhotos",event->myPhoto.c_str());
+#endif
+
+				FilePath filePath(event->myPhoto + ".s16", IMAGES_DIR);		
+				theApp.GetWorld().MarkFileForAttic(filePath);
+				event->myPhoto = "";
+			}
+		}
+	}
+
+	// wipe history
+	historyStore.WipeCreatureHistory(moniker);
+	return true;
+}
+
 void HistoryHandlers::SubCommand_HIST_WIPE( CAOSMachine& vm )
 {
 	std::string moniker;
@@ -85,30 +152,8 @@ void HistoryHandlers::SubCommand_HIST_WIPE( CAOSMachine& vm )
 	// or is a genome that is no longer referenced
 	// and was never made into a creature
 	if (state == 0 || state == 6 || state == 4 || state == 7)
-	{
-		CreatureHistory& history = historyStore.GetCreatureHistory(moniker);
-		for (int i = 0; i < history.Count(); ++i)
-		{
-			// attic any photos
-			LifeEvent* event = history.GetLifeEvent(i);
-			ASSERT(event);
-			if (!event->myPhoto.empty())
-			{
-				FilePath filePath(event->myPhoto + ".s16", IMAGES_DIR);
-				bool inUse = SharedGallery::QueryGalleryInUse(filePath);
-				
-				if (inUse)
-					vm.ThrowRunError(CAOSMachine::sidCreatureHistoryPhotoStillInUse);
-				
-				theApp.GetWorld().MarkFileForAttic(filePath);
-
-				event->myPhoto = "";
-			}
-		}
-
-		// wipe history
-		historyStore.WipeCreatureHistory(moniker);
-	}
+		if (!WipeHistoryHelper(historyStore, moniker))
+			vm.ThrowRunError(CAOSMachine::sidCreatureHistoryPhotoStillInUse);
 	else
 		vm.ThrowRunError( CAOSMachine::sidOnlyWipeTrulyDeadHistory );
 }
@@ -122,12 +167,32 @@ void HistoryHandlers::SubCommand_HIST_FOTO( CAOSMachine& vm )
 
 	if (!event.myPhoto.empty())
 	{
+#ifdef NETTY
+	theApp.Netty->TextOut("lala",event.myPhoto.c_str());
+#endif
+
 		FilePath filePath(event.myPhoto + ".s16", IMAGES_DIR);
-		bool inUse = SharedGallery::QueryGalleryInUse(filePath);
+		// now the shared gallery does not know about world directories
+		// it only deals with full path names
+		std::string worldGalleryName;
+		bool inUse = false;
+
+	#ifdef C2D_DIRECT_DISPLAY_LIB
+
+	#else
+		if (filePath.GetWorldDirectoryVersionOfTheFile(worldGalleryName))
+		{
+			inUse = SharedGallery::QueryGalleryInUse(worldGalleryName);
+		}
+		else
+		{
+			inUse = SharedGallery::QueryGalleryInUse(filePath.GetFullPath());
+		}
 		
 		if (inUse)
 			vm.ThrowRunError(CAOSMachine::sidCreatureHistoryPhotoStillInUse);
-		
+	#endif
+
 		theApp.GetWorld().MarkFileForAttic(filePath);
 	}
 
@@ -147,6 +212,7 @@ int HistoryHandlers::IntegerRV_HIST( CAOSMachine& vm )
 		IntegerRV_HIST_GEND,
 		IntegerRV_HIST_GNUS,
 		IntegerRV_HIST_VARI,
+		IntegerRV_HIST_WVET,
 		IntegerRV_HIST_FIND,
 		IntegerRV_HIST_FINR,
 		IntegerRV_HIST_SEAN,
@@ -237,6 +303,11 @@ int HistoryHandlers::IntegerRV_HIST_VARI( CAOSMachine& vm )
 	return CreatureHistoryHelper(vm).myVariant;
 }
 
+int HistoryHandlers::IntegerRV_HIST_WVET( CAOSMachine& vm)
+{
+	return CreatureHistoryHelper(vm).myWarpHoleVeteran ? 1 : 0;
+}
+
 int HistoryHandlers::IntegerRV_HIST_FIND( CAOSMachine& vm )
 {
 	CreatureHistory& history = CreatureHistoryHelper(vm);
@@ -308,6 +379,7 @@ void HistoryHandlers::StringRV_HIST( CAOSMachine& vm, std::string& str )
 		StringRV_HIST_NEXT,
 		StringRV_HIST_PREV,
 		StringRV_HIST_FOTO,
+		StringRV_HIST_NETU,
 	};
 	int thisst;
 	thisst = vm.FetchOp();
@@ -376,5 +448,11 @@ int HistoryHandlers::IntegerRV_OOWW( CAOSMachine& vm )
 
 	HistoryStore& historyStore = theApp.GetWorld().GetHistoryStore();
 	return historyStore.GetOutOfWorldState(moniker);
+}
+
+
+void HistoryHandlers::StringRV_HIST_NETU( CAOSMachine& vm, std::string& str )
+{
+	str = LifeEventHelper(vm).myNetworkUser;
 }
 

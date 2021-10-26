@@ -7,8 +7,9 @@
 
 #include <string>
 #include "../../../common/C2eTypes.h"
+#include "../../../modules/ModuleAPI.h"
 
-class LifeEvent
+class C2E_MODULE_API LifeEvent
 {
 public:
 	// please add new values to the end of 
@@ -16,7 +17,7 @@ public:
 	// CAOS scripts
 	enum EventType
 	{
-		typeConcieved, // naturally
+		typeConceived, // naturally
 		typeSpliced, // artificially
 		typeEngineered, // engineered
 
@@ -36,6 +37,9 @@ public:
 
 		typeCloned, // another conception
 		typeClonedSource,
+
+ 		typeWarpedOut, // exported directly to another machine over internet
+		typeWarpedIn, // imported directly from another machine over internet
 	};
 
 	EventType myEventType;
@@ -54,11 +58,26 @@ public:
 	std::string myWorldName;
 	std::string myWorldUniqueIdentifier;
 
+	std::string myNetworkUser; // Babel user id
+
+	// This is meta-data.  Whether the rest of the data in this 
+	// life event has been uploaded to the tracking server yet
+	// (as in Docking Station)
+	bool myNetworkNeedUploading;
+	// So we can track when we need to tell the server about 
+	// new user text
+	std::string myUploadedUserText;
+
 	friend CreaturesArchive &operator<<( CreaturesArchive &archive, LifeEvent const &lifeEvent );
 	friend CreaturesArchive &operator>>( CreaturesArchive &archive, LifeEvent &lifeEvent );
 
+	LifeEvent();
 	bool operator==(LifeEvent& other);
+
+	bool CreaturePresentForEvent() const;
+	static bool CreaturePresentForEvent(EventType event);
 };
 
 
 #endif // LIFE_EVENT_H
+

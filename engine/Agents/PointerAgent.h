@@ -27,9 +27,14 @@ public:
 
 	virtual ~PointerAgent();					// destructor
 
-	virtual void Tint(const uint16* tintTable, int part = 0);
+	virtual void Tint(const uint16* tintTable, int part = 0, bool oneImage = false);
+	virtual void UnClone(int part = 0);
+	virtual bool CreateClonedEntityImage(bool oneImage =  false);
     virtual void Trash();
 
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	virtual void DrawOutlineAroundImage(int red, int green, int blue);
+#endif
 
 	
 	Vector2D GetHotSpot()
@@ -40,26 +45,28 @@ public:
 	{
 		myHotSpot = hotspot;
 	}
+	Vector2D GetHotSpotVector()
+	{
+		return myHotSpot;
+	}
 
 
 	AgentHandle Find();				// Find the object
-	AgentHandle FindCreature();				// Find the object
+	AgentHandle FindSkeletalCreature();				// Find the object
 
 	virtual void Update();			       		// called every tick
 
 	void CameraPositionNotify();
 
+	virtual void MoveTo(float x, float y);
 
-	
-
-
-	AgentHandle GetHandHeldCreature()
+	AgentHandle GetHandHeldSkeletalCreature()
 	{
-		return myHandHeldCreature;
+		return myHandHeldSkeletalCreature;
 	}
-	void StartHoldingHandsWithCreature(AgentHandle& creature);
-	void HoldHandsWithCreature();
-	void StopHoldingHandsWithCreature();
+	void StartHoldingHandsWithSkeletalCreature(AgentHandle& SkeletalCreature);
+	void HoldHandsWithSkeletalCreature();
+	void StopHoldingHandsWithSkeletalCreature();
 
 	bool TreatBothButtonsAsLeftClick();
 	bool TreatBothButtonsAsRightClick();
@@ -81,7 +88,8 @@ public:
 
 
 
-// capitalize these?
+// capitalize these? - well if you decide to don't forget to capitalize
+// all countless the others as well
 	enum
 	{ 
 		DoMouseClicksAsNormal =0, 
@@ -94,6 +102,8 @@ public:
 	std::string GetName() {return myName;};
 	void SetName(std::string name);
 
+	bool myWiredToMouse;
+
 protected:
 	Vector2D myHotSpot;
 	bool myConnecting;
@@ -104,8 +114,8 @@ protected:
 	AgentHandle myConnectingAgent;
 
 	// Holding hands stuff
-	bool myIsHoldingHandsWithCreature;
-	AgentHandle myHandHeldCreature;
+	bool myIsHoldingHandsWithSkeletalCreature;
+	AgentHandle myHandHeldSkeletalCreature;
 
 
 	bool myScanInputEvents;

@@ -25,9 +25,9 @@
 #include "Lexer.h"
 // and comparison operators.
 
-#ifdef C2E_OLD_CPP_LIB
+#ifndef _MSC_VER
 #include <string.h>
-#define strcasecmp strcasecmp
+#define stricmp strcasecmp
 #endif
 Lexer::Lexer() {
   myPos = NULL;
@@ -50,7 +50,7 @@ bool Lexer::SussCharConstant(char &c) {
   // make sure char isn't a control character or a quoting char
   // (I would use isprint() instead, but I'm worried about european
   // language chars 0x80..0xFF)
-  if (iscntrl(c) || c == '\'' || c == '\"')
+  if (iscntrl((unsigned char)c) || c == '\'' || c == '\"')
     return false;
 
   myPos++;
@@ -103,7 +103,7 @@ int Lexer::NextItem() {
   if (*myPos == '\0')
     return itemFinished;
 
-  if (*myPos == '.' || *myPos == '-' || isdigit(*myPos))
+  if (*myPos == '.' || *myPos == '-' || isdigit((unsigned char)(*myPos)))
     return SlurpDecimalConst();
   else if (*myPos == '%')
     return SlurpBinaryConst();
@@ -126,7 +126,6 @@ int Lexer::NextItem() {
 // BINARY CONST (integer)
 int Lexer::SlurpBinaryConst() {
   int bitcount = 0;
-  bool done = false;
 
   myPos++; // skip '%'
 
@@ -158,10 +157,12 @@ int Lexer::SlurpDecimalConst() {
   if (*myPos == '-')
     myFieldBuf[count++] = *myPos++;
 
-  while (*myPos == '.' || isdigit(*myPos)) {
+  while (*myPos == '.' || isdigit((unsigned char)(*myPos))) {
     if (*myPos == '.') {
-      if (isfloat)
+      if (isfloat) {
+        myFieldBuf[count] = '\0';
         return itemError; // unexpected '.'
+      }
       isfloat = true;
     }
     myFieldBuf[count++] = *myPos++;
@@ -212,8 +213,10 @@ int Lexer::SlurpString() {
   while (*myPos != '\"' && *myPos != '\0' && *myPos != '\n') {
     if (*myPos == '\'')
       c = *myPos++; // special case so we can do "'"
-    else if (!SussCharConstant(c))
+    else if (!SussCharConstant(c)) {
+      myFieldBuf[count] = '\0';
       return itemError;
+    }
 
     myFieldBuf[count++] = (int)c;
   }
@@ -221,8 +224,10 @@ int Lexer::SlurpString() {
   // skip past closing quote
   if (*myPos == '\"')
     myPos++;
-  else
+  else {
+    myFieldBuf[count] = '\0';
     return itemError; // no closing quote
+  }
 
   myFieldBuf[count] = '\0';
   return itemString;
@@ -236,36 +241,37 @@ int Lexer::SlurpSymbol() {
   myFloatValue = 0.0f;
 
   // SYMBOL (or comparison or logical)
-  while (!isspace(*myPos) && *myPos != '\0' && *myPos != '=' && *myPos != '>' &&
-         *myPos != '<') {
+  while (!isspace((unsigned char)(*myPos)) && *myPos != '\0' && *myPos != '=' &&
+         *myPos != '>' && *myPos != '<') {
     myFieldBuf[count++] = *myPos++;
   }
 
   myFieldBuf[count] = '\0';
 
   // might still be a comparison or logical operator:
-  if (!strcasecmp(myFieldBuf, "eq")) {
+  if (!stricmp(myFieldBuf, "eq")) // SPARKY was stricmp
+  {
     myIntegerValue = CAOSDescription::compEQ;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "ne")) {
+  } else if (!stricmp(myFieldBuf, "ne")) {
     myIntegerValue = CAOSDescription::compNE;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "gt")) {
+  } else if (!stricmp(myFieldBuf, "gt")) {
     myIntegerValue = CAOSDescription::compGT;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "lt")) {
+  } else if (!stricmp(myFieldBuf, "lt")) {
     myIntegerValue = CAOSDescription::compLT;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "ge")) {
+  } else if (!stricmp(myFieldBuf, "ge")) {
     myIntegerValue = CAOSDescription::compGE;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "le")) {
+  } else if (!stricmp(myFieldBuf, "le")) {
     myIntegerValue = CAOSDescription::compLE;
     return itemComparison;
-  } else if (!strcasecmp(myFieldBuf, "and")) {
+  } else if (!stricmp(myFieldBuf, "and")) {
     myIntegerValue = CAOSDescription::logicalAND;
     return itemLogical;
-  } else if (!strcasecmp(myFieldBuf, "or")) {
+  } else if (!stricmp(myFieldBuf, "or")) {
     myIntegerValue = CAOSDescription::logicalOR;
     return itemLogical;
   }
@@ -284,7 +290,7 @@ int Lexer::SlurpComparison() {
     strcpy(myFieldBuf, "=");
     myIntegerValue = CAOSDescription::compEQ;
   } else if (*myPos == '<' && *(myPos + 1) == '>') {
-    strcpy(myFieldBuf, "<=");
+    strcpy(myFieldBuf, "<>");
     myIntegerValue = CAOSDescription::compNE;
   } else if (*myPos == '<' && *(myPos + 1) == '=') {
     strcpy(myFieldBuf, "<=");
@@ -318,7 +324,7 @@ void Lexer::SkipWhiteSpace() {
     c = *myPos;
 
     // skip space
-    if (isspace(c))
+    if (isspace((unsigned char)(c)))
       myPos++;
     else if (c == '*') {
       // skip comment

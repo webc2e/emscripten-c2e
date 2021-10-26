@@ -19,7 +19,8 @@
 #define Grapher_H
 #include <windows.h>
 #include <vector>
-#include <cstring>
+//#include <cstring>
+#include <string>
 
 class GraphTrace
 {
@@ -33,13 +34,13 @@ protected:
 
 public:
 	GraphTrace();
-	void SetName( std::string name) { m_strName = name; };
-	void GetName( std::string& strName ) { strName = m_strName; };
+	void SetName( std::string name) { m_strName = name; }
+	void GetName( std::string& strName ) { strName = m_strName; }
 	void Reset(int nHistorySize);					// reset the trace for reuse
 	void AddSample( float val );		// records a new value
 	float GetSample( int nTime );		// reads a stored value
-	int	GetMinTime() {return m_nStartTime;};			// time of 1st value
-	int	GetMaxTime() {return m_nStartTime+m_nCount-1;};	// time of last value
+	int	GetMinTime() {return m_nStartTime;}			// time of 1st value
+	int	GetMaxTime() {return m_nStartTime+m_nCount-1;}	// time of last value
 };
 
 
@@ -110,7 +111,7 @@ public:
 	void SetHUnits( int nMilliSecs ) { m_nUnitStep = nMilliSecs; };
 	std::vector<int> HitTestTraces( POINT point, POINT& closest, int iThreshold, float& iHitValue );
 
-	SetWhiteColour(bool bWhiteColour);
+	void SetWhiteColour(bool bWhiteColour);
 	COLORREF GetTraceColour(int i);
 
 	int OnCreate();
@@ -139,4 +140,6 @@ protected:
 };
 
 
-#endif 
+#endif
+
+

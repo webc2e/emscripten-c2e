@@ -91,3 +91,4 @@ void PersistentObject::DeclaredClassList::Add(LPCTSTR name,
 	// Create a new link, and place it at the head of the list
 	list = new DeclaredClass(name,function,list);
 	}
+

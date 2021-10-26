@@ -48,6 +48,10 @@ public:
 	virtual bool Write(CreaturesArchive &archive) const;
 	virtual bool Read(CreaturesArchive &archive);
 
+	// Support for CAOS commands that dump/undump details for a Palm export
+	virtual bool DumpAllChemicals(std::ostream& out);
+	virtual bool UnDumpAllChemicals(std::istream& in);
+
 	inline int NeuroEmitterCount() const {				return myNoOfNeuroEmitters;}
 	inline float* GetChemicalConcs() {
 		return &(myChemicalConcs[0]);
@@ -70,3 +74,4 @@ private:
 	int myNoOfOrgans;
 };
 #endif
+

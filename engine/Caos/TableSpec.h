@@ -43,3 +43,4 @@ class TableSpec
 };
 
 #endif // TABLE_SPEC_H
+

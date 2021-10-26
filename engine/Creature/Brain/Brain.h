@@ -12,34 +12,33 @@
 
 
 #include "../Faculty.h"
-#include "BrainComponent.h"
-#include "Lobe.h"
-#include "Tract.h"
-#include "Instinct.h"
+#include "../Genome.h"
 
-class Genome;
-class GenomeInitFailedException;
+class Lobe;
+class Tract;
+class Instinct;
+class BrainComponent;
 
-
+#include <vector>
+typedef std::vector<class Instinct*> Instincts;
+typedef std::vector<Tract*> Tracts;
+typedef std::vector<Lobe*> Lobes;
+typedef std::vector<BrainComponent*> BrainComponents;
 
 class Brain : public Faculty {
 	typedef Faculty base;
 	friend class BrainAccess;								// for the Vat Kit
 	CREATURES_DECLARE_SERIAL(Brain)
 public:
+	void AddInstinct(int verb, int noun, float qualifier, int drive);
+
+	
 	struct KnowledgeAction
 	{
 		int attentionId;
 		int decisionId;
 		float strength;
 	};
-
-//	typedef struct 
-//	{
-//		int attentionId;
-//		int decisionId;
-//		float strength;
-//	} KnowledgeAction;
 	// Knowledge:
 	KnowledgeAction GetKnowledge(int drive);
 
@@ -50,7 +49,7 @@ public:
 
 
 	// Faculty functions for creating and updating the brain:
-	virtual void ReadFromGenome(Genome& genome) ;
+	virtual void ReadFromGenome(Genome& genome) throw(GenomeInitFailedException);
 	virtual void Update();
 
 
@@ -61,12 +60,10 @@ public:
 
 	// Functions used in instinct processing:
 	void ClearActivity();
-	void ClearNeuronActivity(const char *lobeTokenString, int neuron)
-	{
-		GetLobeFromTokenString(lobeTokenString)->ClearNeuronActivity(neuron);
-	}
 	void UpdateComponents();
-	void SetLobeWideInput(const char* lobeTokenString, float toWhat);
+
+
+	// Used by friend or foe mechanism:
 	void SetNeuronState(const char* lobeTokenString, const int neuron, const int var, const float value );
 
 
@@ -76,8 +73,8 @@ public:
 
 
 	// Vat Kit init functions:
-	bool InitLobeFromDescription(std::istream &in) ;
-	bool InitTractFromDescription(std::istream &in) ;
+	bool InitLobeFromDescription(std::istream &in) throw(GenomeInitFailedException);
+	bool InitTractFromDescription(std::istream &in) throw(GenomeInitFailedException);
 
 
 	// Set funcs used by Vat Kit to set variables remotely:
@@ -103,11 +100,16 @@ public:
 	bool DumpNeuron(int l, int n, std::ostream& out);
 	bool DumpDendrite(int t, int d, std::ostream& out);
 
+	// CAOS commands for dumping out details to a Palm export:
+	bool DumpAllDendrites(int t, std::ostream& out);
+	bool UnDumpAllDendrites(int t, std::istream& in);
+	bool UnDumpDendrite(int t, int d, std::istream& in);
 
 	// Instincts:
 	void SetWhetherToProcessInstincts(bool b);
 	bool GetWhetherToProcessInstincts();
 	int GetNoOfInstinctsLeftToProcess();
+
 
 protected:
 	Lobe* GetLobeFromTokenString(const char* lobeTokenString);
@@ -129,3 +131,4 @@ protected:
 	static Lobe ourDummyLobe;
 };
 #endif//Brain_H
+

@@ -51,14 +51,14 @@ namespace RandQD1 {
 			i++;
 		}
 		i = 0;
-		int min=256;
-		int max=-1;
+		int mini=256;
+		int maxi=-1;
 		unsigned tot=0;
 		while(i<256) {
 			int n = EachNum[i];
 //			TRACE("%3.3d ",n);
-			if (n>max) max = n;
-			if (n<min) min = n;
+			if (n>maxi) maxi = n;
+			if (n<mini) mini = n;
 			tot += n;
 			if(n==0) Passed=false;
 			i++;
@@ -68,4 +68,229 @@ namespace RandQD1 {
 	}
 }
 
+
+/*
+// Used to confirm propoer operation of the new random number generator
+bool RndPlatformTest () {
+	int a=0;
+	int i=0;
+	bool Passed=TRUE;
+	int min=0;
+	int max=0;
+	int tot=0;
+
+#define TNUMS 25
+
+	// Bin values from 0 to 24 and display results
+	i = 0;
+	int EachNum[TNUMS];
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<5000) {
+		a = Rnd(TNUMS-1);
+		if ( (a<0) || (a>TNUMS-1) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a]++;
+		i++;
+	}
+	i = 0;
+	min=TNUMS;
+	max=-1;
+	tot=0;
+	while(i<TNUMS) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+
+	// Bin values from 10 to 34 and display results
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<5000) {
+		a = Rnd(10,34);
+		if ( (a<10) || (a>34) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a-10]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<TNUMS) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+
+		// Bin values from -7 to 17 and display results
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<5000) {
+		a = Rnd(-7,17);
+		if ( (a<-7) || (a>17) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a+7]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<TNUMS) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+
+	// Bin values from 0 to 2 and display results
+	TRACE("waS\n");
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<640) {
+		//a = 2 - abs(Rnd(2) + Rnd(2) - 2);
+		a = Rnd(2);
+		Rnd(2);
+		a = 2 - abs(a+Rnd(2)-2);
+		if ( (a<0) || (a>3) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<3) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+
+	TRACE("Saw\n");
+	// Bin values from 0 to 2 and display results
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<640) {
+		//a = abs(Rnd(2) + Rnd(2) - 2);
+		a = Rnd(2);
+		Rnd(2);
+		a = abs(a+Rnd(2)-2);
+		if ( (a<0) || (a>3) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<3) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+	
+	TRACE("Flat\n");
+		// Bin values from 0 to 2 and display results
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<640) {
+		a = Rnd(2);
+		if ( (a<0) || (a>3) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<3) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+
+	TRACE("Normal\n");
+		// Bin values from 0 to 2 and display results
+	i = 0;
+	while(i<TNUMS) EachNum[i++]=0;
+	i=0;
+	while(i<640) {
+		//a = (Rnd(2) + Rnd(2)) / 2;
+		a = Rnd(2);
+		Rnd(2);
+		a = (a+Rnd(2))/2;
+		if ( (a<0) || (a>3) ) {
+			Passed = FALSE;
+			continue;
+		}
+		EachNum[a]++;
+		i++;
+	}
+	i = 0;
+	min=999;
+	max=-1;
+	tot=0;
+	while(i<3) {
+		int n = EachNum[i];
+		TRACE("%3.3d ",n);
+		if (n>max) max = n;
+		if (n<min) min = n;
+		tot += n;
+		if(n==0) Passed=FALSE;
+		i++;
+	}
+	TRACE("\n");
+return Passed;
+}
+*/
 

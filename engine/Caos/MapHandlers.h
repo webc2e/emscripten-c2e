@@ -24,6 +24,7 @@ class MapHandlers
 {
 public:
 	// Commands
+	static void Command_CALC( CAOSMachine& vm );
 	static void Command_DOCA( CAOSMachine& vm );
 	static void Command_MAPK( CAOSMachine& vm );
 	static void Command_MAPD( CAOSMachine& vm );
@@ -78,3 +79,4 @@ public:
 };
 
 #endif	// MAPHANDLERS_H
+

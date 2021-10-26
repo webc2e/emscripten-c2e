@@ -17,3 +17,4 @@ CAOSException::CAOSException( const char* fmt, ... )
 }
 
 #endif // OBSOLETE
+

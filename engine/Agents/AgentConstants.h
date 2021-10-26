@@ -5,6 +5,19 @@
 #pragma warning(disable:4786 4503)
 #endif
 
+
+
+const int MAX_VMS_PER_AGENT = 10;
+
+// Constants for Execute...() calls
+enum
+{
+	EXECUTE_SCRIPT_STARTED,
+	EXECUTE_SCRIPT_NOT_FOUND,
+	EXECUTE_SCRIPT_NOT_INTERRUPTIBLE
+};
+
+
 #include "../Caos/AutoDocumentationTable.h"
 
 extern TableSpec ourScriptNumbers[];
@@ -21,7 +34,9 @@ enum
 	SCRIPTDROP       = 5,	
 	SCRIPTCOLLISION  = 6,		 
 	SCRIPTBUMP		 = 7,
+	SCRIPTIMPACT	 = 8,
 	SCRIPTTIMER      = 9,	
+	SCRIPTCONSTRUCTOR= 10,
     SCRIPTEAT        = 12,
 	SCRIPTSTARTHOLDHANDS = 13,
 	SCRIPTSTOPHOLDHANDS = 14,
@@ -106,6 +121,21 @@ enum
 	SCRIPT_LIFE_EVENT		  = 127,
 	SCRIPT_WORLD_LOADED		  = 128,
 
+	SCRIPT_NET_ONLINE = 135,
+	SCRIPT_NET_OFFLINE = 136,
+	SCRIPT_NET_USER_ONLINE = 137,
+	SCRIPT_NET_USER_OFFLINE = 138,
+
+	SCRIPT_CRAG_NAV_VALID_IT			= 150,
+	SCRIPT_CRAG_NAV = 151,
+	SCRIPT_CRAG_NAV_OUTSIDE_ROOM_SYSTEM	= 151,
+	SCRIPT_CRAG_NAV_NEIGHBOUR_FOUND		= 152,
+	SCRIPT_CRAG_NAV_LINK_FOUND			= 153,
+	SCRIPT_CRAG_NAV_CURRENT_ROOM_FOUND	= 154,
+
+
+	SCRIPT_CALLBACK_AGEING				= 160,
+
     SCRIPTDONATESPERM         = 200,
 	// Please change the documentation table in
 	// AgentConstants.cpp if you add a new message,
@@ -118,3 +148,4 @@ enum
 };
 
 #endif //AGENT_CONSTANTS_H
+

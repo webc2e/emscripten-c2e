@@ -45,3 +45,4 @@ CreaturesArchive &operator<<( CreaturesArchive &ar, MessageQueue const &message 
 CreaturesArchive &operator>>( CreaturesArchive &ar, MessageQueue &message );
 
 #endif // MESSAGEQUEUE_H
+

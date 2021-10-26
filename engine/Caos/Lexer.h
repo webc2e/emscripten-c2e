@@ -22,8 +22,6 @@
 #endif
 
 
-#include <string.h>
-
 class Lexer
 {
 public:

@@ -1,7 +1,3 @@
-#ifdef _WIN32
-#error // win32 version uses registry instead.
-#endif
-
 // -------------------------------------------------------------------------
 // Filename: Configurator.cpp
 // Class:    Configurator
@@ -36,7 +32,6 @@
 //
 // Usage:
 //
-//
 // History:
 // 09Aug99  BenC  Initial version
 // -------------------------------------------------------------------------
@@ -54,7 +49,7 @@
 #include <stdio.h>
 #include <fstream>
 
-
+#include "FileFuncs.h"
 
 bool Configurator::BindToFile( const std::string& filename )
 {
@@ -84,14 +79,17 @@ bool Configurator::Load()
 
 			if( !name.empty() )
 				Set( name,value );
-			printf("'%s' '%s' '%s'\n", name.c_str(), value.c_str(),
-				comment.c_str() );
+//			printf("'%s' '%s' '%s'\n", name.c_str(), value.c_str(),
+//				comment.c_str() );
 			++linenum;
 		}
 	}
 
 	if( ifs.bad() )
 		return false;
+
+
+	return true;
 }
 
 
@@ -101,22 +99,34 @@ bool Configurator::Flush()
 	if( !myChangedFlag )
 		return true;
 
-	std::ofstream ofs( myFilename.c_str() );
-
-	if( !ofs )
-		return false;
-
-	std::map< std::string, std::string >::const_iterator it;
-	for( it=myData.begin(); it != myData.end(); ++it )
+	std::string tempFilename = myFilename + ".tmp";
 	{
-		ofs << Expand((*it).first);
-		ofs << " ";
-		ofs << Expand((*it).second);
-		ofs << std::endl;
+		std::ofstream ofs( tempFilename.c_str() );
+
+		if( !ofs )
+			return false;
+
+		std::map< std::string, std::string >::const_iterator it;
+		for( it=myData.begin(); it != myData.end(); ++it )
+		{
+			ofs << Expand((*it).first);
+			ofs << " ";
+			ofs << Expand((*it).second);
+		 	ofs << std::endl;
+		}
+
+		if( ofs.bad() )
+			return false;
 	}
 
-	if( ofs.bad() )
-		return false;
+	DeleteFile(myFilename.c_str());
+#ifdef _WIN32
+	BOOL ret = MoveFile(tempFilename.c_str(), myFilename.c_str());
+	if (!ret)
+		DWORD err = GetLastError();
+#else
+	MoveFile(tempFilename.c_str(), myFilename.c_str());
+#endif
 
 	return true;
 }
@@ -191,10 +201,6 @@ void Configurator::Zap( const std::string& name )
 		myData.erase( it );
 }
 
-
-
-
-
 // divides a string up into name, value and comment fields.
 // returns false on any sort of error.
 bool Configurator::ParseLine( const std::string& src,
@@ -205,7 +211,7 @@ bool Configurator::ParseLine( const std::string& src,
 	std::string::const_iterator it = src.begin();
 
 	// skip leading whitespace
-	while( it!=src.end() && isspace( *it ) )
+	while( it!=src.end() && isspace( (unsigned char)(*it) ) )
 		++it;
 
 	// pull in name
@@ -213,7 +219,7 @@ bool Configurator::ParseLine( const std::string& src,
 		return false;
 
 	// skip whitespace
-	while( it!=src.end() && isspace( *it ) )
+	while( it!=src.end() && isspace( (unsigned char)(*it) ) )
 		++it;
 
 	// disallow comment before value
@@ -225,7 +231,7 @@ bool Configurator::ParseLine( const std::string& src,
 		return false;
 
 	// skip whitespace
-	while( it!=src.end() && isspace( *it ) )
+	while( it!=src.end() && isspace( (unsigned char)(*it) ) )
 		++it;
 
 	// read comment (if any)
@@ -268,7 +274,7 @@ bool Configurator::Snarf( const std::string& str,
 	{
 
 		// slurp until space, or end
-		while( it != str.end() && !isspace(*it) )
+		while( it != str.end() && !isspace((unsigned char)(*it)) )
 		{
 			text += *it;
 			++it;
@@ -376,6 +382,4 @@ std::string Configurator::Expand( const std::string& str )
 
 	return out;
 }
-
-
 

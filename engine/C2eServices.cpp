@@ -30,5 +30,10 @@
 
 // globals
 Catalogue theCatalogue;
-FlightRecorder theFlightRecorder;
+
+FlightRecorder actualFlightRecorder;
+FlightRecorder& GetFlightRecorder()
+{
+	return actualFlightRecorder;
+}
 

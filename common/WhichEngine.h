@@ -16,6 +16,7 @@
 
 #include <cstring>
 #include <vector>
+#include <string>
 
 class WhichEngine
 {
@@ -32,6 +33,9 @@ public:
 	std::string GetStringKey(std::string leaf_key);
 	std::string ServerName();
 
+protected:
+	static std::string AddSlash(std::string str);
+
 private:
 	std::string myGameName;
 };
@@ -39,3 +43,4 @@ private:
 extern WhichEngine theWhichEngine;
 
 #endif
+

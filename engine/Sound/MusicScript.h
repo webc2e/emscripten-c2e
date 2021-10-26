@@ -87,7 +87,7 @@ class MusicScript
 		// Returns:		Nothing
 		// Description:	Default Destructor
 		// ----------------------------------------------------------------------
-		~MusicScript() {;}
+		~MusicScript() { delete [] text; }
 
 		// ----------------------------------------------------------------------
 		// Method:		Restart
@@ -110,7 +110,7 @@ class MusicScript
 		// Arguments:	None
 		// Returns:		String contents of the current token
 		// ----------------------------------------------------------------------
-		LPCTSTR GetCurrentToken() const {return currentToken.data();}
+		LPCTSTR GetCurrentToken() const {return currentToken.c_str();}
 
 		// ----------------------------------------------------------------------
 		// Method:		GetCurrentType
@@ -140,7 +140,7 @@ class MusicScript
 		// Arguments:	None
 		// Returns:		Position within script
 		// ----------------------------------------------------------------------
-		int GetOffset() {return currentPos - (LPCTSTR) text.data();}
+		int GetOffset() {return currentPos - text;}
 
 
 	private:
@@ -192,7 +192,8 @@ class MusicScript
 		// text
 		// Actual text of script
 		// ----------------------------------------------------------------------
-		std::string text;
+//		std::string text;
+		char* text;
 
 		// ----------------------------------------------------------------------
 		// pos
@@ -221,3 +222,4 @@ class MusicScript
 	};
 
 #endif
+

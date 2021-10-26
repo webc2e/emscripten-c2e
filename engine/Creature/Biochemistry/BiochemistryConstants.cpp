@@ -1,7 +1,7 @@
 #include "BiochemistryConstants.h"
 
 
-
+#include "../../Caos/AutoDocumentationTable.h"
 
 
 TableSpec ourReceptorLocusNumbers[] =
@@ -165,3 +165,4 @@ int dummyReceptorLocusNumbers = AutoDocumentationTable::RegisterTable(ourRecepto
 
 int sizeOurEmitterLocusNumbers = sizeof(ourEmitterLocusNumbers) / sizeof(TableSpec);
 int dummyEmitterLocusNumbers = AutoDocumentationTable::RegisterTable(ourEmitterLocusNumbers, sizeof(ourEmitterLocusNumbers));
+

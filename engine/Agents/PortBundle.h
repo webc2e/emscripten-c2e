@@ -23,6 +23,7 @@
 #include <vector>
 
 class Agent;
+#include "AgentHandle.h"
 
 class InputPort;
 class OutputPort;

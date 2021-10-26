@@ -66,3 +66,4 @@ inline MusicValue MusicRandom(MusicValue min, MusicValue max)
 
 
 #endif
+

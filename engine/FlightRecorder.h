@@ -20,55 +20,67 @@
 // - category naming
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #include "../common/C2eTypes.h"
+#include "../modules/ModuleAPI.h"
 
 #include <stdio.h>
 
+#ifndef _WIN32
+#include <limits.h>
+#endif
 
-class FlightRecorder
-{
+enum FlightCategory {
+  FLIGHT_INTERNAL = 0,
+  FLIGHT_RUNTIME = 1,
+  FLIGHT_SHUTDOWN = 16,
+  FLIGHT_NETBABEL = 32,
+  FLIGHT_STARTUP = 64,
+};
+
+class C2E_MODULE_API FlightRecorder {
 public:
-	// ---------------------------------------------------------------------
-	// Method:		Log
-	// Arguments:	categorymask - to which category(s) does this msg belong
-	//				fmt - printf-style format string (should be single line)
-	// Returns:		None
-	// Description: Logs the message to the specified category(s).
-	// ---------------------------------------------------------------------
-	void Log( uint32 categorymask, const char* fmt, ... );
+  // ---------------------------------------------------------------------
+  // Method:		Log
+  // Arguments:	categorymask - to which category(s) does this msg belong
+  //				fmt - printf-style format string (should be single
+  //line)
+  // Returns:		None
+  // Description: Logs the message to the specified category(s).
+  // ---------------------------------------------------------------------
+  void Log(FlightCategory category, const char *fmt, ...);
 
-	// ---------------------------------------------------------------------
-	// Method:		SetOutFile
-	// Arguments:	filename
-	// Returns:		None
-	// Description: Specifies a file to send log output to
-	// ---------------------------------------------------------------------
-	void SetOutFile( const char* filename );
+  // ---------------------------------------------------------------------
+  // Method:		SetOutFile
+  // Arguments:	filename
+  // Returns:		None
+  // Description: Specifies a file to send log output to
+  // ---------------------------------------------------------------------
+  void SetOutFile(const char *filename);
 
-	// ---------------------------------------------------------------------
-	// Method:		SetCategories
-	// Arguments:	enablemask - categories to enable
-	// Returns:		None
-	// Description: Allows masking-out of specific categories.
-	//				Any log data sent to a category with a zero bit in the
-	//				enablemask will be ignored.
-	// ---------------------------------------------------------------------
-	void SetCategories( uint32 enablemask );
+  // ---------------------------------------------------------------------
+  // Method:		SetCategories
+  // Arguments:	enablemask - categories to enable
+  // Returns:		None
+  // Description: Allows masking-out of specific categories.
+  //				Any log data sent to a category with a zero bit in
+  //the 				enablemask will be ignored.
+  // ---------------------------------------------------------------------
+  void SetCategories(uint32 enablemask);
 
-	FlightRecorder();
-	~FlightRecorder();
+  FlightRecorder();
+  ~FlightRecorder();
+
 private:
 #ifdef _WIN32
-	char	myOutFilename[ MAX_PATH ];
+  char myOutFilename[MAX_PATH];
 #else
-	// TODO: need to suss out a proper definition for MAX_PATH
-	char	myOutFilename[ 512 ];
+  char myOutFilename[PATH_MAX];
 #endif
-	FILE*	myOutFile;
-	uint32	myEnabledCategories;
+  FILE *myOutFile;
+  uint32 myEnabledCategories;
 };
 
 #endif // FLIGHTRECORDER_H

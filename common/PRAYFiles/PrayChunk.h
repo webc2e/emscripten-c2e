@@ -42,7 +42,7 @@ public:
 	//				in any way (other than decompression) before being passed to you.
 	//				You may not do anything other than read this data :)
 	// ----------------------------------------------------------------------------------
-	const uint8_t* GetData() const;
+	const uint8* GetData() const;
 
 	// ----------------------------------------------------------------------------------
 	// Method:		GetSize
@@ -52,12 +52,12 @@ public:
 	//				not processed in any way (other than decompression) before being 
 	//				passed to you. You may not do anything other than read this data :)
 	// ----------------------------------------------------------------------------------
-	const int GetSize() const;
+	int GetSize() const;
 
 private:
 	int myCount;
 	PrayManager* myManager;
-	uint8_t* myPtr;
+	uint8* myPtr;
 	int mySize;
 
 	// ----------------------------------------------------------------------------------
@@ -140,3 +140,4 @@ private:
 };
 
 #endif //PRAYCHUNK_H
+

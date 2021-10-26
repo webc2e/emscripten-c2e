@@ -3,14 +3,34 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "Direct Display Engine"="..\DisplayLibrary\Direct Display Engine\Direct Display Engine.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SDLStretch"=.\Display\SDL\SDLStretch\SDLStretch.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "engine"=.\engine.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Code/engine", MGAAAAAA
-    .
-    end source code control
 }}}
 
 Package=<4>
@@ -23,10 +43,6 @@ Global:
 
 Package=<5>
 {{{
-    begin source code control
-    "$/Code/engine", MGAAAAAA
-    .
-    end source code control
 }}}
 
 Package=<3>

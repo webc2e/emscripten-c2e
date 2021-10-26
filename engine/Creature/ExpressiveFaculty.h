@@ -14,7 +14,6 @@
 #include "Faculty.h"
 
 class Genome;
-class Creature;
 
 class ExpressiveFaculty : public Faculty {
 	CREATURES_DECLARE_SERIAL(ExpressiveFaculty)
@@ -35,3 +34,4 @@ protected:
 };
 
 #endif//ExpressiveFaculty_H
+

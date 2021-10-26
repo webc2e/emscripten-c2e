@@ -48,24 +48,6 @@ public:
 
 	void	Init();
 
-/*
-	uint32 ValidFsp(int Part,			// part number
-			   int32 Genus,			// Genus (NORN, GRENDEL, ETTIN, SIDE)
-			   int32 Sex,				// IDEAL Sex to look for (MALE/FEMALE)
-			   int32 Age,				// IDEAL age & variant to look for
-			   int32 Variant,
-			   char* Ext,			// file extension ("spr" or "att")
-			   int32 Dir);				// subdirectory type, eg. BODY_DATA_DIR#*/
-
-/*		DWORD ValidOverlayFsp(int Part,			// part number
-			   int Genus,			// Genus (NORN, GRENDEL, ETTIN, SIDE)
-			   int Sex,				// IDEAL Sex to look for (MALE/FEMALE)
-			   int Age,				// IDEAL age & variant to look for
-			   int Variant,
-			   char* Ext,			// file extension ("spr" or "att")
-			   int Dir);				// subdirectory type, eg. BODY_DATA_DIR
-
-	char* BuildOverlayFsp(DWORD fsp,char* ext, int SubDir  =-1 );*/
 
 	void ReloadOverlay(	int32 part,// part number
 					int32 genus,// Genus (NORN, GRENDEL, ETTIN SIDE)
@@ -91,6 +73,9 @@ public:
 		
 	bool UpdateOverlay(int32 direction);
 
+	void StoreCurrentState();
+	void ReturnToStoredState(int direction);
+
 
 	// new serialization stuff
 	virtual bool Write( CreaturesArchive &ar ) const;
@@ -107,7 +92,9 @@ private:
 	BodyPart* myBodyPart;
 
 	int32 myClothingSetForEachLayer[NUM_LAYERS];
+	int32 myStoredClothingSetForEachLayer[NUM_LAYERS];
 
 };
 
 #endif//BODY_PART_OVERLAY
+

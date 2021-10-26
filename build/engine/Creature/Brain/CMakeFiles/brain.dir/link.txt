@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libbrain.a CMakeFiles/brain.dir/Brain.cpp.o CMakeFiles/brain.dir/BrainComponent.cpp.o CMakeFiles/brain.dir/BrainScriptFunctions.cpp.o CMakeFiles/brain.dir/Dendrite.cpp.o CMakeFiles/brain.dir/Instinct.cpp.o CMakeFiles/brain.dir/Lobe.cpp.o CMakeFiles/brain.dir/Neuron.cpp.o CMakeFiles/brain.dir/SVRule.cpp.o CMakeFiles/brain.dir/Tract.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libbrain.a

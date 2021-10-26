@@ -14,8 +14,7 @@
 #include <string>
 
 
-//#define MULTI_TO_WIDE( x,y )  MultiByteToWideChar( CP_ACP, \
-//        MB_PRECOMPOSED, y, -1, x, _MAX_PATH );
+//#define MULTI_TO_WIDE( x,y )  MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, y, -1, x, _MAX_PATH );
 
 
 class MidiModule
@@ -41,3 +40,4 @@ private:
 };
 
 #endif // MIDI_MODULE_H
+

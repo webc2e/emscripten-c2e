@@ -14,3 +14,4 @@ void UpdateDoorCA(float tempValue1, CARates const &rates1, float relativeDoorSiz
 				  float &newValue1, float &newValue2 );
 
 #endif // ROOMCA_H
+

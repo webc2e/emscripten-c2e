@@ -3,8 +3,8 @@
 #endif
 
 #include "CameraPart.h"
-#include "../Display/EntityImageWithEmbeddedCamera.h"
-#include "../Display/RemoteCamera.h"
+#include "../AgentDisplay/EntityImageWithEmbeddedCamera.h"
+#include "../Camera/RemoteCamera.h"
 
 
 //make sure that this is serializable

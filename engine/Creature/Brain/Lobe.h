@@ -9,13 +9,10 @@
 #include "BrainComponent.h"
 #include "Neuron.h"
 #include "../../Token.h"
+#include "../Genome.h"
 
-
-class Genome;
-class GenomeInitFailedException;
-
-class Lobe;
-typedef std::vector<Lobe*> Lobes;
+#include <vector>
+typedef std::vector<Neuron*> Neurons;
 
 
 class Lobe : public BrainComponent { 
@@ -23,8 +20,8 @@ class Lobe : public BrainComponent {
 	friend class BrainAccess;
 	CREATURES_DECLARE_SERIAL(Lobe)
 public:
-	Lobe(Genome& genome);
-	Lobe(std::istream &in) ;
+	Lobe(Genome& genome) throw(GenomeInitFailedException);
+	Lobe(std::istream &in) throw(GenomeInitFailedException);
 	Lobe();
 	Lobe(const Lobe& l);
 	virtual ~Lobe();
@@ -42,12 +39,15 @@ public:
 	inline int GetNoOfNeurons() {		return myNeurons.size();}
 	inline Neuron* GetNeuron(int i) {	return myNeurons[i];}	// for Tract init
 
+	// new by gtb 6/1/00:
+	inline int GetWidth() {				return myWidth;}
+	inline int GetHeight() {			return myHeight;}
+	
+
 	float GetNeuronState(int whichNeuron, int whichState);
 	float* GetNeuronStatePointer(int whichNeuron, int whichState);
 	int GetWhichNeuronWon();
 	void SetNeuronInput(int whichNeuron, float toWhat);
-	void SetLobeWideInput(float toWhat);
-	void ClearNeuronActivity(int whichNeuron);
 
 
 	inline int GetTissueId() {			return myTissueId;}
@@ -80,3 +80,4 @@ protected:
 	float* myNeuronInput;
 };
 #endif//Lobe_H
+

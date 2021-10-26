@@ -17,3 +17,4 @@ void MidiModule::SetVolume(long volume)
 
 void MidiModule::Mute(bool mute)
  { }
+

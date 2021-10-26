@@ -6,14 +6,18 @@
 #endif
 
 #include "PointerAgent.h"
+#include "../Agents/Port.h"
+#include "../Agents/InputPort.h"
+#include "../Agents/OutputPort.h"
 #include "../World.h"
 #include "../App.h"
-#include "../Creature/Creature.h"
+#include "../Creature/SkeletalCreature.h"
 #include "../AgentManager.h"
 #include "../InputManager.h"
-#include "../Display/MainCamera.h"	
+#include "../Camera/MainCamera.h"	
 #include "../Creature/SensoryFaculty.h"
 #include "../Creature/LinguisticFaculty.h"
+#include "../AgentDisplay/EntityImageClone.h"
 
 // Needed for highlite
 
@@ -36,7 +40,7 @@ int32 PointerAgent::GetPlaneForCarriedAgent()
 }
 
 
-void PointerAgent::Tint(const uint16* tintTable, int part)
+void PointerAgent::Tint(const uint16* tintTable, int part, bool oneImage)
 {
 	_ASSERT(!myGarbaged);
 
@@ -44,36 +48,145 @@ void PointerAgent::Tint(const uint16* tintTable, int part)
 	// see whether we have a cloned entity already and reload?
 	if(myEntityImage)
 	{
+
+		bool wasVisible = myEntityImage->IsVisible();
+
 		// create a temporary cloned entity image
-		theMainView.RemoveFloatingThing(mySelf);		
-		ClonedEntityImage*	clone =	new  ClonedEntityImage(myEntityImage->GetGallery()->GetName(),
+		theMainView.RemoveFloatingThing(mySelf);	
+		
+		int storedPose = myEntityImage->GetPose();
+
+		if(CreateClonedEntityImage(oneImage))
+		{
+			
+			myEntityImage->SetPose(oneImage ? 0 : storedPose);
+
+
+
+			// if no tinttable given then we want to cancel a previous tint
+			if(tintTable)
+				myEntityImage->RecolourGallery(tintTable);
+
+			theMainView.AddFloatingThing(mySelf);
+			theMainView.KeepUpWithMouse(GetEntityImage());
+
+			if(wasVisible)
+				myEntityImage->Link(true);
+			else
+				myEntityImage->Unlink();
+
+			DoSetCameraShyStatus();
+		
+		}
+	}
+}
+
+bool PointerAgent::CreateClonedEntityImage(bool oneImage /*=  false*/)
+{
+	
+	// the parameters are slightly different for the direct display engine.
+	// as it needs the block width and height for the animation frames
+	ClonedEntityImage* clone = NULL;
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+
+		clone =	new  ClonedEntityImage(myEntityImage->GetFilePath(),
+				myEntityImage->GetPlane(),
+				Map::FastFloatToInteger(myPositionVector.x),
+				Map::FastFloatToInteger(myPositionVector.y),
+				myEntityImage->GetBlockWidth(),
+				myEntityImage->GetGalleryBitmapCount(),
+				myEntityImage->GetBlockHeight() );
+
+		if(clone)
+		{
+		// must delete the entityimage first in this case
+		delete myEntityImage;
+		myEntityImage = NULL; // set to null so no access violation later in this method
+		clone->CreateAnimStrip(myEntityImage->GetBlockWidth(), myEntityImage->GetBlockHeight());
+		}
+#else
+
+		clone =	new  ClonedEntityImage(myEntityImage->GetFilePath(),
 				myEntityImage->GetPlane(),
 				Map::FastFloatToInteger(myPositionVector.x),
 				Map::FastFloatToInteger(myPositionVector.y),
 				myEntityImage->GetAbsoluteBaseImage(),
-				myEntityImage->GetGallery()->GetCount(),
+				oneImage ? 1 : myEntityImage->GetGalleryBitmapCount(),
 				myEntityImage->GetAbsoluteBaseImage() );
 
-		clone->SetPose(myEntityImage->GetPose());
+#endif
 
-		delete myEntityImage;
-		myEntityImage = clone;
+		if(clone)
+		{
+			delete myEntityImage;
+			myEntityImage = clone;
+			myEntityImageIsCloned = true;
 
-		clone->GetGallery()->Recolour(tintTable);
-		theMainView.AddFloatingThing(mySelf);
-		theMainView.KeepUpWithMouse(GetEntityImage());
-		clone->Link(true);
-	}
+			return true;
+		}
+
+		return false;
 }
 
-PointerAgent::PointerAgent(	int family, int genus, int species,uint32 id,
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void PointerAgent::DrawOutlineAroundImage(int red, int green, int blue)
+{
+	
+		if(CreateClonedEntityImage())
+		{
+			myEntityImage->DrawOutlineAroundImage(red,green,blue);
+		}
+}
+#endif // C2D_DIRECT_DISPLAY_LIB
+
+
+void PointerAgent::UnClone(int part /*= 0*/)
+{
+	if(myEntityImageIsCloned)
+	{
+		// create a temporary cloned entity image
+		theMainView.RemoveFloatingThing(mySelf);	
+
+		// create a normal entity image to be swapped in
+		EntityImage* ent =	new  EntityImage(myEntityImage->GetFilePath(),
+						myEntityImage->GetGalleryBitmapCount(),
+						myEntityImage->GetPlane(),
+						Map::FastFloatToInteger(myPositionVector.x),
+						Map::FastFloatToInteger(myPositionVector.y),
+						myEntityImage->GetAbsoluteBaseImage(),
+						0 );
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+		ent->CreateAnimStrip(myEntityImage->GetBlockWidth(), 
+							myEntityImage->GetBlockHeight());
+#endif //  C2D_DIRECT_DISPLAY_LIB
+
+			ent->SetPose(myEntityImage->GetPose());
+
+			delete myEntityImage;
+			myEntityImage = ent;
+
+			theMainView.AddFloatingThing(mySelf);
+			theMainView.KeepUpWithMouse(GetEntityImage());
+
+			myEntityImage->Link(true);
+
+			DoSetCameraShyStatus();
+
+	}
+
+}
+
+PointerAgent::PointerAgent(	int family, int genus, int species, uint32 id,
 						   FilePath const& gallery,
 						   int numimages,
 						int baseimage)		
     : base(family, genus, species, id, gallery, numimages, baseimage,
 					EntityImage::PLANE_NEAREST_THE_FRONT,                     // plane
 				   true),
-				   myCanCarryAgentsFromMetaRoomToMetaRoom(false)			  
+				   myCanCarryAgentsFromMetaRoomToMetaRoom(false),
+				   myWiredToMouse(true)
 {
 	if (!myFailedConstructionException.empty())
 		return;
@@ -85,8 +198,8 @@ PointerAgent::PointerAgent(	int family, int genus, int species,uint32 id,
 		//	2 - left button does what right click would do
 		myMouseButtonAction = DoMouseClicksAsNormal; // default is normal 
 
-		myIsHoldingHandsWithCreature = false;
-		myHandHeldCreature = NULLHANDLE; // you are not holding hands
+		myIsHoldingHandsWithSkeletalCreature = false;
+		myHandHeldSkeletalCreature = NULLHANDLE; // you are not holding hands
 		myMarchingAntCount = 8;
 
 		myMovementStatus = MOUSEDRIVEN;           // tell update fn to move with mouse
@@ -96,11 +209,13 @@ PointerAgent::PointerAgent(	int family, int genus, int species,uint32 id,
 		myConnecting = false;
 		myConnectingAgent = NULLHANDLE;
 		myScanInputEvents = true;
+		myLastPointerActionDispatched = 0;
 		myAgentType = AgentHandle::agentNormal | AgentHandle::agentSimple | AgentHandle::agentPointer;
 
 		theMainView.AddFloatingThing(mySelf);
 
-		myName = SensoryFaculty::GetCategoryName(SensoryFaculty::GetCategoryIdOfClassifier(&myClassifier));
+		myName = SensoryFaculty::GetCategoryName(SensoryFaculty::GetCategoryIdOfAgent(GetAsAgentHandle()));
+
 	}	
 	catch (BasicException& e)
 	{
@@ -118,8 +233,8 @@ PointerAgent::PointerAgent()
 {
 	myMouseButtonAction = DoMouseClicksAsNormal; // default is normal 
 
-	myIsHoldingHandsWithCreature = false;
-	myHandHeldCreature = NULLHANDLE; // you are not holding hands
+	myIsHoldingHandsWithSkeletalCreature = false;
+	myHandHeldSkeletalCreature = NULLHANDLE; // you are not holding hands
 
 	myMovementStatus = MOUSEDRIVEN;           // tell update fn to move with mouse
 	myInputPort = NULL;
@@ -129,7 +244,8 @@ PointerAgent::PointerAgent()
 	myConnectingAgent = NULLHANDLE;
 	myScanInputEvents = true;
 	myCanCarryAgentsFromMetaRoomToMetaRoom = false;
-	myMarchingAntCount =8;
+	myMarchingAntCount = 8;
+	myLastPointerActionDispatched = 0;
 	theMainView.AddFloatingThing(mySelf);
 }
 
@@ -145,7 +261,7 @@ void PointerAgent::Trash()
 	_ASSERT(!myGarbaged);
 
 	theMainView.RemoveFloatingThing(mySelf);
-	myHandHeldCreature = NULLHANDLE;
+	myHandHeldSkeletalCreature = NULLHANDLE;
 
 	// This must be the last line in the function
 	base::Trash();
@@ -166,29 +282,29 @@ void PointerAgent::HandleDrop(Message* Msg)
 
 
 
-void PointerAgent::StartHoldingHandsWithCreature(AgentHandle& creature)
+void PointerAgent::StartHoldingHandsWithSkeletalCreature(AgentHandle& skeletalCreature)
 {
-	_ASSERT(creature.IsValid());
+	_ASSERT(skeletalCreature.IsValid());
 
-	if (myIsHoldingHandsWithCreature)
+	if (myIsHoldingHandsWithSkeletalCreature)
 	{
-		if (myHandHeldCreature.IsValid())
-			myHandHeldCreature.GetCreatureReference().StopHoldingHandsWithThePointer
+		if (myHandHeldSkeletalCreature.IsValid())
+			myHandHeldSkeletalCreature.GetSkeletalCreatureReference().StopHoldingHandsWithThePointer
 				(mySelf,INTEGERZERO, INTEGERZERO);
 	}
-	myIsHoldingHandsWithCreature = true;
-	myHandHeldCreature = creature;
+	myIsHoldingHandsWithSkeletalCreature = true;
+	myHandHeldSkeletalCreature = skeletalCreature;
 	ShowPose(1);
 }
 
 
-void PointerAgent::StopHoldingHandsWithCreature()
+void PointerAgent::StopHoldingHandsWithSkeletalCreature()
 {
-	if (!myIsHoldingHandsWithCreature)
+	if (!myIsHoldingHandsWithSkeletalCreature)
 		return;
 
-	myIsHoldingHandsWithCreature = false;
-	myHandHeldCreature = NULLHANDLE;
+	myIsHoldingHandsWithSkeletalCreature = false;
+	myHandHeldSkeletalCreature = NULLHANDLE;
 	ShowPose(0);
 	int x = myEntityImage->GetWorldX();
 	int y = myEntityImage->GetWorldY();
@@ -197,12 +313,12 @@ void PointerAgent::StopHoldingHandsWithCreature()
 }
 
 
-void PointerAgent::HoldHandsWithCreature()
+void PointerAgent::HoldHandsWithSkeletalCreature()
 {
-	Creature& creature = myHandHeldCreature.GetCreatureReference();
+	SkeletalCreature& skeletalCreature = myHandHeldSkeletalCreature.GetSkeletalCreatureReference();
 
 	int hand;
-	int direction = creature.GetDirection();
+	int direction = skeletalCreature.GetDirection();
 
 	switch (direction)
 	{
@@ -216,17 +332,36 @@ void PointerAgent::HoldHandsWithCreature()
 	}
 
 	Vector2D handPosition;
-	creature.GetExtremePoint(hand, handPosition);
+	skeletalCreature.GetExtremePoint(hand, handPosition);
 
 	Vector2D offset(-5.0f, -10.0f);
 	Vector2D entityPosition(handPosition + offset);
-	MoveTo(entityPosition.x, entityPosition.y);
+	base::MoveTo(entityPosition.x, entityPosition.y);
 }
 
 
 void PointerAgent::Update()
 {
 	_ASSERT(!myGarbaged);
+
+	// vel added by gtb for presence stuff:
+	myInvalidPosition = false;
+	if (myWiredToMouse)
+	{
+		myVelocityVector.x = theApp.GetInputManager().GetMouseVX();
+		myVelocityVector.y = theApp.GetInputManager().GetMouseVY();
+	}
+	else
+	{
+		myVelocityVector.x = 0;
+		myVelocityVector.y = 0;
+	}
+	if (myCarriedAgent!=NULLHANDLE)
+	{
+		myCarriedAgent.GetAgentReference().SetVelocity(myVelocityVector);
+	}
+
+	myWiredToMouse = (theApp.GetEameVar("engine_decouple_mouse").GetInteger() == 0);
 
 	CAOSVar p1, p2;
 
@@ -241,24 +376,26 @@ void PointerAgent::Update()
 	// Convert to world coords
 	theMainView.ScreenToWorld(x, y);
 
-	if (myIsHoldingHandsWithCreature)
+	if (myIsHoldingHandsWithSkeletalCreature)
 	{
-		if (myHandHeldCreature.IsInvalid())
+		if (myHandHeldSkeletalCreature.IsInvalid())
 		{
 			// My little friend has died, stop holding hands
-			StopHoldingHandsWithCreature();
+			StopHoldingHandsWithSkeletalCreature();
 			// Simply move the pointer entity to where the physical mouse is
-			MoveTo(x,y);
+			if (myWiredToMouse)
+				base::MoveTo(x,y);
 		}
 		else
 		{
-			HoldHandsWithCreature();
+			HoldHandsWithSkeletalCreature();
 		}
 	}
 	else
 	{
 		// Simply move the pointer entity to where the physical mouse is
-		MoveTo(x, y);
+		if (myWiredToMouse)
+			base::MoveTo(x, y);
 	}
 
 	if (myConnecting)
@@ -327,13 +464,13 @@ void PointerAgent::Update()
 	}
 
 	AgentHandle a;
-	(myCarriedAgent.IsValid())? a = myCarriedAgent: a = FindCreature();
+	(myCarriedAgent.IsValid())? a = myCarriedAgent: a = FindSkeletalCreature();
 
 	Classifier c = GetClassifier();
 	c.SetEvent(SCRIPTPOINTERACTIONDISPATCH);
-	if( a.IsCreature() )
+	if( a.IsSkeletalCreature() )
 	{
-		uint16 msgid = a.GetAgentReference().ClickAction
+		int msgid = a.GetAgentReference().ClickAction
 			(Map::FastFloatToInteger(myPositionVector.x),
 			Map::FastFloatToInteger(myPositionVector.y));
 
@@ -441,14 +578,14 @@ void PointerAgent::ScanInputEvents()
 			)
 		{	 
 			// Start RMB
-			if (myIsHoldingHandsWithCreature)
+			if (myIsHoldingHandsWithSkeletalCreature)
 			{
-				if (myHandHeldCreature.IsValid())
+				if (myHandHeldSkeletalCreature.IsValid())
 				{
 					// Write the normal message to the clicked-on agent
-					p1.SetFloat(myPositionVector.x - myHandHeldCreature.GetAgentReference().GetPosition().x);
-					p2.SetFloat(myPositionVector.y - myHandHeldCreature.GetAgentReference().GetPosition().y);
-					theApp.GetWorld().WriteMessage(mySelf,myHandHeldCreature,STOP_HOLD_HANDS,p1,p2,0);
+					p1.SetFloat(myPositionVector.x - myHandHeldSkeletalCreature.GetAgentReference().GetPosition().x);
+					p2.SetFloat(myPositionVector.y - myHandHeldSkeletalCreature.GetAgentReference().GetPosition().y);
+					theApp.GetWorld().WriteMessage(mySelf,myHandHeldSkeletalCreature,STOP_HOLD_HANDS,p1,p2,0);
 					return;
 				}
 			}
@@ -514,16 +651,25 @@ void PointerAgent::ScanInputEvents()
 			)
 		{
 			// Start LMB
-			if (myIsHoldingHandsWithCreature)
+			if (myIsHoldingHandsWithSkeletalCreature)
 				// Block LMB if currently holding hands 
 				return;
 
+			AgentHandle a;
+
 			if (myCarriedAgent.IsValid())
+			{
+#ifdef C2D_DIRECT_DISPLAY_LIB
+				a = myCarriedAgent;
+#else
 				// Block LMB if currently carrying
 				return;
+#endif
+			}
 	
 			bool agentFound = false;
-			AgentHandle a = Find();
+			if(a == NULLHANDLE)
+				a = Find();
 
 			if (a.IsValid()) 
 			{
@@ -698,7 +844,21 @@ void PointerAgent::ScanInputEvents()
 			}	
 
 
+#ifdef C2D_DIRECT_DISPLAY_LIB
+			
+	if (myCarriedAgent.IsValid())
+	{
+		a = myCarriedAgent;
+	}
+	else
+	{
+		a = IsTouching(0, 0);
+	}
+#else
 			a = IsTouching(0, 0);
+#endif
+
+		
 			if (a.IsValid() &&
 				((a.GetAgentReference().GetAttributes() & attrActivateable) != attrActivateable) )
 			{
@@ -741,8 +901,8 @@ void PointerAgent::ScanInputEvents()
 					// Write the normal message to the clicked-on agent
 					p1.SetFloat(myPositionVector.x - a.GetAgentReference().GetPosition().x);
 					p2.SetFloat(myPositionVector.y - a.GetAgentReference().GetPosition().y);
-					// If this is a creature, then don't send the message. (pointer scripts send them)
-					if (!a.IsCreature())
+					// If this is a skeletalCreature, then don't send the message. (pointer scripts send them)
+					if (!a.IsSkeletalCreature())
 						theApp.GetWorld().WriteMessage(mySelf,a,msgid,p1,p2,0);
 					else if (msgid != ACTIVATE1 && msgid != DEACTIVATE)
 						theApp.GetWorld().WriteMessage(mySelf,a,msgid,p1,p2,0);
@@ -767,10 +927,11 @@ AgentHandle PointerAgent::Find()
 	return theAgentManager.WhatAmIOver(mySelf, GetHotSpot());
 }
 
-AgentHandle PointerAgent::FindCreature()
+AgentHandle PointerAgent::FindSkeletalCreature()
 {
 	_ASSERT(!myGarbaged);
-	return theAgentManager.WhatCreatureAmIOver(mySelf,GetHotSpot());
+	AgentHandle c = theAgentManager.WhatCreatureAmIOver(mySelf,GetHotSpot());
+	return c.IsSkeletalCreature() ? c : NULLHANDLE;
 }
 
 
@@ -792,8 +953,8 @@ bool PointerAgent::Write(CreaturesArchive &archive) const
 	archive << myHotSpot <<
 		myConnecting <<
 		myInputPort << myOutputPort << myPort << myConnectingAgent <<
-		myIsHoldingHandsWithCreature << 
-		myHandHeldCreature <<
+		myIsHoldingHandsWithSkeletalCreature << 
+		myHandHeldSkeletalCreature <<
 		myScanInputEvents << myMouseButtonAction << myLastPointerActionDispatched
 		<< myName;
 
@@ -822,8 +983,8 @@ bool PointerAgent::Read(CreaturesArchive &archive)
 		archive >> myHotSpot >>
 			myConnecting >>
 			myInputPort >> myOutputPort >> myPort >> myConnectingAgent >>
-			myIsHoldingHandsWithCreature >> 
-			myHandHeldCreature >>
+			myIsHoldingHandsWithSkeletalCreature >> 
+			myHandHeldSkeletalCreature >>
 			myScanInputEvents >> myMouseButtonAction >> myLastPointerActionDispatched
 			>> myName;
 	}
@@ -848,12 +1009,13 @@ void PointerAgent::CameraPositionNotify()
 	theMainView.ScreenToWorld(x, y);
 
 	// when holding hands don't double update
-	if(myIsHoldingHandsWithCreature && (myHandHeldCreature.IsValid()))
+	if(myIsHoldingHandsWithSkeletalCreature && (myHandHeldSkeletalCreature.IsValid()))
 	{
 	}
 	else
 	{
-		MoveTo( x,y);
+		if (myWiredToMouse)
+			base::MoveTo( x,y);
 	}
 
 	
@@ -915,7 +1077,7 @@ void PointerAgent::SetName(std::string name)
 {
 	CreatureCollection &creatureCollection = theAgentManager.GetCreatureCollection();
 	int noCreatures = creatureCollection.size();
-	int pointerCat = SensoryFaculty::GetCategoryIdOfClassifier(&myClassifier);
+	int pointerCat = SensoryFaculty::GetCategoryIdOfAgent(GetAsAgentHandle());
 
 	// tell all creatures the new pointer name
 	for(int c = 0; c != noCreatures; c++)
@@ -930,3 +1092,22 @@ void PointerAgent::SetName(std::string name)
 
 	myName = name;
 }
+
+void PointerAgent::MoveTo(float x, float y)
+{
+	base::MoveTo(x, y);
+
+	if (!myWiredToMouse)
+		return;
+
+	int logicalX = (int)x;
+	int logicalY = (int)y;
+	theMainView.WorldToScreen(logicalX, logicalY);
+
+	int physicalX = theApp.GetInputManager().GetMouseX();
+	int physicalY = theApp.GetInputManager().GetMouseY();
+	if (logicalX != physicalX || logicalY != physicalY)
+		theApp.GetInputManager().SetMousePosition(logicalX, logicalY);
+	
+}
+

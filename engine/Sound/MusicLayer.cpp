@@ -40,11 +40,11 @@
 #include "Soundlib.h"
 #include "../Display/ErrorMessageHandler.h"
 #include "../File.h"
-#include "../App.h"
+#include "../DirectoryManager.h"
 
 #include "../Scramble.h"
 
-#include "../Map/Map.h" // For Map::FastFloatToInteger
+#include "../Maths.h" // For FastFloatToInteger
 
 #include <limits.h>
 #include <list>
@@ -309,6 +309,8 @@ void MusicLayer::Update(MusicValue uberVolume,
 		else
 			{
 			// Update the sound with the layer volume
+			// std::cout << "MusicValue -> sound " << sound->GetVolume() <<
+			//			" volume " << volume << " uberVolume " << uberVolume << std::endl;
 			MusicValue vol = sound -> GetVolume() * volume * uberVolume;
 
 			if (theMusicSoundManager) {
@@ -363,15 +365,21 @@ void MusicLayer::Update(MusicValue uberVolume,
 			// Play it, taking layer and track volume into account
 			SoundHandle handle;
 		
-			if (theMusicSoundManager) {
-				theMusicSoundManager -> StartControlledSound(nameToken,
-											   handle,
-											   ConvertVolume(uberVolume * volume*sound->GetVolume()),
-											   ConvertPan(sound->GetPan()));
-			}
+			if (theMusicSoundManager)
+				{
+				int ret = theMusicSoundManager->StartControlledSound(nameToken,
+					handle,
+					ConvertVolume(uberVolume * volume*sound->GetVolume()),
+					ConvertPan(sound->GetPan()));
+				if( ret == NO_SOUND_ERROR )
+					{
+					// Add it to the list of controlled sounds
+					AddControlledSound(handle,
+						sound->GetVolume(),
+						sound->GetPan() );
+					}
+				}
 
-			// Add it to the list of controlled sounds
-			AddControlledSound(handle, sound->GetVolume(), sound->GetPan() );
 
 			// Now remove it from the list
 		
@@ -633,16 +641,19 @@ void MusicLayer::PlaySound(MusicValue uberVolume,
 		//
 		SoundHandle handle;
 		
-		if (theMusicSoundManager) {
-			theMusicSoundManager -> StartControlledSound(nameToken,
-										   handle,
-										   ConvertVolume(uberVolume * volume),
-										   0);
-		}
-
-		// Add the sound to the list of controlled sounds
-		// At full volume (1.0) and panned to the centre (0.0)
-		AddControlledSound(handle, 1.0, 0.0);
+		if (theMusicSoundManager)
+			{
+			int ret = theMusicSoundManager->StartControlledSound(nameToken,
+				handle,
+				ConvertVolume(uberVolume * volume),
+				0);
+			if( ret == NO_SOUND_ERROR )
+				{
+				// Add the sound to the list of controlled sounds
+				// At full volume (1.0) and panned to the centre (0.0)
+				AddControlledSound(handle, 1.0, 0.0);
+				}
+			}
 		}
 	else
 		{
@@ -661,28 +672,32 @@ void MusicLayer::PlaySound(MusicValue uberVolume,
 			// scaling the volume by the layer volume, and track volume
 			SoundHandle handle;
 			
-			if (theMusicSoundManager) {
-				theMusicSoundManager -> StartControlledSound(nameToken,
-											   handle,
-											   ConvertVolume(uberVolume*volume*vol),
-											   ConvertPan(pan));
-			}
-
-			// Store this sound on the list of controlled sound
-			AddControlledSound(handle, vol, pan);
-
-			// Delays are cumulative - store the time at which the next sound
-			// should be played
-			MusicValue currentDelay = delay + time;
-
-			// Now place any remaining stages on the effect queue
-			while ( playEffect -> ReadStage( vol, pan, delay) )
+			if (theMusicSoundManager)
 				{
-				// The volume will be scaled when this gets played
-				QueueSound( wave, vol, pan, currentDelay);
+				int ret = theMusicSoundManager->StartControlledSound(nameToken,
+					handle,
+					ConvertVolume(uberVolume*volume*vol),
+					ConvertPan(pan));
+				if( ret == NO_SOUND_ERROR )
+					{
+					// Store this sound on the list of controlled sound
+					AddControlledSound(handle, vol, pan);
+					}
 
-				// Accumulate the delay to the next sound
-				currentDelay += delay;
+				// Delays are cumulative -
+				// store the time at which the next sound
+				// should be played
+				MusicValue currentDelay = delay + time;
+
+				// Now place any remaining stages on the effect queue
+				while ( playEffect -> ReadStage( vol, pan, delay) )
+					{
+					// The volume will be scaled when this gets played
+					QueueSound( wave, vol, pan, currentDelay);
+
+					// Accumulate the delay to the next sound
+					currentDelay += delay;
+					}
 				}
 			}
 		}
@@ -870,16 +885,16 @@ void MusicLayer::Munge(LPCTSTR name, LPCTSTR script)
 		munged.Write(&currentStart,sizeof(int));
 
 		// Create the full pathname
-		char buf[_MAX_PATH];
-		theApp.GetDirectory(SOUNDS_DIR,buf);
-		std::string mungeName(buf);
+		// TODO: Shouldn't refer to full path names?  Also, auxiliary directories?
+		// This function isn't called from the engine at the moment.
+		std::string mungeName = theDirectoryManager.GetDirectory(SOUNDS_DIR);
 
 		mungeName += (*(waves.begin() + i))->GetName();
 		mungeName += ".wav";
 
 		// Find the size of the to-be-munged file
 		File mungette;
-	try
+		try
 		{
 			// We going to strip out the first sixteen bytes
 			// of the file, to hassle hackers.
@@ -906,10 +921,7 @@ void MusicLayer::Munge(LPCTSTR name, LPCTSTR script)
 	for (i=0;i<size;i++)
 	{
 		// Create the full pathname
-		// Create the full pathname
-		char buf[_MAX_PATH];
-		theApp.GetDirectory(SOUNDS_DIR,buf);
-		std::string mungeName(buf);
+		std::string mungeName = theDirectoryManager.GetDirectory(SOUNDS_DIR);
 
 		mungeName += (*(waves.begin() + i))->GetName();
 		mungeName += ".wav";
@@ -991,7 +1003,8 @@ MusicLayer::ControlledSound::~ControlledSound()
 // ----------------------------------------------------------------------
 long MusicLayer::ConvertVolume(MusicValue vol)
 	{
-	long converted = SoundMinVolume - Map::FastFloatToInteger((sqrt(vol) * (MusicValue) SoundMinVolume));
+	long converted = SoundMinVolume - FastFloatToInteger((sqrt(vol) * 
+			(MusicValue) SoundMinVolume));
 
 	// Fix the volume to be within sensible bounds
 	if (converted < SoundMinVolume)
@@ -1006,6 +1019,7 @@ long MusicLayer::ConvertVolume(MusicValue vol)
 			}
 		}
 
+	// std::cerr << "Converted music layer volume " << vol << " to " << converted << std::endl;
 	return converted;
 	
 	}
@@ -1017,7 +1031,7 @@ long MusicLayer::ConvertVolume(MusicValue vol)
 // ----------------------------------------------------------------------
 long MusicLayer::ConvertPan(MusicValue pan)
 {
-	long converted = Map::FastFloatToInteger(pan * 10000.0);
+	long converted = FastFloatToInteger(pan * 10000.0);
 
 	// Fix the panning to be within sensible bounds
 	if (converted < -10000)
@@ -1033,3 +1047,4 @@ long MusicLayer::ConvertPan(MusicValue pan)
 	}
 	return converted;
 }
+

@@ -1,12 +1,19 @@
 // Implementation for WhichEngine.h
 #include <windows.h>
 #include "WhichEngine.h"
+#include "../../xp.h"
 
 WhichEngine theWhichEngine;
 
-const char strCreaturesEngineKey[] = "Software\\CyberLife Technology\\Creatures Engine";
+//const char strCreaturesEngineKey[] = std::string("Software\\") + std::string(COMPANY) + "\\Creatures Engine";	//"Software\\CyberLife Technology\\Creatures Engine";
+
+
+//const char strCreaturesEngineKey[] = "Software\\CyberLife Technology\\Creatures Engine";
+const char strCreaturesEngineKey[] = "Software\\Gameware Development\\Creatures Engine";
 const char strDefaultGameKey[] = "Default Game";
-const char strKeyHead[] = "Software\\CyberLife Technology\\";
+
+//const char strKeyHead[] = "Software\\CyberLife Technology\\";
+const char strKeyHead[] = "Software\\Gameware Development\\";
 
 // Initialisation, and setting functions
 
@@ -54,15 +61,30 @@ std::string WhichEngine::GetDefaultGameName()
 }
 
 // Functions to get values out
+
+std::string WhichEngine::AddSlash(std::string str)
+{
+	if (str.size() > 0)
+	{
+		if (str[str.size() - 1] != '/' && str[str.size() -1] != '\\')
+		{
+			std::string withSlash = str;
+			withSlash += "\\";
+			return withSlash;
+		}
+	}
+
+	return str;
+}
 	
 std::string WhichEngine::CatalogueDir()
 {
-	return GetStringKey("Catalogue Directory");
+	return AddSlash(GetStringKey("Catalogue Directory"));
 }
 
 std::string WhichEngine::MainDir()
 {
-	return GetStringKey("Main Directory");
+	return AddSlash(GetStringKey("Main Directory"));
 }
 
 std::string WhichEngine::GetStringKey(std::string leaf_key)
@@ -103,3 +125,4 @@ std::string WhichEngine::GameName()
 {
 	return myGameName;
 }
+

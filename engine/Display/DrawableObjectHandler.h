@@ -35,8 +35,6 @@
 #pragma warning(disable:4786 4503)
 #endif
 
-#include "../mfchack.h"
-
 #include	"DrawableObject.h"
 #include	<list>
 #include	<vector>
@@ -58,8 +56,7 @@ typedef std::map<DrawableObject*,std::list<DrawableObject*>::iterator> DrawableO
 // forward declaration
 ////////////////////////////////////////////////////////////////////////////
 class EntityImage;
-class Camera;
-class FastEntityImage;
+class CameraSprite;
 class Line;
 
 class DrawableObjectHandler
@@ -78,7 +75,7 @@ public:
 // ----------------------------------------------------------------------	
 	DrawableObjectHandler():myOwnerCamera(0),myShutDownFlag(0){;}
 
-	DrawableObjectHandler(Camera* camera):myOwnerCamera(camera),myShutDownFlag(0){;}
+	DrawableObjectHandler(CameraSprite* camera):myOwnerCamera(camera),myShutDownFlag(0){;}
 
 	// ----------------------------------------------------------------------
 	// Method:      Destructor 
@@ -100,7 +97,7 @@ public:
 	//				plane order
 	//						
 	// ----------------------------------------------------------------------
-	bool Add(Camera* camera);
+	bool Add(CameraSprite* camera);
 
 	bool Add(Line* const object);
 
@@ -143,7 +140,7 @@ public:
 	bool InsertObject(DrawableObject*  const object, RECT* rect = NULL);
 
 
-	void SetOwner(Camera* camera){myOwnerCamera = camera;
+	void SetOwner(CameraSprite* camera){myOwnerCamera = camera;
 									myShutDownFlag = false;}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -151,13 +148,8 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 
-	bool Remove(EntityImage* const chop);
-	bool Remove(Camera* const chop);
-
-	bool Remove(Line* const chop);
-
-
-	bool Add(EntityImage* const newEntity);
+	bool Remove(DrawableObject* const chop);
+	bool Add(DrawableObject* const newEntity);
 
     std::vector<RECT>& GetUpdateList() {return myOldRects;}
 	IntegerPairList& GetDirtyTileList(){return myOldDirtyTiles;}
@@ -171,11 +163,11 @@ public:
 	}
 
 	void SetWorldPosition(Position pos);
+	Position GetWorldPosition(){return myWorldPosition;}
 
 	void Update();
 	void ShutDown();
 
-	void AddFastRect(FastEntityImage* fastObject);
 
 	void AddDirtyRect(RECT rect);
 
@@ -237,7 +229,7 @@ private:
 	// where are we looking in the world?
 	Position myWorldPosition;
 
-	Camera* myOwnerCamera;
+	CameraSprite* myOwnerCamera;
 	bool myShutDownFlag;
 
 };
@@ -251,33 +243,5 @@ bool DrawableObjectHandler::IsRectOnScreen(RECT& rect,RECT& displayRect)
 			(rect.bottom >= displayRect.top));
 }
 
-/*
-{
-	POINT topLeft;
-	POINT bottomRight;
-	POINT bottomLeft;
-	POINT topRight;
-
-   //weed out rects that are just not on screen
-    topLeft.x = rect.left;
-    topLeft.y = rect.top;
-    bottomRight.x = rect.right;
-    bottomRight.y = rect.bottom;
-	bottomLeft.x = rect.left;
-    bottomLeft.y = rect.bottom;
-	topRight.x = rect.right;
-	topRight.y = rect.top;
-
-
-	// check that the object is not totally off screen!
-	// and check whether the object is so large that its top and bottom are off screen!
-	// or so wide that the left and right edges are off screen
-
-	return ((PointInRectangle(&displayRect,topLeft) || PointInRectangle(&displayRect,bottomRight)
-		   ||PointInRectangle(&displayRect,bottomLeft) || PointInRectangle(&displayRect,topRight))
-		   || rect.top <= displayRect.top && rect.bottom >= displayRect.bottom 
-		   || rect.left <= displayRect.left && rect.right >= displayRect.right);
-
-}
-*/
 #endif		// DRAWABLE_OBJECT_HANDLER_H
+

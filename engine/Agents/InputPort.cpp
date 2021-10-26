@@ -96,3 +96,4 @@ bool InputPort::Read(CreaturesArchive &ar)
 	}
 	return true;
 }
+

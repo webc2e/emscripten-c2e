@@ -34,12 +34,17 @@
 #include "../common/C2eDebug.h"
 #include "FlightRecorder.h"
 #include "../common/Catalogue.h"
+#include "DirectoryManager.h"
+#include "../modules/ModuleAPI.h"
 
 // string localisation
 extern Catalogue theCatalogue;
 
 // Logging system
-extern FlightRecorder theFlightRecorder;
+// GetFlightRecorder() allows us to pass this across DLL boundaries
+// (dyanmic linking doesn't seem to be able to send data directly)
+C2E_MODULE_API FlightRecorder& GetFlightRecorder();
+#define theFlightRecorder GetFlightRecorder()
 
 #endif // C2ESERVICES_H
 

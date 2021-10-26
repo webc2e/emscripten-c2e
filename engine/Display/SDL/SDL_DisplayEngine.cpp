@@ -1,102 +1,101 @@
 // --------------------------------------------------------------------------
-// Filename:	SDL/DisplayEngine.cpp
+// Filename:	SDL/SDL_DisplayEngine.cpp
 //
 // A non-directx version of the DisplayEngine
+//
 //
 // --------------------------------------------------------------------------
 #ifdef _MSC_VER
 #pragma warning(disable : 4786 4503)
 #endif
 
+#include "../../../common/C2eTypes.h"
+
+// Nasm declarations (the variables are
+// defined in Bitmap.cpp, the functions
+// in Plot.asm).  For now we use these
+// global variables even in the non-asm
+// version - hopefully won't slow it down!
+extern int32 bitmapHeight;
+extern int32 bitmapWidth;
+extern uint16 *data_ptr;
+extern uint16 *screen_ptr;
+extern uint32 data_step;
+extern uint32 screen_step;
+extern int dwordWidth;
+extern uint16 *compressedData_ptr;
+
+#ifdef C2E_NASM_RENDERING
+extern "C" {
+void NasmDrawSprite();
+void NasmDrawCompressedSprite();
+}
+#endif
+
+#include "../../../common/FileFuncs.h"
+#include "../../AgentDisplay/EntityImage.h"
 #include "../../App.h"
+#include "../../C2eServices.h"
+#include "../../Camera/MapImage.h"
 #include "../../File.h"
+#include "../../ProgressDialog.h"
 #include "../Background.h"
+#include "../ClonedGallery.h"
 #include "../CompressedBitmap.h"
 #include "../DisplayEngine.h"
-#include "../EntityImage.h"
-#include "../ErrorMessageHandler.h"
-#include "../System.h"
-#ifdef _WIN32
-#include "../../../common/RegistryHandler.h"
-#endif
-#include "../../C2eServices.h"
-#include "../../ProgressDialog.h"
-#include "../ClonedGallery.h"
+#include "../DisplayErrorConstants.h"
 #include "../DrawableObjectHandler.h"
-#include "../FastDrawingObject.h"
-#include "../FastEntityImage.h"
-#include "../MapImage.h"
-#include "../NormalGallery.h"
+#include "../EasterEgg.h"
+#include "../ErrorMessageHandler.h"
 #include "../SharedGallery.h"
+#include "../System.h"
+#include "SDLStretch/SDLStretch.h"
 #include <string>
-//#include	<dinput.h>
-#include "../EntityImage.h"
-//#include "../Maths.h"
 
-////////////////////////////////////////////////////////////////////////////
-// My static variables
-////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
+
 DisplayEngine DisplayEngine::myRenderer;
 RECT DisplayEngine::ourSurfaceArea;
-RECT DisplayEngine::ourWindowRect;
-std::vector<struct DisplayEngine::Resolution> DisplayEngine::ourResolutions;
-std::vector<FastDrawingObject *> DisplayEngine::ourFastObjects;
-std::vector<FastDrawingObject *> DisplayEngine::ourFastObjectsOnHold;
-struct DisplayEngine::Resolution DisplayEngine::ourCurrentResolution;
 
-////////////////////////////////////////////////////////////////////////////
-// Constructors
-////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////
-// The only way of accessing the display engine
-////////////////////////////////////////////////////////////////////////////
 DisplayEngine &DisplayEngine::theRenderer() { return myRenderer; }
 
 DisplayEngine::DisplayEngine() {
   myCurrentOffScreenBufferPtr = 0;
-  myFrontBuffer = NULL;
   myBackBuffer = NULL;
   myPixelFormat = RGB_UNKNOWN;
   myWaitingForMessageBoxFlag = 0;
-  //	myProgressBitmap = NULL;
-  //	myProgressUpdateCount = 20;
-  //	myProgressSurface = NULL;
-  //	myTransitionGallery = NULL;
-  myTextGallery = NULL;
-  //	mySpriteSurface = 0;
-  //	myProgressBarHasBeenStarted = 0;
+  myProgressBitmap = NULL;
+  myProgressSurface = NULL;
+  myProgressBarHasBeenStarted = 0;
   myFlags = 0;
+  myWindowedModeW = 800;
+  myWindowedModeH = 600;
+  myCurrentFullScreenMode = 0;
+  myIsTheWorldRoundFlag = false;
+  myDesiredWorldRoundness = false;
 }
 
 DisplayEngine::DisplayEngine(uint32 flags) {
   myCurrentOffScreenBufferPtr = 0;
-  //	myDirectDraw = 0;
-  myFrontBuffer = 0;
-  //	myHWBackBuffer = 0;
   myBackBuffer = NULL;
   myPixelFormat = RGB_UNKNOWN;
-  //	myClipper = 0;
   myWaitingForMessageBoxFlag = 0;
-  //	myProgressBitmap = NULL;
-  //	myProgressUpdateCount = 20;
-  //	myProgressSurface = NULL;
-  //	myTransitionGallery = NULL;
-  myTextGallery = NULL;
-  //	mySpriteSurface = 0;
-  //	myProgressBarHasBeenStarted = 0;
-
+  myProgressBitmap = NULL;
+  myProgressSurface = NULL;
+  myProgressBarHasBeenStarted = 0;
   myFlags = flags;
+  myWindowedModeW = 800;
+  myWindowedModeH = 600;
+  myCurrentFullScreenMode = 0;
+  myIsTheWorldRoundFlag = false;
+  myDesiredWorldRoundness = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 // Destructor
 ////////////////////////////////////////////////////////////////////////////
-DisplayEngine::~DisplayEngine(void) { DeleteAllFastObjects(); }
-
-////////////////////////////////////////////////////////////////////////////
-// Direct Draw Setup and Shut down
-////////////////////////////////////////////////////////////////////////////
+DisplayEngine::~DisplayEngine(void) {}
 
 // ----------------------------------------------------------------------
 // Method:      ClearBuffers
@@ -108,78 +107,180 @@ DisplayEngine::~DisplayEngine(void) { DeleteAllFastObjects(); }
 //
 // ----------------------------------------------------------------------
 void DisplayEngine::ClearBuffers(void) {
-#ifdef WORK_IN_PROGRESS
-  // clear myFrontBuffer and myBackBuffer here.
-#endif
+  // TODO: clear myBackBuffer here.
 }
 
 // ----------------------------------------------------------------------
 // Method:      Start
 // Arguments:   window - handle of a window to associate the engine with
 //				fullScreen - true if this engine should run full
-// screen 								false if it should run
-// in a window.
+//screen 								false if it should run in a window.
 //
 // Returns:     true if the engine has started up OK false otherwise
 //
 // Description: Creates the direct draw object and surfaces either for
-//				fullscreen mode or for windowed mode - the set
-// up is 				slightly different
+//				fullscreen mode or for windowed mode - the set up
+//is 				slightly different
 //
 // ----------------------------------------------------------------------
-bool DisplayEngine::Start(bool fullScreen /*= false*/) {
-  myFullScreenFlag = fullScreen;
+bool DisplayEngine::Start(uint32 storedDisplayType,
+                          std::vector<std::string> &foldersToConvert,
+                          std::string const &transitionGallery,
+                          bool fullScreen /*= false*/) {
+  // TODO: transitionGallery?
 
-  //	myWindow=window;
+  // sort out myPixelFormat and myFullScreenModes vector
+  SussScreenModes();
 
-  // should query available screenmodes here.
+  // look for 800x600
+  int i;
+  myCurrentFullScreenMode = 0;
 
-  // handle full screen
-  if (myFullScreenFlag) {
-    return false;
-  } else {
-    // NEEDS LOTS OF WORK.
-    ourSurfaceArea.left = 0;
-    ourSurfaceArea.top = 0;
-    ourSurfaceArea.right = 640;
-    ourSurfaceArea.bottom = 480;
-
-    myFrontBuffer = SDL_SetVideoMode(640, 480, 16, 0);
-    if (!myFrontBuffer) {
-      return false;
+  for (i = 0; i < myFullScreenModes.size(); ++i) {
+    if (myFullScreenModes[i].w == 800 && myFullScreenModes[i].h == 600) {
+      myCurrentFullScreenMode = i;
     }
-
-    // 565 only for now...
-    myBackBuffer = SDL_AllocSurface(SDL_SWSURFACE, 640, 480, 16, 0xF800, 0x07E0,
-                                    0x001F, 0);
-    if (!myBackBuffer) {
-      return false;
-    }
-
-    myFullScreenFlag = false;
   }
 
-  ClearBuffers();
-  Check16BitFormat();
-  CreateUserInterfaceGalleries();
+  if (fullScreen) {
+    if (!SetMode(myCurrentFullScreenMode))
+      return false;
+  } else {
+    if (!SetModeWindowed(800, 600))
+      return false;
+  }
+
   myEngineRunningFlag = true;
+
   return true;
+}
+
+void DisplayEngine::SussScreenModes() {
+  const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
+
+  printf("\nVideo information:\n");
+  printf("  %d bits per pixel, ", vidinfo->vfmt->BitsPerPixel);
+  printf("%d bytes per pixel\n", vidinfo->vfmt->BytesPerPixel);
+  printf("  rmask: 0x%x ", vidinfo->vfmt->Rmask);
+  printf("gmask: 0x%x ", vidinfo->vfmt->Gmask);
+  printf("bmask: 0x%x\n", vidinfo->vfmt->Bmask);
+
+  if (vidinfo->vfmt->BitsPerPixel == 16 && vidinfo->vfmt->BytesPerPixel == 2 &&
+      vidinfo->vfmt->Rmask == 0x7c00 && vidinfo->vfmt->Gmask == 0x03e0 &&
+      vidinfo->vfmt->Bmask == 0x001f) {
+    myPixelFormat = RGB_555;
+    printf("  Display 555 format, also known as 15 bit\n");
+  } else if (vidinfo->vfmt->BitsPerPixel == 16 &&
+             vidinfo->vfmt->BytesPerPixel == 2 &&
+             vidinfo->vfmt->Rmask == 0xf800 && vidinfo->vfmt->Gmask == 0x07e0 &&
+             vidinfo->vfmt->Bmask == 0x001f) {
+    myPixelFormat = RGB_565;
+    printf("  Display 565 format\n");
+  } else {
+    // for all other pixelformats, we just use 565.
+    // SDL will create a shadow surface and convert on the fly.
+    myPixelFormat = RGB_565;
+    printf("  Display is %d bit\n", vidinfo->vfmt->BitsPerPixel);
+    printf("  WARNING - there will be a performance hit.\n");
+    printf("            For best results, set your display depth\n");
+    printf("            to 16 (or 15) bits in X configuration.\n");
+  }
+
+  // See what fullscreen resolutions we can run in
+  printf("  Available fullscreen modes: ");
+  SDL_Rect **r;
+  r = SDL_ListModes(NULL, SDL_FULLSCREEN);
+  if (r && r != (SDL_Rect **)-1) {
+    while (*r) {
+      printf("%dx%d ", (*r)->w, (*r)->h);
+      myFullScreenModes.push_back(**r);
+      ++r;
+    }
+  }
+  printf("\n");
+}
+
+bool DisplayEngine::SetModeWindowed(int w, int h) {
+  //	printf("SetModeWindowed %d,%d\n",w,h );
+  ASSERT(myPixelFormat == RGB_555 || myPixelFormat == RGB_565);
+
+  int bitdepth = (myPixelFormat == RGB_555) ? 15 : 16;
+
+#ifdef _WIN32
+  //	myBackBuffer = SDL_SetVideoMode( w, h, 16, 0);
+  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_RESIZABLE);
+#else
+  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_RESIZABLE);
+#endif
+  if (!myBackBuffer) {
+    // TODO: use logfile?
+    printf("SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+    return false;
+  }
+  ourSurfaceArea.left = 0;
+  ourSurfaceArea.top = 0;
+  ourSurfaceArea.right = w;
+  ourSurfaceArea.bottom = h;
+  myFullScreenFlag = false;
+
+  // store w & h so we can restore size after a switch to fullscreen mode
+  myWindowedModeW = w;
+  myWindowedModeH = h;
+
+  ClearBuffers();
+  return true;
+}
+
+bool DisplayEngine::SetMode(int modenum) {
+  //	printf("SetMode %d\n",modenum);
+
+  ASSERT(myPixelFormat == RGB_555 || myPixelFormat == RGB_565);
+
+  if (myFullScreenModes.empty())
+    return SetModeWindowed(myWindowedModeW, myWindowedModeH);
+
+  ASSERT(modenum >= 0 && modenum < myFullScreenModes.size());
+
+  int w = myFullScreenModes[modenum].w;
+  int h = myFullScreenModes[modenum].h;
+  int bitdepth = (myPixelFormat == RGB_555) ? 15 : 16;
+
+  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_FULLSCREEN);
+  if (!myBackBuffer) {
+    // TODO: could return some meaningful SDL_GetError() text here...
+    printf("SDL_SetVideoMode() failed: %s\n", SDL_GetError());
+    return false;
+  }
+
+  myCurrentFullScreenMode = modenum;
+  ourSurfaceArea.left = 0;
+  ourSurfaceArea.top = 0;
+  ourSurfaceArea.right = w;
+  ourSurfaceArea.bottom = h;
+  myFullScreenFlag = true;
+
+  ClearBuffers();
+  return true;
+}
+
+void DisplayEngine::MoveWindow() {}
+
+void DisplayEngine::MoveWindow(int32 x, int32 y) {}
+
+void DisplayEngine::ResizeWindow(int w, int h) {
+  // this'll turn off fullscreen mode if it is on...
+  SetModeWindowed(w, h);
 }
 
 void DisplayEngine::CreateUserInterfaceGalleries() {
 #ifdef WORK_IN_PROGRESS
-  // the text gallery should be uncompressed I think.
-  myTextGallery =
-      (NormalGallery *)SharedGallery::theSharedGallery().CreateGallery(
-          FilePath("Chars.s16", IMAGES_DIR));
-
   FilePath path("trans.s16", IMAGES_DIR);
 
-  if (GetFileAttributes(path.GetFullPath().c_str()) == -1)
+  if (!FileExists(path.GetFullPath().c_str()))
     return;
 
   // if this doesn't get created it's no big deal.
-  myTransitionGallery = new NormalGallery(path);
+  myTransitionGallery = new Gallery(path);
 
   if (!myTransitionGallery)
     return;
@@ -227,15 +328,113 @@ void DisplayEngine::CreateUserInterfaceGalleries() {
     }
     mySpriteSurface->Unlock(NULL);
   }
-
-  ASSERT(myTextGallery);
 #endif
 }
 
+// TODO: fix ickiness - pixelconversion is pretty convoluted at the moment
+// pPrevFileName is not even used.
+bool DisplayEngine::SafeImageConvert(std::string &name,
+                                     std::string &tmpFileName, PIXEL_FORMAT To,
+                                     std::string &pPrevFileName) {
+  bool bConvert = false;
+  PIXEL_FORMAT From;
+  try {
+    File f(name, GENERIC_READ);
+
+    if (f.Valid()) {
+      uint32 dwFlags;
+      if (f.Read(&dwFlags, sizeof(uint32))) {
+        if ((dwFlags & C16_FLAG_565) && (To == RGB_555)) {
+          From = RGB_565;
+          bConvert = true;
+        }
+
+        if (!(dwFlags & C16_FLAG_565) && (To == RGB_565)) {
+          From = RGB_555;
+          bConvert = true;
+        }
+      }
+      f.Close();
+    }
+  } catch (File::FileException &) {
+    std::cerr << "DisplayEngine::SafeImageConvert FileException " << name
+              << std::endl;
+    return false;
+  }
+
+  // ****************Changes
+  if (bConvert) {
+    /* std::cout << "DisplayEngine::SafeImageConvert() '" << name << "' to ";
+    if( To == RGB_555 )
+            std::cout << "555... " << std::endl;
+    else if( To == RGB_565 )
+            std::cout << "565... " << std::endl;
+    else
+            std::cout << "???... " << std::endl; */
+
+    if (!CopyFile(name.c_str(), tmpFileName.c_str(), true)) {
+      std::cerr << "Copy temp '" << name << "' to '" << tmpFileName
+                << "' failed" << std::endl;
+      perror("Reason for failure:");
+      return false;
+    };
+
+    SharedGallery::theSharedGallery().ConvertGallery(tmpFileName, To);
+
+    if (!CopyFile(tmpFileName.c_str(), name.c_str(), true)) {
+      std::cerr << "Copy back '" << tmpFileName << "' to '" << name
+                << "' failed" << std::endl;
+      perror("Reason for failure:");
+      return false;
+    }
+
+    // std::cout << "Conversion done" << std::endl;
+  }
+
+  return true;
+}
+
+#ifdef LEFT_IN_FOR_REFERENCE
+
+bool DisplayEngine::Check16BitFormat(
+    uint32 storedDisplayType, std::vector<std::string> &foldersToConvert) {
+  uint32 format = 0;
+  if (!GetPixelFormat(format)) {
+    theApp.myQuitNextTick = true;
+    return false;
+  }
+
+  myPixelFormat = PIXEL_FORMAT(format);
+
+  if (storedDisplayType == RGB_UNKNOWN) {
+    // Assume just installed.
+    // This is OK now as the S16 files say what they contain.
+    storedDisplayType = RGB_565;
+  }
+
+  // if the current pixel format is different to the video
+  // card's format then we need to change
+  if (storedDisplayType != myPixelFormat) {
+    // tell 'em what we are going to do...
+
+    for (int i = 0; i < foldersToConvert.size(); ++i) {
+      DoConversion(foldersToConvert[i]);
+    }
+  }
+
+  // Store new display type in registry.
+  int data = myPixelFormat;
+  std::string valueName("Display Type");
+  theApp.MachineSettings().Set(valueName, data);
+  // make sure config file is updated in case we crash :-)
+  theApp.MachineSettings().Flush();
+
+  return true;
+}
+
 void DisplayEngine::DoConversion(std::string &imagePath) {
-#ifdef WORK_IN_PROGRESS
-  std::string msg = theCatalogue.Get(theDisplayErrorTag,
-                                     (int)DisplayEngine::sidConvertingGraphics);
+  std::string msg =
+      theCatalogue.Get(theDisplayErrorTag, (int)sidConvertingGraphics);
   msg += imagePath;
 
   ProgressDialog progress(myWindow);
@@ -258,14 +457,14 @@ void DisplayEngine::DoConversion(std::string &imagePath) {
     // count the images
     // Count images.
     int32 imageCount = 0;
-    file_handle = _findfirst(tmpFilePath.data(), &file_data);
+    file_handle = _findfirst(tmpFilePath.c_str(), &file_data);
     while (_findnext(file_handle, &file_data) == 0)
       imageCount++;
     _findclose(file_handle);
 
     progress.SetCounterRange(imageCount);
 
-    file_handle = _findfirst(tmpFilePath.data(), &file_data);
+    file_handle = _findfirst(tmpFilePath.c_str(), &file_data);
 
     // no files in this directory!!!
     if (file_handle == -1) {
@@ -322,74 +521,12 @@ void DisplayEngine::DoConversion(std::string &imagePath) {
                               (int)DisplayEngine::sidNoImagesDirectory,
                               std::string("DisplayEngine::DoConversion"));
   }
-#endif
-}
-
-void DisplayEngine::Check16BitFormat() {
-  uint32 format = 0;
-  if (!GetPixelFormat(format)) {
-    theApp.myQuitNextTick = true;
-    return;
-  }
-
-  myPixelFormat = PIXEL_FORMAT(format);
-
-  uint32 registry_display_type = RGB_UNKNOWN;
-  // Has display type been previously determined?
-
-  std::string value("Display Type");
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), value, registry_display_type,
-                       HKEY_LOCAL_MACHINE);
-#else
-  theApp.MachineSettings().Get(value, (int &)registry_display_type);
-#endif
-
-  if (registry_display_type == RGB_UNKNOWN) {
-    // Assume just installed.
-    // This is OK now as the S16 files say what they contain.
-    registry_display_type = RGB_565;
-  }
-
-  // if the current pixel format is different to the video
-  // card's format then we need to change
-  if (registry_display_type != myPixelFormat) {
-    // tell 'em what we are going to do...
-    char buf[_MAX_PATH];
-    std::string buff;
-    theApp.GetDirectory(IMAGES_DIR, buf);
-    buff = buf;
-    DoConversion(buff);
-
-    theApp.GetDirectory(BACKGROUNDS_DIR, buf);
-    buff = buf;
-    DoConversion(buff);
-
-    theApp.GetDirectory(OVERLAYS_DIR, buf);
-    buff = buf;
-    DoConversion(buff);
-  }
-
-  // Store new display type in registry.
-  uint32 data = myPixelFormat;
-  std::string valueName(REG_DISPLAY_TYPE_KEY);
-
-#ifdef _WIN32
-  theRegistry.CreateValue(theRegistry.DefaultKey(), valueName, data,
-                          HKEY_LOCAL_MACHINE);
-#else
-  theApp.MachineSettings().Set(valueName, (int)data);
-  // make sure config file is updated in case we crash :-)
-  theApp.MachineSettings().Flush();
-#endif
 }
 
 // taken from SFC tested but not commented
 bool DisplayEngine::SafeImageConvert(std::string &name,
                                      std::string &tmpFileName, PIXEL_FORMAT To,
                                      std::string &pPrevFileName) {
-#ifdef WORK_IN_PROGRESS
-
   bool bConvert = FALSE;
   PIXEL_FORMAT From;
   try {
@@ -414,13 +551,13 @@ bool DisplayEngine::SafeImageConvert(std::string &name,
 
     // ****************Changes
     if (bConvert) {
-      CopyFile(name.data(), tmpFileName.data(), false);
+      CopyFile(name.c_str(), tmpFileName.c_str(), false);
       StoreFileBeingConverted(name);
 
       SharedGallery::theSharedGallery().ConvertGallery(
           FilePath(tmpFileName, -1), To);
 
-      CopyFile(tmpFileName.data(), name.data(), false);
+      CopyFile(tmpFileName.c_str(), name.c_str(), false);
 
       StoreFileBeingConverted(std::string(""));
     }
@@ -430,16 +567,9 @@ bool DisplayEngine::SafeImageConvert(std::string &name,
   }
 
   return true;
-#endif
-  return false;
 }
 
-void DisplayEngine::GetSurfaceArea(RECT &rect) {
-  rect.top = ourSurfaceArea.top;
-  rect.bottom = ourSurfaceArea.bottom;
-  rect.left = ourSurfaceArea.left;
-  rect.right = ourSurfaceArea.right;
-}
+#endif // LEFT_IN_FOR_REFERENCE
 
 // ----------------------------------------------------------------------
 // Method:      Stop
@@ -450,10 +580,6 @@ void DisplayEngine::GetSurfaceArea(RECT &rect) {
 //
 // ----------------------------------------------------------------------
 void DisplayEngine::Stop(void) {
-  OutputDebugString("DisplayEngine::Stop\n");
-
-  DeleteAllFastObjects();
-
 #ifdef WORK_IN_PROGRESS
   if (mySpriteSurface)
     mySpriteSurface->Release();
@@ -473,33 +599,26 @@ void DisplayEngine::Stop(void) {
 //				entityHandler - list of drawable objects
 //				monitor - not used yet
 //				completeRedraw - wether we are drawing the whole
-// scene 									or
-// just dirty rects
+//scene 									or just dirty rects
 //
 // Returns:     None
 //
 // Description: Draw the background, then the sprites, then monitor
-//				to the backbuffer. Any fast objects will draw
-// themselves 				to the front buffer and the back buffer
+//				to the backbuffer.
 //
 // ----------------------------------------------------------------------
 void DisplayEngine::Update(Background *background,
                            DrawableObjectHandler *entityHandler,
                            bool completeRedraw, bool justBackBuffer,
                            SDL_Surface *surfaceToDrawOn /*= NULL*/) {
+  // nasty hack to stop screen redraws while world is loading...
+  // (ugh.)
+  if (myProgressBarHasBeenStarted)
+    return;
 
-  if (myEngineRunningFlag == false || myCatchingExceptionFlag == true) {
+  if (myEngineRunningFlag == false) {
     return;
   }
-
-#ifdef WORK_IN_PROGRESS
-  // firstly draw fast objects to the front buffer
-  std::vector<FastDrawingObject *>::iterator it;
-
-  for (it = ourFastObjects.begin(); it != ourFastObjects.end(); it++) {
-    (*it)->Update();
-  }
-#endif
 
   int oldPitch = myPitch;
   // only open the back buffer once
@@ -507,7 +626,6 @@ void DisplayEngine::Update(Background *background,
   // and sundry
   if (surfaceToDrawOn == NULL) {
     if (!OpenBackBuffer()) {
-      OutputDebugString("no back buffer!!!\n");
       CloseBackBuffer();
       return;
     }
@@ -519,20 +637,17 @@ void DisplayEngine::Update(Background *background,
     CloseBackBuffer();
 
     if (SDL_LockSurface(surfaceToDrawOn) == -1) {
-      OutputDebugString("Surface lock failed");
+      ASSERT(false);
       return;
     }
 
     myCurrentOffScreenBufferPtr = (uint16 *)surfaceToDrawOn->pixels;
-    myPitch = surfaceToDrawOn->pitch / 2;
+    myPitch = surfaceToDrawOn->pitch >> 1;
     myPitchForBackgroundTiles = (myPitch - 128) * 2;
-
-    mySurfaceArea.left = surfaceToDrawOn->clip_rect.x;
-    mySurfaceArea.top = surfaceToDrawOn->clip_rect.y;
-    mySurfaceArea.right =
-        surfaceToDrawOn->clip_rect.x + surfaceToDrawOn->clip_rect.w;
-    mySurfaceArea.bottom =
-        surfaceToDrawOn->clip_rect.y + surfaceToDrawOn->clip_rect.h;
+    mySurfaceArea.left = 0;
+    mySurfaceArea.top = 0;
+    mySurfaceArea.right = surfaceToDrawOn->w;
+    mySurfaceArea.bottom = surfaceToDrawOn->h;
   }
 
   // draw the background parts
@@ -540,6 +655,7 @@ void DisplayEngine::Update(Background *background,
                    entityHandler->GetDirtyTileList());
   // draw the sprites
   entityHandler->Draw(completeRedraw);
+  DrawGuttering(background->GetPixelWidth(), background->GetPixelHeight());
 
   // tidy up the open backbuffers
   // making sure we close the right version
@@ -553,62 +669,72 @@ void DisplayEngine::Update(Background *background,
     myPitchForBackgroundTiles = (myPitch - 128) * 2;
   }
 
-#ifdef WORK_IN_PROGRESS
-  // draw the fast objects to the backbuffer
-  for (it = ourFastObjects.begin(); it != ourFastObjects.end(); it++)
-    (*it)->DrawToBackBuffer(*entityHandler);
-#endif
-
   if (!justBackBuffer) {
     DrawToFrontBuffer();
   }
 }
 
-void DisplayEngine::Update() { ; }
+uint16 *DisplayEngine::OpenBackBuffer(void) {
+  // it could be that we are getting called
+  // by update when we are in the midst of changing our
+  // resolution
+  if (myBackBuffer) {
+    if (SDL_LockSurface(myBackBuffer) == -1) {
+      ASSERT(false);
+      return NULL;
+    }
+
+    myCurrentOffScreenBufferPtr = (uint16 *)myBackBuffer->pixels;
+    myPitch = myBackBuffer->pitch >> 1;
+    myPitchForBackgroundTiles = (myPitch - 128) * 2;
+    return myCurrentOffScreenBufferPtr;
+  } else {
+    return NULL;
+  }
+}
 
 // ----------------------------------------------------------------------
 // Method:      DrawToFrontBuffer
 // Arguments:   None
 // Returns:     None
 //
-// Description: Draw the background, then the sprites, then the monitor
-//				to the backbuffer.  Then draws the back buffer
-// to the 				front buffer
+// Description: Calls SDL_UpdateRect() to display the virtual
+// surface (myBackBuffer)
 //
 // ----------------------------------------------------------------------
 void DisplayEngine::DrawToFrontBuffer() {
-  if (!myEngineRunningFlag || !myFrontBuffer)
+  if (!myEngineRunningFlag)
     return;
 
   POINT point = {0, 0};
-  //	RECT	rect;
 
-  // for full screen we are using three buffers for smoother flipping
-  if (myFullScreenFlag) {
-#ifdef WORK_IN_PROGRESS
-    //	myHWBackBuffer->Blt(NULL,
-    //	myBackBuffer,NULL,DDBLT_WAIT,NULL);
+  // TODO: maybe use an extra surface and hardware flipping in
+  // fullscreen mode?
 
-    myHWBackBuffer->BltFast(NULL, NULL, myBackBuffer, NULL,
-                            DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT);
+  // The pretty flashing rectangle in the corner
+  // which shows you that SDL is working when
+  // things look bad
+  //	SDL_Rect r;
+  //	r.x = r.y =0;
+  //	r.w = r.h = 10;
+  //	SDL_FillRect( myBackBuffer, &r, rand() );
 
-    // now flip from the back buffer to the screen
-    if (myFrontBuffer->Flip(NULL, DDFLIP_WAIT) == DDERR_SURFACELOST) {
-      // if for any reason we have lost our surfaces just
-      // keep whatever was in the front buffer
-      myFrontBuffer->Restore();
-      myBackBuffer->Restore();
-      myHWBackBuffer->Restore();
+  // BEGIN ROUND WORLD EASTER EGG
+  if (myIsTheWorldRoundFlag || myDesiredWorldRoundness) {
+    if (OpenBackBuffer()) {
+      EasterEgg::CunningBlit(GetBackBufferPtr(), GetBackBufferPtr(),
+                             mySurfaceArea.right, mySurfaceArea.bottom, myPitch,
+                             myPitch, myIsTheWorldRoundFlag,
+                             myDesiredWorldRoundness);
+
+      CloseBackBuffer();
     }
-#endif // WORK_IN_PROGRESS
-  } else {
-    // copy backbuffer to frontbuffer
-    if (SDL_BlitSurface(myBackBuffer, NULL, myFrontBuffer, NULL) == -1)
-      OutputDebugString("Blit failed\n");
-
-    // display frontbuffer
-    SDL_UpdateRect(myFrontBuffer, 0, 0, 0, 0);
   }
+  // END ROUND WORLD EASTER EGG
+
+  // TODO: can we get at the dirty-rectangle list to only update
+  // areas which have changed?
+  SDL_UpdateRect(myBackBuffer, 0, 0, 0, 0);
 }
 
 void DisplayEngine::FadeScreen() {}
@@ -627,7 +753,7 @@ void DisplayEngine::Burst() {}
 // Method:      DrawSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw
+//draw
 // Returns:     None
 //
 // Description: Draw the sprite to the back buffer
@@ -635,23 +761,12 @@ void DisplayEngine::Burst() {}
 //
 // ----------------------------------------------------------------------
 void DisplayEngine::DrawSprite(Position &position, Bitmap &bitmap) {
-  //	OutputDebugString("start DE::DrawSprite \n");
-  int32 bitmapWidth;
-  int32 bitmapHeight;
-
   // work out how much to increase the data and sreen pointers
   // on when drawing
-  uint32 data_step;
-
-  uint16 *data_ptr;
-
-  uint32 screen_step;
-  uint16 *screen_ptr;
 
   if (!GetDrawingParameters(position, &bitmap, data_step, data_ptr, screen_step,
                             screen_ptr, bitmapWidth, bitmapHeight))
     return;
-    //		OutputDebugString("got drawing params DE::DrawSprite\n");
 
     // draw taking account of transparent pixels
 
@@ -669,109 +784,18 @@ void DisplayEngine::DrawSprite(Position &position, Bitmap &bitmap) {
   }
 #else
 
-  // Need a gcc-friendly version
-
   if (bitmapWidth < 1 || bitmapHeight < 1)
     return;
-  _asm
-  {
-		mov esi,dword ptr [data_ptr]
-		mov edi,dword ptr [screen_ptr]
-		mov ebx,dword ptr [data_step]
-		mov edx,dword ptr [screen_step]
-		
-		push dword ptr [bitmapHeight]		;Stack up bitmapHeight for later 
 
-	topOfOuterLoop:
-		mov ecx,dword ptr [bitmapWidth]		;Get the number of pixels we are playing with
-	topOfInnerLoop:
-		;Load pixel into AX
-		lodsw
-		test ax,ax
-		je dontstore
-		mov word ptr [edi],ax				;Store screen pixel
-	dontstore:
-		add edi,2							;Increment screen pointer one word
-
-		;Inner loop epilogue
-		dec ecx
-		jne topOfInnerLoop					;If not done with line, jump to top of inner loop
-
-		; Deal with the widths :)
-
-
-		;Outer loop epilogue
-		pop ecx								;Destack bitmapHeight
-
-		lea esi,[esi+ebx*2]					;data_ptr += data_step
-		
-		dec ecx
-		
-		lea edi,[edi+edx*2]					;screen_ptr += screen_step
-		
-		push ecx							;Restack bitmapHeight
-		
-		jne topOfOuterLoop
-
-		;asm epilogue
-
-		pop ecx								;clean stack pre popa
-      }
-#endif
-}
-
-// ----------------------------------------------------------------------
-// Method:      DrawSpriteNoLeftClipping
-// Arguments:   position - x,y coordinates of where to draw the bitmap
-//				bitmap - bitmap (with transparent pixels) to
-// draw
-// Returns:     None
-//
-// Description: Draw the sprite to the back buffer
-//
-//
-// ----------------------------------------------------------------------
-void DisplayEngine::DrawSpriteNoLeftClipping(Position &position,
-                                             Bitmap &bitmap) {
-  uint32 screen_step;
-  uint16 *screen_ptr;
-
-  //	int32	x=position.GetX();
-  //	int32	y=position.GetY();
-
-  int32 bitmapWidth = bitmap.GetClippedWidth();
-  int32 bitmapHeight = bitmap.GetClippedHeight();
-
-  // work out how much to increase the data and screen pointers
-  // on when drawing
-  uint32 data_step = bitmap.GetClippedWidth();
-
-  uint16 *data_ptr = bitmap.GetData();
-  ASSERT(data_ptr);
-
-  screen_ptr = GetBackBufferPtr();
-  ASSERT(screen_ptr);
-
-  screen_step = myPitch;
-  data_step -= bitmapWidth;
-  screen_step -= bitmapWidth;
-
-  screen_ptr += (position.GetY() * myPitch) + position.GetY();
-
-#ifdef C2E_NO_INLINE_ASM
-#warning "TODO: C++ version!"
+#ifdef C2E_NASM_RENDERING
+  { NasmDrawSprite(); }
 #else
-
-  // need a gcc-friendly (or nasm) version
-  if (bitmapWidth < 1 || bitmapHeight < 1)
-    return;
   _asm
   {
-		pusha
-		mov ebx,dword ptr [data_step]
-		mov edx,dword ptr [screen_step]
 		mov esi,dword ptr [data_ptr]
 		mov edi,dword ptr [screen_ptr]
+		mov ebx,dword ptr [data_step]
+		mov edx,dword ptr [screen_step]
 		
 		push dword ptr [bitmapHeight]		;Stack up bitmapHeight for later 
 
@@ -787,38 +811,38 @@ void DisplayEngine::DrawSpriteNoLeftClipping(Position &position,
 		add edi,2							;Increment screen pointer one word
 
 		;Inner loop epilogue
-		sub ecx,1
-		test ecx,ecx
+		dec ecx
 		jne topOfInnerLoop					;If not done with line, jump to top of inner loop
 
 		; Deal with the widths :)
 
-		lea esi,[esi+ebx*2]					;data_ptr += data_step
-		lea edi,[edi+edx*2]					;screen_ptr += screen_step
 
 		;Outer loop epilogue
 		pop ecx								;Destack bitmapHeight
-		sub ecx,1							;Decrement bitmapHeight
+
+		lea esi,[esi+ebx*2]					;data_ptr += data_step
+		
+		dec ecx
+		
+		lea edi,[edi+edx*2]					;screen_ptr += screen_step
+		
 		push ecx							;Restack bitmapHeight
-		test ecx,ecx
+		
 		jne topOfOuterLoop
 
 		;asm epilogue
 
 		pop ecx								;clean stack pre popa
-		popa
       }
-
+#endif // C2E_NASM_RENDERING
 #endif
-
-  //	OutputDebugString("finished drawing DE::DrawSprite\n");
 }
 
 // ----------------------------------------------------------------------
 // Method:      DrawMirroredSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw
+//draw
 // Returns:     None
 //
 // Description: Miror the sprite to the back buffer.
@@ -874,17 +898,14 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of
-// bitmap data we need 							 to skip
-// when drawing 				data_ptr - workout where to
-// start drawing from in the bitmap
-// data 				screen_step
-//- place to put the amount of screen pixels
-// we need 							 to skip when
-// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
-// bitmapHeigth - workout exactly how much of the bitmap we need
-// to draw due to lipping right - whether we'll need to clip right
-// wether - whether we'll need to clip bottom Returns:     None
+//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
+//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
+//				screen_step - place to put the amount of screen pixels
+//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
+//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
+//need 								to draw due to lipping 				right - whether we'll need to clip right 				wether -
+//whether we'll need to clip bottom
+// Returns:     None
 //
 // Description: Get all the information we need for drawing
 //
@@ -892,7 +913,7 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
 // ----------------------------------------------------------------------
 bool DisplayEngine::GetCompressedDrawingParameters(
     Position &position, CompressedBitmap *bitmap, uint32 &data_step,
-    uint8_t *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+    uint8 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
     int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip, bool &bottomClip,
     bool &topClip, bool &leftClip) {
 
@@ -906,7 +927,7 @@ bool DisplayEngine::GetCompressedDrawingParameters(
   // on when drawing
   data_step = bitmap->GetWidth();
 
-  compressedData_ptr = (uint8_t *)bitmap->GetData();
+  compressedData_ptr = (uint8 *)bitmap->GetData();
   ASSERT(compressedData_ptr);
 
   //	screen_step=ourSurfaceArea.right;
@@ -950,7 +971,7 @@ bool DisplayEngine::GetCompressedDrawingParameters(
     rightClip = true;
   }
 
-  t = (y + bitmapHeight) - ourSurfaceArea.bottom + 1;
+  t = (y + bitmapHeight) - mySurfaceArea.bottom + 1;
 
   // if the bitmap needs clipping at the bottom
   if (t >= 0) {
@@ -972,17 +993,13 @@ bool DisplayEngine::GetCompressedDrawingParameters(
 // Method:      GetDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of
-// bitmap data we need 							 to skip
-// when drawing 				data_ptr - workout where to
-// start drawing from in the bitmap
-// data 				screen_step
-//- place to put the amount of screen pixels
-// we need 							 to skip when
-// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
-// bitmapHeigth - workout exactly how much of the bitmap we need
-// to draw due to lipping Returns:     true if the bitmap is on screen and can
-// be drawn
+//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
+//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
+//				screen_step - place to put the amount of screen pixels
+//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
+//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
+//need 								to draw due to lipping
+// Returns:     true if the bitmap is on screen and can be drawn
 //              false otherwise
 //
 // Description: Get all the information we need for drawing
@@ -1079,17 +1096,14 @@ bool DisplayEngine::GetDrawingParameters(Position &position, Bitmap *bitmap,
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of
-// bitmap data we need 							 to skip
-// when drawing 				data_ptr - workout where to
-// start drawing from in the bitmap
-// data 				screen_step
-//- place to put the amount of screen pixels
-// we need 							 to skip when
-// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
-// bitmapHeigth - workout exactly how much of the bitmap we need
-// to draw due to lipping right - whether we'll need to clip right
-// wether - whether we'll need to clip bottom Returns:     None
+//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
+//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
+//				screen_step - place to put the amount of screen pixels
+//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
+//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
+//need 								to draw due to lipping 				right - whether we'll need to clip right 				wether -
+//whether we'll need to clip bottom
+// Returns:     None
 //
 // Description: Get all the information we need for drawing
 //
@@ -1148,7 +1162,7 @@ bool DisplayEngine::GetCompressedDrawingParameters16Bit(
     rightClip = true;
   }
 
-  t = (y + bitmapHeight) - ourSurfaceArea.bottom + 1;
+  t = (y + bitmapHeight) - mySurfaceArea.bottom + 1;
 
   // if the bitmap needs clipping at the bottom
   if (t >= 0) {
@@ -1229,218 +1243,10 @@ void DisplayEngine::DrawSpriteToBitmap(Bitmap *destination, Position position,
 }
 
 // ----------------------------------------------------------------------
-// Method:      DrawString
-// Arguments:   destination - bitmap to write to
-//				text - text to write to the bitmap
-//				centred - center the text else left justify
-//				textColour - colour to write the text in
-//				backgroundColour - colour for the background
-//
-// Returns:     none
-//
-// Description: Draws the given text to the given bitmap using the
-//				character sprites
-//
-// ----------------------------------------------------------------------
-void DisplayEngine::DrawString(Bitmap *destination, std::string text,
-                               bool centred, uint16 textColour,
-                               uint16 backgroundColour) {
-
-  // if you have been passed specific colours
-  // to draw in then do
-  if (!(textColour || backgroundColour)) {
-    if (myPixelFormat == RGB_565) {
-      RGB_TO_565(192, 255, 255, backgroundColour);
-      RGB_TO_565(8, 8, 16, textColour);
-    } else {
-      RGB_TO_555(192, 255, 255, backgroundColour);
-      RGB_TO_555(8, 8, 16, textColour);
-    }
-  }
-
-  uint32 length = text.size();
-  char letter = ' ';
-  uint32 destinationWidth = destination->GetWidth();
-  uint32 destinationHeight = destination->GetHeight();
-
-  // all letters are of the same width OK?
-  uint32 sourceWidth = myTextGallery->GetBitmapWidth(0);
-  uint32 sourceHeight = myTextGallery->GetBitmapWidth(0);
-
-  uint16 charsPerLine = destinationWidth / sourceWidth;
-  uint16 currentLine = charsPerLine;
-
-  uint16 numLetters = 0;
-  // std::string currentWord;
-
-  // assume left justified
-  // and centered in the height ways
-  Position whereToDraw(sourceWidth, (destinationHeight - sourceHeight) / 2);
-
-  if (centred)
-    whereToDraw.SetX((destinationWidth - (charsPerLine * sourceWidth)) / 2);
-
-  uint32 originalX = whereToDraw.GetX();
-  // make each word at least as long as the whole sentence
-  std::string word;
-  std::string separators(" .,;:?"); // word separators
-
-  size_t start, end, next, p0;
-  int done = false;
-  start = end = next = 0;
-
-  // for each word see if we can fit it in the current line
-  while (!done) {
-    // Find start of word.
-    start = text.find_first_not_of(separators, next);
-    // Find end of word.        // Check for end of string.
-    p0 = text.find_first_of(separators, start);
-    end = (p0 >= text.length()) ? text.length() : p0;
-    // Copy all the word.
-    word = text.substr(next, end - start + 1);
-
-    numLetters = word.size();
-
-    for (uint8_t l = 0; l < numLetters; l++) {
-      letter = word[l];
-      // get the right character from the text gallery
-      Bitmap *bitmap = myTextGallery->GetBitmap(letter - ' ');
-      if (bitmap) {
-        // for each letter in the text draw a letter to the bitmap
-        DisplayEngine::theRenderer().DrawSpriteToBitmap(
-            destination, whereToDraw, bitmap, textColour, backgroundColour);
-
-        // move the position on
-        currentLine--;
-      } else {
-        OutputDebugString("no bitmaps found in Chars.s16");
-        return;
-      }
-
-      // we can only do one line
-      if (currentLine == 0)
-        done = true;
-      else
-        whereToDraw.AdjustX(sourceWidth);
-    }
-
-    next = end + 1; // Check for end of string.
-    if (next >= text.length())
-      done = true;
-  } // end while !done
-}
-
-// ----------------------------------------------------------------------
-// Method:      DrawString
-// Arguments:   destination - bitmap to write to
-//				text - text to write to the bitmap
-//				centred - center the text else left justify
-//				textColour - colour to write the text in
-//				backgroundColour - colour for the background
-//
-// Returns:     none
-//
-// Description: Draws the given text to the given bitmap using the
-//				character sprites
-//
-// ----------------------------------------------------------------------
-void DisplayEngine::DrawStringToBackBuffer(int x, int y, std::string text,
-                                           bool centred, uint16 textColour,
-                                           uint16 backgroundColour) {
-
-  // if you have been passed specific colours
-  // to draw in then do
-  if (!(textColour || backgroundColour)) {
-    if (myPixelFormat == RGB_565) {
-      RGB_TO_565(192, 255, 255, backgroundColour);
-      RGB_TO_565(8, 8, 16, textColour);
-    } else {
-      RGB_TO_555(192, 255, 255, backgroundColour);
-      RGB_TO_555(8, 8, 16, textColour);
-    }
-  }
-
-  uint32 length = text.size();
-  char letter = ' ';
-  uint32 destinationWidth = myPitch;
-  uint32 destinationHeight = ourSurfaceArea.bottom;
-
-  // all letters are of the same width OK?
-  uint32 sourceWidth = myTextGallery->GetBitmapWidth(0);
-  uint32 sourceHeight = myTextGallery->GetBitmapWidth(0);
-
-  uint16 charsPerLine = destinationWidth / sourceWidth;
-  uint16 currentLine = charsPerLine;
-
-  uint16 numLetters = 0;
-  // std::string currentWord;
-
-  // assume left justified
-  // and centered in the height ways
-  Position whereToDraw(sourceWidth + x,
-                       y + ((destinationHeight - sourceHeight) / 2));
-
-  if (centred)
-    whereToDraw.SetX((destinationWidth - (charsPerLine * sourceWidth)) / 2);
-
-  uint32 originalX = whereToDraw.GetX();
-  // make each word at least as long as the whole sentence
-  std::string word;
-  std::string separators(" .,;:?"); // word separators
-
-  size_t start, end, next, p0;
-  int done = 0;
-  start = end = next = 0;
-
-  // for each word see if we can fit it in the current line
-  while (!done) {
-    // Find start of word.
-    start = text.find_first_not_of(separators, next);
-    // Find end of word.        // Check for end of string.
-    p0 = text.find_first_of(separators, start);
-    end = (p0 >= text.length()) ? text.length() : p0;
-    // Copy all the word.
-    word = text.substr(next, end - start + 1);
-
-    numLetters = word.size();
-
-    for (uint8_t l = 0; l < numLetters; l++) {
-      letter = word[l];
-      // get the right character from the text gallery
-      Bitmap *bitmap = myTextGallery->GetBitmap(letter - ' ');
-      if (bitmap) {
-        // for each letter in the text draw a letter to the bitmap
-        DisplayEngine::theRenderer().DrawSprite(whereToDraw, *bitmap);
-
-        // move the position on
-        currentLine--;
-      } else {
-        OutputDebugString("no bitmaps found in Chars.s16");
-        return;
-      }
-
-      // we can only do one line
-      if (currentLine == 0)
-        done = true;
-      else
-        whereToDraw.AdjustX(sourceWidth);
-    }
-
-    next = end + 1; // Check for end of string.
-    if (next >= text.length())
-      done = 1;
-  } // end while !done
-
-  CloseBackBuffer();
-}
-
-// ----------------------------------------------------------------------
-// Method:      DrawString
+// Method:      DrawLine
 // Arguments:   bitmap - bitmap to write to
-//				x and y coordinates of start point and end point
-// of
-// the 				line 				r,g,b colour values
-// for the line
+//				x and y coordinates of start point and end point of
+//the 				line 				r,g,b colour values for the line
 //
 // Returns:     none
 //
@@ -1450,9 +1256,9 @@ void DisplayEngine::DrawStringToBackBuffer(int x, int y, std::string text,
 // ----------------------------------------------------------------------
 void DisplayEngine::DrawLineToBitmap(Bitmap *bitmap, int32 x1, int32 y1,
                                      int32 x2, int32 y2,
-                                     uint8_t lineColourRed /*= 0*/,
-                                     uint8_t lineColourGreen /*= 0*/,
-                                     uint8_t lineColourBlue /*= 0*/) {
+                                     uint8 lineColourRed /*= 0*/,
+                                     uint8 lineColourGreen /*= 0*/,
+                                     uint8 lineColourBlue /*= 0*/) {
   // make sure that the line is within the bitmap's bounds
   //
   if (x1 < 0)
@@ -1537,382 +1343,45 @@ void DisplayEngine::DrawLineToBitmap(Bitmap *bitmap, int32 x1, int32 y1,
   }
 }
 
-// ----------------------------------------------------------------------
-// Method:      ChangeDisplayMode
-// Arguments:   width - width to change to
-//				height - height to change to
-//
-// Returns:     true if you choose a legitimate display mode and we
-//				switched to it,  false otherwise.
-//
-// Description: Finds out whether the requested display mode is viable and
-//				switches to it.  For smoother results change the
-// size
-// of 				window too. Note that the display modes are
-// enumrated at 				start up of the engine
-//
-// ----------------------------------------------------------------------
-bool DisplayEngine::ChangeDisplayMode(uint32 width, uint32 height,
-                                      bool forceChange) {
-#ifdef WORK_IN_PROGRESS
-  // check whether we can display this mode
-  std::vector<struct Resolution>::iterator it;
-
-  bool okToChange = false;
-
-  for (it = ourResolutions.begin(); it != ourResolutions.end(); it++) {
-    if (((*it).Width == width) && ((*it).Height == height)) {
-      okToChange = true;
-      break;
-    }
-  }
-
-  if (forceChange)
-    myFullScreenFlag = true;
-
-  if (myFullScreenFlag && okToChange) {
-    //	if FAILED(myDirectDraw->SetCooperativeLevel( myWindow,
-    //		DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_ALLOWREBOOT))
-    //		return false;
-
-    // on some machines like John Skuses we lose control of the mouse in
-    // full screen mode.  DISCL_BACKGROUND takes care of this
-    // allong with the updatewindow calls below
-    if FAILED (myDirectDraw->SetCooperativeLevel(
-                   myWindow, DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN |
-                                 DDSCL_ALLOWREBOOT | DISCL_BACKGROUND))
-      return false;
-
-    // make the window the same as
-    SetWindowLong(myWindow, GWL_STYLE, WS_POPUP);
-    SetWindowPos(myWindow,        // handle to window
-                 HWND_TOPMOST,    // placement-order handle
-                 0,               // horizontal position
-                 0,               // vertical position
-                 width + 6,       // width
-                 height + 22,     // height
-                 SWP_FRAMECHANGED // window-positioning flags
-    );
-
-    // found something in msdn that says that I need to
-    // make these two calls or else sometimes fullscreen
-    // mode loses the mouse.  Indeed this does happen on some
-    // machines so here are the calls
-    ShowWindow(myWindow, SW_SHOWNORMAL);
-    UpdateWindow(myWindow);
-    ourCurrentResolution.Height = height;
-    ourCurrentResolution.Width = width;
-
-    if FAILED (myDirectDraw->SetDisplayMode(
-                   width, height,
-                   DEFAULT_BITS_PER_PIXEL, // this never changes
-                   0,                      // default refresh rate
-                   0))                     // additional options
-      return false;
-
-    ourSurfaceArea.left = 0;
-    ourSurfaceArea.top = 0;
-    ourSurfaceArea.right = width;
-    ourSurfaceArea.bottom = height;
-
-    ReleaseHelperDirectDrawStuff();
-    ChangeSuspend(false); // start up = false
-    CreateFullscreenDisplaySurfaces();
-    ChangeSuspend(true); // startup = true
-    return true;
-  }
-  return false;
-#endif
-  return false;
+// jumps to the next fullscreen mode
+void DisplayEngine::NextScreenMode() {
+  if (myFullScreenFlag) {
+    if (myCurrentFullScreenMode + 1 < myFullScreenModes.size())
+      SetMode(myCurrentFullScreenMode + 1);
+    else
+      SetMode(0); // wrap (will drop back to windowed mode
+                  // if necessary
+  } else
+    SetMode(myCurrentFullScreenMode); // go into fullscreen mode
 }
 
-// ----------------------------------------------------------------------
-// Method:      ToggleFullScreenMode
-// Arguments:   None
-//
 // Returns:     true if changed OK
 //				false otherwise
-//
-// Description: On each request it flips the engine between fullscreen
-//				and windowed mode.
-//
-// ----------------------------------------------------------------------
 bool DisplayEngine::ToggleFullScreenMode() {
-#ifdef WORK_IN_PROGRESS
-  if (!myEngineRunningFlag)
-    return false;
-
-  // suspend the engine
-  ChangeSuspend(false); // startup = false
-
-  bool ok = DoChangeScreenMode(myFullScreenFlag);
-
-  ChangeSuspend(true); // startup = true
-
-  return ok;
-#endif
-  return false;
+  if (myFullScreenFlag)
+    return SetModeWindowed(myWindowedModeW, myWindowedModeH);
+  else
+    return SetMode(myCurrentFullScreenMode);
 }
-
-#ifdef WORK_IN_PROGRESS
-
-bool DisplayEngine::DoChangeScreenMode(bool toWindowedMode) {
-  ChangeSuspend(false);
-  // release all surfaces and clippers
-  ReleaseHelperDirectDrawStuff();
-
-  // set to windowed mode
-  if (toWindowedMode) {
-
-    //	if FAILED(myDirectDraw->SetCooperativeLevel(myWindow,DDSCL_NORMAL))
-    //		return false;
-    if FAILED (myDirectDraw->SetCooperativeLevel(myWindow, DDSCL_NORMAL))
-      return false;
-
-    myDirectDraw->RestoreDisplayMode();
-
-    SetWindowLong(myWindow, GWL_STYLE,
-                  WS_CAPTION | WS_VISIBLE | WS_SYSMENU | WS_THICKFRAME);
-    // reset the window size
-    SetWindowPos(myWindow,           // handle to window
-                 HWND_TOP,           // placement-order handle
-                 ourWindowRect.left, // horizontal position
-                 ourWindowRect.top,  // vertical position
-                 ourWindowRect.right - ourWindowRect.left, // width
-                 ourWindowRect.bottom - ourWindowRect.top, // height
-                 SWP_FRAMECHANGED | SWP_SHOWWINDOW // window-positioning flags
-    );
-
-    ::GetClientRect(myWindow, &ourSurfaceArea);
-    CreateWindowedDisplaySurfaces();
-  } else {
-
-    // important to do this now as the engine will start itself
-    // with the next call
-    myFullScreenFlag = !myFullScreenFlag;
-    if (!ChangeDisplayMode(DEFAULT_SCREEN_RESOLUTION_WIDTH,
-                           DEFAULT_SCREEN_RESOLUTION_HEIGHT))
-      return false;
-  }
-  ChangeSuspend(true);
-  return false;
-}
-#endif
 
 void DisplayEngine::PrepareForMessageBox() {
+  if (!myEngineRunningFlag)
+    return;
+
   // change to windowed mode if necessary
+  if (myFullScreenFlag) {
+    SetModeWindowed(ourSurfaceArea.right, ourSurfaceArea.bottom);
+
+    // Win32 version redrew display here - I don't
+    // see why we need to particularly.  Just wait a
+    // tick.
+  }
 }
 
 void DisplayEngine::EndMessageBox() {
+  if (!myEngineRunningFlag)
+    return;
   // change back to fullscreen mode if necessary
-}
-
-// ----------------------------------------------------------------------
-// Method:      CreateMapImage
-// Arguments:   entity - an entityImage to make into a fast object
-//
-// Returns:     true if the fast object was created OK
-//				false otherwise
-//
-// Description: Creates a fast object out of the entity image.  fast objects
-//				have their own direct draw surfaces in video
-// memory and 				can draw themselves directly to the
-// front or back buffers
-//
-// ----------------------------------------------------------------------
-MapImage *DisplayEngine::CreateMapImage(int32 plane) {
-  if (!myEngineRunningFlag)
-    return NULL;
-
-  MapImage *fastObject = NULL;
-
-  try {
-    fastObject = new MapImage(plane, myFullScreenFlag);
-    AddFastObject(fastObject);
-
-  } catch (FastDrawingObject::FastDrawingObjectException &) {
-    ErrorMessageHandler::Show(theDisplayErrorTag, (int)sidMapImageNotCreated,
-                              std::string("DisplayEngine::CreateMapImage"));
-    delete fastObject;
-    return NULL;
-  }
-  return fastObject;
-}
-
-void DisplayEngine::AddFastObject(FastDrawingObject *obj) {
-  // check through the drawable object list and put yourself
-  //  in the correct plane lowest to highest
-  std::vector<FastDrawingObject *>::iterator first;
-  for (first = ourFastObjects.begin(); first != ourFastObjects.end(); first++) {
-    if ((*first)->GetPlane() >= obj->GetPlane()) {
-      // this will insert the object before the
-      // one pointed to by the iterator
-      ourFastObjects.insert(first, obj);
-      return;
-    }
-  }
-
-  // this plane was the larget put it on the end
-  if (first == ourFastObjects.end()) {
-    ourFastObjects.push_back(obj);
-  }
-}
-
-// ----------------------------------------------------------------------
-// Method:      CreateFastObject
-// Arguments:   entity - an entityImage to make into a fast object
-//
-// Returns:     true if the fast object was created OK
-//				false otherwise
-//
-// Description: Creates a fast object out of the entity image.  fast objects
-//				have their own direct draw surfaces in video
-// memory and 				can draw themselves directly to the
-// front or back buffers
-//
-// ----------------------------------------------------------------------
-bool DisplayEngine::CreateFastObject(EntityImage &entity, int32 plane) {
-#ifdef WORK_IN_PROGRESS
-  if (!myEngineRunningFlag)
-    return false;
-
-  DDCOLORKEY color_key = {0, 0};
-  DDSURFACEDESC2 surfaceDescription;
-
-  FastEntityImage *fastObject = NULL;
-  IDirectDrawSurface4 *image = NULL;
-  IDirectDrawSurface4 *background = NULL;
-  RECT bound;
-  bound.top = 0;
-  bound.left = 0;
-  bound.right = 0;
-  bound.bottom = 0;
-
-  entity.GetLargestBound(bound);
-
-  ZeroMemory(&surfaceDescription, sizeof(DDSURFACEDESC2));
-  surfaceDescription.dwSize = sizeof DDSURFACEDESC2;
-
-  //
-  surfaceDescription.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-  surfaceDescription.dwWidth = bound.right - bound.left;
-  surfaceDescription.dwHeight = bound.bottom - bound.top;
-  surfaceDescription.ddsCaps.dwCaps =
-      DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-
-  // if i can't have video ram by default then try system ram
-  // on my machine this will let me create the surface in video
-  // memory but then I cannot lock it
-  if (myDirectDraw->CreateSurface(&surfaceDescription, &image, NULL) != DD_OK) {
-    //	surfaceDescription.ddsCaps.dwCaps=DDSCAPS_OFFSCREENPLAIN|
-    //								DDSCAPS_SYSTEMMEMORY;
-
-    // if(myDirectDraw->CreateSurface(&surfaceDescription,&image,NULL) != DD_OK)
-    //{
-    //	uh oh!
-    return false;
-    //}
-  }
-
-  // do the same for this surface
-  surfaceDescription.ddsCaps.dwCaps =
-      DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-
-  if (myDirectDraw->CreateSurface(&surfaceDescription, &background, NULL) !=
-      DD_OK) {
-    //	surfaceDescription.ddsCaps.dwCaps=DDSCAPS_OFFSCREENPLAIN|
-    //									DDSCAPS_SYSTEMMEMORY;
-    //	if (myDirectDraw->CreateSurface(&surfaceDescription,
-    //									&background,NULL)
-    //!= DD_OK)
-    //	{
-    return false;
-    //	}
-  }
-
-  if (image)
-    image->SetColorKey(DDCKEY_SRCBLT, &color_key);
-
-  try {
-    fastObject =
-        new FastEntityImage(entity, image, background, plane, myFullScreenFlag);
-
-    AddFastObject(fastObject);
-
-  } catch (FastDrawingObject::FastDrawingObjectException &) {
-    delete fastObject;
-    return false;
-  }
-  return true;
-#endif
-  return false;
-}
-
-void DisplayEngine::DeleteAllFastObjects() {
-#ifdef WORK_IN_PROGRESS
-  std::vector<FastDrawingObject *>::iterator it;
-
-  for (it = ourFastObjects.begin(); it != ourFastObjects.end(); it++) {
-    (*it)->MakeOrphan();
-    delete (*it);
-  }
-  ourFastObjects.clear();
-
-  for (it = ourFastObjectsOnHold.begin(); it != ourFastObjectsOnHold.end();
-       it++) {
-    (*it)->MakeOrphan();
-    delete (*it);
-  }
-
-  ourFastObjectsOnHold.clear();
-#endif
-}
-
-void DisplayEngine::FastObjectSigningOff(FastDrawingObject *heyNotSoFast) {
-#ifdef WORK_IN_PROGRESS
-
-  std::vector<FastDrawingObject *>::iterator it;
-
-  for (it = ourFastObjects.begin(); it != ourFastObjects.end(); it++) {
-    if ((*it) == heyNotSoFast) {
-      delete (*it);
-      (*it) = NULL;
-      ourFastObjects.erase(it);
-      return;
-    }
-  }
-#endif
-}
-
-void DisplayEngine::PutMeOnHold(FastDrawingObject *heyNotSoFast) {
-#ifdef WORK_IN_PROGRESS
-
-  std::vector<FastDrawingObject *>::iterator it;
-
-  for (it = ourFastObjects.begin(); it != ourFastObjects.end(); it++) {
-    if ((*it) == heyNotSoFast) {
-      ourFastObjectsOnHold.push_back(*it);
-      ourFastObjects.erase(it);
-      return;
-    }
-  }
-#endif
-}
-
-void DisplayEngine::TakeMeOffHold(FastDrawingObject *heyNotSoFast) {
-#ifdef WORK_IN_PROGRESS
-
-  std::vector<FastDrawingObject *>::iterator it;
-
-  for (it = ourFastObjectsOnHold.begin(); it != ourFastObjectsOnHold.end();
-       it++) {
-    if ((*it) == heyNotSoFast) {
-      AddFastObject(*it);
-      ourFastObjectsOnHold.erase(it);
-      return;
-    }
-  }
-#endif
 }
 
 // ----------------------------------------------------------------------
@@ -1938,99 +1407,125 @@ void DisplayEngine::ScreenToClient(int32 &x, int32 &y) {
   //	y = point.y;
 }
 
-#ifdef WORK_IN_PROGRESS
-bool DisplayEngine::BlitToFrontBuffer(RECT &destination,
-                                      IDirectDrawSurface4 *image, RECT &source,
-                                      bool transparencyAware) {
-  uint32 flags = DDBLT_WAIT | DDBLT_ASYNC;
-
-  if (transparencyAware)
-    flags |= DDBLT_KEYSRC;
-
-  HRESULT res = myFrontBuffer->Blt(&destination, image, &source, flags, NULL);
-
-  if (res == DD_OK) {
-    return true;
-  }
-
-  char msg[_MAX_PATH];
-  HRESULTtoCHAR(res, msg);
-
-  myFrontBuffer->Restore();
-  //	ErrorMessageHandler::Show(msg,"Bogus man");
-
-  return false;
+SDL_Rect DisplayEngine::ConvertRect(RECT &rect) {
+  SDL_Rect sdlRect;
+  sdlRect.x = rect.left;
+  sdlRect.y = rect.top;
+  sdlRect.w = rect.right - rect.left;
+  sdlRect.h = rect.bottom - rect.top;
+  return sdlRect;
 }
 
-bool DisplayEngine::BlitToBackBuffer(RECT &destination,
-                                     IDirectDrawSurface4 *image, RECT &source,
-                                     bool transparencyAware) {
+// This is used by App::StartProgressBar() to draw the progressbar background
+bool DisplayEngine::RenderBitmapToFrontBuffer(Bitmap *bitmap) {
+  ASSERT(bitmap != 0);
 
-  uint32 flags = DDBLT_WAIT | DDBLT_ASYNC;
+  // a temp SDL surface
+  // TODO: allow for other pixelformats?
 
-  if (transparencyAware)
-    flags |= DDBLT_KEYSRC;
-
-  HRESULT res = myBackBuffer->Blt(&destination, image, &source, flags, NULL);
-
-  if (res == DD_OK) {
-    return true;
+  SDL_Surface *surface;
+  if (myPixelFormat == RGB_555) {
+    surface = SDL_CreateRGBSurface(SDL_SWSURFACE, bitmap->GetWidth(),
+                                   bitmap->GetHeight(), 15, 0x7C00, 0x03E0,
+                                   0x001F, 0);
+  } else // 565
+  {
+    surface = SDL_CreateRGBSurface(SDL_SWSURFACE, bitmap->GetWidth(),
+                                   bitmap->GetHeight(), 16, 0xF800, 0x07E0,
+                                   0x001F, 0);
   }
 
-  char msg[_MAX_PATH];
-  HRESULTtoCHAR(res, msg);
-  myBackBuffer->Restore();
-  return false;
-}
+  if (!surface)
+    return false;
 
-bool DisplayEngine::BlitFromBackBufferToMe(RECT &destination,
-                                           IDirectDrawSurface4 *dest,
-                                           RECT &sourceRect,
-                                           bool transparencyAware) {
+  SDL_SetColorKey(surface, SDL_SRCCOLORKEY, 0);
 
-  uint32 flags = DDBLT_WAIT | DDBLT_ASYNC;
+  const uint16 *sourcePtr = bitmap->GetData();
+  uint16 *destPtr = (uint16 *)surface->pixels;
 
-  if (transparencyAware)
-    flags |= DDBLT_KEYSRC;
+  int32 bitmapWidth = bitmap->GetWidth();
+  int32 bitmapHeight = bitmap->GetHeight();
 
-  HRESULT res = dest->Blt(&destination, myBackBuffer, &sourceRect, flags, NULL);
+  // the surface is created to be the same
+  // size as the entity bounds
+  int32 destStep = (surface->pitch >> 1);
+  int32 sourceStep = 0;
+  destStep = destStep - bitmapWidth;
+  for (; bitmapHeight--;) {
+    for (int32 width = bitmapWidth; width--;)
+      *destPtr++ = *sourcePtr++;
 
-  if (res == DD_OK) {
-    return true;
+    destPtr += destStep;
   }
 
-  dest->Restore();
-  char msg[_MAX_PATH];
-  HRESULTtoCHAR(res, msg);
-  OutputDebugString(msg);
-  OutputDebugString("\n");
-  return false;
+  // render it
+  RECT clip;
+
+  clip.left = 0;
+  clip.top = 0;
+  clip.right = bitmap->GetWidth();
+  clip.bottom = bitmap->GetHeight();
+
+  RECT source;
+  source.top = bitmap->GetPosition().GetY();
+  source.left = bitmap->GetPosition().GetX();
+  source.right = source.left + clip.right;
+  source.bottom = source.top + clip.bottom;
+
+  BlitToFrontBuffer(source, surface, clip, true);
+
+  SDL_FreeSurface(surface);
+  return true;
 }
 
-bool DisplayEngine::BlitFromPrimaryToMe(RECT &destination,
-                                        IDirectDrawSurface4 *dest,
-                                        RECT &sourceRect,
-                                        bool transparencyAware) {
+// This routine is kind of misnamed nowdays...
+bool DisplayEngine::BlitToFrontBuffer(RECT &destination, SDL_Surface *image,
+                                      RECT &source, bool transparencyAware) {
+  SDL_Rect sourceSDLRect = ConvertRect(source);
+  SDL_Rect destSDLRect = ConvertRect(destination);
+  int res = SDL_BlitSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
 
-  uint32 flags = DDBLT_WAIT | DDBLT_ASYNC;
+  ASSERT(res == 0);
 
-  if (transparencyAware)
-    flags |= DDBLT_KEYSRC;
+  SDL_UpdateRect(myBackBuffer, destSDLRect.x, destSDLRect.y, destSDLRect.w,
+                 destSDLRect.h);
 
-  HRESULT res =
-      dest->Blt(&destination, myFrontBuffer, &sourceRect, flags, NULL);
+  return res == 0;
+}
 
-  if (res == DD_OK) {
+bool DisplayEngine::BlitToBackBuffer(RECT &destination, SDL_Surface *image,
+                                     RECT &source, bool transparencyAware) {
+  SDL_Rect sourceSDLRect = ConvertRect(source);
+  SDL_Rect destSDLRect = ConvertRect(destination);
+#ifdef NOT_STRETCHING_AT_ALL
+  // A non stretched version for if we don't have SDL_StretchSurface.
+  // Since we do now, this may not be any use :-)
+  sourceSDLRect.w = destSDLRect.w;
+  sourceSDLRect.h = destSDLRect.h;
+
+  int res = SDL_BlitSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
+  ASSERT(res == 0);
+  return res == 0;
+#else
+  if (source.bottom <= source.top || source.top >= source.bottom ||
+      source.right <= source.left || source.left >= source.right ||
+      destination.bottom <= destination.top ||
+      destination.top >= destination.bottom ||
+      destination.right <= destination.left ||
+      destination.left >= destination.right) {
+    // std::cout << "Camera clipped..." << std::endl;
+    return false;
+  } else {
+    ASSERT(sourceSDLRect.x + sourceSDLRect.w <= image->w);
+    ASSERT(sourceSDLRect.x >= 0);
+    ASSERT(sourceSDLRect.y + sourceSDLRect.h <= image->h);
+    ASSERT(sourceSDLRect.y >= 0);
+
+    SDL_StretchSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
     return true;
   }
-
-  dest->Restore();
-
-  char msg[_MAX_PATH];
-  HRESULTtoCHAR(res, msg);
-  return false;
-}
 #endif
+}
 
 // for Rob
 // it is possible to draw a stippled or dotted line by specifying how many
@@ -2053,11 +1548,13 @@ bool DisplayEngine::BlitFromPrimaryToMe(RECT &destination,
 // xx----xxx----
 
 void DisplayEngine::DrawLine(
-    int32 x1, int32 y1, int32 x2, int32 y2, uint8_t lineColourRed /*= 0*/,
-    uint8_t lineColourGreen /*= 0*/, uint8_t lineColourBlue /*= 0*/,
-    uint8_t stippleon /* =0*/,   // how many coloured pixels
-    uint8_t stippleoff /* = 0*/, // how many transparent
+    int32 x1, int32 y1, int32 x2, int32 y2, uint8 lineColourRed /*= 0*/,
+    uint8 lineColourGreen /*= 0*/, uint8 lineColourBlue /*= 0*/,
+    uint8 stippleon /* =0*/,   // how many coloured pixels
+    uint8 stippleoff /* = 0*/, // how many transparent
     uint32 stipplestartAt /*= 0*/) {
+  if (!ClipLine(&mySurfaceArea, (int &)x1, (int &)y1, (int &)x2, (int &)y2, 0))
+    return;
 
   // Bomb out if undrawable
   if ((x1 == x2) && (y1 == y2))
@@ -2191,101 +1688,6 @@ void DisplayEngine::DrawLine(
   }
 }
 
-// for Rob different to the method above because it purposely
-// opens and closes the back buffer for drawing
-void DisplayEngine::DrawLineToBackBuffer(int32 x1, int32 y1, int32 x2, int32 y2,
-                                         uint8_t lineColourRed /*= 0*/,
-                                         uint8_t lineColourGreen /*= 0*/,
-                                         uint8_t lineColourBlue /*= 0*/) {
-  // If this line is not within the buffer, refuse to draw it.
-  if ((x1 < 0) || (x2 < 0) || (y1 < 0) || (y2 < 0) ||
-      (x1 > GetSurfaceWidth()) || (x2 > GetSurfaceWidth()) ||
-      (y1 > GetSurfaceHeight()) || (y2 > GetSurfaceHeight()))
-    return;
-
-  uint16 lineColour = 0;
-  if (lineColourRed == 0 && lineColourGreen == 0 && lineColourBlue == 0) {
-    if (myPixelFormat == RGB_565) {
-      RGB_TO_565(192, 255, 255, lineColour);
-    } else {
-      RGB_TO_565(192, 255, 255, lineColour);
-    }
-
-  } else {
-    if (myPixelFormat == RGB_565) {
-      RGB_TO_565(lineColourRed, lineColourGreen, lineColourBlue, lineColour);
-    } else {
-      RGB_TO_565(lineColourRed, lineColourGreen, lineColourBlue, lineColour);
-    }
-  }
-
-  if (!OpenBackBuffer()) {
-    return;
-  }
-
-  uint16 *screen_ptr = GetBackBufferPtr();
-  uint32 screen_step = myPitch;
-
-  uint16 *currentPixel = 0;
-
-  int32 xi, yi, dx, dy, i, j;
-  if (x1 > x2)
-    xi = -1;
-  else
-    xi = 1;
-  if (y1 > y2)
-    yi = -1;
-  else
-    yi = 1;
-
-  dx = abs(x2 - x1);
-  dy = abs(y2 - y1);
-
-  currentPixel = screen_ptr + (y1 * myPitch) + x1;
-  *currentPixel = lineColour;
-  if (dy > dx) {
-    j = dy;
-    i = dy >> 1;
-    do {
-      y1 += yi;
-      if ((i += dx) > dy) {
-        i -= dy;
-        x1 += xi;
-      }
-      currentPixel = screen_ptr + (y1 * myPitch) + x1;
-      *currentPixel = lineColour;
-    } while (--j);
-  } else {
-    j = dx;
-    i = dx >> 1;
-    do {
-      x1 += xi;
-      if ((i += dy) > dx) {
-        i -= dx;
-        y1 += yi;
-      }
-      currentPixel = screen_ptr + (y1 * myPitch) + x1;
-      *currentPixel = lineColour;
-    } while (--j);
-  }
-  CloseBackBuffer();
-}
-
-// ----------------------------------------------------------------------
-// Method:      DrawCompressedSprite
-// Arguments:   position - x,y coordinates of where to draw the bitmap
-//				bitmap - bitmap (with transparent pixels) to
-// draw
-// Returns:     None
-//
-// Description: Draw the sprite to the back buffer taking account of
-//				Transparency encoding.  this is the longest set
-// of
-// code 				because I have different routines for
-// whether there is 				no clipping. right.bottom
-// clipping. left/top clipping.
-//
-// ----------------------------------------------------------------------
 void DisplayEngine::DrawCompressedSprite(Position &position,
                                          CompressedBitmap *bitmap) {
   //	OutputDebugString("get drawing parameters\n");
@@ -2300,19 +1702,23 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
   int32 y = position.GetY();
 
   int32 bitmapWidth = bitmap->GetWidth();
-  int32 bitmapHeight = bitmap->GetHeight();
+  bitmapHeight = bitmap->GetHeight();
 
   // work out how much to increase the data and sreen pointers
   // on when drawing
   uint32 data_step = bitmapWidth;
+  // when both left and right clipped
+  // top and bottom clipped
+  uint32 rightClipped = 0;
+  uint32 leftClipped = bitmapWidth;
+  uint32 topClipped = bitmapHeight;
 
-  uint16 *compressedData_ptr = bitmap->GetData();
+  compressedData_ptr = bitmap->GetData();
   ASSERT(compressedData_ptr);
 
-  //	screen_step=ourSurfaceArea.right;
-  uint32 screen_step = myPitch;
+  screen_step = myPitch;
   //	OutputDebugString("getting back buffer\n");
-  uint16 *screen_ptr = GetBackBufferPtr();
+  screen_ptr = GetBackBufferPtr();
   ASSERT(screen_ptr);
 
   //	OutputDebugString("got back buffer\n");
@@ -2325,6 +1731,11 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
       return;
     x = 0;
     leftClip = true;
+    // this is the position in the bitmap to
+    // start drawing at
+    leftClipped -= bitmapWidth;
+  } else {
+    leftClipped = 0;
   }
 
   if (y < 0) {
@@ -2335,9 +1746,12 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
     //!!!!!!!!
     compressedData_ptr = (uint16 *)bitmap->GetScanLine(0 - y);
     y = 0;
+    topClipped -= bitmapHeight;
+
+  } else {
+    topClipped = 0;
   }
 
-  //	int32 t=(x+bitmapWidth)-ourSurfaceArea.right;
   int32 t = (x + bitmapWidth) - myPitch;
 
   // if the bitmap needs clipping to the right
@@ -2346,9 +1760,10 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
     if (bitmapWidth <= 0)
       return;
     rightClip = true;
+    rightClipped = t;
   }
 
-  t = (y + bitmapHeight) - mySurfaceArea.bottom + 1;
+  t = (y + bitmapHeight) - mySurfaceArea.bottom;
 
   // if the bitmap needs clipping at the bottom
   if (t >= 0) {
@@ -2366,85 +1781,47 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
   uint16 tag = 0;
   int32 thisStep = 0;
   uint16 count = 0;
+  uint32 pixelsDrawnThisLine = 0;
+
   //	OutputDebugString("start actual drawing\n");
   // if no clipping is required
   if (data_step == 0) {
-    //	OutputDebugString("start no clip\n");
-    // draw taking account of transparent pixels
-
-#ifdef C2E_NO_INLINE_ASM
-    for (; bitmapHeight--;) {
-
-      tag = *compressedData_ptr++;
-      while (tag) {
-
-        // find the number of colours to plot
-        count = tag >> 1;
-
-        // check whether the run is transparent or colour
-        if (tag & 0x01) {
-          bytes = count << 1;
-          memcpy(screen_ptr, compressedData_ptr, bytes);
-          compressedData_ptr += count;
-          screen_ptr += count;
-
-        } else {
-          screen_ptr += count;
-        }
-        tag = *compressedData_ptr++;
-      } // end  while tag
-
-      screen_ptr += screen_step;
-    } // end for bitmap height--
-#else
-    // need a gcc-friendly or nasm version
-
     if (bitmapHeight == 0 || bitmapWidth == 0)
       return;
-    _asm {
-			;pusha
+#ifdef C2E_NASM_RENDERING
+    { NasmDrawCompressedSprite(); }
+#else
+// _asm
+// {
+// 	;pusha
 
-			mov esi,dword ptr [compressedData_ptr]
-			mov edi,dword ptr [screen_ptr]
-			mov edx,dword ptr [screen_step]
-			mov ebx,dword ptr [bitmapHeight]
+// 	mov esi,dword ptr [compressedData_ptr]
+// 	mov edi,dword ptr [screen_ptr]
+// 	mov edx,dword ptr [screen_step]
+// 	mov ebx,dword ptr [bitmapHeight]
 
-		topOfLineLoop:
-			lodsw									;Get tag and increment ptr lodsb
-			and eax,0ffffh			;0ffh
-			test eax,eax
-			je lineLoopEpilogue
-			test ax,1
-			je skipCopy
-			mov ecx,eax
-			shr ecx,1
-			rep movsw ;dword ptr [edi],dword ptr [esi]
-			jmp topOfLineLoop
-		skipCopy:	
-			lea edi,[edi+eax]
-			jmp topOfLineLoop
-		lineLoopEpilogue:
-			lea edi,[edi+edx*2]
-			;sub ebx,1
-			dec ebx
-			;test ebx,ebx
-			jne topOfLineLoop
-			;popa
-    }
-#endif
+// topOfLineLoop:
+// 	lodsw									;Get tag and increment
+// ptr lodsb 	and eax,0ffffh			;0ffh 	test eax,eax 	je
+// lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax 	shr ecx,1 	rep movsw ;dword
+// ptr [edi],dword ptr [esi] 	jmp topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp
+// topOfLineLoop lineLoopEpilogue: 	lea edi,[edi+edx*2] 	;sub ebx,1 	dec ebx 	;test
+// ebx,ebx 	jne topOfLineLoop 	;popa
+// }
+#endif // C2E_NASM_RENDERING
     return;
     //		OutputDebugString("end no clip \n");*/
   }    // end if datastep ==0
   else // some clipping is required
   {
-    if (rightClip || (bottomClip && !leftClip)) {
+    if ((rightClip && !leftClip) || (bottomClip && !leftClip)) {
       //	OutputDebugString("start r b not left\n");
 
       uint32 i = 0;
       int32 drawHeight = bitmapHeight;
       if (topClip) {
-        drawHeight = bitmap->GetHeight();
-        i = bitmap->GetHeight() - bitmapHeight;
+        i = topClipped;
+        drawHeight = bitmapHeight + topClipped;
       }
       // for each line
       for (i; i < drawHeight; i++) {
@@ -2464,13 +1841,6 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // this is the end of the
               // line in which case there will be a tag
               // anyway
-              /*	for(uint32 draw = count; draw--;)
-                      {
-                              ASSERT(screen_ptr);
-                              ASSERT(compressedData_ptr);
-                              *screen_ptr++ = GetUINT16At(compressedData_ptr);
-                              compressedData_ptr+=sizeof(uint16);
-                      }*/
               bytes = count << 1;
               memcpy(screen_ptr, compressedData_ptr, bytes);
               compressedData_ptr += count;
@@ -2482,12 +1852,6 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // and set the step to zero
               // draw all the colours
               // draw what you will
-              /*	for(uint32 draw = thisStep; draw--;)
-                      {
-                              *screen_ptr++ = GetUINT16At(compressedData_ptr);
-                              compressedData_ptr+=sizeof(uint16);
-                      }*/
-
               bytes = thisStep << 1;
               memcpy(screen_ptr, compressedData_ptr, bytes);
               compressedData_ptr += thisStep;
@@ -2550,8 +1914,14 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
     else {
       //	OutputDebugString("start left\n");
       // left clip
+      uint32 nextline = topClipped;
+      uint32 leftSkip = 0;
       for (; bitmapHeight--;) {
+        nextline++;
         thisStep = 0;
+        pixelsDrawnThisLine = 0;
+        leftSkip = 0;
+
         // find out what type of pixel we have
         tag = *compressedData_ptr++;
         while (tag) {
@@ -2561,35 +1931,53 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
           // to start from
           thisStep += count;
 
-          if (tag & 0x01) {
+          if (tag & 0x01) // colour pixel
+          {
             // if we are not at our starting point yet
-            if (thisStep <= data_step) {
+            if (thisStep <= leftClipped) {
               // move the data on to the next tag
               compressedData_ptr += count;
+              leftSkip += count;
             } else {
 
               // find out how many pixels we are over and
               // draw them to the screen
-              uint32 over = thisStep - data_step;
-
-              // skim past the pixels we don't want to draw
-              compressedData_ptr += (count - over);
+              uint32 over = thisStep - leftClipped;
 
               // draw the amount we are over
-              /*	for(uint32 i = over; i--;)
-                      {
-                              *screen_ptr++ = GetUINT16At(compressedData_ptr);
-                              compressedData_ptr+=sizeof(uint16);
-                      }*/
-              bytes = over << 1;
-              memcpy(screen_ptr, compressedData_ptr, bytes);
-              compressedData_ptr += over;
-              screen_ptr += over;
 
-              //
               thisStep -= over;
-              // pretend that we didn't go over so that
-              //  we can draw to the end of the line
+              if (leftSkip < leftClipped) {
+                compressedData_ptr += leftClipped - leftSkip;
+                leftSkip = leftClipped;
+              }
+
+              // if we are still supposed to be drawing pixels
+              if (over + pixelsDrawnThisLine <= bitmapWidth) {
+                bytes = over << 1;
+                memcpy(screen_ptr, compressedData_ptr, bytes);
+                compressedData_ptr += over;
+                screen_ptr += over;
+                pixelsDrawnThisLine += over;
+              } else {
+                // too many pixels in this run
+                // any portion to draw?
+                uint32 therest = bitmapWidth - pixelsDrawnThisLine;
+                if (therest) {
+                  bytes = therest << 1;
+                  memcpy(screen_ptr, compressedData_ptr, bytes);
+                  compressedData_ptr += therest;
+                  screen_ptr += therest;
+                  pixelsDrawnThisLine += therest;
+
+                  // now skip to the end of the bitmap data
+                  compressedData_ptr = (uint16 *)bitmap->GetScanLine(nextline);
+                  if (!compressedData_ptr)
+                    return;
+
+                  compressedData_ptr--;
+                }
+              }
             }
           }      // end if colour
           else { // transparent
@@ -2597,23 +1985,52 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
             // to start from
             //	thisStep += count;
             // if we are not at our starting point yet
-            if (thisStep <= data_step) {
+            if (thisStep <= leftClipped) {
               // do nothing for we don't need to draw this
               // part of the bitmap
-
+              leftSkip += count;
               //	continue;
             } else // thisStep is larger than data_step
             {
               // find out how many pixels we are over and
               // draw them to the screen
-              uint32 over = thisStep - data_step;
+              uint32 over = thisStep - leftClipped;
 
-              // move the screen ptr on by the required amount of steps
-              // because these are transparent
-              screen_ptr += over;
-              // pretend that we didn't go over so that
-              //  we can draw to the end of the line
+              // draw the amount we are over
+
               thisStep -= over;
+
+              // find out how many pixels we are over and
+              // draw them to the screen
+              // if we are still supposed to be drawing pixels
+              if (leftSkip < leftClipped) {
+                leftSkip = leftClipped;
+              }
+
+              if (over + pixelsDrawnThisLine <= bitmapWidth) {
+                // move the screen ptr on by the required amount of steps
+                // because these are transparent
+                screen_ptr += over;
+                // pretend that we didn't go over so that
+                //  we can draw to the end of the line
+
+                pixelsDrawnThisLine += over;
+              } else {
+                // too many pixels in this run
+                // any portion to draw?
+                uint32 therest = bitmapWidth - pixelsDrawnThisLine;
+                if (therest) {
+                  screen_ptr += therest;
+
+                  pixelsDrawnThisLine += therest;
+                  // finally skip past the right clipped area
+                  compressedData_ptr = (uint16 *)bitmap->GetScanLine(nextline);
+                  if (!compressedData_ptr)
+                    return;
+
+                  compressedData_ptr--;
+                }
+              }
             }
 
           } // end colour check
@@ -2630,7 +2047,7 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 // Method:      DrawMirroredCompressedSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw
+//draw
 // Returns:     None
 //
 // Description: Mirror the sprite to the back buffer taking account of
@@ -2641,32 +2058,112 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
                                                  CompressedBitmap *bitmap) {
 
-  int32 bitmapWidth;
-  int32 bitmapHeight;
-
-  // work out how much to increase the data and screen pointers
-  // on when drawing
-  uint32 data_step;
-
-  uint16 *compressedData_ptr;
-
-  uint32 screen_step;
-  uint16 *screen_ptr;
-
-  // assume that we will do left or top clip
   bool rightClip = false;
   bool bottomClip = false;
   bool topClip = false;
+  bool leftClip = false;
+  int32 bytes = 0;
 
-  if (!GetCompressedDrawingParameters16Bit(
-          position, bitmap, data_step, compressedData_ptr, screen_step,
-          screen_ptr, bitmapWidth, bitmapHeight, rightClip, bottomClip,
-          topClip))
+  int32 x = position.GetX();
+  int32 y = position.GetY();
+
+  int32 bitmapWidth = bitmap->GetWidth();
+  int32 bitmapHeight = bitmap->GetHeight();
+
+  // work out how much to increase the data and sreen pointers
+  // on when drawing
+  uint32 data_step = bitmapWidth;
+  // when both left and right clipped
+  // top and bottom clipped
+  uint32 rightClipped = 0;
+  uint32 leftClipped = bitmapWidth;
+  uint32 topClipped = bitmapHeight;
+
+  uint16 *compressedData_ptr = bitmap->GetData();
+  ASSERT(compressedData_ptr);
+
+  uint32 screen_step = myPitch;
+
+  uint16 *screen_ptr = GetBackBufferPtr();
+  ASSERT(screen_ptr);
+
+  // determine whether we have to clip the
+  // sprite
+  // As we are mirrored we must swap the clippin over so that
+  // the new left side of the bitmap gets clipped by whatever the right side
+  // would have been.  this is hard to explain but if you draw it out you'll
+  // understand
+  if (x < 0) {
+    bitmapWidth += x;
+    if (bitmapWidth < 0)
+      return;
+    x = 0;
+
+    leftClip = true;
+    //	leftClipped  -=bitmapWidth;
+    rightClipped -= bitmapWidth;
+
+  } else {
+    //	leftClipped = 0;
+    rightClipped = 0;
+  }
+
+  if (y < 0) {
+    bitmapHeight += y;
+    if (bitmapHeight < 0)
+      return;
+    topClip = true;
+    //!!!!!!!!
+    compressedData_ptr = (uint16 *)bitmap->GetScanLine(0 - y);
+    y = 0;
+    topClipped -= bitmapHeight;
+
+  } else {
+    topClipped = 0;
+  }
+
+  int32 t = (x + bitmapWidth) - myPitch;
+
+  // if the bitmap needs clipping to the right
+  if (t >= 0) {
+    bitmapWidth -= t;
+    if (bitmapWidth <= 0)
+      return;
+    rightClip = true;
+    // this is the position in the bitmap to
+    // start drawing at
+    //	rightClipped=t;
+    leftClipped = t;
+
+  } else {
+    //	rightClipped = 0;
+    leftClipped = 0;
+  }
+
+  t = (y + bitmapHeight) - mySurfaceArea.bottom;
+
+  // if the bitmap needs clipping at the bottom
+  if (t >= 0) {
+    bitmapHeight -= t;
+    if (bitmapHeight <= 0)
+      return;
+    bottomClip = true;
+  }
+
+  bitmapWidth--;
+
+  if (bitmapWidth <= 0)
     return;
+
+  data_step -= bitmapWidth;
+  screen_step -= bitmapWidth;
+
+  screen_ptr += (y * myPitch) + x;
 
   uint16 tag = 0;
   int32 thisStep = 0;
   uint16 count = 0;
+  uint32 pixelsDrawnThisLine = 0;
 
   // keep a pointer to the start of the screen line
   uint16 *screenLineStart = screen_ptr;
@@ -2708,9 +2205,155 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
   }    // end if datastep ==0
   else // some clipping is required
   {
-    if (!(rightClip || bottomClip)) {
+    if ((rightClip && !leftClip) || (bottomClip && !leftClip)) {
+      uint32 nextline = topClipped;
+      uint32 leftSkip = 0;
+
+      for (; bitmapHeight--;) {
+        nextline++;
+
+        thisStep = 0;
+        pixelsDrawnThisLine = 0;
+        leftSkip = 0;
+        // find out what type of pixel we have
+        tag = *compressedData_ptr++;
+        while (tag) {
+          // find the number of colours to plot
+          count = tag >> 1;
+
+          // calculate which pixel in this line
+          // to start from
+          thisStep += count;
+
+          // if we have a colour to draw
+          if (tag & 0x01) {
+            // if we are not at our starting point yet
+            if (thisStep <= leftClipped) {
+              // move the data on to the next tag
+              compressedData_ptr += count;
+              leftSkip += count;
+            } else {
+              // find out how many pixels we are over and
+              // draw them to the screen
+              uint32 over = thisStep - leftClipped;
+
+              // pretend that we didn't go over so that
+              //  we can draw to the end of the line
+              thisStep -= over;
+
+              if (leftSkip < leftClipped) {
+                compressedData_ptr += leftClipped - leftSkip;
+                leftSkip = leftClipped;
+              }
+
+              // if we are still supposed to be drawing pixels
+              if (over + pixelsDrawnThisLine <= bitmapWidth) {
+                // draw the amount we are over
+                for (uint32 i = over; i--;) {
+                  // move along the screen line
+                  screenLineStart++;
+                  *screen_ptr-- = *compressedData_ptr++;
+                }
+
+                pixelsDrawnThisLine += over;
+
+              } else {
+                // too many pixels in this run
+                // any portion to draw?
+                uint32 therest = bitmapWidth - pixelsDrawnThisLine;
+                if (therest) {
+                  // draw the amount we are over
+                  for (uint32 i = therest; i--;) {
+                    // move along the screen line
+                    screenLineStart++;
+                    *screen_ptr-- = *compressedData_ptr;
+                    compressedData_ptr++;
+                  }
+                  pixelsDrawnThisLine += therest;
+
+                  // now skip to the end of the bitmap data
+                  compressedData_ptr = (uint16 *)bitmap->GetScanLine(nextline);
+                  if (!compressedData_ptr)
+                    return;
+
+                  compressedData_ptr--;
+                }
+              }
+            }
+          } // end if colour
+          else {
+            // we are drawing a transparent pixel
+            // calculate which pixel in this line
+            // to start from
+
+            // if we are not at our starting point yet
+            if (thisStep <= leftClipped) {
+              // do nothing for we don't need to draw this
+              // part of the bitmap
+              leftSkip += count;
+            } else // thisStep is larger than data_step
+            {
+              // find out how many pixels we are over and
+              // draw them to the screen
+              uint32 over = thisStep - leftClipped;
+              // pretend that we didn't go over so that
+              //  we can draw to the end of the line
+              thisStep -= over;
+
+              // find out how many pixels we are over and
+              // draw them to the screen
+              // if we are still supposed to be drawing pixels
+              if (leftSkip < leftClipped) {
+                leftSkip = leftClipped;
+              }
+
+              if (over + pixelsDrawnThisLine <= bitmapWidth) {
+                // move the screen ptr on by the required amount of steps
+                // because these are transparent
+                // move along the screen line
+                screenLineStart += over;
+                screen_ptr -= over;
+                pixelsDrawnThisLine += over;
+              } else {
+                // too many pixels in this run
+                // any portion to draw?
+                uint32 therest = bitmapWidth - pixelsDrawnThisLine;
+                if (therest) {
+                  screen_ptr -= therest;
+                  // move along the screen line
+                  screenLineStart += therest;
+
+                  pixelsDrawnThisLine += therest;
+                  // finally skip past the right clipped area
+                  compressedData_ptr = (uint16 *)bitmap->GetScanLine(nextline);
+                  if (!compressedData_ptr)
+                    return;
+
+                  compressedData_ptr--;
+                }
+              }
+            }
+
+          } // end colour check
+          tag = *compressedData_ptr++;
+        } // end while tag
+          // move along the screen line
+        screenLineStart += screen_step;
+        screen_ptr = screenLineStart + bitmapWidth;
+      } // bitmap height
+    }   // end if right/bottom
+    else {
+
+      uint32 i = 0;
+      int32 drawHeight = bitmapHeight;
+      if (topClip) {
+        i = topClipped;
+        drawHeight = bitmapHeight + topClipped;
+      }
+
       // for each line
-      for (uint32 i = 0; i < bitmapHeight; i++) {
+      for (i; i < drawHeight; i++) {
+
         thisStep = bitmapWidth;
         // find out what type of pixel we have
         tag = *compressedData_ptr++;
@@ -2730,12 +2373,10 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               for (uint32 i = count; i--;) {
                 // move along the screen line
                 screenLineStart++;
-                *screen_ptr-- = *compressedData_ptr;
-                compressedData_ptr++; //=sizeof(uint16);
+                *screen_ptr-- = *compressedData_ptr++;
               }
             } else // pixel count has over run
             {
-              uint32 over = count - thisStep;
               // then draw the remaining amount of pixels
               // and set the step to zero
               // draw all the colours
@@ -2743,8 +2384,7 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               for (uint32 i = thisStep; i--;) {
                 // move along the screen line
                 screenLineStart++;
-                *screen_ptr-- = *compressedData_ptr;
-                compressedData_ptr++;
+                *screen_ptr-- = *compressedData_ptr++;
               }
 
               // don't worry about moving past the overrun
@@ -2752,12 +2392,13 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               // since thisStep = 0 will take care of it
               thisStep = 0;
             }
-          } // end if colour
-          else {
+          }    // end if colour
+          else // transparent
+          {
             // calculate which pixel in this line
             // to start from
 
-            // if we are not at our starting point yet
+            // if we are not at our stopping point yet
             if (count <= thisStep) {
               // skip past the transparent pixels on the screen
               // part of the bitmap
@@ -2783,8 +2424,15 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
             // no more to draw
             // move the data ptr on to the end of this line
             //
-            if (i < bitmapHeight - 1) {
-              compressedData_ptr = (uint16 *)bitmap->GetScanLine(i);
+            // no more to draw
+            // move the data ptr on to the end of this line
+            //
+            if (i + 1 < drawHeight) {
+              //!!!!!!!!!
+              compressedData_ptr = (uint16 *)bitmap->GetScanLine(i + 1);
+
+              if (!compressedData_ptr)
+                return;
 
               compressedData_ptr--;
             } else {
@@ -2801,84 +2449,9 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
         screenLineStart += screen_step;
         screen_ptr = screenLineStart + bitmapWidth;
       } // bitmap height
-    }   // end if right/bottom
-    else {
-      for (; bitmapHeight--;) {
-        thisStep = 0;
-        // find out what type of pixel we have
-        tag = *compressedData_ptr++;
-        while (tag) {
-          // find the number of colours to plot
-          count = tag >> 1;
 
-          //	char buf[50];
-          //	wsprintf(buf,"count %d \n", count);
-          //	OutputDebugString(buf);
-
-          // calculate which pixel in this line
-          // to start from
-          thisStep += count;
-
-          // if we have a colour to draw
-          if (tag & 0x01) {
-            // if we are not at our starting point yet
-            if (thisStep <= data_step) {
-              // move the data on to the next tag
-              compressedData_ptr += count;
-            } else {
-              // find out how many pixels we are over and
-              // draw them to the screen
-              uint32 over = thisStep - data_step;
-
-              compressedData_ptr += count - over;
-              // draw the amount we are over
-              for (uint32 i = over; i--;) {
-                // move along the screen line
-                screenLineStart++;
-                *screen_ptr-- = GetUINT16At(compressedData_ptr);
-                compressedData_ptr++;
-              }
-              //
-              thisStep -= over;
-              // pretend that we didn't go over so that
-              //  we can draw to the end of the line
-            }
-          } // end if colour
-          else {
-            // we are drawing a transparent pixel
-            // calculate which pixel in this line
-            // to start from
-
-            // if we are not at our starting point yet
-            if (thisStep <= data_step) {
-              // do nothing for we don't need to draw this
-              // part of the bitmap
-
-            } else // thisStep is larger than data_step
-            {
-              // find out how many pixels we are over and
-              // draw them to the screen
-              uint32 over = thisStep - data_step;
-
-              // move the screen ptr on by the required amount of steps
-              // because these are transparent
-              // move along the screen line
-              screenLineStart += over;
-              screen_ptr -= over;
-              // pretend that we didn't go over so that
-              //  we can draw to the end of the line
-              thisStep -= over;
-            }
-
-          } // end colour check
-          tag = *compressedData_ptr++;
-        } // end while tag
-        // move along the screen line
-        screenLineStart += screen_step;
-        screen_ptr = screenLineStart + bitmapWidth;
-      } // bitmap height
-    }   // end left clip
-  }     // end else clipping required
+    } // end left clip
+  }   // end else clipping required
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -2887,8 +2460,8 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
 // stolen magic code
 bool DisplayEngine::ClipLine(RECT *mb, int &x0, int &y0, int &x1, int &y1,
                              unsigned char colour) {
-  if (x0 < 0 || y0 < 0 || x1 < 0 || y1 < 0)
-    return false;
+  //	if(x0 < 0 || y0 < 0 || x1 < 0 || y1 < 0)
+  //		return false;
 
   int x = 0, y = 0, outcode0, outcode1, outcodeout;
   bool accept, done;
@@ -2962,142 +2535,113 @@ int DisplayEngine::CalcOutCode(RECT *mb, int x, int y) {
   return (outcode);
 }
 
-#ifdef WORK_IN_PROGRESS
-void DisplayEngine::ReleaseHelperDirectDrawStuff() {
-  if (myClipper) {
-    myClipper->Release();
-    myClipper = NULL;
-  }
+SDL_Surface *DisplayEngine::CreateSurface(int32 width, int32 height,
+                                          bool tryVideoFirst /*=false*/) {
+  SDL_Surface *image;
 
-  if (myBackBuffer) {
-    myBackBuffer->Release();
-    myBackBuffer = NULL;
-  }
-
-  if (myHWBackBuffer) {
-    myHWBackBuffer->Release();
-    myHWBackBuffer = NULL;
-  }
-
-  if (myFrontBuffer) {
-    myFrontBuffer->Release();
-    myFrontBuffer = NULL;
-  }
-}
-#endif
-
-#ifdef WORK_IN_PROGRESS
-
-LPDIRECTDRAWSURFACE4
-DisplayEngine::CreateSurface(int32 width, int32 height,
-                             bool tryVideoFirst /*=false*/) {
-  // the current sprite image
-  LPDIRECTDRAWSURFACE4 image;
-  DDSURFACEDESC2 surfaceDescription;
-
-  ZeroMemory(&surfaceDescription, sizeof(DDSURFACEDESC2));
-  surfaceDescription.dwSize = sizeof DDSURFACEDESC2;
-
-  //
-  surfaceDescription.dwFlags = DDSD_WIDTH | DDSD_HEIGHT | DDSD_CAPS;
-  surfaceDescription.dwWidth = width;
-  surfaceDescription.dwHeight = height;
-  surfaceDescription.ddsCaps.dwCaps =
-      DDSCAPS_OFFSCREENPLAIN | DDSCAPS_VIDEOMEMORY;
-
-  // if i can't have video ram by default then try system ram
-  // on my machine this will let me create the surface in video
-  // memory but then I cannot lock it
-  if (!tryVideoFirst ||
-      myDirectDraw->CreateSurface(&surfaceDescription, &image, NULL) != DD_OK) {
-    surfaceDescription.ddsCaps.dwCaps =
-        DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
-
-    if (myDirectDraw->CreateSurface(&surfaceDescription, &image, NULL) !=
-        DD_OK) {
-      //	uh oh!
-      return NULL;
-    }
+  if (myPixelFormat == RGB_555) {
+    image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 15, 0x7C00,
+                                 0x03E0, 0x001F, 0);
+  } else // 565
+  {
+    image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 16, 0xF800,
+                                 0x07E0, 0x001F, 0);
   }
 
   return image;
 }
 
-void DisplayEngine::ReleaseSurface(LPDIRECTDRAWSURFACE4 &tempSurface) {
-  tempSurface->Release();
+void DisplayEngine::ReleaseSurface(SDL_Surface *&tempSurface) {
+  SDL_FreeSurface(tempSurface);
   tempSurface = NULL;
 }
 
-#endif
-
-bool DisplayEngine::CreateProgressBar(Bitmap *bitmap) { return false; }
-
-void DisplayEngine::StartProgressBar(int updateIntervals) {}
-
-void DisplayEngine::UpdateProgressBar() {}
-
-void DisplayEngine::EndProgressBar() {}
-
-bool DisplayEngine::GetPixelFormat(uint32 &format) {
-#ifdef WORK_IN_PROGRESS
-  DDPIXELFORMAT pixel_desc;
-  pixel_desc.dwSize = sizeof DDPIXELFORMAT;
-  myFrontBuffer->GetPixelFormat(&pixel_desc);
-
-  bool ok = true;
-
-  // if the pixel data is valid
-  if (pixel_desc.dwFlags & DDPF_RGB) {
-    // check for 555 format
-    if (pixel_desc.dwRBitMask == 0x7c00 && pixel_desc.dwGBitMask == 0x03e0 &&
-        pixel_desc.dwBBitMask == 0x001f) {
-      myPixelFormat = RGB_555;
-    } else if (pixel_desc.dwRBitMask == 0xf800 &&
-               pixel_desc.dwGBitMask == 0x07e0 &&
-               pixel_desc.dwBBitMask == 0x001f) {
-      myPixelFormat = RGB_565;
-    } else {
-      ok = false;
-    }
-  }
-  // ****************Changes
-  else {
-    ok = false;
-  }
-
-  if (!ok) {
-    // error message or something!!!!!!
-    ErrorMessageHandler::Show(
-        theDisplayErrorTag, (int)sidDodgyPixelFormat,
-        std::string("DisplayEngine::Check16BitPixelFormat"));
-
-    PostMessage(myWindow, WM_CLOSE, NULL, NULL);
+bool DisplayEngine::CreateProgressBar(Bitmap *bitmap) {
+  if (!bitmap)
     return false;
+
+  myProgressBitmap = bitmap;
+
+  //	myProgressSurface = SDL_CreateRGBSurface( SDL_SWSURFACE,
+  //			myProgressBitmap->GetWidth(), myProgressBitmap->GetHeight(),
+  //16, 			0xF800, 			0x07E0, 			0x001F,0 );
+
+  myProgressSurface = CreateSurface(myProgressBitmap->GetWidth(),
+                                    myProgressBitmap->GetHeight());
+
+  if (!myProgressSurface)
+    return false;
+
+  SDL_SetColorKey(myProgressSurface, SDL_SRCCOLORKEY, 0);
+
+  const uint16 *sourcePtr = myProgressBitmap->GetData();
+  uint16 *destPtr = (uint16 *)myProgressSurface->pixels;
+
+  int32 bitmapWidth = bitmap->GetWidth();
+  int32 bitmapHeight = bitmap->GetHeight();
+
+  // the surface is created to be the same
+  // size as the entity bounds
+  int32 destStep = (myProgressSurface->pitch >> 1);
+  int32 sourceStep = 0;
+  destStep = destStep - bitmapWidth;
+  for (; bitmapHeight--;) {
+    for (int32 width = bitmapWidth; width--;)
+      *destPtr++ = *sourcePtr++;
+
+    destPtr += destStep;
   }
-  format = int32(myPixelFormat);
+
   return true;
-#endif
-  return false;
 }
 
-uint16 *DisplayEngine::OpenBackBuffer(void) {
-  if (myBackBuffer) {
-    if (SDL_LockSurface(myBackBuffer) == -1) {
-      OutputDebugString("Surface lock failed");
-      return NULL;
-    }
+void DisplayEngine::StartProgressBar(int updateIntervals) {
+  if (myProgressBitmap && myEngineRunningFlag) {
+    myProgressMax = updateIntervals;
+    myProgressCount = 0;
 
-    myCurrentOffScreenBufferPtr = (uint16 *)myBackBuffer->pixels;
-    myPitch = myBackBuffer->pitch / 2;
-    myPitchForBackgroundTiles = (myPitch - 128) * 2;
-    return myCurrentOffScreenBufferPtr;
-  } else
-    return NULL;
+    myProgressBarHasBeenStarted = true;
+    myPreviousProgressRight = -1;
+  }
 }
 
-bool DisplayEngine::DealingWithExceptions() { return myCatchingExceptionFlag; }
+void DisplayEngine::UpdateProgressBar(int amount) {
+  if (!myProgressBitmap || !myProgressSurface)
+    return;
 
-NormalGallery *DisplayEngine::GetTextGallery() { return myTextGallery; }
+  myProgressCount += amount;
+  if (myProgressCount > myProgressMax)
+    myProgressMax = myProgressMax;
+
+  RECT clip;
+
+  clip.left = 0;
+  clip.top = 0;
+  clip.right = int((double)myProgressBitmap->GetWidth() *
+                   (double)myProgressCount / (double)myProgressMax);
+  if (clip.right < 0)
+    clip.right = 0;
+  if (clip.right > myProgressBitmap->GetWidth())
+    clip.right = myProgressBitmap->GetWidth();
+  clip.bottom = myProgressBitmap->GetHeight();
+
+  if (clip.right == myPreviousProgressRight)
+    return;
+  myPreviousProgressRight = clip.right;
+
+  RECT source;
+  source.top = myProgressBitmap->GetPosition().GetY();
+  source.left = myProgressBitmap->GetPosition().GetX();
+  source.right = source.left + clip.right;
+  source.bottom = source.top + clip.bottom;
+
+  BlitToFrontBuffer(source, myProgressSurface, clip, true);
+}
+
+void DisplayEngine::EndProgressBar() {
+  myProgressBitmap = NULL;
+  myProgressBarHasBeenStarted = false;
+}
 
 uint16 DisplayEngine::ConvertRGB(int r, int g, int b) {
   uint16 ret;
@@ -3106,4 +2650,22 @@ uint16 DisplayEngine::ConvertRGB(int r, int g, int b) {
   else
     RGB_TO_555(r, g, b, ret)
   return ret;
+}
+
+void DisplayEngine::DrawGuttering(int width, int height) {
+  SDL_Rect r;
+  if (width < mySurfaceArea.right) {
+    r.x = width;
+    r.y = 0;
+    r.w = mySurfaceArea.right - width;
+    r.h = mySurfaceArea.bottom;
+    SDL_FillRect(myBackBuffer, &r, 0);
+  }
+  if (height < mySurfaceArea.bottom) {
+    r.x = 0;
+    r.y = height;
+    r.w = mySurfaceArea.right;
+    r.h = mySurfaceArea.bottom - height;
+    SDL_FillRect(myBackBuffer, &r, 0);
+  }
 }

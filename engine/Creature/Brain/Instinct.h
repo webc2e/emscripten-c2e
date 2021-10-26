@@ -19,6 +19,7 @@ class Instinct : public PersistentObject {
 	CREATURES_DECLARE_SERIAL( Instinct )
 public:
 	Instinct();
+	Instinct(int verb, int noun, float qualifier, int drive, Brain* brain);
 	// construct by reading data from a gene:
 	Instinct(Genome& g, Brain* brain);
 
@@ -46,3 +47,4 @@ private:
 	int myInstinctTick;					// where in the instinct-processing we've got to so far
 };
 #endif //__instincthdr
+

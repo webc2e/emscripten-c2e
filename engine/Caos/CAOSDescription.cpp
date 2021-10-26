@@ -18,18 +18,19 @@
 #endif
 
 #include "CAOSDescription.h"
+#include "../../common/StringFuncs.h"
 #include "../C2eServices.h"
 #include "../CreaturesArchive.h"
-#include <fstream>
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#else
-#include <sstream>
-#endif
 #include "../FilePath.h"
 #include "AutoDocumentationTable.h"
-#include "CAOSTables.h"
+#include "CAOSConstants.h"
 #include <algorithm>
+#include <fstream>
+#include <sstream>
+
+// The one and only description of the CAOS langauge
+// Maybe should be moved elsewhere...
+CAOSDescription theCAOSDescription;
 
 // Used to check the serialised format is near enough to the
 // one compiled in. Change this if a recompile of CAOS
@@ -77,10 +78,6 @@ bool CAOSDescription::IsTableValid(int table, int &id) {
     }
 
     // Please document commands!
-    // If you really don't want to, or you can't yet because you're
-    // not sure of the implementation, then put the command in
-    // categoryNotImplemented.  Set the help text to a brief description
-    // of roughly the sort of thing that it does.
     ASSERT(!op.GetHelpGeneral().empty());
 
     // check number of parameters matches number of
@@ -183,11 +180,11 @@ OpSpec *CAOSDescription::FindOp(const char *name, int table) {
   int n = the_table.size();
   for (int i = 0; i < n; i++) {
     const char *this_name = the_table[i].GetName();
-#ifdef __GNUC__
-    // might not work for "C" locale?
-    if (!strcasecmp(name, this_name))
+#ifdef _MSC_VER
+    if (!stricmp(name, this_name)) // SPARKY was stricmp
       return &the_table[i];
 #else
+    // might not work for "C" locale?
     if (!strcasecmp(name, this_name))
       return &the_table[i];
 #endif
@@ -197,28 +194,60 @@ OpSpec *CAOSDescription::FindOp(const char *name, int table) {
 
 CAOSDescription::CAOSDescription() {}
 
-void CAOSDescription::PushTable(int expectedLocation, OpSpec *start,
-                                int count) {
-  myTables.push_back(std::vector<OpSpec>());
-  ASSERT(myTables.size() - 1 == expectedLocation);
-  std::vector<OpSpec> &table = myTables[expectedLocation];
+void CAOSDescription::PushTable(int tableNumber, OpSpec *start, int count,
+                                OpSpec *superCommand) {
+  // Add the new commands to the specified table
+  std::vector<OpSpec> &table = GetTable(tableNumber);
   for (int i = 0; i < count; ++i) {
     OpSpec op = *(start + i);
-    ASSERT(op.GetOpcode() == -1 || op.GetOpcode() == i);
-    op.SetOpcode(i);
+    int definiteOpcode = table.size();
+    ASSERT(op.GetOpcode() == -1);
+    op.SetOpcode(definiteOpcode);
+    op.SetCommandTable(tableNumber);
+    if (superCommand)
+      op.SetSuperCommand(*superCommand);
     table.push_back(op);
   }
 }
 
-int CAOSDescription::GetTableSize(int table) { return myTables[table].size(); }
+void CAOSDescription::PushTable(HandlerFunction superHandler,
+                                int superTableNumber,
+                                const std::string &superCommandName,
+                                OpSpec *start, int count) {
+  // Work out table ID for our subtable, dynamically.
+  int newTableNumber = myTables.size();
+  // Has to be at above the standard main tables
+  if (newTableNumber < FIRST_SUB_COMMAND_TABLE)
+    newTableNumber = FIRST_SUB_COMMAND_TABLE;
 
-const std::vector<OpSpec> &CAOSDescription::GetTable(int table) {
+  // Add supercommand to the appropriate table
+  OpSpec superOp(superCommandName, superHandler, newTableNumber, "subcommand",
+                 categoryNoNeedToDocument, "X");
+  std::vector<OpSpec> &superTable = GetTable(superTableNumber);
+  superOp.SetOpcode(superTable.size());
+  superOp.SetCommandTable(superTableNumber);
+  superTable.push_back(superOp);
+
+  // Add table in
+  PushTable(newTableNumber, start, count, &superOp);
+}
+
+std::vector<OpSpec> &CAOSDescription::GetTable(int table) {
+  // Make table set bigger if necessary
+  ASSERT(table >= 0);
+  if (table >= myTables.size())
+    myTables.resize(table + 1);
+
+  return myTables[table];
+}
+
+const std::vector<OpSpec> &CAOSDescription::GetTable(int table) const {
   return myTables[table];
 }
 
 bool CAOSDescription::SaveSyntax(const std::string &filename) const {
   try {
-    std::fstream file(filename.c_str(), std::ios::out | std::ios::binary);
+    std::ofstream file(filename.c_str(), std::ios::out | std::ios::binary);
     if (!file.good())
       return false;
     {
@@ -253,7 +282,7 @@ bool CAOSDescription::SaveSyntax(const std::string &filename) const {
 
 bool CAOSDescription::LoadSyntax(const std::string &filename) {
   try {
-    std::fstream file(filename.c_str(), std::ios::in | std::ios::binary);
+    std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
     {
       CreaturesArchive arch(file, CreaturesArchive::Load, true);
 
@@ -321,13 +350,9 @@ std::string CAOSDescription::HelpOnOneCommand(std::string command) {
 std::string CAOSDescription::GetHelpOnOpspec(OpSpec &op) {
   std::string output;
   output += op.GetPrettyName() + " ";
-  output += "(" + op.GetPrettyCommandTableString() + ") ";
+  output += "(" + op.GetPrettyType() + ") ";
 
-#ifdef C2E_OLD_CPP_LIB
-  std::istrstream params_in(op.GetHelpParameters().c_str());
-#else
   std::istringstream params_in(op.GetHelpParameters());
-#endif
   for (int i = 0; i < op.GetParameterCount(); ++i) {
     char param = op.GetParameter(i);
     if (param == '-')
@@ -385,7 +410,7 @@ std::string CAOSDescription::ListAllCommands() {
 }
 
 std::string CAOSDescription::Apropos(std::string command) {
-  std::transform(command.begin(), command.end(), command.begin(), tolower);
+  LowerCase(command);
   std::string output;
   std::vector<OpSpec> grand_table;
   MakeGrandTable(grand_table);
@@ -394,7 +419,7 @@ std::string CAOSDescription::Apropos(std::string command) {
   for (int i = 0; i < n; ++i) {
     OpSpec &op = grand_table[i];
     std::string help = GetHelpOnOpspec(op);
-    std::transform(help.begin(), help.end(), help.begin(), tolower);
+    LowerCase(help);
     if (help.find(command) != std::string::npos)
       output += op.GetPrettyName() + " ";
   }
@@ -558,14 +583,10 @@ void CAOSDescription::StreamHelpAsHTML(std::ostream &out, bool bAlphabetic) {
 
     out << "<span class=\"command\">" << op.GetPrettyName() << "</span>"
         << std::endl;
-    out << "<span class=\"vartype\">(" << op.GetPrettyCommandTableString()
-        << ")</span> " << std::endl;
+    out << "<span class=\"vartype\">(" << op.GetPrettyType() << ")</span> "
+        << std::endl;
 
-#ifdef C2E_OLD_CPP_LIB
-    std::istrstream params_in(op.GetHelpParameters().c_str());
-#else
     std::istringstream params_in(op.GetHelpParameters());
-#endif
     for (int i = 0; i < op.GetParameterCount(); ++i) {
       char param = op.GetParameter(i);
       if (param == '-')
@@ -605,14 +626,14 @@ void CAOSDescription::MakeGrandTable(std::vector<OpSpec> &grand_table) {
     int nOp = table.size();
     for (int iOp = 0; iOp < nOp; ++iOp) {
       OpSpec op = table[iOp];
-      op.SetCommandTable(iTable);
       grand_table.push_back(op);
     }
   }
 
   OpSpec ovxx("OVxx", (VariableHandler)NULL, "", "", categoryVariables,
               "OV00 to OV99 are variables specific to an agent.  They are read "
-              "from @#TARG@, the target agent.");
+              "from @#TARG@, the target agent.  You can also access these same "
+              "variables via owner using @#MVxx@.");
   ovxx.SetCommandTable(idVariableTable);
   grand_table.push_back(ovxx);
 
@@ -622,9 +643,12 @@ void CAOSDescription::MakeGrandTable(std::vector<OpSpec> &grand_table) {
   vaxx.SetCommandTable(idVariableTable);
   grand_table.push_back(vaxx);
 
-  OpSpec mvxx("MVxx", (VariableHandler)NULL, "", "", categoryVariables,
-              "MV00 to MV99 are variables specific to an agent. They are read "
-              "from @#OWNR@, the owner agent of the current script.");
+  OpSpec mvxx(
+      "MVxx", (VariableHandler)NULL, "", "", categoryVariables,
+      "MV00 to MV99 are variables specific to an agent. They are read from "
+      "@#OWNR@, the owner agent of the current script.  These are the exact "
+      "same variables as @#OVxx@, except read from owner not targ.  If owner "
+      "and targ are the same, then OV23 is MV23, for example.");
   mvxx.SetCommandTable(idVariableTable);
   grand_table.push_back(mvxx);
 }
@@ -691,4 +715,44 @@ std::string CAOSDescription::GetTypeAsText(char param) {
     type_string = "unknown";
   }
   return type_string;
+}
+
+// static
+int CAOSDescription::AddTableRegisterFunction(TableRegisterFunction function) {
+  GetTableRegisterFunctions().push_back(function);
+  return 0;
+}
+
+std::vector<CAOSDescription::TableRegisterFunction> &
+CAOSDescription::GetTableRegisterFunctions() {
+  static std::vector<TableRegisterFunction> ourmyTableRegisterFunctions;
+  return ourmyTableRegisterFunctions;
+}
+
+void CAOSDescription::LoadDefaultTables() {
+  // Call all the functions which have told us they can
+  // add new commands to the tables
+  std::vector<TableRegisterFunction> &tableRegisterFunctions =
+      GetTableRegisterFunctions();
+  for (int i = 0; i < tableRegisterFunctions.size(); ++i) {
+    tableRegisterFunctions[i](*this);
+  }
+
+#ifdef _DEBUG
+  SanityCheck();
+#endif // _DEBUG
+}
+
+void CAOSDescription::SetEngineVersion(const std::string &engineVersion) {
+  myCAOSEngineVersion = engineVersion;
+}
+
+void CAOSDescription::SetCategoryText(
+    const std::vector<std::string> &categoryText) {
+  myCategoryText = categoryText;
+}
+
+void CAOSDescription::SetScriptNames(
+    const std::vector<std::string> &scriptNames) {
+  myScriptNames = scriptNames;
 }

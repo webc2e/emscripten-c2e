@@ -1,6 +1,4 @@
 // CompoundAgent.cpp
-
-
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
@@ -9,6 +7,8 @@
 #include "../World.h"
 #include "UIPart.h"
 
+
+#include "CompoundPart.h"
 
 
 CREATURES_IMPLEMENT_SERIAL( CompoundAgent )
@@ -100,9 +100,13 @@ void CompoundAgent::Trash()
 	base::Trash();
 
 	// Now rid ourselves of our "actual entity" (ie part zero)
-	// (Note: We need part 0 during Trash())
-	delete myParts[0];
-	myParts[0] = NULL;
+	// Sometimes it isn't there (file not found, for example)
+	if (myParts.size() > 0)
+	{
+		delete myParts[0];
+		myParts[0] = NULL;
+	}
+	
 	myParts.clear();
 }
 
@@ -111,7 +115,9 @@ CompoundPart* CompoundAgent::GetPart( int partid )
 {
 	_ASSERT(!myGarbaged);
 
-	ASSERT( partid >=0 && partid < myParts.size() );
+	if (partid < 0 || partid >= myParts.size() )
+		return NULL;
+
 	return myParts[ partid ];
 }
 
@@ -163,8 +169,8 @@ CompoundAgent::CompoundAgent(	int family, int genus, int species, uint32 id,
 		SetNormalPlane(plane,0);
 		InitialisePickupPointsAndHandles();
 			
-		myCurrentWidth = part0->GetEntity()->GetWidth();
-		myCurrentHeight = part0->GetEntity()->GetHeight();
+		SetWidth(part0->GetEntity()->GetWidth());
+		SetHeight(part0->GetEntity()->GetHeight());
 
 	}
 	catch (BasicException& e)
@@ -208,12 +214,8 @@ void CompoundAgent::MoveTo(float x,float y)
 }
 
 
-void CompoundAgent::Update()
+void CompoundAgent::OwnUpdate()
 {
-	_ASSERT(!myGarbaged);
-
-	base::Update();
-
 	_ASSERT(!myGarbaged);
 
 	// Call update routine for each part
@@ -224,9 +226,16 @@ void CompoundAgent::Update()
 			(*it)->Tick();
 	}
 
-	myCurrentWidth = (*myParts.begin())->GetEntity()->GetWidth();
-	myCurrentHeight = (*myParts.begin())->GetEntity()->GetHeight();
+	SetWidth((*myParts.begin())->GetEntity()->GetWidth());
+	SetHeight((*myParts.begin())->GetEntity()->GetHeight());
+}
 
+void CompoundAgent::Update()
+{
+	_ASSERT(!myGarbaged);
+
+	base::Update();
+	OwnUpdate();
 }
 
 void CompoundAgent::HandleUI( Message *msg )
@@ -249,7 +258,7 @@ void CompoundAgent::HandleUI( Message *msg )
 
 
 
-bool CompoundAgent::HitTest(Vector2D& point)
+bool CompoundAgent::HitTest(const Vector2D& point,bool alwaysTestPixelPerfectly /* = false*/)
 {
 	_ASSERT(!myGarbaged);
 
@@ -262,8 +271,9 @@ bool CompoundAgent::HitTest(Vector2D& point)
 	{
 		if( *it )
 		{
-			if((*it)->GetPixelPerfectTesting())
+			if((*it)->GetPixelPerfectTesting() || alwaysTestPixelPerfectly)
 			{
+		
 				if(!(*it)->GetEntity()->IsPixelTransparent(px, py))
 					return true;
 			}
@@ -463,7 +473,7 @@ int CompoundAgent::ClickAction(int x,int y)    // xy in world coords
 // Helper function for ANIM macro - read a square bracketed string from ip[], 
 // and use as animation string for entity
 //char* CompoundAgent::SetAnim(char* ip,int part)
-bool CompoundAgent::SetAnim(const uint8_t* anim, int length, int partid )
+bool CompoundAgent::SetAnim(const uint8* anim, int length, int partid )
 {
 	_ASSERT(!myGarbaged);
 
@@ -473,7 +483,7 @@ bool CompoundAgent::SetAnim(const uint8_t* anim, int length, int partid )
 	return (myParts[partid]->SetAnim( anim, length ));
 }
 
-bool CompoundAgent::SetFrameRate(const uint8_t rate, int partid)
+bool CompoundAgent::SetFrameRate(const uint8 rate, int partid)
 {
 	_ASSERT(!myGarbaged);
 	if (!ValidatePart(partid))
@@ -519,8 +529,8 @@ bool CompoundAgent::ShowPose( int pose, int partid )
 
 	if(partid == 0)
 	{
-		myCurrentWidth = myParts[partid]->GetEntity()->GetWidth();
-		myCurrentHeight = myParts[partid]->GetEntity()->GetHeight();
+		SetWidth(myParts[partid]->GetEntity()->GetWidth());
+		SetHeight(myParts[partid]->GetEntity()->GetHeight());
 	}
 
 	return true;
@@ -559,16 +569,26 @@ int CompoundAgent::GetBaseImage(int part)
 	return myParts[part]->GetEntity()->GetBaseAndCurrentIndex();
 }
 
+int CompoundAgent::GetAbsoluteBase(int part)
+{
+	_ASSERT(!myGarbaged);
+
+	if (!ValidatePart(part))
+		return -1;
+
+	return myParts[part]->GetEntity()->GetAbsoluteBaseImage();
+}
+
 // virtual
 void CompoundAgent::DrawLine( int32 x1,
 					int32 y1,
 					int32 x2,
 					int32 y2 ,	 
-					uint8_t lineColourRed /*= 0*/,
-					uint8_t lineColourGreen /*= 0*/,
-					uint8_t lineColourBlue /*= 0*/,
-						 uint8_t stippleon /* =0*/,
-							 uint8_t stippleoff/* = 0*/,
+					uint8 lineColourRed /*= 0*/,
+					uint8 lineColourGreen /*= 0*/,
+					uint8 lineColourBlue /*= 0*/,
+						 uint8 stippleon /* =0*/,
+							 uint8 stippleoff/* = 0*/,
 							 	 uint32 stippleStart /* =0*/) 
 {
 	_ASSERT(!myGarbaged);
@@ -656,7 +676,11 @@ bool CompoundAgent::Read(CreaturesArchive &archive)
 		return false;
 	}
 
+	// Reset camera shyness
+	DoSetCameraShyStatus();
+#ifndef C2D_DIRECT_DISPLAY_LIB
 	DrawMirrored(IsMirrored());
+#endif
 	return true;
 }
 
@@ -687,7 +711,7 @@ void CompoundAgent::SetGallery(FilePath const& galleryName, int baseimage, int p
 		if(cp)
 		{
 			EntityImage* entityImage = cp->GetEntity();
-			if(entityImage->GetGallery()->GetName() != galleryName)
+			if(entityImage->GetGalleryName() != galleryName.GetFullPath())
 			{
 				entityImage->Unlink();
 				entityImage->SetGallery(galleryName,baseimage);
@@ -695,10 +719,24 @@ void CompoundAgent::SetGallery(FilePath const& galleryName, int baseimage, int p
 			}
 		}
 		DoSetCameraShyStatus();
+		UpdateFromPresence();
 	}
 }
 
-void CompoundAgent::Tint(const uint16* tintTable, int part)
+void CompoundAgent::GetGallery(std::string& str, int part)
+{
+	if(part < myParts.size() && part >= 0)
+	{
+		EntityImage* entityImage = myParts[part]->GetEntity();
+
+		if(entityImage)
+		{
+			str = entityImage->GetGalleryName();
+		}
+	}
+}
+
+void CompoundAgent::Tint(const uint16* tintTable, int part, bool oneImage)
 {
 	_ASSERT(!myGarbaged);
 
@@ -707,23 +745,324 @@ void CompoundAgent::Tint(const uint16* tintTable, int part)
 		CompoundPart* cp = myParts[part];
 		if (cp)
 		{
-			cp->Tint(tintTable);
+			cp->Tint(tintTable, oneImage);
+			DoSetCameraShyStatus();
 		}
 	}
+}
+
+void CompoundAgent::UnClone(int part/*=0*/)
+{
+	_ASSERT(!myGarbaged);
+
+	if(part < myParts.size() && part >= 0)
+	{
+		CompoundPart* cp = myParts[part];
+		if (cp)
+		{
+			cp->UnClone();
+			DoSetCameraShyStatus();
+		}
+	}
+
 }
 
 void CompoundAgent::DrawMirrored(bool mirror)
 {
 	_ASSERT(!myGarbaged);
-	_ASSERT( myParts.size() >= 1 );
 
 	PartIterator it = myParts.begin();
-	for( ++it; it != myParts.end(); ++it )
+
+	for( ; it != myParts.end(); ++it )
 	{
 		if( *it)
 		{
 			(*it)->DrawMirrored( mirror );
 		}
 	}
+	myDrawMirroredFlag = mirror;
+}
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void CompoundAgent::DrawFlippedVertically(bool flip)
+{
+	_ASSERT(!myGarbaged);
+
+	PartIterator it = myParts.begin();
+
+	for( it; it != myParts.end(); ++it )
+	{
+		if( *it)
+		{
+			(*it)->DrawMirrored(false);
+			(*it)->DrawFlippedVertically( flip );
+		}
+	}
+}
+
+
+void CompoundAgent::CreateAnimStrip(int blockwidth, int blockheight, int part)
+{
+	if(part < myParts.size() && part >= 0)
+	{
+		CompoundPart* cp = myParts[part];
+		if (cp)
+		{
+			cp->CreateAnimStrip(blockwidth,  blockheight);
+
+			if( part != 0 )
+			{
+				cp->SussPosition( myPositionVector );
+				cp->SussPlane( GetPlane(0) );
+				cp->ChangeCameraShyStatus( (GetAttributes() & attrCameraShy) == attrCameraShy );
+			}
+			else
+			{
+				cp->GetEntity()->SetPlane( GetPlane(0) );
+				myNormalBasePlaneForPartZero = GetPlane(0);
+				cp->ChangeCameraShyStatus( (GetAttributes() & attrCameraShy) == attrCameraShy );
+				SetWidth(cp->GetEntity()->GetWidth());
+				SetHeight(cp->GetEntity()->GetHeight());
+			}
+		}
+	}
 
 }
+
+void CompoundAgent::SetSpriteRotationAngle(uint16 angle)
+{
+
+	_ASSERT(!myGarbaged);
+
+	PartIterator it = myParts.begin();
+
+	for( it; it != myParts.end(); ++it )
+	{
+		if( *it)
+		{
+		// must override any other effects
+		(*it)->DrawMirrored(false);
+		(*it)->DrawFlippedVertically(false);
+		(*it)->SetSpriteRotationAngle(angle);
+		}
+	}
+}
+
+uint16 CompoundAgent::GetSpriteRotationAngle()
+{
+	_ASSERT(!myGarbaged);
+
+	//all parts should have the same rotation angle
+	PartIterator it = myParts.begin();
+	if( *it)
+	{
+		return (*it)->GetSpriteRotationAngle();
+	}
+
+	return 0;
+}
+
+
+#endif
+
+void CompoundAgent::Scale(float scaleby, bool on)
+{	
+	PartIterator it = myParts.begin();
+	
+	EntityImage* ent = NULL;
+
+	for( it = myParts.begin(); it != myParts.end(); ++it )
+	{
+		if( *it)
+		{
+			ent = (*it)->GetEntity();
+			ent->Scale( scaleby , on);
+		}
+	}
+}
+
+
+void CompoundAgent::DrawAlphaBlended(int alphamask, bool onOrOff, int part )
+{
+	PartIterator it = myParts.begin();
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+	EntityImage* ent = NULL;
+
+	if(part == -1)
+	{
+		for( it = myParts.begin(); it != myParts.end(); ++it )
+		{
+			if( *it)
+			{
+				ent = (*it)->GetEntity();
+				ent->DrawAlphaBlended(alphamask,onOrOff);
+			}
+		}
+	}
+	else
+	{
+		if(part < myParts.size() && part >= 0)
+		{
+			CompoundPart* cp  = myParts[part];
+			if(cp)
+			{
+				cp->DrawAlphaBlended(onOrOff, alphamask);
+			}
+		}
+	}
+#else
+	if(part == -1)
+	{
+		for( it = myParts.begin(); it != myParts.end(); ++it )
+		{
+			if( *it)
+			{
+				(*it)->DrawAlphaBlended(onOrOff,alphamask);
+			}
+		}
+	}
+	else
+	{
+		if(part < myParts.size() && part >= 0)
+		{
+			CompoundPart* cp  = myParts[part];
+			if(cp)
+			{
+				cp->DrawAlphaBlended(onOrOff, alphamask);
+			}
+		}
+	}
+#endif
+}
+
+
+void CompoundAgent::DrawShadowed(int shadowvalue, int x, int y, bool onOrOff)
+{
+	PartIterator it = myParts.begin();
+	
+	EntityImage* ent = NULL;
+
+	for( it = myParts.begin(); it != myParts.end(); ++it )
+	{
+		if( *it)
+		{
+			ent = (*it)->GetEntity();
+			ent->DrawShadowed(shadowvalue, x, y, onOrOff);
+		}
+	}
+
+}
+
+void CompoundAgent::DrawToNewWidthAndHeight(int stretchedWidth, int stretchedHeight, bool onOrOff)
+{
+		
+	PartIterator it = myParts.begin();
+	
+	EntityImage* ent = NULL;
+
+	for( it = myParts.begin(); it != myParts.end(); ++it )
+	{
+		if( *it)
+		{
+			ent = (*it)->GetEntity();
+			ent->DrawToNewWidthAndHeight(stretchedWidth, stretchedHeight, onOrOff);
+		}
+	}
+}
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+void CompoundAgent::RememberTintInformation(int worldIndex, 
+											int part /*= 0*/,
+								int red/* =-1*/,
+								int green /*=-1*/, 
+								int blue /*=-1*/, 
+								int rot/*=-1*/, 
+								int swp/*=-1*/
+								)
+{
+	if(part < myParts.size() && part >= 0)
+	{
+		CompoundPart* cp = myParts[part];
+			cp->RememberTintInformation(worldIndex,red,
+											green,blue,rot,swp);
+		
+	}
+}
+
+void CompoundAgent::RestoreTint(int part/* = 0 */)
+{
+	if(part < myParts.size() && part >= 0)
+	{
+		CompoundPart* cp = myParts[part];
+			cp->RestoreTint();	
+	}
+}
+
+#endif
+
+int CompoundAgent::NextPart(int previous)
+{
+	if (previous < 0 || previous >= myParts.size())
+		return 0;
+
+	for (int i = previous + 1; i < myParts.size(); ++i)
+	{
+		if (myParts[i] != NULL)
+			return i;
+	}
+
+	return -1;
+}
+
+
+void CompoundAgent::MovePart(int part, Vector2D position)
+{
+	_ASSERT(!myGarbaged);
+	if(part < myParts.size() && part >= 0)
+	{
+		CompoundPart* cp = myParts[part];
+		if (cp)
+		{
+			cp->SetRelX(position.x);
+			cp->SetRelY(position.y);
+			cp->SussPosition( myPositionVector );
+		}
+	}
+}
+
+// Returns the part under the given coordinate.
+// Just uses the rectangles and ignores transparency for now
+// (it probably should do different things based on the type of the part,
+// but that is excessively complex for the original application of it)
+int CompoundAgent::GetPartOver( const Vector2D& absolutePosition )
+{
+	for (int i=myParts.size(); i >=0 ; --i)
+	{
+		if (!ValidatePart(i))
+			continue;
+
+		CompoundPart* part = myParts[i];
+		
+		// Hmm, are we inside it?
+		float clickX = absolutePosition.x;
+		float clickY = absolutePosition.y;
+		float partX = myPositionVector.x + part->GetRelX();
+		float partY = myPositionVector.y + part->GetRelY();
+		// If up or left of part, don't get size from entity (quicker)
+		if ((clickX < partX) || (clickY < partY))
+			continue;
+		// Right then, is it in the entity?
+		partX += part->GetEntity()->GetWidth();
+		partY += part->GetEntity()->GetHeight();
+		// if down / right of part, it's not in the entity
+		if ((clickX > partX) || (clickY > partY))
+			continue;
+
+		// This is inside the entity of a UI button or text edit field.
+		return i; 
+	}
+
+	return -1;
+}
+

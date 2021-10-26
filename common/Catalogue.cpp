@@ -37,6 +37,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 
@@ -51,7 +52,7 @@ Catalogue::Catalogue()
 // Exception constructor with printf-style formatting
 Catalogue::Err::Err( const char* fmt, ... )
 {
-	char buf[ 512 ];
+	char buf[ 4096 ];
 	va_list args;
 	va_start( args, fmt );
 	vsprintf( buf, fmt, args );
@@ -90,6 +91,8 @@ void Catalogue::AddDir( const std::string& dir, const std::string& langid )
 	if( !small_yellow_and_leechlike.LocaliseDirContents( dir, langid, files, "*.catalogue" ) )
 		throw Err( "CLE0002: Error reading directory \"%s\"", dir.c_str() );
 
+	// Load them in alphabetical order
+	std::sort(files.begin(), files.end());
 	for( it = files.begin(); it != files.end(); ++it )
 		AddLocalisedFile( *it );
 }
@@ -150,13 +153,21 @@ void Catalogue::AddLocalisedFile( const std::string& file )
 				bool array = (tok == "ARRAY");
 
 				toktype = lex.GetToken( tok );
+				// Check for OVERRIDE directive
+				bool override = false;
+				if (toktype == SimpleLexer::typeSymbol && tok == "OVERRIDE")
+				{
+					toktype = lex.GetToken( tok );
+					override = true;
+				}
+
 				if( toktype != SimpleLexer::typeString )
 				{
-					throw Err( "CLE0005: Expecting string (in \"%s\", line %d)",
+					throw Err( "CLE0005: Expecting string or OVERRIDE (in \"%s\", line %d)",
 						file.c_str(), lex.GetLineNum() );
 				}
 
-				if (myTags.find(tok) != myTags.end() )
+				if (!override && (myTags.find(tok) != myTags.end()) )
 				{
 					throw Err( "CLE0006: Tag identifier clash (tag %s in \"%s\", line %d)",
 						tok.c_str(), file.c_str(), lex.GetLineNum() );
@@ -164,6 +175,7 @@ void Catalogue::AddLocalisedFile( const std::string& file )
 
 				myTags[ tok ].id = myNextFreeId;
 				myTags[ tok ].noOfItems = -1;
+				myTags[ tok ].override = override;
 				previousTag = tok;
 		
 				if( array )
@@ -230,4 +242,81 @@ void Catalogue::DumpTags( std::ostream& out )
 	}
 }
 
+
+void Catalogue::Merge(const Catalogue& from)
+{
+	// Make sure any clashes match
+	CheckForClashes(from);
+	from.CheckForClashes(*this);
+
+	// Go through and add everything to us that is in from
+	std::map<std::string, struct TagStruct>::const_iterator it;
+	for (it = from.myTags.begin(); it != from.myTags.end(); ++it)
+	{
+		std::string key = it->first;
+
+		// Only add things that we don't already have
+		// or that have more entries than we already have
+		// or that explicitly OVERRIDE
+		int count = TagPresent(key) ?  GetArrayCountForTag(key) : -1;
+		int fromCount = from.GetArrayCountForTag(key);
+		bool override = GetOverride(key);
+		bool fromOverride = from.GetOverride(key);
+		if ((fromCount > count && !override) || fromOverride)
+		{
+			// Erase entries we already have
+			if (TagPresent(key))
+			{
+				for (int i = myTags[key].id; i < myTags[key].id + myTags[key].noOfItems; ++i)
+					myStrings.erase(i);
+				myTags.erase(key);
+			}
+
+			// Add in the main structure
+			TagStruct tagStruct;
+			tagStruct.id = myNextFreeId;
+			tagStruct.noOfItems = from.GetArrayCountForTag(key);
+			tagStruct.override = fromOverride;
+			myTags[key] = tagStruct;
+			// And all the individual string entries
+			for (int i = 0; i < tagStruct.noOfItems; ++i)
+			{
+				myStrings[myNextFreeId] = from.Get(key, i);
+				myNextFreeId++;
+			}
+		}
+	}
+}
+
+// Makes sure that if the same tag is in both the catalogues, then they have
+// exactly the same entries, although possibly one has extra entries
+void Catalogue::CheckForClashes(const Catalogue& from) const
+{
+	std::map<std::string, struct TagStruct>::const_iterator it;
+
+	for (it = myTags.begin(); it != myTags.end(); ++it)
+	{
+		if (from.TagPresent(it->first))
+		{
+			// If either OVERRIDEs then we are OK
+			if (!it->second.override && !from.GetOverride(it->first))
+			{
+				int firstCount = it->second.noOfItems;
+				int secondCount = from.GetArrayCountForTag(it->first);
+				int minEntries = (firstCount > secondCount) ? secondCount : firstCount;
+
+				// Check the entries match up to the least one
+				for (int i = 0; i < minEntries; ++i)
+				{
+					int index = it->second.id + i;
+					std::string a = myStrings.find(index)->second;
+					std::string b = from.Get(it->first, i);
+					if (a != b)
+						throw Err("CLE0019: Two tags with the same name \"%s\" but different contents at item %d",
+							it->first.c_str(), i);
+				}
+			}
+		}
+	}
+}
 

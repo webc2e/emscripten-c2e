@@ -26,6 +26,8 @@ public:
 	void TintBitmap(Bitmap* thisBitmap) const;
 
 	const uint16* GetMyTintTable() const { return myTintTable; }
+
+	void GetTintValues(int16& redTint, int16& greenTint, int16& blueTint, int16& rotation, int16& swap);
 private:
 
 	// My Tint Tables
@@ -34,7 +36,7 @@ private:
 
 	// Specifications for tint table for use in serialisation etc.
 
-	uint8_t myRedTint,myGreenTint,myBlueTint,myRotation,mySwap;
+	uint8 myRedTint,myGreenTint,myBlueTint,myRotation,mySwap;
 
 	friend CreaturesArchive& operator<<( CreaturesArchive &ar, TintManager const &thisManager );
 	friend CreaturesArchive& operator>>( CreaturesArchive &ar, TintManager &thisManager );
@@ -45,3 +47,4 @@ CreaturesArchive& operator<<( CreaturesArchive &ar, TintManager const &thisManag
 CreaturesArchive& operator>>( CreaturesArchive &ar, TintManager &thisManager );
 
 #endif // TINTMANAGER_H
+

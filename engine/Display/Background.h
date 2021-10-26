@@ -7,11 +7,9 @@
 
 #include	<stdlib.h>
 #include	"Position.h"
-#include	"BackGroundGallery.h"
-#include	"../PersistentObject.h"
 #include	<string>
 #include    <vector>
-#include	"Bitmap.h"
+#include	<list>
 
 #define		BACKGROUND_WIDTH			DEFAULT_ENVIRONMENT_WIDTH
 #define		BACKGROUND_HEIGHT			DEFAULT_ENVIRONMENT_HEIGHT
@@ -24,11 +22,10 @@ typedef std::list<IntegerPair> IntegerPairList;
 typedef IntegerPairList::iterator IntegerPairListIterator;
 
 
-class Camera;
+class Gallery;
 
-class Background : public PersistentObject
+class Background 
 {
-	CREATURES_DECLARE_SERIAL( Background )
 
 public:
 
@@ -40,55 +37,47 @@ public:
 		std::vector<RECT>& dirtyRects,
 		IntegerPairList& dirtyTiles);
 
+	bool InitialiseGallery(std::string const& gallery_name);
 
-	Position& GetDisplayPosition(void);
+	Position GetDisplayPosition(void) const{return myWorldPosition;}
 
 	int32 GetPixelWidth(){return myPixelWidth;}
 	int32 GetPixelHeight(){return myPixelHeight;}
 
-	void SetDisplayPosition(Position& position);
+	inline void SetDisplayPosition(Position& position);
 
 	void GetConsideredDisplayArea(int32& displayWidth,
 								int32& displayHeight);
 
 
-	bool Create(FilePath const& gallery_name,
-	/*	char* map_name,*/Position topLeft,
-					Camera* owner);
-	bool Create(FilePath const& gallery_name,
-					/*	char* map_name,*/
+	bool Create(Position pos,
+		std::string const& gallery_name,
+				Position topLeft,
+				uint32 width,
+				uint32 height);
+
+	bool Create(std::string const& gallery_name,
+					Position topLeft,
+					Position displayPosition);
+
+
+	bool Create(std::string const& gallery_name,
 						RECT& bounds,
-							Camera* owner);
-
-	void SetOwner(Camera* owner){myOwnerCamera = owner;}
-
-	int32 GetTop();
-	int32 GetLeft();
-
-	Position GetTopLeft();
+							Position displayposition);
 
 
-#ifdef THIS_FUNCTION_IS_NOT_USED
-// ----------------------------------------------------------------------
-// Method:      ReadFromCD 
-// Arguments:   galleryName - the path to the background file
-//			
-// Returns:     true if the background was found false otherwise
-//
-// Description: When reading from the CD rom drive we must check which
-//				drive (there may be more than one cd drive) we have the
-//				file on and update the given path
-//				
-//			
-// ----------------------------------------------------------------------
-bool ReadFromCD(std::string& galleryName);
-#endif // THIS_FUNCTION_IS_NOT_USED
+	inline int32 GetTop();
+	inline int32 GetLeft();
 
-std::string GetBackgroundName();
+	inline Position GetTopLeft() const;
 
-// new serialization stuff
-virtual bool Write( CreaturesArchive &ar ) const;
-virtual bool Read( CreaturesArchive &ar );
+	std::string GetBackgroundName() const;
+
+	std::string GetBackgroundPath() const;
+
+	uint32 GetWidth()const {return myWidth;}
+	uint32 GetHeight()const {return myHeight;}
+
 
 
 private:
@@ -107,11 +96,48 @@ private:
 	int32		myPixelWidth;
 	int32		myPixelHeight;
 	
-	BackgroundGallery*	myGallery;
-	Camera*	myOwnerCamera;
+	Gallery*	myGallery;
 
 };
 
+int32 Background::GetTop()
+{
+	return myTopLeftWorldCoordinate.GetY();
+}
+
+int32 Background::GetLeft()
+{
+	return myTopLeftWorldCoordinate.GetX();
+}
+
+Position Background::GetTopLeft() const
+{
+	return myTopLeftWorldCoordinate;
+}
+
+
+
+
+// ----------------------------------------------------------------------
+// Method:      SetDisplayPosition 
+// Arguments:   position - world coordinates of the view
+//			
+// Returns:     None
+//
+// Description: Update the current world coordinates of the view so that
+//				we know which portions of the background we need to draw.
+//				Get the real world coordinates and then convert them to 
+//				absolute coordinates from 0,0 by subtracting them from the
+//				top left corner.
+//				
+//			
+// ----------------------------------------------------------------------
+void Background::SetDisplayPosition(Position& position)
+{
+	myWorldPosition=position;
+	myWorldPosition-= myTopLeftWorldCoordinate;
+}
 
 
 #endif		// BACKGROUND_H
+

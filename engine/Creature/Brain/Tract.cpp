@@ -11,6 +11,10 @@
 #include "../Genome.h"
 
 
+typedef std::vector<Neuron*>::iterator NeuronsIterator;
+typedef std::vector<Dendrite*>::iterator DendritesIterator;
+
+
 CREATURES_IMPLEMENT_SERIAL(Tract)
 
 // Offset into Brain.catalogue to access "Migration Parameters" fields
@@ -101,7 +105,7 @@ Tract::Tract(Genome &genome, Lobes& lobes)
 	// attach to lobes:
 	mySrc.lobe = myDst.lobe = NULL;
 	int i;
-	for ( i=0; i<lobes.size(); i++)
+	for (i=0; i<lobes.size(); i++)
 	{
 		Lobe* lobe = lobes[i];
 		if (lobe->GetToken() == srcLobeToken)
@@ -297,6 +301,17 @@ Tract::Tract(std::istream &in, Lobes& lobes)
 
 		myDendrites.push_back(dendrite);
 	}
+
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		ReadDesc(&myRunInitRuleAlwaysFlag, in);
+
+	TOKEN dstLobeToken = myDst.lobe->GetToken();
+	TOKEN srcLobeToken = mySrc.lobe->GetToken();
+
+	std::string srcName = Ezinekot(srcLobeToken);
+	std::string dstName = Ezinekot(dstLobeToken);
+	myName = srcName + "->" +dstName;
+
 }
 
 // ------------------------------------------------------------------------
@@ -366,6 +381,27 @@ int Tract::GetNoOfDendritesConnectedTo(Neuron* neuron, bool checkSrcNotDst)
 // ------------------------------------------------------------------------
 void Tract::InitNeuronLists()
 {
+#ifdef BEASTS_ADDITIONS
+	// initialize neuron lists for dendrite initialisation (and migration) purposes:
+	// first SOURCE neurons, then DESTINATION neurons:
+	for (struct TractAttachmentDetails *t=&mySrc; t!=NULL; t=(t==&mySrc?&myDst:NULL))
+	{
+		// figure out which square of neurons we wish to attach to:
+		int top		= t->neuronRangeToUse.min / t->lobe->GetWidth();
+		int left	= t->neuronRangeToUse.min % t->lobe->GetWidth();
+		int bottom	= t->neuronRangeToUse.max / t->lobe->GetWidth();
+		int right	= t->neuronRangeToUse.max % t->lobe->GetWidth();
+
+		for (int y=top; y<=bottom; y++)
+		{
+			for (int x=left; x<=right; x++)
+			{
+				t->neurons.push_back(t->lobe->GetNeuron(x + y*t->lobe->GetWidth()));
+			}
+		}
+	}
+#else
+// OLD ONE:
 	// initialize neuron lists for dendrite initialisation (and migration) purposes:
 	int i;
 	for (i=mySrc.neuronRangeToUse.min; i<=mySrc.neuronRangeToUse.max && i<mySrc.lobe->GetNoOfNeurons(); i++)
@@ -376,6 +412,7 @@ void Tract::InitNeuronLists()
 	{
 		myDst.neurons.push_back(myDst.lobe->GetNeuron(i));
 	}
+#endif
 }
 
 // ------------------------------------------------------------------------
@@ -760,8 +797,11 @@ Dendrite* Tract::GetDendriteIfExistingFromTo(Neuron* srcNeuron, Neuron* dstNeuro
 // ------------------------------------------------------------------------
 void Tract::DoUpdateFromDesc(std::istream &in)
 {
-	in.seekg(36+(7*(SVRule::length*2)), std::ios::cur);
-
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		in.seekg(36+(sizeof(SVRuleEntry)*(SVRule::length*2)), std::ios::cur);
+	else
+		in.seekg(36+(7*(SVRule::length*2)), std::ios::cur);
+	
 	int noDendrites;
 	ReadDesc(&noDendrites, in);
 	for (int i=0; i<noDendrites; i++) 
@@ -837,9 +877,9 @@ bool Tract::Write(CreaturesArchive &archive) const
 	
 	archive << (uint32)myDendrites.size();
 	int i,j;
-	for ( i=0; i<myDendrites.size(); i++)
+	for (i=0; i<myDendrites.size(); i++)
 	{
-		for ( j=0; j<NUM_SVRULE_VARIABLES; j++)
+		for (j=0; j<NUM_SVRULE_VARIABLES; j++)
 		{
 			archive << myDendrites[i]->weights[j];
 		}
@@ -898,13 +938,16 @@ bool Tract::Read(CreaturesArchive &archive)
 		archive >> myDst.lobe >> myDst.neuronRangeToUse.min >>
 			myDst.neuronRangeToUse.max >> myDst.noOfDendritesPerNeuronOnEachPass >>
 			myDst.neuralGrowthFactorStateVariableIndex;
+		if (!mySrc.lobe || ! myDst.lobe)
+			throw BasicException("Null src or dst lobe");
 		InitNeuronLists();
 
 		uint32 n;
 		archive >> n;
+		CreaturesArchive::ForceOpenRangeException(n, 0, MAX_DENDRITES_PER_TRACT);
 		myDendrites.resize(n);
 		int i;
-		for ( i=0; i<n; i++)
+		for (i=0; i<n; i++)
 		{
 			myDendrites[i] = new Dendrite();
 			for (int j=0; j<NUM_SVRULE_VARIABLES; j++)
@@ -912,22 +955,35 @@ bool Tract::Read(CreaturesArchive &archive)
 				archive >> myDendrites[i]->weights[j];
 			}
 			archive >> myDendrites[i]->idInList;
+			
 			int id;
+			
 			archive >> id;
+			// sanity check
+			if (id >= mySrc.lobe->GetNoOfNeurons())
+				id = mySrc.lobe->GetNoOfNeurons() - 1;
+			if (id < 0)
+				id = 0;
 			myDendrites[i]->srcNeuron = mySrc.lobe->GetNeuron(id);
+
 			archive >> id;
+			if (id >= myDst.lobe->GetNoOfNeurons())
+				id = myDst.lobe->GetNoOfNeurons() - 1;
+			if (id < 0)
+				id = 0;
 			myDendrites[i]->dstNeuron = myDst.lobe->GetNeuron(id);
 		}
 
 
 		archive >> n;
+		CreaturesArchive::ForceOpenRangeException(n, 0, myDendrites.size());
 		myWeakDendrites.resize(n);
 		for (i=0; i<n; i++)
 		{
 			int id;
 			archive >> id;
 			int j;
-			for( j=0; j<myDendrites.size(); j++ )
+			for(j=0; j<myDendrites.size(); j++ )
 			{
 				if( myDendrites[j]->idInList == id )
 				{
@@ -966,7 +1022,7 @@ bool Tract::Read(CreaturesArchive &archive)
 // ------------------------------------------------------------------------
 bool Tract::SetDendriteWeight( const int dendrite, const int weight, const float value)
 {
-	if(dendrite < 0 || dendrite > myDendrites.size()-1 || 
+	if(dendrite < 0 || dendrite >= myDendrites.size() || 
 		weight < 0 || weight > NUM_SVRULE_VARIABLES-1 ||
 		value < -1 || value > 1)
 		return false;
@@ -985,7 +1041,13 @@ bool Tract::SetDendriteWeight( const int dendrite, const int weight, const float
 // ------------------------------------------------------------------------
 bool Tract::SetSVFloat(int entryNo, float value)
 {
-	return myUpdateRule.SetFloat(entryNo, value);
+	if(entryNo<0 || entryNo >= SVRule::length*2)
+		return 0.0f;
+
+	if(entryNo >= SVRule::length)
+		return myUpdateRule.SetFloat(entryNo-SVRule::length, value);
+	else
+		return myInitRule.SetFloat(entryNo, value);
 }
 
 // ------------------------------------------------------------------------
@@ -1022,6 +1084,9 @@ void Tract::DumpTract(std::ostream& out)
 	for(int d = 0; d != noDendrites; d++)
 		DumpDendrite(d, out);
 
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		WriteDesc(&myRunInitRuleAlwaysFlag, out);
+
 };
 
 
@@ -1036,7 +1101,7 @@ void Tract::DumpTract(std::ostream& out)
 // ------------------------------------------------------------------------
 bool Tract::DumpDendrite(int d, std::ostream& out)
 {
-	if(d < 0 || d > myDendrites.size()-1)
+	if(d < 0 || d >= myDendrites.size())
 		return false;
 
 	WriteDesc(&myDendrites[d]->idInList, out);
@@ -1061,6 +1126,66 @@ int Tract::DumpSize()
 };
 
 
+// ------------------------------------------------------------------------
+// Function:	DumpAllDendrites
+// Class:       Tract
+// Description: Dump out the dendrite information only.
+// Arguments:   std::ostream& out = stream to dump data to
+// Returns:     bool = success
+// ------------------------------------------------------------------------
+bool Tract::DumpAllDendrites(std::ostream& out)
+{
+	int noDendrites = myDendrites.size();
+	WriteDesc(&noDendrites, out);
+	for(int d = 0; d != noDendrites; d++)
+		DumpDendrite(d, out);
+	return true;
+};
+
+// ------------------------------------------------------------------------
+// Function:	UnDumpAllDendrites
+// Class:       Tract
+// Description: Dump out the dendrite information only.
+// Arguments:   std::ostream& out = stream to dump data to
+// Returns:     bool = success
+// ------------------------------------------------------------------------
+bool Tract::UnDumpAllDendrites(std::istream& in)
+{
+	int noDendrites;
+	ReadDesc(&noDendrites,in);
+	// Confirm that the configuration file is for the 
+	// same number of dendrites as this tract contains.
+	if( noDendrites != myDendrites.size() ) {
+		ASSERT(false);
+		return false;
+	}
+
+	for(int d = 0; d != noDendrites; d++)
+		UnDumpDendrite(d, in);
+	return true;
+};
+
+// ------------------------------------------------------------------------
+// Function:    UnDumpDendrite
+// Class:       Tract
+// Description: 
+// Arguments:   int d = 
+//              std::istream& in = 
+// Returns:     bool = 
+// ------------------------------------------------------------------------
+bool Tract::UnDumpDendrite(int d, std::istream& in)
+{
+	if(d < 0 || d >= myDendrites.size())
+		return false;
+
+	ReadDesc(&myDendrites[d]->idInList, in);
+	ReadDesc(&myDendrites[d]->srcNeuron->idInList, in);
+	ReadDesc(&myDendrites[d]->dstNeuron->idInList, in);
+
+	in.read((char*)(myDendrites[d]->weights), sizeof(SVRuleVariables));
+
+	return true;
+};
 
 /////////////////////////
 // Reward/Punishment data and functions
@@ -1127,3 +1252,4 @@ bool Tract::ReinforcementDetails::Read(CreaturesArchive &archive)
 	archive >> myChemicalIndex;
 	return true;
 }
+

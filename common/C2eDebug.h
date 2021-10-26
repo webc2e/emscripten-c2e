@@ -27,10 +27,11 @@ void OutputFormattedDebugString(const char* fmt, ... );
 	#ifndef ASSERT
 		#define ASSERT _ASSERT
 	#endif
+	#define DEBUGMESSAGE(d) MessageBox(NULL, d, "Debug Message", MB_ICONINFORMATION);
 #else
 	#include <assert.h>
-	#define ASSERT assert
-	#define _ASSERT assert
+	#define ASSERT(X) assert((X))
+	#define _ASSERT(X) assert((X))
 	void OutputDebugString( const char* lpOutputString );
 	#ifndef NDEBUG
 	#define _DEBUG

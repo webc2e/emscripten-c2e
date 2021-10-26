@@ -85,3 +85,4 @@ bool Receptor::Read(CreaturesArchive &archive)	{
 	}
 	return true;
 }
+

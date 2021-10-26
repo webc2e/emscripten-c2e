@@ -27,13 +27,6 @@
 #include "../C2eServices.h"
 #include "../Map/Map.h"
 
-
-
-// The one and only description of the CAOS langauge
-// Maybe should be moved elsewhere...
-CAOSDescription theCAOSDescription;
-
-
 Orderiser::Orderiser()
 {
 	myDebugInfo = NULL;

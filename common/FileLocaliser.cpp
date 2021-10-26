@@ -43,6 +43,7 @@
 #endif
 
 #include "FileLocaliser.h"
+#include "FileFuncs.h"
 
 #include <algorithm>	// for find()
 
@@ -79,7 +80,7 @@ bool FileLocaliser::LocaliseDirContents( const std::string& dir,
 
 	// make sure the path has a trailing path separator
 	if( !path.empty() && path.find_last_of("/:\\") != path.size()-1 )
-		path += '/';
+		path += PathSeparator();
 
 	if( !GetFileList( path, allfiles, wildCard ) )
 		return false;
@@ -102,7 +103,7 @@ bool FileLocaliser::LocaliseDirContents( const std::string& dir,
 		files_it != files.end();
 		++files_it )
 	{
-		if( !LocaliseFilename( (*files_it), langid, wildCard ) )
+		if( !LocaliseFilename( (*files_it), langid, wildCard, allfiles ) )
 			return false;
 	}
 
@@ -112,10 +113,24 @@ bool FileLocaliser::LocaliseDirContents( const std::string& dir,
 
 
 
+bool FileLocaliser::LocaliseFilename( std::string& filename,
+	const std::string& langid,
+	const std::string& wildCard)
+{
+	std::string path, name, ext;
+	SplitPath( filename, path, name, ext );
+
+	file_list files;
+	if( !GetFileList( path, files, wildCard ) )
+		return false;
+
+	return LocaliseFilename(filename, langid, wildCard, files);
+}
 
 bool FileLocaliser::LocaliseFilename( std::string& filename,
 	const std::string& langid,
-	const std::string& wildCard /* = "*" */)
+	const std::string& wildCard,
+	const file_list& files)
 {
 	std::string path;
 	std::string name;
@@ -123,16 +138,12 @@ bool FileLocaliser::LocaliseFilename( std::string& filename,
 	std::string str;
 	std::string prilang;
 	std::string seclang;
-	file_list files;
-	file_list::iterator file_it;
+	file_list::const_iterator file_it;
 
 	prilang = GetLangPrimary( langid );
 	seclang = GetLangSecondary( langid );
 
 	SplitPath( filename, path, name, ext );
-
-	if( !GetFileList( path, files, wildCard ) )
-		return false;
 
 	file_it = FindBestFile( files, path, name, prilang, seclang, ext );
 	if( file_it == files.end() )
@@ -294,11 +305,16 @@ bool FileLocaliser::GetFileList( const std::string& path, file_list& files, cons
 			continue;
 		}
 		else if ( fnresult != 0 )
+		{
+			closedir(dir);
 			return false;	// error
-
+		}
 
 		if( stat( fullfilename.c_str(), &s ) != 0 )
+		{
+			closedir(dir);
 			return false;
+		}
 
 		if( !S_ISDIR( s.st_mode ) )
 		{
@@ -335,14 +351,14 @@ bool FileLocaliser::GetFileList( const std::string& path, file_list& files, cons
 
 
 
-FileLocaliser::file_list::iterator FileLocaliser::FindBestFile( file_list& files,
+FileLocaliser::file_list::const_iterator FileLocaliser::FindBestFile(const file_list& files,
 	const std::string path,
 	const std::string name,
 	const std::string prilang,
 	const std::string seclang,
 	const std::string ext )
 {
-	file_list::iterator it;
+	file_list::const_iterator it;
 
 	// (deep breath)
 

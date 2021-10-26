@@ -55,13 +55,13 @@ public:
 	// A Catalogue::Err will be thrown if the string (or the tag) can't be
 	// found.
 	// ------------------------------------------------------------------------
-	const char* Get( const std::string& basetag, int offsetid=0 );
+	const char* Get( const std::string& basetag, int offsetid=0 ) const;
 
 	// ------------------------------------------------------------------------
 	// Arguments:	nametag - name of tag to look for
 	// Returns:		true if the tag exists, false otherwise
 	// ------------------------------------------------------------------------
-	bool TagPresent( const std::string& nametag );
+	bool TagPresent( const std::string& nametag ) const;
 
 
 	// ------------------------------------------------------------------------
@@ -73,7 +73,7 @@ public:
 	// Tags are defined using the TAG keyword in catalogue files.
 	// A Catalogue::Err will be thrown if the tag can't be found.
 	// ------------------------------------------------------------------------
-	int GetArrayCountForTag( const std::string& nametag );
+	int GetArrayCountForTag( const std::string& nametag ) const;
 
 	
 	// ------------------------------------------------------------------------
@@ -115,6 +115,13 @@ public:
 	void AddDir( const std::string& dir, const std::string& langid );
 
 	
+	// Makes sure that if the same tag is in both the catalogues, then they have
+	// exactly the same entries
+	void CheckForClashes(const Catalogue& from) const;
+
+	// Merges two catalogues together.  Checkes there are no clashes first.
+	void Merge(const Catalogue& from);
+
 	// ------------------------------------------------------------------------
 	// Class: Catalogue::Err
 	// Description:
@@ -132,14 +139,16 @@ public:
 	void DumpTags( std::ostream& out );
 
 private:
-	const char* Get( int id );
-	int FindTag( const std::string& nametag );
+	const char* Get( int id ) const;
+	int FindTag( const std::string& nametag ) const;
+	bool GetOverride( const std::string& nametag ) const;
 
 	int myNextFreeId;
 
 	struct TagStruct {
 		int id;
 		int noOfItems;		// -1 means unspecified
+		bool override;
 	};
 
 	std::map< int, std::string > myStrings;
@@ -148,9 +157,9 @@ private:
 	void AddLocalisedFile( const std::string& file );
 };
 
-inline const char* Catalogue::Get( int id )
+inline const char* Catalogue::Get( int id ) const
 {
-	std::map< int, std::string >::iterator it;
+	std::map< int, std::string >::const_iterator it;
 
 	it = myStrings.find( id );
 	if( it == myStrings.end() )
@@ -158,10 +167,10 @@ inline const char* Catalogue::Get( int id )
 	return (*it).second.c_str();
 }
 
-inline const char* Catalogue::Get( const std::string& basetag, int offsetid )
+inline const char* Catalogue::Get( const std::string& basetag, int offsetid ) const
 {
 	int baseIndex = FindTag( basetag );
-	int noItems = myTags[basetag].noOfItems;
+	int noItems = myTags.find(basetag)->second.noOfItems;
 	if (noItems == -1)
 	{
 		throw Err( "CLE0013: Internal catalogue error, unexpected -1");
@@ -176,9 +185,9 @@ inline const char* Catalogue::Get( const std::string& basetag, int offsetid )
 	return Get(baseIndex + offsetid );
 }
 
-inline int Catalogue::GetArrayCountForTag( const std::string& nametag )
+inline int Catalogue::GetArrayCountForTag( const std::string& nametag ) const
 {
-	std::map< std::string, struct TagStruct >::iterator it;
+	std::map< std::string, struct TagStruct >::const_iterator it;
 
 	it = myTags.find( nametag );
 	if( it == myTags.end() )
@@ -188,9 +197,9 @@ inline int Catalogue::GetArrayCountForTag( const std::string& nametag )
 }
 
 
-inline int Catalogue::FindTag( const std::string& nametag )
+inline int Catalogue::FindTag( const std::string& nametag ) const
 {
-	std::map< std::string, struct TagStruct >::iterator it;
+	std::map< std::string, struct TagStruct >::const_iterator it;
 
 	it = myTags.find( nametag );
 	if( it == myTags.end() )
@@ -199,15 +208,24 @@ inline int Catalogue::FindTag( const std::string& nametag )
 	return (*it).second.id;
 }
 
-inline bool Catalogue::TagPresent( const std::string& nametag )
+inline bool Catalogue::TagPresent( const std::string& nametag ) const
 {
-	std::map< std::string, struct TagStruct >::iterator it;
+	std::map< std::string, struct TagStruct >::const_iterator it;
 
 	it = myTags.find( nametag );
 
 	return it != myTags.end();
 }
 
+inline bool Catalogue::GetOverride( const std::string& nametag ) const
+{
+	std::map< std::string, struct TagStruct >::const_iterator it;
+
+	it = myTags.find( nametag );
+	if (it == myTags.end())
+		return false;
+	return it->second.override;	
+}
 
 #endif // CATALOGUE_H
 

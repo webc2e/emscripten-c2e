@@ -11,30 +11,17 @@
 class Line: public DrawableObject
 {
 public:
-	Line();
-	~Line();
-
-	Line( int32 x1, int32 y1, int32 x2, int32 y2,
-							 uint8_t lineColourRed = 0,
-							 uint8_t lineColourGreen = 0,
-							 uint8_t lineColourBlue = 0,
-							 uint8_t stippleOnValue =0,
-							 uint8_t stippleOffValue =0,
+	Line(int32 screenx1, int32 screeny1, int32 screenx2, int32 screeny2,
+			   int32 worldx1, int32 worldy1, int32 worldx2, int32 world2,
+							 uint8 lineColourRed = 0,
+							 uint8 lineColourGreen = 0,
+							 uint8 lineColourBlue = 0,
+							 uint8 stippleOnValue =0,
+							 uint8 stippleOffValue =0,
 							 uint32 stipplestartAt =0,
 							 uint32 _plane = 9998);
 
-	bool SetParameters( int32 x1, int32 y1, int32 x2, int32 y2,
-							 uint8_t lineColourRed = 0,
-							 uint8_t lineColourGreen = 0,
-							 uint8_t lineColourBlue = 0 ,
-							 uint8_t stippleOnValue =0,
-							 uint8_t stippleOffValue =0,
-							 uint32 stipplestartAt =0,
-							 uint32 _plane = 9998);
 
-//	RECT GetBound(){return myBound;}
-
-	void EraseLine(){IamValid = false;}
 
 // ----------------------------------------------------------------------
 // Method:      Draw
@@ -47,19 +34,18 @@ public:
 	virtual void DrawMirrored();
 
 	virtual void SetCurrentBound(RECT* rect= NULL);
-
-	virtual bool Visible( RECT& rect);
-		 	
+	 	
 	virtual Position GetWorldPosition();
 
 	virtual void SetScreenPosition(Position pos);
+    virtual bool Visible(RECT& rect);
 
 private:
 	// screen values
-	int32 myX1;
-	int32 myX2;
-	int32 myY1;
-	int32 myY2;
+	int32 myScreenX1;
+	int32 myScreenX2;
+	int32 myScreenY1;
+	int32 myScreenY2;
 
 	// world values
 	int32 myWorldx1;
@@ -67,17 +53,17 @@ private:
 	int32 myWorldy1;
 	int32 myWorldy2;
 
-	uint8_t myLineColourRed;
-	uint8_t myLineColourGreen;
-	uint8_t myLineColourBlue;
+	uint8 myLineColourRed;
+	uint8 myLineColourGreen;
+	uint8 myLineColourBlue;
 
-	uint8_t myStippleOnValue;
-	uint8_t myStippleOffValue;
+	uint8 myStippleOnValue;
+	uint8 myStippleOffValue;
 
 	uint32 myStippleStartAt;
 
-//	RECT myBound;
 	bool IamValid;
 };
 
 #endif // LINE_H
+

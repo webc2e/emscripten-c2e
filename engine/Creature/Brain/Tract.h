@@ -12,11 +12,15 @@
 #include "Dendrite.h"
 #include "Lobe.h"
 
+
+
+#include <vector>
+typedef std::vector<Lobe*> Lobes;
+typedef std::vector<Dendrite*> Dendrites;
+
+
 class Genome;
 class GenomeInitFailedException;
-
-class Tract;
-typedef std::vector<Tract*> Tracts;
 
 class Tract : public BrainComponent {
 	typedef BrainComponent base;
@@ -49,6 +53,12 @@ public:
 	void DumpTract(std::ostream& out);
 	bool DumpDendrite(int d, std::ostream& out);
 	int DumpSize();
+
+	// Dump and undump dendrite information, used for 
+	// storing learned experience on Palm export
+	bool DumpAllDendrites(std::ostream& out);
+	bool UnDumpAllDendrites(std::istream& in);
+	bool UnDumpDendrite(int d, std::istream& in);
 
 protected:
 	std::string myName;

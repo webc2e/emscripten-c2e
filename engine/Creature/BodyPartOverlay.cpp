@@ -25,9 +25,8 @@
 
 #include "BodyPartOverlay.h"
 #include "../Entity.h"
-#include "Skeleton.h"
-#include "../App.h"
 #include "../General.h"
+#include "../DirectoryManager.h"
 
 CREATURES_IMPLEMENT_SERIAL( BodyPartOverlay )
 
@@ -67,6 +66,7 @@ void BodyPartOverlay::Init()
 	for(int i=0; i< NUM_LAYERS;i++)
 	{
 		myClothingSetForEachLayer[i] = -1;
+		myStoredClothingSetForEachLayer[i] = -1;
 	}
 
 
@@ -78,41 +78,27 @@ void BodyPartOverlay::ReloadOverlay(	int32 part,// part number
 								int32 age,// IDEAL age & variant to look for
 								int32 variant)
 {
-	char buf[_MAX_PATH];
-	theApp.GetDirectory(OVERLAYS_DIR,buf);
-
-	std::string pathname(buf);
-
 	// clothes have a prefix
 	std::string galleryname;
 
 	galleryname = BuildFsp(ValidFsp(part,
 									genus,
-									1, // gender indifferent default to male
+									sex, // gender indifferent default to male
 									age,
-									0, // variant is indifferent default to 'a'
+									variant, // variant is indifferent default to 'a'
 									"c16",
 									OVERLAYS_DIR, true),
 									"c16",
 									-1,
 									true); // overlay
 
-
-	pathname += galleryname;
-
-	
 	myBodyPart->SetOverlayGallery(FilePath( galleryname, OVERLAYS_DIR ));
-	
-
 }
 
 BodyPartOverlay::~BodyPartOverlay()
 {
 
 }
-
-
-
 
 
 void BodyPartOverlay::SetBodyPartFileName(int part,
@@ -126,11 +112,11 @@ void BodyPartOverlay::SetBodyPartFileName(int part,
 						sex,
 						age,
 						variant,
-						"C16",
+						"c16",
 						OVERLAYS_DIR);
 	if(fsp)
 	{
-		// TO DO:  Alima this will need to be a filepath
+		// TODO:  Alima this will need to be a filepath
 		// but for now this should not be used
 		myBodyPartFileName = BuildFsp(fsp, "");
 
@@ -183,9 +169,12 @@ bool BodyPartOverlay::SetOverlay(int32 set,int32 direction,int32 layer)
 
 int BodyPartOverlay::GetOverlay(int32 layer /*=-1*/)
 {
+	// return the outermost layer of clothing if no layer
+	// is specified
+
 	if(layer == -1)
 	{
-		for(int32 i =0; i< NUM_LAYERS; i++)
+		for(int32 i = NUM_LAYERS -1; i--;)
 		{
 			if(myClothingSetForEachLayer[i] != -1)
 				return myClothingSetForEachLayer[i];
@@ -235,6 +224,7 @@ bool BodyPartOverlay::Write( CreaturesArchive &ar ) const
 	for(int32 i =0; i< NUM_LAYERS; i++)
 	{
 	ar <<  myClothingSetForEachLayer[i];
+	ar <<  myStoredClothingSetForEachLayer[i];
 	}
 	return true;
 }
@@ -254,7 +244,9 @@ bool BodyPartOverlay::Read( CreaturesArchive &ar )
 
 		for(int32 i =0; i< NUM_LAYERS; i++)
 		{
-		ar >>  myClothingSetForEachLayer[i];
+			ar >>  myClothingSetForEachLayer[i];
+			if(version >= 25)
+				ar >>  myStoredClothingSetForEachLayer[i];
 		}
 	}
 	else
@@ -265,3 +257,43 @@ bool BodyPartOverlay::Read( CreaturesArchive &ar )
 
 	return true;
 }
+
+
+void BodyPartOverlay::StoreCurrentState()
+{
+	for(int i=0; i< NUM_LAYERS;i++)
+	{
+			myStoredClothingSetForEachLayer[i] = 
+				myClothingSetForEachLayer[i];
+	}
+}
+
+void BodyPartOverlay::ReturnToStoredState(int direction)
+{
+	for(int i=0; i< NUM_LAYERS;i++)
+	{
+			myClothingSetForEachLayer[i] = 
+				myStoredClothingSetForEachLayer[i];
+	}
+
+	// for each layer set the overlay
+	int set =-1;
+	int overlayFileIndex = 0;
+
+	for(int32 layer = 0; layer < NUM_LAYERS; ++layer)
+	{
+		set = myClothingSetForEachLayer[layer];
+			
+		int32 overlayindex = -1;
+		
+		if(set != -1)
+		{
+			overlayindex = set * MAXVIEWS;
+			// now add on the appropriate amount of sprites for the direction
+			overlayindex+=direction;
+		}
+
+		 myBodyPart->SetOverlayIndex(overlayindex,layer);
+	}
+}
+

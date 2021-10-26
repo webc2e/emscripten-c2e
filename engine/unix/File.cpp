@@ -1,3 +1,5 @@
+// Unix
+
 // --------------------------------------------------------------------------
 // Filename:	File.cpp
 // Class:		File
@@ -49,6 +51,7 @@ void File::Open( const std::string& name,
 	else if( (desiredAccessFlags & GENERIC_WRITE) )
 		oflags |= O_WRONLY;
 
+	myName = name;
 	myDiskFileHandle = open( name.c_str(), oflags, S_IREAD|S_IWRITE );
 	if (myDiskFileHandle==INVALID_HANDLE_VALUE)
 		throw FileException( "File::Open", __LINE__);
@@ -76,6 +79,7 @@ void File::Create( const std::string& name,
 		oflags |= O_WRONLY;
 
 
+	myName = name;
 	myDiskFileHandle = open( name.c_str(), oflags, S_IREAD|S_IWRITE );
 
 	if( myDiskFileHandle==INVALID_HANDLE_VALUE)
@@ -144,14 +148,6 @@ void File::Write(std::string string)
 	Write("\0",1);
 }
 
-bool File::FileExists(std::string& filename)
-{
-	struct stat s;
-	if( stat( filename.c_str(), &s) == -1)
-		return false;
-	return true;
-}
-
 void File::Close()
 {
 	if (myDiskFileHandle!=INVALID_HANDLE_VALUE)
@@ -161,3 +157,4 @@ void File::Close()
 	}
 	myName.empty();
 }
+

@@ -7,9 +7,6 @@
 
 #include <string>
 #include "../../common/C2eTypes.h"
-#include "Biochemistry/BiochemistryConstants.h"
-
-class Agent;
 
 // vocabulary slot structure - holds recognisable words, pronouncable equivalents and
 // degree of learning
@@ -24,9 +21,15 @@ public:
 	void DoReasonablyGoodInfantSpeak();
 	void HearWord(std::string wordHeard);
 
+	static bool SetupCatalogueVector();
+
+	static std::vector<std::string> ourWordSections;
+	static int ourNumWordChunks;
+
 	Vocab();
 	void InitBabyWord(const std::string& text);
 	void InitWord(const std::string& text, int age, bool perfect);
 };
 
 #endif //__vocab_h
+

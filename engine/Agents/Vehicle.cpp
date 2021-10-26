@@ -25,8 +25,10 @@
 #include "../World.h"
 #include "../App.h"
 #include "../AgentManager.h"
-#include "../Display/MainCamera.h"
-#include "../Creature/Creature.h"
+#include "../Camera/MainCamera.h"
+
+#include "CompoundPart.h"
+
 
 CREATURES_IMPLEMENT_SERIAL( Vehicle)
 
@@ -529,3 +531,4 @@ void Vehicle::BreakLinksToOtherAgents()
 	// This must be the last line in the function
 	base::BreakLinksToOtherAgents();
 }
+

@@ -1,28 +1,27 @@
+# -*- Makefile -*- module for Common
+# $Id: module.mk,v 1.9 2000/11/23 13:31:02 firving Exp $
 
-
-# some files in this dir are win32 only:
-#
-#	Grapher.cpp
-#	RegistryHandler.cpp
-#	clientside.cpp
-#	WindowState.cpp
-#	WhichEngine.cpp
-#	CStyleException.cpp
-#	GameInterface.cpp
-#	LabelThing.cpp
-#	ServerSide.cpp
-#
-#
-
-SRC += common/BasicException.cpp \
+_SOURCES := \
+	common/BasicException.cpp \
 	common/C2eDebug.cpp \
 	common/Catalogue.cpp \
 	common/FileLocaliser.cpp \
-	common/MapScanner.cpp \
 	common/Position.cpp \
 	common/SimpleLexer.cpp \
 	common/Vector2D.cpp \
-	common/Configurator.cpp
+	common/Configurator.cpp \
+	common/StringFuncs.cpp \
+	common/FileFuncs.cpp \
+	common/SimpleMutex.cpp \
+	common/UnixSignals.cpp \
+	common/ProfanityFilter.cpp
+
+SOURCES += $(_SOURCES)
+
+LIBRARIES += libCommon.so
+
+libCommon.so: $(patsubst %.cpp, %.o, $(_SOURCES))
+libCommon.do: $(patsubst %.cpp, %.od, $(_SOURCES))
+libCommon.ho: $(patsubst %.cpp, %.oh, $(_SOURCES))
 
 include common/PRAYFiles/module.mk
-

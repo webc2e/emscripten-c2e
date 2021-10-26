@@ -1,0 +1,892 @@
+[
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Display/SDL/SDL_Main.cpp.o -c /Users/robin/dev/webc2e/engine/Display/SDL/SDL_Main.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/SDL/SDL_Main.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/AgentManager.cpp.o -c /Users/robin/dev/webc2e/engine/AgentManager.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/AgentManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/App.cpp.o -c /Users/robin/dev/webc2e/engine/App.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/App.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/C2eServices.cpp.o -c /Users/robin/dev/webc2e/engine/C2eServices.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/C2eServices.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Classifier.cpp.o -c /Users/robin/dev/webc2e/engine/Classifier.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Classifier.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/CosInstaller.cpp.o -c /Users/robin/dev/webc2e/engine/CosInstaller.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/CosInstaller.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/CreaturesArchive.cpp.o -c /Users/robin/dev/webc2e/engine/CreaturesArchive.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/CreaturesArchive.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/CustomHeap.cpp.o -c /Users/robin/dev/webc2e/engine/CustomHeap.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/CustomHeap.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Entity.cpp.o -c /Users/robin/dev/webc2e/engine/Entity.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Entity.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/FilePath.cpp.o -c /Users/robin/dev/webc2e/engine/FilePath.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/FilePath.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/FlightRecorder.cpp.o -c /Users/robin/dev/webc2e/engine/FlightRecorder.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/FlightRecorder.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/General.cpp.o -c /Users/robin/dev/webc2e/engine/General.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/General.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/InputManager.cpp.o -c /Users/robin/dev/webc2e/engine/InputManager.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/InputManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Maths.cpp.o -c /Users/robin/dev/webc2e/engine/Maths.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Maths.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Message.cpp.o -c /Users/robin/dev/webc2e/engine/Message.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Message.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/PersistentObject.cpp.o -c /Users/robin/dev/webc2e/engine/PersistentObject.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/PersistentObject.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Scramble.cpp.o -c /Users/robin/dev/webc2e/engine/Scramble.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Scramble.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Stimulus.cpp.o -c /Users/robin/dev/webc2e/engine/Stimulus.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Stimulus.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/World.cpp.o -c /Users/robin/dev/webc2e/engine/World.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/World.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/md5.cpp.o -c /Users/robin/dev/webc2e/engine/md5.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/md5.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/mfchack.cpp.o -c /Users/robin/dev/webc2e/engine/mfchack.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/mfchack.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/TimeFuncs.cpp.o -c /Users/robin/dev/webc2e/engine/TimeFuncs.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/TimeFuncs.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/ModuleImporter.cpp.o -c /Users/robin/dev/webc2e/engine/ModuleImporter.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/ModuleImporter.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/DirectoryManager.cpp.o -c /Users/robin/dev/webc2e/engine/DirectoryManager.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/DirectoryManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Presence.cpp.o -c /Users/robin/dev/webc2e/engine/Presence.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Presence.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Angle.cpp.o -c /Users/robin/dev/webc2e/engine/Angle.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Angle.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/Circle.cpp.o -c /Users/robin/dev/webc2e/engine/Circle.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Circle.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/UniqueIdentifier.cpp.o -c /Users/robin/dev/webc2e/engine/UniqueIdentifier.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/UniqueIdentifier.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL   -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/webc2e.dir/engine/QuickFsp.cpp.o -c /Users/robin/dev/webc2e/engine/QuickFsp.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/QuickFsp.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/BasicException.cpp.o -c /Users/robin/dev/webc2e/common/BasicException.cpp",
+  "file": "/Users/robin/dev/webc2e/common/BasicException.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/C2eDebug.cpp.o -c /Users/robin/dev/webc2e/common/C2eDebug.cpp",
+  "file": "/Users/robin/dev/webc2e/common/C2eDebug.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/Catalogue.cpp.o -c /Users/robin/dev/webc2e/common/Catalogue.cpp",
+  "file": "/Users/robin/dev/webc2e/common/Catalogue.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/FileLocaliser.cpp.o -c /Users/robin/dev/webc2e/common/FileLocaliser.cpp",
+  "file": "/Users/robin/dev/webc2e/common/FileLocaliser.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/Position.cpp.o -c /Users/robin/dev/webc2e/common/Position.cpp",
+  "file": "/Users/robin/dev/webc2e/common/Position.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/SimpleLexer.cpp.o -c /Users/robin/dev/webc2e/common/SimpleLexer.cpp",
+  "file": "/Users/robin/dev/webc2e/common/SimpleLexer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/Vector2D.cpp.o -c /Users/robin/dev/webc2e/common/Vector2D.cpp",
+  "file": "/Users/robin/dev/webc2e/common/Vector2D.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/Configurator.cpp.o -c /Users/robin/dev/webc2e/common/Configurator.cpp",
+  "file": "/Users/robin/dev/webc2e/common/Configurator.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/StringFuncs.cpp.o -c /Users/robin/dev/webc2e/common/StringFuncs.cpp",
+  "file": "/Users/robin/dev/webc2e/common/StringFuncs.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/FileFuncs.cpp.o -c /Users/robin/dev/webc2e/common/FileFuncs.cpp",
+  "file": "/Users/robin/dev/webc2e/common/FileFuncs.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/SimpleMutex.cpp.o -c /Users/robin/dev/webc2e/common/SimpleMutex.cpp",
+  "file": "/Users/robin/dev/webc2e/common/SimpleMutex.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/UnixSignals.cpp.o -c /Users/robin/dev/webc2e/common/UnixSignals.cpp",
+  "file": "/Users/robin/dev/webc2e/common/UnixSignals.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/common.dir/ProfanityFilter.cpp.o -c /Users/robin/dev/webc2e/common/ProfanityFilter.cpp",
+  "file": "/Users/robin/dev/webc2e/common/ProfanityFilter.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common/PRAYFiles",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/pray.dir/PrayBuilder.cpp.o -c /Users/robin/dev/webc2e/common/PRAYFiles/PrayBuilder.cpp",
+  "file": "/Users/robin/dev/webc2e/common/PRAYFiles/PrayBuilder.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common/PRAYFiles",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/pray.dir/PrayChunk.cpp.o -c /Users/robin/dev/webc2e/common/PRAYFiles/PrayChunk.cpp",
+  "file": "/Users/robin/dev/webc2e/common/PRAYFiles/PrayChunk.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common/PRAYFiles",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/pray.dir/PrayHandlers.cpp.o -c /Users/robin/dev/webc2e/common/PRAYFiles/PrayHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/common/PRAYFiles/PrayHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common/PRAYFiles",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/pray.dir/PrayManager.cpp.o -c /Users/robin/dev/webc2e/common/PRAYFiles/PrayManager.cpp",
+  "file": "/Users/robin/dev/webc2e/common/PRAYFiles/PrayManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/common/PRAYFiles",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/pray.dir/StringIntGroup.cpp.o -c /Users/robin/dev/webc2e/common/PRAYFiles/StringIntGroup.cpp",
+  "file": "/Users/robin/dev/webc2e/common/PRAYFiles/StringIntGroup.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/BodyPartOverlay.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/BodyPartOverlay.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/BodyPartOverlay.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/Creature.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Creature.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Creature.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/CreatureFacultyInterface.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/CreatureFacultyInterface.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/CreatureFacultyInterface.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/AgentFacultyInterface.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/AgentFacultyInterface.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/AgentFacultyInterface.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/CreatureAgent.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/CreatureAgent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/CreatureAgent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/CreatureHead.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/CreatureHead.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/CreatureHead.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/ExpressiveFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/ExpressiveFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/ExpressiveFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/Faculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Faculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Faculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/Genome.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Genome.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Genome.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/GenomeStore.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/GenomeStore.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/GenomeStore.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/LifeFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/LifeFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/LifeFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/LinguisticFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/LinguisticFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/LinguisticFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/MotorFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/MotorFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/MotorFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/MusicFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/MusicFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/MusicFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/ReproductiveFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/ReproductiveFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/ReproductiveFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/SensoryFaculty.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/SensoryFaculty.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/SensoryFaculty.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/SkeletalCreature.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/SkeletalCreature.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/SkeletalCreature.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/Vocab.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Vocab.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Vocab.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/creature.dir/voice.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/voice.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/voice.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Brain.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Brain.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Brain.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/BrainComponent.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/BrainComponent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/BrainComponent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/BrainScriptFunctions.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/BrainScriptFunctions.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/BrainScriptFunctions.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Dendrite.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Dendrite.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Dendrite.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Instinct.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Instinct.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Instinct.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Lobe.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Lobe.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Lobe.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Neuron.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Neuron.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Neuron.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/SVRule.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/SVRule.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/SVRule.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Brain",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/brain.dir/Tract.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Brain/Tract.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Brain/Tract.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/Biochemistry.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/Biochemistry.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/Biochemistry.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/BiochemistryConstants.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/BiochemistryConstants.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/BiochemistryConstants.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/Chemical.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/Chemical.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/Chemical.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/Emitter.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/Emitter.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/Emitter.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/NeuroEmitter.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/NeuroEmitter.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/NeuroEmitter.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/Organ.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/Organ.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/Organ.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/Biochemistry",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/biochemistry.dir/Receptor.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/Biochemistry/Receptor.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/Biochemistry/Receptor.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/History",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/history.dir/CreatureHistory.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/History/CreatureHistory.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/History/CreatureHistory.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/History",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/history.dir/HistoryStore.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/History/HistoryStore.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/History/HistoryStore.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Creature/History",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/history.dir/LifeEvent.cpp.o -c /Users/robin/dev/webc2e/engine/Creature/History/LifeEvent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Creature/History/LifeEvent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/Agent.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/Agent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/Agent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/AgentConstants.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/AgentConstants.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/AgentConstants.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/AgentHandle.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/AgentHandle.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/AgentHandle.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/CameraPart.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/CameraPart.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/CameraPart.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/CompoundAgent.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/CompoundAgent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/CompoundAgent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/CompoundPart.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/CompoundPart.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/CompoundPart.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/InputPort.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/InputPort.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/InputPort.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/MessageQueue.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/MessageQueue.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/MessageQueue.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/OutputPort.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/OutputPort.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/OutputPort.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/PointerAgent.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/PointerAgent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/PointerAgent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/Port.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/Port.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/Port.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/PortBundle.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/PortBundle.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/PortBundle.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/QuoteFactory.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/QuoteFactory.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/QuoteFactory.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/SimpleAgent.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/SimpleAgent.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/SimpleAgent.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/UIPart.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/UIPart.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/UIPart.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Agents",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agents.dir/Vehicle.cpp.o -c /Users/robin/dev/webc2e/engine/Agents/Vehicle.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Agents/Vehicle.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/AgentHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/AgentHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/AgentHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/AutoDocumentationTable.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/AutoDocumentationTable.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/AutoDocumentationTable.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CAOSDescription.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CAOSDescription.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CAOSDescription.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CAOSException.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CAOSException.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CAOSException.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CAOSMachine.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CAOSMachine.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CAOSMachine.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CAOSTables.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CAOSTables.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CAOSTables.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CAOSVar.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CAOSVar.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CAOSVar.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CompoundHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CompoundHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CompoundHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/CreatureHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/CreatureHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/CreatureHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/DebugHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/DebugHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/DebugHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/DebugInfo.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/DebugInfo.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/DebugInfo.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/DisplayHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/DisplayHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/DisplayHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/GeneralHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/GeneralHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/GeneralHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/HistoryHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/HistoryHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/HistoryHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/Lexer.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/Lexer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/Lexer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/MacroScript.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/MacroScript.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/MacroScript.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/MapHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/MapHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/MapHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/OpSpec.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/OpSpec.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/OpSpec.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/Orderiser.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/Orderiser.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/Orderiser.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/PortHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/PortHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/PortHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/Scriptorium.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/Scriptorium.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/Scriptorium.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/SoundHandlers.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/SoundHandlers.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/SoundHandlers.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/TableSpec.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/TableSpec.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/TableSpec.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/VelocityVariable.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/VelocityVariable.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/VelocityVariable.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/SockServer.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/SockServer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/SockServer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Caos",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/caos.dir/unix/RuntimeErrorDialog.cpp.o -c /Users/robin/dev/webc2e/engine/Caos/unix/RuntimeErrorDialog.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Caos/unix/RuntimeErrorDialog.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Background.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Background.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Background.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Bitmap.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Bitmap.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Bitmap.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/ClonedGallery.cpp.o -c /Users/robin/dev/webc2e/engine/Display/ClonedGallery.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/ClonedGallery.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/CompressedBitmap.cpp.o -c /Users/robin/dev/webc2e/engine/Display/CompressedBitmap.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/CompressedBitmap.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/CreatureGallery.cpp.o -c /Users/robin/dev/webc2e/engine/Display/CreatureGallery.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/CreatureGallery.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/DrawableObject.cpp.o -c /Users/robin/dev/webc2e/engine/Display/DrawableObject.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/DrawableObject.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/DrawableObjectHandler.cpp.o -c /Users/robin/dev/webc2e/engine/Display/DrawableObjectHandler.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/DrawableObjectHandler.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/ErrorMessageHandler.cpp.o -c /Users/robin/dev/webc2e/engine/Display/ErrorMessageHandler.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/ErrorMessageHandler.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Gallery.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Gallery.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Gallery.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Line.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Line.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Line.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/SharedGallery.cpp.o -c /Users/robin/dev/webc2e/engine/Display/SharedGallery.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/SharedGallery.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Sprite.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Sprite.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Sprite.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/System.cpp.o -c /Users/robin/dev/webc2e/engine/Display/System.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/System.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/TintManager.cpp.o -c /Users/robin/dev/webc2e/engine/Display/TintManager.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/TintManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/EasterEgg.cpp.o -c /Users/robin/dev/webc2e/engine/Display/EasterEgg.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/EasterEgg.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/DisplayEnginePlotFunctions.cpp.o -c /Users/robin/dev/webc2e/engine/Display/DisplayEnginePlotFunctions.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/DisplayEnginePlotFunctions.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/display.dir/Console/ConsoleErrorDialog.cpp.o -c /Users/robin/dev/webc2e/engine/Display/Console/ConsoleErrorDialog.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/Console/ConsoleErrorDialog.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display/SDL",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sdl.dir/SDL_DisplayEngine.cpp.o -c /Users/robin/dev/webc2e/engine/Display/SDL/SDL_DisplayEngine.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/SDL/SDL_DisplayEngine.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display/SDL",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sdl.dir/scrap.cpp.o -c /Users/robin/dev/webc2e/engine/Display/SDL/scrap.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/SDL/scrap.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display/SDL/SDLStretch",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sdl_stretch.dir/SDLStretch.cpp.o -c /Users/robin/dev/webc2e/engine/Display/SDL/SDLStretch/SDLStretch.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/SDL/SDLStretch/SDLStretch.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Display/unix",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/unix_display.dir/MemoryMappedFile.cpp.o -c /Users/robin/dev/webc2e/engine/Display/unix/MemoryMappedFile.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Display/unix/MemoryMappedFile.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Map",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/map.dir/Map.cpp.o -c /Users/robin/dev/webc2e/engine/Map/Map.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Map/Map.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Map",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/map.dir/CARates.cpp.o -c /Users/robin/dev/webc2e/engine/Map/CARates.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Map/CARates.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Map",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/map.dir/MapCA.cpp.o -c /Users/robin/dev/webc2e/engine/Map/MapCA.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Map/MapCA.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Map",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/map.dir/RoomCA.cpp.o -c /Users/robin/dev/webc2e/engine/Map/RoomCA.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Map/RoomCA.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/SDL/SDL_Soundlib.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/SDL/SDL_Soundlib.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/SDL/SDL_Soundlib.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/stub/stub_MidiModule.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/stub/stub_MidiModule.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/stub/stub_MidiModule.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/stub/stub_CDRomDevice.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/stub/stub_CDRomDevice.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/stub/stub_CDRomDevice.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicAction.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicAction.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicAction.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicAleotoricLayer.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicAleotoricLayer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicAleotoricLayer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicEffect.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicEffect.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicEffect.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicExpression.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicExpression.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicExpression.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicGlobals.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicGlobals.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicGlobals.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicLayer.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicLayer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicLayer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicLoopLayer.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicLoopLayer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicLoopLayer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicManager.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicManager.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicManager.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicScript.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicScript.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicScript.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicTimer.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicTimer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicTimer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicTrack.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicTrack.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicTrack.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicUpdatable.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicUpdatable.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicUpdatable.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicVariable.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicVariable.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicVariable.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Sound",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/sound.dir/MusicVariableContainer.cpp.o -c /Users/robin/dev/webc2e/engine/Sound/MusicVariableContainer.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Sound/MusicVariableContainer.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/unix",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/unix.dir/File.cpp.o -c /Users/robin/dev/webc2e/engine/unix/File.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/unix/File.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/AgentDisplay",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agent_display.dir/EntityImage.cpp.o -c /Users/robin/dev/webc2e/engine/AgentDisplay/EntityImage.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/AgentDisplay/EntityImage.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/AgentDisplay",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agent_display.dir/EntityImageClone.cpp.o -c /Users/robin/dev/webc2e/engine/AgentDisplay/EntityImageClone.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/AgentDisplay/EntityImageClone.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/AgentDisplay",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/agent_display.dir/EntityImageWithEmbeddedCamera.cpp.o -c /Users/robin/dev/webc2e/engine/AgentDisplay/EntityImageWithEmbeddedCamera.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/AgentDisplay/EntityImageWithEmbeddedCamera.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Camera",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/camera.dir/MapImage.cpp.o -c /Users/robin/dev/webc2e/engine/Camera/MapImage.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Camera/MapImage.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Camera",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/camera.dir/Camera.cpp.o -c /Users/robin/dev/webc2e/engine/Camera/Camera.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Camera/Camera.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Camera",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/camera.dir/RemoteCamera.cpp.o -c /Users/robin/dev/webc2e/engine/Camera/RemoteCamera.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Camera/RemoteCamera.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Camera",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/camera.dir/MainCamera.cpp.o -c /Users/robin/dev/webc2e/engine/Camera/MainCamera.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Camera/MainCamera.cpp"
+},
+{
+  "directory": "/Users/robin/dev/webc2e/build/engine/Camera",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DC2E_NO_INLINE_ASM -DC2E_SDL -DNOT_STRETCHING_AT_ALL  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk   -s USE_PTHREADS -o CMakeFiles/camera.dir/CameraSprite.cpp.o -c /Users/robin/dev/webc2e/engine/Camera/CameraSprite.cpp",
+  "file": "/Users/robin/dev/webc2e/engine/Camera/CameraSprite.cpp"
+}
+]

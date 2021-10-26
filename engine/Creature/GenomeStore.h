@@ -54,8 +54,7 @@ public:
 
 protected:
 	bool FillSlot(int index, std::string newMoniker);
-	std::string GenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus);
-	std::string TryGenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus);
+	static std::string GenerateUniqueMoniker(const std::string& monikerSeed1, const std::string& monikerSeed2, int genus);
 
 	static bool FileExists(std::string moniker);
 
@@ -67,4 +66,5 @@ protected:
 };
 
 
-#endif //GENOME_STORE_H
+#endif // GENOME_STORE_H
+

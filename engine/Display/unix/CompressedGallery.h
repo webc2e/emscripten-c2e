@@ -160,7 +160,7 @@ CompressedGallery::CompressedGallery(FilePath const &name,
 //			
 //			
 // ----------------------------------------------------------------------
-	virtual uint32 Save(uint8_t*& data);
+	virtual uint32 Save(uint8*& data);
 	virtual uint32 Save(MemoryMappedFile& file);
 	uint32 Save();
 	virtual bool ConvertTo(uint32 format);
@@ -217,3 +217,4 @@ private:
 };
 
 #endif		// COMPRESSED_GALLERY_H
+

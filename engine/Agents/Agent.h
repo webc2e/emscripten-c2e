@@ -12,50 +12,50 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "../../common/BasicException.h"
+// gtb!temp!
+class Presence;
+
 #include "../../common/C2eTypes.h"
-#include "../AgentManager.h"
-#include "../Caos/CAOSMachine.h"
-#include "../Caos/VelocityVariable.h"
 #include "../Classifier.h"
-#include "../Creature/GenomeStore.h"
 #include "../Creature/voice.h"
-#include "../Display/EntityImage.h"
-#include "../Display/EntityImageClone.h"
-#include "../Map/Map.h"
 #include "../Maths.h"
-#include "../Message.h"
 #include "../PersistentObject.h"
 #include "../Sound/Soundlib.h"
-#include "../mfchack.h"
-#include "AgentConstants.h"
-#include "InputPort.h"
-#include "OutputPort.h"
-#include "Port.h"
 #include "PortBundle.h"
 #include <map>
+
+
+#include "../../common/BasicException.h"
+#include "../Caos/VelocityVariable.h"
+#include "../Creature/AgentFacultyInterface.h"
+#include "../Creature/GenomeStore.h"
+#include "../mfchack.h"
+#include "AgentConstants.h"
 
 const int GLOBAL_VARIABLE_COUNT = 100;
 const Vector2D INVALID_POSITION(-1.0f, -1.0f);
 const int NUMBER_OF_STATES_I_CAN_HANDLE_FOR_CLICKACTIONS = 3;
 
+class Port;
+class CompoundAgent;
+class Creature;
+class SkeletalCreature;
+class CreatureAgent;
+class CAOSMachine;
+class CAOSMachineRunError;
+class Message;
+class EntityImage;
+class ClonedEntityImage;
+
 #include "AgentHandle.h"
 
-// I don't want to have to include Voice here, so I'm simply blatting it as a
-// forward declaration (DAN) [but isn't it already included right up the top
-// there (GAV) :-)]
 class Voice;
 
-class Agent : public PersistentObject {
+class Agent : public PersistentObject, public AgentFacultyInterface {
   CREATURES_DECLARE_SERIAL(Agent)
 
 public:
-  // Constants for Execute...() calls
-  enum {
-    EXECUTE_SCRIPT_STARTED,
-    EXECUTE_SCRIPT_NOT_FOUND,
-    EXECUTE_SCRIPT_NOT_INTERRUPTIBLE
-  };
+  virtual AgentHandle GetAsAgentHandle() { return mySelf; }
 
   // Should a constructor fail, we need to know why, so here's a string to
   // manage it...
@@ -129,19 +129,7 @@ public:
     return myTimer;
   }
 
-  bool IsStopped() { return myStoppedFlag; }
-
-  // ---------------------------------------------------------------------
-  // Method:      SetClassifier()
-  // Arguments:   c - new classifier for agent
-  // Returns:     None
-  // Description:	Sets the family,genus,species of an agent.
-  // ---------------------------------------------------------------------
-  void SetClassifier(const Classifier &c) {
-    _ASSERT(!myGarbaged);
-    myClassifier = c;
-    theAgentManager.UpdateSmellClassifierList(myCAIndex, &myClassifier);
-  }
+  virtual bool IsStopped() { return myStoppedFlag; }
 
   // ---------------------------------------------------------------------
   // Method:      GetClassifier()
@@ -149,15 +137,18 @@ public:
   // Returns:     Classifier of agent
   // Description:	Gets the family,genus,species of an agent.
   // ---------------------------------------------------------------------
-  const Classifier &GetClassifier() const {
+  virtual const Classifier &GetClassifier() const {
     _ASSERT(!myGarbaged);
     return myClassifier;
   }
 
+  void SetOverrideCategory(int category);
+  virtual int GetOverrideCategory();
+
   // reading
-  uint32 GetFamily();
-  uint32 GetGenus();
-  uint32 GetSpecies();
+  virtual uint32 GetFamily();
+  virtual uint32 GetGenus();
+  virtual uint32 GetSpecies();
 
   void DoSetCameraShyStatus();
   virtual void ChangeCameraShyStatus(bool shy);
@@ -285,7 +276,7 @@ public:
     return myCAIndex;
   }
 
-  float GetCAIncrease() const {
+  virtual float GetCAIncrease() const {
     _ASSERT(!myGarbaged);
     return myCAIncrease;
   }
@@ -324,20 +315,19 @@ public:
     return myEntityImage;
   }
 
-  void MakeFastImage() {
-    _ASSERT(!myGarbaged);
-    if (myEntityImage)
-      myEntityImage->MakeFastImage();
-  }
-
   virtual void DrawLine(int32 x1, int32 y1, int32 x2, int32 y2,
-                        uint8_t lineColourRed = 0, uint8_t lineColourGreen = 0,
-                        uint8_t lineColourBlue = 0, uint8_t stippleon = 0,
-                        uint8_t stippleoff = 0, uint32 stippleStart = 0);
+                        uint8 lineColourRed = 0, uint8 lineColourGreen = 0,
+                        uint8 lineColourBlue = 0, uint8 stippleon = 0,
+                        uint8 stippleoff = 0, uint32 stippleStart = 0);
+
+  void DrawLine(Vector2D &startPoint, Vector2D &directionAndLength,
+                uint8 lineColourRed = 255, uint8 lineColourGreen = 255,
+                uint8 lineColourBlue = 255, uint8 stippleon = 0,
+                uint8 stippleoff = 0, uint32 stippleStart = 0);
 
   virtual void ResetLines();
 
-  AgentHandle GetCarrier() {
+  virtual AgentHandle GetCarrier() {
     _ASSERT(!myGarbaged);
     return myCarrierAgent;
   }
@@ -358,6 +348,7 @@ public:
   void MarkValidPositionNow();
   virtual void MoveBy(float xd, float yd); // adjust agent's position
   virtual void MoveTo(float x, float y);   // set agent's position
+  virtual void MoveCoreTo(const Vector2D &v);
   virtual bool TestMoveTo(float x, float y, bool forcePositionCheck);
   virtual bool TestMoveBy(float x, float y, bool forcePositionCheck);
   virtual bool TestCurrentLocation(bool forcePositionCheck);
@@ -376,7 +367,7 @@ public:
   virtual void Hide();
   virtual void Show();
 
-  inline float GetVisualRange() const {
+  virtual float GetVisualRange() const {
     _ASSERT(!myGarbaged);
     return myGeneralRange;
   }
@@ -401,28 +392,30 @@ public:
   }
 
   void SetMovementStatus(int type);
-  int GetMovementStatus() {
+  virtual int GetMovementStatus() {
     _ASSERT(!myGarbaged);
     return (myMovementStatus);
   }
 
-  void SoundEffect(DWORD fsp,
-                   int delay = 0); // Play sound effect if this agent
-                                   // within range, after 'delay' ticks
-                                   // Sound will play once completely
+  virtual void SoundEffect(DWORD fsp,
+                           int delay = 0); // Play sound effect if this agent
+                                           // within range, after 'delay' ticks
+                                           // Sound will play once completely
   void ControlledSound(DWORD fsp, BOOL loop = FALSE);
   // Play sound, maintaining control
   // for its duration
   void StopControlledSound(BOOL fade = FALSE); // Stop the active sound (if any)
-  void PauseControlledSound();  // Stop active sound when game is paused
-  int TestAttributes(int bits); // retn true if ANY of these attributes true
+  void PauseControlledSound(); // Stop active sound when game is paused
+  virtual int
+  TestAttributes(int bits); // retn true if ANY of these attributes true
   int TestCreaturePermissions(int bits);
 
   // retn any agent that this agent is touching (with given attr)
   AgentHandle IsTouching(DWORD AttrFields, DWORD AttrState);
 
   // test if the point is on a non transparent pixel
-  virtual bool HitTest(const Vector2D &point);
+  virtual bool HitTest(const Vector2D &point,
+                       bool alwaysTestPixelPerfectly = false);
 
   // ---------------------------------------------------------------------
   // Method:      GetMapCoordOfWhereIPickUpAgentsFrom()
@@ -452,11 +445,7 @@ public:
 
   virtual EntityImage *GetPrimaryEntity();
 
-  Vector2D GetCentre() {
-    _ASSERT(!myGarbaged);
-    return Vector2D(myPositionVector.x + myCurrentWidth / 2.0f,
-                    myPositionVector.y + myCurrentHeight / 2.0f);
-  };
+  virtual Vector2D GetCentre();
 
   void GetAgentExtent(Box &extent) {
     _ASSERT(!myGarbaged);
@@ -472,9 +461,38 @@ public:
   };
 
   // tinting
-  virtual void Tint(const uint16 *tintTable, int part = 0) {
+  virtual void Tint(const uint16 *tintTable, int part = 0,
+                    bool oneImage = false) {
     _ASSERT(!myGarbaged);
   }
+
+  virtual void UnClone(int part = 0) { _ASSERT(!myGarbaged); }
+
+  virtual bool CreateClonedEntityImage(bool oneImage = false) {
+    _ASSERT(!myGarbaged);
+    return false;
+  }
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+  virtual void RememberTintInformation(int worldIndex, int red = -1,
+                                       int green = -1, int blue = -1,
+                                       int rot = -1, int swp = -1,
+                                       int part = 0) {
+    _ASSERT(!myGarbaged);
+  }
+
+  virtual void RestoreTint(int part = 0) { _ASSERT(!myGarbaged); }
+
+  virtual void DrawOutlineAroundImage(int red, int green, int blue) {
+    _ASSERT(!myGarbaged);
+  }
+#endif
+
+  virtual void Scale(float scaleby, bool onOrOff);
+  virtual void DrawAlphaBlended(int alphamask, bool onOrOff, int part = 0);
+  virtual void DrawShadowed(int shadowvalue, int x, int y, bool onOrOff);
+  virtual void DrawToNewWidthAndHeight(int stretchedWidth, int stretchedHeight,
+                                       bool onOrOff);
 
   // this resets the plane in total giving a new normal plane
   virtual void SetNormalPlane(int plane, int part = 0) { _ASSERT(!myGarbaged); }
@@ -487,6 +505,9 @@ public:
   // this gets the actual entity or entities, or skeleton
   // to change the physical display play
   virtual void ChangePhysicalPlane(int plane) { _ASSERT(!myGarbaged); }
+
+  // used by map for agent to update its CA addition:
+  void ForceCaAddition();
 
   // ---------------------------------------------------------------------
   // Method:		ClickAction()
@@ -524,42 +545,52 @@ public:
 
   virtual Vector2D WhereShouldCreaturesPressMe();
 
-  Vector2D GetPosition() {
+  virtual Vector2D GetPosition() {
     _ASSERT(!myGarbaged);
     return myPositionVector;
   }
 
-  Voice &GetVoice() {
+  virtual Voice &GetVoice() {
     _ASSERT(!myGarbaged);
     return myVoice;
   }
 
   virtual void CameraPositionNotify();
 
-  bool GetRoomID(int &roomID); // this would be much quicker if the agent kept
-                               // track of current room
+  virtual bool GetRoomID(int &roomID); // this would be much quicker if the
+                                       // agent kept track of current room
 
-  float GetWidth() {
+  // added by gtb for jon:
+  virtual void SetWidth(float f);
+  virtual void SetHeight(float f);
+
+  virtual float GetWidth() {
     _ASSERT(!myGarbaged);
     return myCurrentWidth;
   }
 
-  float GetHeight() {
+  virtual float GetHeight() {
     _ASSERT(!myGarbaged);
     return myCurrentHeight;
   }
 
-  int ExecuteScriptForClassifier(const Classifier &c, const AgentHandle &from,
-                                 const CAOSVar &p1, const CAOSVar &p2);
-  int ExecuteScriptForEvent(int event, const AgentHandle &from,
-                            const CAOSVar &p1, const CAOSVar &p2);
+  virtual int ExecuteScriptForClassifier(const Classifier &c,
+                                         const AgentHandle &from,
+                                         const CAOSVar &p1, const CAOSVar &p2);
+  virtual int ExecuteScriptForClassifier(const Classifier &c,
+                                         const CAOSVar &from, const CAOSVar &p1,
+                                         const CAOSVar &p2);
+  virtual int ExecuteScriptForEvent(int event, const AgentHandle &from,
+                                    const CAOSVar &p1, const CAOSVar &p2);
+  virtual int ExecuteScriptForEvent(int event, const CAOSVar &from,
+                                    const CAOSVar &p1, const CAOSVar &p2);
 
-  virtual bool SetAnim(const uint8_t *anim, int length, int part) {
+  virtual bool SetAnim(const uint8 *anim, int length, int part) {
     _ASSERT(!myGarbaged);
     return true;
   }
 
-  virtual bool SetFrameRate(const uint8_t rate, int part) {
+  virtual bool SetFrameRate(const uint8 rate, int part) {
     _ASSERT(!myGarbaged);
     return true;
   }
@@ -575,6 +606,10 @@ public:
   virtual bool SetBaseImage(int image,
                             int part = 0); // default helper fn for BASE macro
   virtual int GetBaseImage(int part) {
+    _ASSERT(!myGarbaged);
+    return -1;
+  }
+  virtual int GetAbsoluteBase(int part) {
     _ASSERT(!myGarbaged);
     return -1;
   }
@@ -606,6 +641,7 @@ public:
 
   virtual void SetGallery(FilePath const &galleryName, int baseimage,
                           int part = 0);
+  virtual void GetGallery(std::string &str, int part = 0);
 
   // new serialization stuff
   virtual bool Write(CreaturesArchive &ar) const;
@@ -632,11 +668,15 @@ public:
     uint32 lineNumber;
   };
 
-  void HandleRunError(CAOSMachine::RunError &e);
-  CAOSMachine &GetVirtualMachine() {
+  void CallScript(int eventNo, CAOSVar const &p1, CAOSVar const &p2);
+
+  void HandleRunError(CAOSMachineRunError &e);
+  inline CAOSMachine &GetVirtualMachine() {
     _ASSERT(!myGarbaged);
-    return myVirtualMachine;
+    return *(myVirtualMachines.back());
   }
+
+  virtual bool VmIsRunning();
 
   bool IsRunning() {
     _ASSERT(!myGarbaged);
@@ -664,7 +704,15 @@ public:
     return myPixelPerfectHitTestFlag = flag;
   }
 
-  void DrawMirrored(bool mirror);
+  virtual void DrawMirrored(bool mirror);
+
+#ifdef C2D_DIRECT_DISPLAY_LIB
+  virtual void DrawFlippedVertically(bool flip);
+  virtual void CreateAnimStrip(int blockwidth, int blockheight, int part = 0);
+  bool IsFlippedVertically() { return myDrawFlippedVerticallyFlag; }
+  virtual uint16 GetSpriteRotationAngle();
+  virtual void SetSpriteRotationAngle(uint16 angle);
+#endif
 
   // ---------------------------------------------------------------------
   // Method:		GetPorts()
@@ -680,10 +728,10 @@ public:
     return myPorts;
   }
 
-  bool TryToBePickedUp(AgentHandle &newCarrierAgent, CAOSVar &p1, CAOSVar &p2);
+  bool TryToBePickedUp(AgentHandle newCarrierAgent, CAOSVar &p1, CAOSVar &p2);
 
-  bool TryToBeDropped(AgentHandle &fromAgent, CAOSVar &p1, CAOSVar &p2,
-                      bool forceDrop);
+  virtual bool TryToBeDropped(AgentHandle fromAgent, CAOSVar &p1, CAOSVar &p2,
+                              bool forceDrop);
 
   // Agent movement status values
 
@@ -710,8 +758,10 @@ public:
     attrSufferPhysics = 0x00000080,    // 128
     attrCameraShy = 0x00000100,        // 256
     attrOpenAirCabin = 0x00000200, // 512 this vehicle can be seen through and
+    attrRotatable = 0x00000400,    // 1024 can rotate and be rotated
+    attrPresence = 0x00000800,     // 2048 can rotate and be rotated
     // if you change these or their meaning, please change autodocument tables
-    // in Agent.cpp ... pyjamas
+    // in AgentConstants.cpp ... pyjamas
   };
 
   // Creature permissions:
@@ -723,10 +773,10 @@ public:
     permCanEat = 0x00000010,        // 16 creature can eat this agent
     permCanPickUp = 0x00000020,     // 32 creature can pick up this agent
     // if you change these or their meaning, please change autodocument tables
-    // in Agent.cpp ... pyjamas
+    // in AgentConstants.cpp ... pyjamas
   };
 
-  GenomeStore &GetGenomeStore() { return myGenomeStore; }
+  virtual GenomeStore &GetGenomeStore() { return myGenomeStore; }
 
   //
   // Movement
@@ -738,8 +788,35 @@ public:
   virtual void HandleMovementWhenCarried();
 
   void HandleCA();
+  virtual void StopAllScripts();
+
+  AgentHandle GetRootVehicle();
+
+  // helper
+  static bool IsFromCreature(Message *Msg);
+
+  Presence &GetPresence();
+
+  CAOSVar &GetNameVar(const CAOSVar &name);
+  void GetNextNameVar(CAOSVar &name);
+  void DeleteNameVar(const CAOSVar &name);
+
+  const Box &GetAlteredBoundingBox();
+  void SetAlteredBoundingBox(const Box &b);
+  bool TestAlteredBoundingBox(const Box &b);
+
+  float GetCoreWidth();
+  float GetCoreHeight();
+  const Vector2D &GetCorePosition();
+  Vector2D GetCorePosOf(const Vector2D &v);
+  Vector2D GetPosFromCore(const Vector2D &v);
+
+  void SetShowCore(bool b);
+  bool GetShowCore();
 
 protected:
+  void PopCurrentVmIfFinished();
+
   virtual bool CanStartCarrying(AgentHandle &a);
   bool CanStopCarrying(AgentHandle &a, AgentHandle &v, bool &findSafePlace);
   virtual void StartCarrying(AgentHandle &a);
@@ -787,6 +864,7 @@ protected:
   AgentHandle mySelf;
 
   CAOSVar myGlobalVariables[GLOBAL_VARIABLE_COUNT]; // OV00..OV99
+  std::map<CAOSVar, CAOSVar> myNameVars;
 
   bool myRunning; // if zero, do not bother calling this agent's Update()
                   // function (agent is out of scope, or on
@@ -800,7 +878,8 @@ protected:
   int myInputMask;
 
   // a CAOSMachine to run scripts on...
-  CAOSMachine myVirtualMachine;
+  std::deque<CAOSMachine *> myVirtualMachines;
+  std::deque<CAOSMachine *> mySpareVirtualMachines;
 
   // input and output ports
   PortBundle myPorts;
@@ -832,6 +911,8 @@ protected:
   VelocityVariable myVelocityYVariable; // CAOS interface for y velocity
   Vector2D myVelocityVector;
 
+  bool myShowCoreFlag;
+  Vector2D myCorePositionVector;
   Vector2D myPositionVector;
   Vector2D myFloatingPositionVector;
   AgentHandle myFloatingWith;
@@ -886,9 +967,16 @@ protected:
 
   float myCurrentWidth;
   float myCurrentHeight;
+  float myCoreWidth;
+  float myCoreHeight;
+
+  Box myAlteredBoundingBox;
+
   bool myResetLines;
 
   bool myDrawMirroredFlag;
+  bool myDrawFlippedVerticallyFlag;
+  bool myDrawAlphaFlag;
 
   // Reference counting done through the smart pointer
   unsigned myReferenceCount;
@@ -907,6 +995,14 @@ public:
 #endif
 
   GenomeStore myGenomeStore;
+
+  // new by gtb!
+  Presence *myPresence;
+
+  int myOverrideCategory;
+
+public:
+  void UpdateFromPresence();
 };
 
 inline uint32 Agent::GetFamily() {

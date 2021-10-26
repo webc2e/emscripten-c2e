@@ -5,12 +5,10 @@
 #include "voice.h"
 #include "../File.h"
 #include "../C2eServices.h"
+#include "../../common/StringFuncs.h"
 
 #include <string>
-#ifndef C2E_OLD_CPP_LIB
 #include <sstream>
-#include <ios>
-#endif // C2E_OLD_CPP_LIB
 
 CREATURES_IMPLEMENT_SERIAL(Voice)
 
@@ -144,12 +142,9 @@ bool Voice::BeginSentence(std::string sentence)
 	if (myCurrentVoiceName == "")
 		return false;
 
-
 	int i;
 	std::string text( sentence );
-
-	for( i=0; i<text.length(); ++i )
-		tolower( text[i] );
+	LowerCase(text);
 
 	// strip out anything which is not a letter or space
 	// and place '.' at each end of the sentence
@@ -182,7 +177,6 @@ bool Voice::BeginSentence(std::string sentence)
 	// Is there anything to play?
 	return (stripped.length()>2);
 }
-
 
 bool Voice::GetNextSyllable(uint32 &sound, int32 &delay)
 {
@@ -252,12 +246,7 @@ bool Voice::ReadData(std::string& thisVoice)
 		for(j=0;j<SPEECH_SYMBOLS;j++)
 		{
 			std::string langnum = theCatalogue.Get( theLanguage, (i * SPEECH_SYMBOLS) + j );
-#ifndef C2E_OLD_CPP_LIB
-			std::stringstream input(langnum);
-			input >> std::hex >> mySets[i][j];
-#else
 			sscanf( langnum.c_str(), "%x", &mySets[i][j] );
-#endif
 		}
 	// Now read the phoneme&gap pairs. All 32 of them :):)
 
@@ -265,19 +254,14 @@ bool Voice::ReadData(std::string& thisVoice)
 	{
 		mySounds[i] = *((DWORD*)theCatalogue.Get( thisVoice, 1 + (i*2) ));
 		std::string time = theCatalogue.Get( thisVoice, 2 + (i*2) );
-#ifndef C2E_OLD_CPP_LIB
-		std::stringstream inputt(time);
-		inputt >> myTimes[i];
-#else
 		sscanf( time.c_str(), "%d", &myTimes[i] );
-#endif
 	}
 
 	myCurrentVoiceName = thisVoice;
 	return true;
 }
 
-bool Voice::ReadData(uint8_t genus, uint8_t gender, uint8_t age)
+bool Voice::ReadData(uint8 genus, uint8 gender, uint8 age)
 {
 	// Descent method is as follows...
 	// Drop through age
@@ -318,30 +302,6 @@ bool Voice::ReadData(uint8_t genus, uint8_t gender, uint8_t age)
 	std::string defVoice = "DefaultVoice";
 	return ReadData(defVoice);	
 }
-/*
-void Voice::ReadData(LPCTSTR name)
-{
-	File file(name);
-	
-	for (int i=0;i<32;i++) {
-		file.Read(&mySounds[i],sizeof(DWORD));
-
-		// This is a kludge to combat an error that has crept into
-		// the voice files - all voices seem to contain a 1 instead of
-		// a 0 for "silence"
-		if (i<4)
-			mySounds[i] = 0;
-		file.Read(&myTimes[i],sizeof(int));
-	}
-
-	for (i=0; i<3; i++) {
-		for (int j=0; j<27; j++) {
-			file.Read(&mySets[i][j],sizeof(DWORD));
-		}
-	}
-}
-*/
-
 
 // ----------------------------------------------------------------------
 // Method:		Write
@@ -381,23 +341,34 @@ bool Voice::Read(CreaturesArchive &archive)
 	{
 
 		int i,j;
-
-		for (i=0;i<3;i++) {
-			for (j=0;j<SPEECH_SYMBOLS;j++) {
+		bool allzero = true;
+		for (i=0;i<3;i++) 
+		{
+			for (j=0;j<SPEECH_SYMBOLS;j++) 
+			{
 				archive >> mySets[i][j];
+				if (mySets[i][j])
+					allzero = false;
 			}
 		}
 
-		for (i=0;i<32;i++) {
+		for (i=0;i<32;i++) 
+		{
 			archive >> mySounds[i];
-
+			if (mySounds[i])
+				allzero = false;
 			// This is a kludge to combat an error that has crept into
 			// the voice files - all voices seem to contain a 1 instead of
 			// a 0 for "silence"
 			if (i<4)
 				mySounds[i] = 0;
 			archive >> myTimes[i];
+			if (myTimes[i] != 1)
+				allzero = false;
 		}
+		
+		if (allzero == false)
+			myCurrentVoiceName = "Lozenged";
 	} 
 	else
 	{
@@ -407,3 +378,4 @@ bool Voice::Read(CreaturesArchive &archive)
 
 	return true;
 }
+

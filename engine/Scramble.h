@@ -22,3 +22,4 @@
 void Scramble(char *string, int length);
 
 #endif
+

@@ -6,19 +6,18 @@
 #endif
 
 #include "World.h"
-#include "Agents/Agent.h"
-#include "App.h"
-#include "CreaturesArchive.h"
-#include "Message.h"
-#include "resource.h"
-
-#include "Creature/Creature.h"
-
 #include "AgentManager.h"
-#include "Display/MainCamera.h"
+#include "Agents/Agent.h"
+#include "Agents/PointerAgent.h"
+#include "App.h"
+#include "Camera/MainCamera.h"
+#include "Creature/Creature.h"
+#include "CreaturesArchive.h"
 #include "Map/Map.h"
+#include "Message.h"
+
 #ifdef _WIN32
-#include "../Common/RegistryHandler.h"
+#include "RegistryHandler.h"
 #endif
 #include "CosInstaller.h"
 #include "Display/ErrorMessageHandler.h"
@@ -26,9 +25,11 @@
 
 #include "Sound/MusicManager.h"
 
-#ifndef _WIN32
-#include "unix/FileFuncs.h" // for MoveFile etc...
-#endif
+#include "../common/FileFuncs.h"
+#include "DirectoryManager.h"
+#include "ModuleImporter.h"
+
+#include "UniqueIdentifier.h"
 
 #include <algorithm>
 #include <fstream>
@@ -41,8 +42,8 @@ TintManager &World::GetTintManager(int index) {
   return myTints[index];
 }
 
-void World::SetTintManager(int index, uint8_t red, uint8_t green, uint8_t blue,
-                           uint8_t rot, uint8_t swap) {
+void World::SetTintManager(int index, uint8 red, uint8 green, uint8 blue,
+                           uint8 rot, uint8 swap) {
   int currentSize = myTints.size() - 1;
   if (index > currentSize)
     myTints.resize(index + 1);
@@ -64,9 +65,6 @@ void World::Init() {
   myCurrentMetaRoom = 0;
   myName = "";
 
-  myMusicEvent = ME_NONE;
-  myBirthdayAgent = NULLHANDLE;
-  myCountDownClock = NULLHANDLE;
   myNeedToBackUp = false;
 
   mySelectedCreature = NULLHANDLE;
@@ -85,13 +83,7 @@ void World::Init() {
   myWorldTick = 0;
   myPausedWorldTick = false;
 
-  // don't bother to serialize this session based bool out
-  myBirthdayBannerShownThisSession = false;
-
   theMainView.GetPixelFormat(myLastPixelFormat);
-
-  memset(&myGameEndTime, 0, sizeof(SYSTEMTIME));
-  memset(&myLastPlayLength, 0, sizeof(SYSTEMTIME));
 
   GetGameVar("engine_debug_keys").SetInteger(1);
   GetGameVar("engine_full_screen_toggle").SetInteger(1);
@@ -111,14 +103,11 @@ void World::Init() {
   myUniqueIdentifier = theCatalogue.Get("World Friendly Name", 0) +
                        std::string("-") + GenerateUniqueIdentifier("", "");
 
+  // NOTE: This also appears in App:SetupMainView()!
+  //  - BenC 03Feb00
   std::string value("Default Background");
   std::string data("GreatOutdoors");
-#ifdef _WIN32
-  theRegistry.GetValue(theRegistry.DefaultKey(), value, data,
-                       HKEY_CURRENT_USER);
-#else
   theApp.UserSettings().Get(value, data);
-#endif
 
   GetGameVar("engine_distance_before_port_line_warns").SetFloat(600.0f);
   GetGameVar("engine_distance_before_port_line_snaps").SetFloat(800.0f);
@@ -127,13 +116,13 @@ void World::Init() {
   bool ok;
 
   ok = myMap.SetMapDimensions(8000, 8000);
-  ok = myMap.AddMetaRoom(0, 0, 8000, 8000, data, mid);
+  ok = myMap.AddMetaRoom(0, 0, 800, 600, data, mid);
 
   ok = myMap.AddRoom(0, 0, 200, 0, 0, 100, 300, rid);
   ok = myMap.AddRoom(0, 200, 400, 0, 0, 300, 200, rid);
   ok = myMap.AddRoom(0, 0, 200, 100, 300, 500, 500, rid);
   ok = myMap.AddRoom(0, 200, 400, 300, 200, 500, 500, rid);
-  // myMap.SetDoorPermiability(0, 2, 0);
+
   myMap.SetDoorPermiability(1, 3, 0);
 
   ok = myMap.AddBackground(0, data);
@@ -146,7 +135,15 @@ void World::Init() {
   myCurrentMetaRoom = myMap.GetCurrentMetaRoom();
 }
 
-World::~World() { theAgentManager.KillAllAgents(); }
+World::~World() {
+  // tell all modules
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    moduleInterface->WorldEnding();
+  }
+
+  theAgentManager.KillAllAgents();
+}
 
 // ----------------------------------------------------------------------
 // Method:		Write
@@ -155,7 +152,6 @@ World::~World() { theAgentManager.KillAllAgents(); }
 // Description:	Overridable function - writes details to archive,
 //				taking serialisation into account
 // ----------------------------------------------------------------------
-// IF YOU CHANGE THIS YOU *MUST* UPDATE THE VERSION SEE ::READ!!!!
 bool World::Write(CreaturesArchive &ar) const {
   theApp.StartProgressBar(8);
 
@@ -165,9 +161,12 @@ bool World::Write(CreaturesArchive &ar) const {
   // find it!
   ar << myPassword;
 
-  int32 temp = myMusicEvent;
+  // was music event - only here for backwards compatibility
+  int32 temp = 0;
   ar << temp;
 
+  // moved this so that it can be reffered to while creating agents
+  ar << myTints;
   if (!myScriptorium.Write(ar))
     return false;
   if (!myMap.Write(ar))
@@ -180,14 +179,10 @@ bool World::Write(CreaturesArchive &ar) const {
   ar << myPausedWorldTick;
 
   ar << mySelectedCreature;
-  ar << myBirthdayAgent;
-  ar << myCountDownClock;
 
   ar << myGameVars;
 
   ar << myLoadedBootstrapFolders;
-  ar << myGameEndTime;
-  ar << myLastPlayLength;
 
   ar << myMessageQueue;
 
@@ -205,7 +200,18 @@ bool World::Write(CreaturesArchive &ar) const {
   theAgentManager.Write(ar);
   theMainView.Write(ar);
 
-  ar << myTints;
+  // Modules - write out their names and data
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    if (moduleInterface->Persistent()) {
+      std::string moduleName;
+      moduleInterface->ModuleName(moduleName);
+      ar << moduleName;
+      moduleInterface->Write(ar);
+    }
+  }
+  // mark end of modules
+  ar << std::string("");
 
   theApp.EndProgressBar();
 
@@ -218,7 +224,7 @@ bool World::Write(CreaturesArchive &ar) const {
 // Returns:		true if successful
 // Description:	Overridable function - reads detail of class from archive
 // ----------------------------------------------------------------------
-bool World::Read(CreaturesArchive &ar) {
+bool World::Read(CreaturesArchive &ar, int fileSize) {
   myCurrentlyLoadingWorld = true;
 
   theAgentManager.KillAllAgents();
@@ -228,14 +234,19 @@ bool World::Read(CreaturesArchive &ar) {
 
   if (version >= 3) {
     theApp.StartProgressBar(2);
+    theApp.SpecifyProgressIntervals(fileSize);
 
     // always read the the version (when it goes in) and then the password
     ar >> myPassword;
 
-    int32 temp; // for enums
-
+    // was music event - only here for backwards compatibility
+    int32 temp;
     ar >> temp;
-    myMusicEvent = static_cast<MUSIC_EVENT>(temp);
+
+    // moved this to the top so that agents can refer to it during creation.
+    if (version >= 24) {
+      ar >> myTints;
+    }
 
     myScriptorium.Clear();
     if (!myScriptorium.Read(ar)) {
@@ -255,14 +266,27 @@ bool World::Read(CreaturesArchive &ar) {
     ar >> myPausedWorldTick;
 
     ar >> mySelectedCreature;
-    ar >> myBirthdayAgent;
-    ar >> myCountDownClock;
+
+    // old unwanted creatures adventures crap
+    if (version <= 29) {
+      AgentHandle stupidBirthdayAgent;
+      AgentHandle dumbCountDownClock;
+
+      ar >> stupidBirthdayAgent;
+      ar >> dumbCountDownClock;
+    }
 
     ar >> myGameVars;
 
     ar >> myLoadedBootstrapFolders;
-    ar >> myGameEndTime;
-    ar >> myLastPlayLength;
+
+    // more old unwanted....
+    if (version <= 29) {
+      SYSTEMTIME wasGameEndTimeAndPlayLengh;
+
+      ar >> wasGameEndTimeAndPlayLengh;
+      ar >> wasGameEndTimeAndPlayLengh;
+    }
 
     ar >> myMessageQueue;
 
@@ -289,7 +313,38 @@ bool World::Read(CreaturesArchive &ar) {
       return false;
     }
 
-    ar >> myTints;
+    // moved this to the top so that agents can refer to it during creation.
+    // in later versions.
+    if (version < 24) {
+      ar >> myTints;
+    }
+
+    if (ar.GetFileVersion() >= 17) {
+      // see what modules saved to the archive file
+      std::string moduleName;
+      ar >> moduleName;
+      while (!moduleName.empty()) {
+        ModuleImporter::ResetIterator();
+        ModuleInterface *moduleInterface = NULL;
+        while (moduleInterface = ModuleImporter::NextModule()) {
+          std::string searchModuleName;
+          moduleInterface->ModuleName(searchModuleName);
+          if (searchModuleName == moduleName)
+            break;
+        }
+        if (moduleInterface) {
+          // we've found the module
+          moduleInterface->Read(ar);
+        } else {
+          throw BasicException(ErrorMessageHandler::Format("module_error", 1,
+                                                           "World::Read",
+                                                           moduleName.c_str())
+                                   .c_str());
+        }
+
+        ar >> moduleName;
+      }
+    }
 
     theApp.EndProgressBar();
   } else {
@@ -357,6 +412,14 @@ void World::TaskSwitcher() {
     theMusicSoundManager->Update();
     theMusicManager->Update();
   }
+
+  // Upload history to module interface (for tracking
+  // of Creature, essentially for Docking Station, or
+  // perhaps you could log it to a local file or database
+  // for another reason)
+  NetworkInterface *networkInterface = ModuleImporter::GetNetworkInterface();
+  if (networkInterface)
+    networkInterface->HistoryFeed(GetHistoryStore());
 }
 
 // Handle any pending messages & stimuli
@@ -366,7 +429,9 @@ void World::TaskHandleMessages() {
 
   while (ReadMessage(Msg)) // get ptr to msg
   {
-    if ((agent = Msg.GetTo()).IsValid()) {
+    if ((agent = Msg.GetTo()).IsValid())
+
+    {
       if (agent.GetAgentReference().IsRunning() &&
           !agent.GetAgentReference().AreYouDoomed()) {
         Agent &agentref = agent.GetAgentReference();
@@ -489,7 +554,7 @@ void World::TaskMusic(bool forceUpdate) {
     }
     if (selectedTrack != prevTrack) {
       // Hrm matron! We have to set a new track going as it were :)
-      theMusicManager->BeginTrack(selectedTrack.data());
+      theMusicManager->BeginTrack(selectedTrack.c_str());
       myEventTimer = 2; // This prevents track switches for 2 seconds
     }
   }
@@ -507,271 +572,69 @@ void World::TriggerTrack(std::string &trackName, int secondsToEnforce) {
   }
   if (trackName != prevTrack) {
     myEventTimer = secondsToEnforce;
-    theMusicManager->BeginTrack(trackName.data());
+    theMusicManager->BeginTrack(trackName.c_str());
   }
 }
 
 int World::MuteSoundManagers(int andMask, int eorMask) {
+  // std::cout << "MuteSoundManagers before " << theSoundManager->IsMixerFaded()
+  // << " m "
+  //<< theMusicSoundManager->IsMixerFaded() << std::endl;
   int managers = 0;
-  if (theSoundManager->IsMixerFaded())
+  if (!theSoundManager || theSoundManager->IsMixerFaded())
     managers += 1;
-  if (theMusicSoundManager->IsMixerFaded())
+  if (!theMusicSoundManager || theMusicSoundManager->IsMixerFaded())
     managers += 2;
   managers = (managers & andMask) ^ eorMask;
-  if (managers & 1)
-    theSoundManager->FadeOut();
-  else
-    theSoundManager->FadeIn();
-  if (managers & 2)
-    theMusicSoundManager->FadeOut();
-  else
-    theMusicSoundManager->FadeIn();
+
+  if (theSoundManager) {
+    if (managers & 1)
+      theSoundManager->FadeOut();
+    else
+      theSoundManager->FadeIn();
+  }
+
+  if (theMusicSoundManager) {
+    if (managers & 2)
+      theMusicSoundManager->FadeOut();
+    else
+      theMusicSoundManager->FadeIn();
+  }
+
+  // std::cout << "MuteSoundManagers after " << theSoundManager->IsMixerFaded()
+  // << " m "
+  //<< theMusicSoundManager->IsMixerFaded() << std::endl;
   return managers;
 }
 
-/*
-// Used to confirm propoer operation of the new random number generator
-bool RndPlatformTest () {
-        int a=0;
-        int i=0;
-        bool Passed=TRUE;
-        int min=0;
-        int max=0;
-        int tot=0;
-
-#define TNUMS 25
-
-        // Bin values from 0 to 24 and display results
-        i = 0;
-        int EachNum[TNUMS];
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<5000) {
-                a = Rnd(TNUMS-1);
-                if ( (a<0) || (a>TNUMS-1) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a]++;
-                i++;
-        }
-        i = 0;
-        min=TNUMS;
-        max=-1;
-        tot=0;
-        while(i<TNUMS) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-        // Bin values from 10 to 34 and display results
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<5000) {
-                a = Rnd(10,34);
-                if ( (a<10) || (a>34) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a-10]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<TNUMS) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-                // Bin values from -7 to 17 and display results
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<5000) {
-                a = Rnd(-7,17);
-                if ( (a<-7) || (a>17) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a+7]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<TNUMS) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-        // Bin values from 0 to 2 and display results
-        TRACE("waS\n");
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<640) {
-                //a = 2 - abs(Rnd(2) + Rnd(2) - 2);
-                a = Rnd(2);
-                Rnd(2);
-                a = 2 - abs(a+Rnd(2)-2);
-                if ( (a<0) || (a>3) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<3) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-        TRACE("Saw\n");
-        // Bin values from 0 to 2 and display results
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<640) {
-                //a = abs(Rnd(2) + Rnd(2) - 2);
-                a = Rnd(2);
-                Rnd(2);
-                a = abs(a+Rnd(2)-2);
-                if ( (a<0) || (a>3) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<3) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-        TRACE("Flat\n");
-                // Bin values from 0 to 2 and display results
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<640) {
-                a = Rnd(2);
-                if ( (a<0) || (a>3) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<3) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-
-        TRACE("Normal\n");
-                // Bin values from 0 to 2 and display results
-        i = 0;
-        while(i<TNUMS) EachNum[i++]=0;
-        i=0;
-        while(i<640) {
-                //a = (Rnd(2) + Rnd(2)) / 2;
-                a = Rnd(2);
-                Rnd(2);
-                a = (a+Rnd(2))/2;
-                if ( (a<0) || (a>3) ) {
-                        Passed = FALSE;
-                        continue;
-                }
-                EachNum[a]++;
-                i++;
-        }
-        i = 0;
-        min=999;
-        max=-1;
-        tot=0;
-        while(i<3) {
-                int n = EachNum[i];
-                TRACE("%3.3d ",n);
-                if (n>max) max = n;
-                if (n<min) min = n;
-                tot += n;
-                if(n==0) Passed=FALSE;
-                i++;
-        }
-        TRACE("\n");
-return Passed;
-}
-*/
-
-int32 World::GetNumberOfMetaRooms() { return myMap.GetMetaRoomCount(); }
-
 void World::GetNextMetaRoom() {
-  myCurrentMetaRoom = GetMap().GetCurrentMetaRoom() + 1;
+  bool ok = false;
+  myCurrentMetaRoom = GetMap().GetCurrentMetaRoom();
+  int start = myCurrentMetaRoom;
 
-  if (myCurrentMetaRoom >= GetNumberOfMetaRooms())
-    myCurrentMetaRoom = 0;
+  do {
+    myCurrentMetaRoom++;
 
-  SetMetaRoom(myCurrentMetaRoom, 0, -1, -1);
+    if (myCurrentMetaRoom > GetMap().GetMetaRoomMaxID())
+      myCurrentMetaRoom = 0;
+
+    ok = SetMetaRoom(myCurrentMetaRoom, 0, -1, -1);
+  } while (!ok && myCurrentMetaRoom != start);
 }
 
 void World::GetPreviousMetaRoom() {
-  myCurrentMetaRoom = GetMap().GetCurrentMetaRoom() - 1;
+  bool ok = false;
+  myCurrentMetaRoom = GetMap().GetCurrentMetaRoom();
+  int start = myCurrentMetaRoom;
 
-  if (myCurrentMetaRoom < 0)
-    myCurrentMetaRoom = GetNumberOfMetaRooms() - 1;
+  do {
+    myCurrentMetaRoom--;
 
-  SetMetaRoom(myCurrentMetaRoom, 0, -1, -1);
+    if (myCurrentMetaRoom < 0)
+      myCurrentMetaRoom = GetMap().GetMetaRoomMaxID();
+
+    ok = SetMetaRoom(myCurrentMetaRoom, 0, -1, -1);
+  } while (!ok && myCurrentMetaRoom != start);
 }
 
 bool World::SetMetaRoom(uint32 metaRoomID, uint32 transitionType, int32 xCamera,
@@ -917,6 +780,8 @@ int World::GetDayInSeason(bool useCurrentTime, uint32 worldTick) {
 }
 
 CAOSVar &World::GetGameVar(const std::string &name) {
+  if (name.empty())
+    throw BasicException("Empty string GAME variables not allowed");
   return (myGameVars[name]);
 }
 
@@ -950,67 +815,7 @@ void World::SetSelectedCreature(AgentHandle &creature) {
   CAOSVar p1;
   p1.SetAgent(mySelectedCreature);
   theAgentManager.ExecuteScriptOnAllAgentsDeferred(
-      SCRIPTSELECTEDCREATURECHANGED, NULLHANDLE, p1, INTEGERZERO);
-}
-
-void World::MakeAllNornsTired() {
-  AgentHandle c;
-  for (int i = 0; i < theAgentManager.GetCreatureCollection().size(); i++) {
-    c = theAgentManager.GetCreatureByIndex(i);
-    if (c.IsValid())
-      c.GetCreatureReference().MakeYourselfTired();
-  }
-}
-
-void World::SetClockAgent(AgentHandle clock) { myCountDownClock = clock; }
-
-void World::SetBirthdayAgent(AgentHandle banner) { myBirthdayAgent = banner; }
-
-void World::ActivateBirthdayBanner() {
-  if (myBirthdayAgent.IsValid() && !myBirthdayBannerShownThisSession) {
-    WriteMessage(NULLHANDLE, myBirthdayAgent, ACTIVATE1, INTEGERZERO,
-                 INTEGERZERO, 0);
-    myBirthdayBannerShownThisSession = true;
-  }
-}
-
-void World::UpdateCountDownClock(int diff) {
-  if (myCountDownClock.IsValid() &&
-      myCountDownClock.GetAgentReference().GetPose(0) != diff) {
-    myCountDownClock.GetAgentReference().ShowPose(diff, 1);
-  }
-}
-
-// I'm really sorry to have to do this
-// but these methods rely on system time
-// not game time
-void World::ShowCountDownClockQuit() {
-  if (myCountDownClock.IsValid()) {
-    WriteMessage(NULLHANDLE, myCountDownClock, 208, INTEGERZERO, INTEGERZERO,
-                 0);
-  }
-}
-
-// I'm really sorry to have to do this
-// but these methods rely on system time
-// not game time
-void World::ShowCountDownClock(bool flashClockOnScreenOnly, int pose) {
-  if (myCountDownClock.IsValid()) {
-    myCountDownClock.GetAgentReference().ShowPose(pose, 0);
-
-    Position pos = theMainView.GetWorldPosition();
-
-    //	Vector2D floatpos(pos.GetX() + 300.0,pos.GetY() + 100);
-
-    //	myCountDownClock.GetAgentReference().FloatTo(floatpos );
-
-    if (flashClockOnScreenOnly)
-      WriteMessage(NULLHANDLE, myCountDownClock, ACTIVATE2, INTEGERZERO,
-                   INTEGERZERO, 0);
-    else
-      WriteMessage(NULLHANDLE, myCountDownClock, ACTIVATE1, INTEGERZERO,
-                   INTEGERZERO, 0);
-  }
+      SCRIPTSELECTEDCREATURECHANGED, COASVARAGENTNULL, p1, INTEGERZERO);
 }
 
 // ---------------------------------------------------------------------
@@ -1030,7 +835,6 @@ bool World::Load(std::string const &worldName, bool loadBackup) {
   }
   loadOnlyOnceSanityCheck = true;
 
-  // theApp.BeginWaitCursor();
   theMainView.SetLoading(true);
 
   // Prepare the view
@@ -1045,28 +849,26 @@ bool World::Load(std::string const &worldName, bool loadBackup) {
   bool worldHasLoaded = false;
 
   FilePath path(worldName, WORLDS_DIR);
-  std::string fullPath = path.GetFullPath() + "\\";
+  std::string fullPath = path.GetFullPath() + PathSeparator();
+
   CreateDirectory(fullPath.c_str(), NULL);
   fullPath += DefaultWorldName();
   // if no main world and everything in it, try the backup straight away
   // (this means we load the backup, rather than bootstrapping)
-#ifdef _WIN32
-  if (!loadBackup && GetFileAttributes(fullPath.c_str()) == -1)
-#else
-  if (!loadBackup && !FileExists(fullPath.c_str()))
-#endif
-    loadBackup = true;
+  if (!loadBackup && !FileExists(fullPath.c_str())) {
+    std::string oldName = path.GetFullPath() + PathSeparator() + OldWorldName();
+    if (FileExists(oldName.c_str()))
+      fullPath = oldName;
+    else
+      loadBackup = true;
+  }
+
   if (loadBackup)
     fullPath += ".bak";
 
-    // if the world and everthying in it does not exist then
-    // load all the bootstraps
-#ifdef _WIN32
-  if (GetFileAttributes(fullPath.c_str()) == -1)
-#else
-  if (FileExists(fullPath.c_str()) == false)
-#endif
-  {
+  // if the world and everthying in it does not exist then
+  // load all the bootstraps
+  if (FileExists(fullPath.c_str()) == false) {
     // if this is the start up world then load the start up world
     if (worldName == "Startup") {
       CosInstaller scripts;
@@ -1093,10 +895,11 @@ bool World::Load(std::string const &worldName, bool loadBackup) {
 
   if (!worldHasLoaded) {
     try {
-      std::fstream file(fullPath.c_str(), std::ios::in | std::ios::binary);
+      std::ifstream file(fullPath.c_str(), std::ios::in | std::ios::binary);
       CreaturesArchive archive(file, CreaturesArchive::Load);
-
-      Read(archive);
+      archive.SetUpdateProgressBarFunction(UpdateProgressBar);
+      int fileSize = FileSize(fullPath.c_str());
+      Read(archive, fileSize);
 
       // We've loaded in a good archive, so signal to back it up on the next
       // save
@@ -1115,16 +918,21 @@ bool World::Load(std::string const &worldName, bool loadBackup) {
     }
   }
 
-  // now initialize your gameVariables
-  InitialiseFromGameVariables();
+  // now initialize your game variables
+  theApp.RefreshFromGameVariables();
 
-  // theApp.EndWaitCursor();
   theMainView.SetLoading(false);
   theApp.WindowHasResized();
 
   // tell agents we've loaded
-  theAgentManager.ExecuteScriptOnAllAgents(SCRIPT_WORLD_LOADED, NULLHANDLE,
-                                           INTEGERZERO, INTEGERZERO);
+  theAgentManager.ExecuteScriptOnAllAgents(
+      SCRIPT_WORLD_LOADED, COASVARAGENTNULL, INTEGERZERO, INTEGERZERO);
+
+  // tell all modules
+  ModuleImporter::ResetIterator();
+  while (ModuleInterface *moduleInterface = ModuleImporter::NextModule()) {
+    moduleInterface->WorldLoaded();
+  }
 
   theMainView.MakeTheEntityHandlerResetBoundsProperly();
   theMainView.Render();
@@ -1132,10 +940,7 @@ bool World::Load(std::string const &worldName, bool loadBackup) {
   return worldHasLoaded;
 }
 
-void World::InitialiseFromGameVariables() {
-
-  theApp.InitialiseFromGameVariables();
-
+void World::DoRefreshFromGameVariables() {
   //********************    GENERAL ENGINE VARIABLES  ************************//
   // time stuff - if they are not set then don't update your variables
   bool invalidData = false;
@@ -1175,15 +980,6 @@ void World::InitialiseFromGameVariables() {
   if (!invalidData)
     myYearLengthInDays = mySeasonCount * mySeasonLengthInDays;
 
-  CAOSVar &volume = GetGameVar("engine_volume");
-
-  ASSERT(volume.GetType() == CAOSVar::typeInteger);
-
-  if (theSoundManager) {
-    theSoundManager->SetVolumeOnMidiPlayer(volume.GetInteger());
-    theSoundManager->SetVolume(volume.GetInteger());
-  }
-
   CAOSVar &mute = GetGameVar("engine_mute");
   if (theSoundManager) {
     if (mute.GetInteger() == 0)
@@ -1216,46 +1012,49 @@ void World::InitialiseFromGameVariables() {
   if (theApp.DoINeedToGetPassword())
     myPassword = replacementPassword;
 
-  // we've finished with the apps password so reset it (Done automatically Ish)
-  // theApp.SetPassword(std::string(""));
-
-  //****************************************************************************//
-
-  //********************   C3 SPECIFIC VARIABLES ************************//
-  //
-  //****************************************************************************//
-
-  //********************   CAV SPECIFIC VARIABLES ************************//
-
-  // shutting down the engine
-  CAOSVar &clock = GetGameVar("cav_CountdownClockAgent");
-
-  if (clock.GetType() == CAOSVar::typeAgent) {
-    myCountDownClock = clock.GetAgent();
-    if (myCountDownClock.IsValid())
-      myCountDownClock.GetAgentReference().Hide();
-  }
-
-  // birthday banner
-  CAOSVar &birth = GetGameVar("cav_BirthdayBannerAgent");
-
-  if (birth.GetType() == CAOSVar::typeAgent) {
-    myBirthdayAgent = birth.GetAgent();
-  }
-
-  //****************************************************************************//
+  // zlib compression level
+  int zlibCompressionLevel = GetGameVar("engine_zlib_compression").GetInteger();
+  CreaturesArchive::SetZLibCompressionLevel(zlibCompressionLevel);
 }
 
 void World::CheckForNewNewlyInstalledProductsOrAddOns() {
-  FilePath path("", BOOTSTRAP_DIR);
-
   std::vector<std::string> unLoadedBootstrapFolders;
+  FilePath path(myName, WORLDS_DIR);
 
-  GetMissingDirsInDirectory(path.GetFullPath(), myLoadedBootstrapFolders,
-                            unLoadedBootstrapFolders);
+  // Check each auxiliary bootstrap directory to see if we want to load it
+  for (int i = 0; i < theDirectoryManager.GetAuxDirCount(BOOTSTRAP_DIR); ++i) {
+    // Check out the Eame variable to say if we should boot this directory
+    std::ostringstream out;
+    out << "engine_no_auxiliary_bootstrap_" << i;
+    CAOSVar &var = theApp.GetEameVar(out.str());
+    int val = (var.GetType() == CAOSVar::typeInteger && var.GetInteger() == 0)
+                  ? 0
+                  : 1;
+
+    // Look for a file overriding the eame variable
+    std::string auxBootstrapFile =
+        path.GetFullPath() + std::string(PathSeparator()) + out.str();
+    if (FileExists(auxBootstrapFile.c_str())) {
+      std::ifstream in(auxBootstrapFile.c_str());
+      in >> val;
+    } else {
+      // Make that file for new worlds
+      std::ofstream out(auxBootstrapFile.c_str());
+      out << val;
+    }
+
+    if (val == 0)
+      GetMissingDirsInDirectory(theDirectoryManager.GetAuxDir(BOOTSTRAP_DIR, i),
+                                myLoadedBootstrapFolders,
+                                unLoadedBootstrapFolders);
+  }
 
   // sort into alphabetical order,
   std::sort(unLoadedBootstrapFolders.begin(), unLoadedBootstrapFolders.end());
+  // remove duplicates
+  unLoadedBootstrapFolders.erase(std::unique(unLoadedBootstrapFolders.begin(),
+                                             unLoadedBootstrapFolders.end()),
+                                 unLoadedBootstrapFolders.end());
 
   // now get the cos installer to load these new bootstrap folders in
   CosInstaller cos(unLoadedBootstrapFolders);
@@ -1275,27 +1074,15 @@ void World::CheckForNewNewlyInstalledProductsOrAddOns() {
   // load it and then delete it.
   // Now look at all bootstraps in a folder called magic
   // read them in and then delete them
-  path.SetFilePath(myName, WORLDS_DIR);
+  std::string fullPath =
+      path.GetFullPath() + std::string(PathSeparator()) + "magic.cos";
 
-  std::string fullPath = path.GetFullPath() + "\\magic.cos";
-
-#ifdef _WIN32
-  if (GetFileAttributes(fullPath.data()) != -1)
-#else
-  if (FileExists(fullPath.data()))
-#endif
-  {
+  if (FileExists(fullPath.c_str())) {
     CosInstaller cos(fullPath);
-    DeleteFile(fullPath.data());
+    DeleteFile(fullPath.c_str());
   }
 }
 
-// ---------------------------------------------------------------------
-// Method:		Save
-// Arguments:	None
-// Returns:		true if successful
-// Description:	Saves the current world.
-// ---------------------------------------------------------------------
 bool World::Save() {
 
   if (myName == "") {
@@ -1303,18 +1090,13 @@ bool World::Save() {
     return false;
   }
 
-  // get the approximate shutdown time
-  GetLocalTime(&myGameEndTime);
-
-  // get the length of play
-  StoreLengthOfPlay();
-
   FilePath path(myName, WORLDS_DIR);
-  std::string fullPath = path.GetFullPath() + "\\" + DefaultWorldName();
+  std::string fullPath =
+      path.GetFullPath() + PathSeparator() + DefaultWorldName();
   std::string backPath =
-      path.GetFullPath() + "\\" + DefaultWorldName() + ".bak";
+      path.GetFullPath() + PathSeparator() + DefaultWorldName() + ".bak";
   std::string tempPath =
-      path.GetFullPath() + "\\" + DefaultWorldName() + ".tmp";
+      path.GetFullPath() + PathSeparator() + DefaultWorldName() + ".tmp";
 
   // myNeedToBackUp is true if we have successfully loaded an archive, so we
   // know we have a safe version to backup.  This way, the .bak file is
@@ -1326,7 +1108,7 @@ bool World::Save() {
   }
 
   try {
-    std::fstream file(tempPath.c_str(), std::ios::out | std::ios::binary);
+    std::ofstream file(tempPath.c_str(), std::ios::out | std::ios::binary);
     CreaturesArchive archive(file, CreaturesArchive::Save);
     Write(archive);
   } catch (BasicException &e) {
@@ -1350,8 +1132,7 @@ bool World::CopyWorldDirectory(std::string const &source,
 
 bool World::DeleteWorldDirectory(std::string const &source) {
   FilePath path(source, WORLDS_DIR);
-  // return DeleteDirectory( path.GetFullPath() );
-  std::cout << "Attempted to delete world directory" << std::endl;
+  return DeleteDirectory(path.GetFullPath());
 }
 
 int World::WorldCount() {
@@ -1361,9 +1142,12 @@ int World::WorldCount() {
 
   GetDirsInDirectory(path.GetFullPath(), myWorldNames);
 
-  // remove eden directory from list
-  myWorldNames.erase(
-      std::remove(myWorldNames.begin(), myWorldNames.end(), "Startup"));
+  // remove Startup directory from list
+  std::vector<std::string>::iterator it =
+      std::remove(myWorldNames.begin(), myWorldNames.end(), "Startup");
+  it = std::remove(myWorldNames.begin(), it, "startup");
+  if (it != myWorldNames.end())
+    myWorldNames.erase(it);
 
   return myWorldNames.size();
 }
@@ -1408,29 +1192,28 @@ bool World::GetPassword(int index, std::string &password) {
 
   // look at the first few  details of the serialized file
   FilePath path(password, WORLDS_DIR);
-  std::string fullPath = path.GetFullPath() + "\\";
+  std::string fullPath = path.GetFullPath() + PathSeparator();
   CreateDirectory(fullPath.c_str(), NULL);
   fullPath += DefaultWorldName();
 
+  // look for old serialisation name
+  if (!FileExists(fullPath.c_str()))
+    fullPath = path.GetFullPath() + PathSeparator() + OldWorldName();
+
   // if the world and everthying in it does not exist then
   // load all the bootstraps
-#ifdef _WIN32
-  if (GetFileAttributes(fullPath.data()) != -1)
-#else
-  if (FileExists(fullPath.data()))
-#endif
-  {
-    std::fstream file(fullPath.c_str(), std::ios::in | std::ios::binary);
+  if (FileExists(fullPath.c_str())) {
+    std::ifstream file(fullPath.c_str(), std::ios::in | std::ios::binary);
     CreaturesArchive archive(file, CreaturesArchive::Load);
     try {
       // should output a version here
       archive >> password;
       return true;
     } catch (BasicException &e) {
-      ErrorMessageHandler::Show(e, "World::Load");
+      ErrorMessageHandler::Show(e, "World::GetPassword");
       return false;
     } catch (...) {
-      ErrorMessageHandler::Show("archive_error", 4, "World::Load");
+      ErrorMessageHandler::Show("archive_error", 4, "World::GetPassword");
       return false;
     }
   } else {
@@ -1438,13 +1221,8 @@ bool World::GetPassword(int index, std::string &password) {
     // load it and then delete it.
     path.SetFilePath(password, WORLDS_DIR);
 
-    fullPath = path.GetFullPath() + "\\magic.cos";
-#ifdef _WIN32
-    if (GetFileAttributes(fullPath.data()) != -1)
-#else
-    if (FileExists(fullPath.data()))
-#endif
-    {
+    fullPath = path.GetFullPath() + std::string(PathSeparator()) + "magic.cos";
+    if (FileExists(fullPath.c_str())) {
       CosInstaller cos(fullPath);
       CAOSVar &pass = GetGameVar("engine_password");
       if (pass.GetType() == CAOSVar::typeString) {
@@ -1458,45 +1236,21 @@ bool World::GetPassword(int index, std::string &password) {
 
 void World::SetPassword(std::string &password) { myPassword = password; }
 
-void World::StoreLengthOfPlay() {
-  memset(&myLastPlayLength, 0, sizeof(SYSTEMTIME));
-
-  myLastPlayLength.wDay = myGameEndTime.wDay - theApp.GetStartTime().wDay;
-
-  if (theApp.GetStartTime().wHour < myGameEndTime.wHour)
-    myLastPlayLength.wHour = myGameEndTime.wHour - theApp.GetStartTime().wHour;
-
-  // do we want to go into this much detail?
-  if (theApp.GetStartTime().wMilliseconds < myGameEndTime.wMilliseconds)
-    myLastPlayLength.wMilliseconds =
-        myGameEndTime.wMilliseconds - theApp.GetStartTime().wMilliseconds;
-
-  if (theApp.GetStartTime().wMinute < myGameEndTime.wMinute)
-    myLastPlayLength.wMinute =
-        myGameEndTime.wMinute - theApp.GetStartTime().wMinute;
-
-  if (theApp.GetStartTime().wMonth < myGameEndTime.wMonth)
-    myLastPlayLength.wMonth =
-        myGameEndTime.wMonth - theApp.GetStartTime().wMonth;
-
-  if (theApp.GetStartTime().wSecond < myGameEndTime.wSecond)
-    myLastPlayLength.wSecond =
-        myGameEndTime.wSecond - theApp.GetStartTime().wSecond;
-
-  // trouble if this isn't true
-  if (theApp.GetStartTime().wYear < myGameEndTime.wYear)
-    myLastPlayLength.wYear = myGameEndTime.wYear - theApp.GetStartTime().wYear;
-}
-
-bool World::IsStartUpWorld() {
-  return (strcmp(myName.c_str(), "Startup") == 0);
-}
+bool World::IsStartUpWorld() { return myName == std::string("Startup"); }
 
 void World::MarkFileForAttic(const FilePath &fileToDeleteLater) {
-  myFilesForAtticDelayed.push_back(fileToDeleteLater);
+  // Only attic things which are in the world directory
+  std::string path;
+  if (fileToDeleteLater.GetWorldDirectoryVersionOfTheFile(path))
+    myFilesForAtticDelayed.push_back(fileToDeleteLater);
 }
 
 void World::MarkFileCreated(const FilePath &fileJustCreated) {
+  // Return if it isn't in the world's directory
+  std::string path;
+  if (!fileJustCreated.GetWorldDirectoryVersionOfTheFile(path))
+    return;
+
   bool wasOnDeleteList = false;
 
   // Make sure it is not on the delayed delete list
@@ -1512,8 +1266,8 @@ void World::MarkFileCreated(const FilePath &fileJustCreated) {
 
     std::string stairFileTemp = GetBasementPath() + BasementFileName() + ".tmp";
     {
-      std::fstream stairStream(stairFileTemp.c_str(),
-                               std::ios::out | std::ios::binary);
+      std::ofstream stairStream(stairFileTemp.c_str(),
+                                std::ios::out | std::ios::binary);
       CreaturesArchive archive(stairStream, CreaturesArchive::Save);
       archive << myFilesJustCreated;
     }
@@ -1535,14 +1289,14 @@ bool World::DeleteFromFilePathList(std::vector<FilePath> &list,
 
 std::string World::GetBasementPath() {
   std::string basementPath;
-  theApp.GetWorldDirectoryVersion("Basement", basementPath, true);
+  theDirectoryManager.GetWorldDirectoryVersion("Basement", basementPath, true);
   return basementPath;
 }
 
 void World::MoveFilesToAttic() {
   // Create attic directory if necessary
   std::string atticPath;
-  theApp.GetWorldDirectoryVersion("Attic", atticPath, true);
+  theDirectoryManager.GetWorldDirectoryVersion("Attic", atticPath, true);
 
   // Remove files from next time list
   int n = myFilesForAtticNextTime.size();
@@ -1570,8 +1324,8 @@ void World::MoveFilesToBasement() {
   std::string stairFile = GetBasementPath() + BasementFileName();
   std::vector<FilePath> tryingToClimbTheStairs;
   {
-    std::fstream stairStream(stairFile.c_str(),
-                             std::ios::in | std::ios::binary);
+    std::ifstream stairStream(stairFile.c_str(),
+                              std::ios::in | std::ios::binary);
     if (stairStream.good()) {
       CreaturesArchive archive(stairStream, CreaturesArchive::Load);
       archive >> tryingToClimbTheStairs;
@@ -1605,7 +1359,7 @@ void World::MoveFilesToBasement() {
 
 std::string World::GetPorchPath() {
   std::string porchPath;
-  theApp.GetWorldDirectoryVersion("Porch", porchPath, true);
+  theDirectoryManager.GetWorldDirectoryVersion("Porch", porchPath, true);
   return porchPath;
 }
 
@@ -1620,9 +1374,21 @@ void World::MoveFileToPorch(std::string creatureFile) {
   myFilesInThePorch.push_back(justFileName);
 }
 
+bool World::WarpExtension(const std::string &file) {
+  std::string warpExtension = ".warp";
+  if (file.size() >= warpExtension.size()) {
+    std::string extension =
+        file.substr(file.size() - warpExtension.size(), warpExtension.size());
+    if (extension == warpExtension)
+      return true;
+  }
+  return false;
+}
+
 void World::ProcessFilesInPorch() {
   std::vector<std::string> filesInPorch;
   GetFilesInDirectory(GetPorchPath(), filesInPorch, "*.creature");
+  GetFilesInDirectory(GetPorchPath(), filesInPorch, "*.warp");
 
   int n = filesInPorch.size();
   for (int i = 0; i < n; ++i) {
@@ -1635,7 +1401,14 @@ void World::ProcessFilesInPorch() {
       // we move the file back to the exported creature directory.
 
       std::string exportedFilename =
-          theApp.GetDirectory(CREATURES_DIR) + filesInPorch[i];
+          theDirectoryManager.GetDirectory(CREATURES_DIR);
+      if (WarpExtension(filesInPorch[i])) {
+        // if the file name ends in the warp file extension,
+        // then we move it back to a different place
+        exportedFilename = theApp.GetWarpIncomingPath();
+      }
+      exportedFilename += filesInPorch[i];
+
       CopyFile(porchFilename.c_str(), exportedFilename.c_str(), TRUE);
     }
     // We don't need the file any more - either we've copied it to the exported
@@ -1645,4 +1418,25 @@ void World::ProcessFilesInPorch() {
   }
 
   myFilesInThePorch.clear();
+}
+
+void World::LoadSpecifiedBootstraps(int32 subbootNumbers, int32 folderNumbers,
+                                    bool refreshWorld) {
+  if (refreshWorld) {
+    theAgentManager.KillAllAgents();
+    GetMap().Reset();
+    thePointer = theAgentManager.CreatePointer();
+  }
+
+  CosInstaller cos(subbootNumbers, folderNumbers);
+}
+
+// static
+void World::UpdateProgressBar(int amount) { theApp.UpdateProgressBar(amount); }
+
+const char *World::DefaultWorldName() {
+  if (theApp.GetGameName() == std::string("Sea-Monkeys"))
+    return "TheSeaAndAllThatLurksInItsDepths";
+  else
+    return "SpaceAndAllThatIsOutThere";
 }

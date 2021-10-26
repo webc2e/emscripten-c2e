@@ -6,18 +6,21 @@
 #endif
 
 #include "../../common/BasicException.h"
+#include "../../modules/ModuleAPI.h"
 
 // Forward references
 class Agent;
+	class AgentFacultyInterface; // implemented by agent
 class SimpleAgent;
 class PointerAgent;
 class CompoundAgent;
 class Vehicle;
-class Skeleton;
 class Creature;
+	class CreatureFacultyInterface; // implemented by creature
+class SkeletalCreature;
 class CreaturesArchive;
 
-class AgentHandle {
+class C2E_MODULE_API AgentHandle {
 public:	
 
 	enum {
@@ -26,8 +29,8 @@ public:
 		agentPointer = 4,
 		agentCompound = 8,
 		agentVehicle = 16,
-		agentSkeleton = 32,
-		agentCreature = 64
+		agentCreature = 32,
+		agentSkeletalCreature = 64,
 	};
 	// Default constructor
 	AgentHandle();
@@ -57,6 +60,9 @@ public:
 	// Inequality
 	bool operator!=(const AgentHandle& handle) const; 
 
+	// Arbitary comparison - for containers
+	bool operator<(const AgentHandle& handle) const; 
+
 private:
 	// These functions are declared but not defined so that the
 	// compiler can catch comparisons and assignments to a raw
@@ -76,8 +82,8 @@ public:
 	bool IsPointerAgent();
 	bool IsCompoundAgent();
 	bool IsVehicle();
-	bool IsSkeleton();
 	bool IsCreature();
+	bool IsSkeletalCreature();
 	
 
 	// 
@@ -85,21 +91,23 @@ public:
 	//
 	 
 	Agent& GetAgentReference() const;
+	AgentFacultyInterface& GetAgentFacultyInterfaceReference() const;
 	SimpleAgent& GetSimpleAgentReference() const;
 	PointerAgent& GetPointerAgentReference() const;
 	CompoundAgent& GetCompoundAgentReference() const;
 	Vehicle& GetVehicleReference() const;
-	Skeleton& GetSkeletonReference() const;
 	Creature& GetCreatureReference() const;
+	CreatureFacultyInterface& GetCreatureFacultyInterfaceReference() const;
+	SkeletalCreature& GetSkeletalCreatureReference() const;
 	
 private:
 	Agent* myAgentPointer;
-	friend CreaturesArchive& operator<<( CreaturesArchive &ar, AgentHandle const &agentHandle );
-	friend CreaturesArchive& operator>>( CreaturesArchive &ar, AgentHandle &agentHandle );
+	friend C2E_MODULE_API CreaturesArchive& operator<<( CreaturesArchive &ar, AgentHandle const &agentHandle );
+	friend C2E_MODULE_API CreaturesArchive& operator>>( CreaturesArchive &ar, AgentHandle &agentHandle );
 };
 
-CreaturesArchive& operator<<( CreaturesArchive &ar, AgentHandle const &agentHandle );
-CreaturesArchive& operator>>( CreaturesArchive &ar, AgentHandle &agentHandle );
+C2E_MODULE_API CreaturesArchive& operator<<( CreaturesArchive &ar, AgentHandle const &agentHandle );
+C2E_MODULE_API CreaturesArchive& operator>>( CreaturesArchive &ar, AgentHandle &agentHandle );
 
 
 class AgentHandleException : public BasicException
@@ -109,8 +117,9 @@ public:
 };
 
 // Global
-extern AgentHandle NULLHANDLE;
+extern C2E_MODULE_API AgentHandle NULLHANDLE;
 
 
 
 #endif // AGENT_HANDLE_H
+

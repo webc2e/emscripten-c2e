@@ -105,3 +105,4 @@ private:
 };
 
 #endif //STRINGINTGROUP_H
+

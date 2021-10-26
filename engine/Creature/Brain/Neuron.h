@@ -11,11 +11,6 @@
 
 #include "BrainConstants.h"
 
-#include <vector>
-struct Neuron;
-typedef std::vector<Neuron*> Neurons;
-typedef std::vector<Neuron*>::iterator NeuronsIterator;
-
 struct Neuron
 {
 	int idInList;
@@ -26,3 +21,4 @@ struct Neuron
 };
 
 #endif//Neuron_H
+

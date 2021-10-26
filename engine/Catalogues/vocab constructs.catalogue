@@ -1,0 +1,71 @@
+# This file contains two sections:
+#	The vowels and consonants for a language
+#	Word forms to be replaced in infant speech
+
+# Really bad speech entries
+TAG "vocab_vowels"
+"aeiouAEIOU"
+
+TAG "vocab_consonants"
+"bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ"
+
+
+# Infant speech entries
+# VERY IMPORTANT!!
+# MUST be an even number of entries
+TAG "vocab_convert_chunks"
+"ph"
+"f"
+
+"ss"
+"s"
+
+"sh"
+"th"
+
+"s"
+"th"
+
+"th"
+"d"
+
+"j"
+"d"
+
+"r"
+"w"
+
+"ion"
+"un"
+
+"in"
+"im"
+
+"nn"
+"n"
+
+"rr"
+"r"
+
+"ea"
+"ee"
+
+"ai"
+"ay"
+
+"v"
+"w"
+
+"ck"
+"k"
+
+"ng"
+"nk"
+
+"oa"
+"ow"
+
+"or"
+"aw"
+
+# End

@@ -126,3 +126,4 @@ void MusicVariableContainer::Reset()
 		}
 
 	}
+

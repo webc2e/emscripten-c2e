@@ -231,3 +231,4 @@ class MusicEffect : public MusicNamedItem
 	};
 
 #endif
+

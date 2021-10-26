@@ -23,11 +23,12 @@
 #include "../App.h"
 
 #include "../Stimulus.h"
-#include "../Creature/Creature.h"
+#include "../Creature/SkeletalCreature.h"
 
 #include "../Creature/Biochemistry/Biochemistry.h"
 #include "../Creature/Biochemistry/Organ.h"
 #include "../Creature/Brain/Brain.h"
+#include "../Agents/PointerAgent.h"
 
 #include "../Creature/LifeFaculty.h"
 #include "../Creature/LinguisticFaculty.h"
@@ -36,7 +37,189 @@
 #include "../Creature/MusicFaculty.h"
 #include "../Creature/ReproductiveFaculty.h"
 
+#include <fstream>
 
+
+
+
+// Faculty numbers for STEP and SOUL:
+//SensoryFaculty (0), Brain (1), MotorFaculty (2), LinguisticFaculty (3),
+//Biochemistry (4), ReproductiveFaculty (5), ExpressiveFaculty (6),
+//MusicFaculty (7), LifeFaculty (8)
+
+
+void CreatureHandlers::Command_STEP( CAOSMachine& vm )
+{
+	int id = vm.FetchIntegerRV();
+	Faculty* f = vm.GetCreatureTarg().GetFaculty(id);
+	if (f!=NULL)
+	{
+		f->Update();
+	}
+}
+void CreatureHandlers::Command_SOUL( CAOSMachine& vm )
+{
+	int id = vm.FetchIntegerRV();
+	int setTo = vm.FetchIntegerRV();
+	Faculty* f = vm.GetCreatureTarg().GetFaculty(id);
+	if (f!=NULL)
+	{
+		f->SetActive(setTo!=0);
+	}
+}
+int CreatureHandlers::IntegerRV_SOUL( CAOSMachine& vm )
+{
+	int id = vm.FetchIntegerRV();
+	Faculty* f = vm.GetCreatureTarg().GetFaculty(id);
+	return f!=NULL ? (f->IsActive() ? 1 : 0) : -1;
+}
+
+
+
+
+void CreatureHandlers::Command_DSEE( CAOSMachine& vm )
+{
+	int b = vm.FetchIntegerRV();
+	theApp.SetWhetherWeShouldHighlightAgentsKnownToCreature(b!=0);
+}
+
+
+void CreatureHandlers::Command_MOTR( CAOSMachine& vm )
+{
+	int i = vm.FetchIntegerRV();
+	vm.GetCreatureTarg().Motor()->SetActive(i!=0);
+}
+int CreatureHandlers::IntegerRV_MOTR( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().Motor()->IsActive() ? 1 : 0;
+}
+	
+
+
+
+void CreatureHandlers::Command_MIND( CAOSMachine& vm )
+{
+	int i = vm.FetchIntegerRV();
+	vm.GetCreatureTarg().GetBrain()->SetActive(i!=0);
+}
+
+int CreatureHandlers::IntegerRV_MIND( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetBrain()->IsActive() ? 1 : 0;
+}
+
+
+AgentHandle CreatureHandlers::AgentRV_SEEN( CAOSMachine& vm )
+{
+	int n = vm.GetCreatureTarg().Sensory()->GetNoOfKnownAgents();
+
+	int id = vm.FetchIntegerRV();
+
+	if (id<0 || id>=n)
+		return NULLHANDLE;
+
+	return vm.GetCreatureTarg().Sensory()->GetKnownAgent(id);
+}
+
+
+
+void CreatureHandlers::Command_DOIN( CAOSMachine& vm )
+{
+	Brain& b = *vm.GetCreatureTarg().GetBrain();
+
+	int no = vm.FetchIntegerRV();
+
+	b.SetWhetherToProcessInstincts(true);
+	for (int i=0; i<no; i++)
+	{
+		b.Update();
+	}
+	b.SetWhetherToProcessInstincts(false);
+}
+void CreatureHandlers::Command_ADIN( CAOSMachine& vm )
+{
+	Brain& b = *vm.GetCreatureTarg().GetBrain();
+
+	int verb = vm.FetchIntegerRV();
+	int noun = vm.FetchIntegerRV();
+	float qualifier = vm.FetchFloatRV();
+	int drive = vm.FetchIntegerRV();
+	b.AddInstinct(verb, noun, -qualifier, drive);
+}
+
+
+
+
+
+void CreatureHandlers::Command_CALG( CAOSMachine& vm )
+{
+	int categoryId = vm.FetchIntegerRV();
+	int categoryRepAlgNo = vm.FetchIntegerRV();
+	vm.GetCreatureTarg().Sensory()->SetCategoryRepresentativeAlgorithm(categoryId, categoryRepAlgNo);
+}
+
+int CreatureHandlers::IntegerRV_CALG( CAOSMachine& vm )
+{
+	int categoryId = vm.FetchIntegerRV();
+	return vm.GetCreatureTarg().Sensory()->GetCategoryRepresentativeAlgorithm(categoryId);
+}
+
+
+
+void CreatureHandlers::Command_PLMD( CAOSMachine& vm )
+{
+	std::string testFilename;
+	int tractIDX;
+
+	tractIDX = vm.FetchIntegerRV();
+	vm.FetchStringRV(testFilename);
+
+	try
+	{	
+		std::ofstream toStream( testFilename.c_str(), std::ios::out | std::ios::binary);
+
+		Creature& c = vm.GetCreatureTarg();
+		c.GetBrain()->DumpAllDendrites( tractIDX, toStream );
+		c.GetBiochemistry()->DumpAllChemicals( toStream );
+	}
+	catch( BasicException &e )
+	{
+		ErrorMessageHandler::Show(e, "CreatureHandlers::Command_PLMD");
+	}
+	catch(...)
+	{
+		ErrorMessageHandler::Show("PalmDump Error", 4, "CreatureHandlers::Command_PLMD");
+	}
+}
+
+void CreatureHandlers::Command_PLMU( CAOSMachine& vm )
+{
+	std::string testFilename;
+	int tractIDX;
+
+	tractIDX = vm.FetchIntegerRV();
+	vm.FetchStringRV(testFilename);
+
+	try
+	{	
+		std::ifstream fromStream( testFilename.c_str(), std::ios::in | std::ios::binary);
+
+		Creature& c = vm.GetCreatureTarg();
+		c.GetBrain()->UnDumpAllDendrites( tractIDX, fromStream );
+		c.GetBiochemistry()->UnDumpAllChemicals( fromStream );
+	}
+	catch( BasicException &e )
+	{
+		ErrorMessageHandler::Show(e, "CreatureHandlers::Command_PLMU");
+	}
+	catch(...)
+	{
+		ErrorMessageHandler::Show("PalmUndump Error", 4, "CreatureHandlers::Command_PLMU");
+	}
+
+}
+
+// All macros following could be made invalid for nonskeletal creatures:
 float CreatureHandlers::FloatRV_MTHX( CAOSMachine& vm )
 {
 	Creature& c = vm.GetCreatureTarg();
@@ -49,36 +232,10 @@ float CreatureHandlers::FloatRV_MTHY( CAOSMachine& vm )
 	return c.GetMouthMapPosition().y;
 }
 
-void CreatureHandlers::Command_DONE( CAOSMachine& vm )
-{
-	Creature& c = vm.GetCreatureTarg();
-
-	c.Motor()->StopCurrentInvoluntaryAction();
-}
-
-int CreatureHandlers::IntegerRV_DEAD( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().Life()->GetWhetherDead() ? 1 : 0;
-}
-
-void CreatureHandlers::Command_DEAD( CAOSMachine& vm )
-{
-	vm.GetCreatureTarg().Life()->SetWhetherDead(true);
-}
-
-void CreatureHandlers::Command_SPNL( CAOSMachine& vm )
-{
-	std::string lobeToken;
-	vm.FetchStringRV(lobeToken);
-	int neuronNo = vm.FetchIntegerRV();
-	vm.GetCreatureTarg().GetBrain()->SetInput(lobeToken.c_str(), neuronNo, vm.FetchFloatRV());
-}
-
 void CreatureHandlers::Command_WALK( CAOSMachine& vm )
 {
 	vm.GetCreatureTarg().Walk();
 }
-
 
 void CreatureHandlers::Command_MVFT( CAOSMachine& vm )
 {
@@ -105,7 +262,6 @@ void CreatureHandlers::Command_MVFT( CAOSMachine& vm )
 	}
 }
 
-
 void CreatureHandlers::Command_GAIT( CAOSMachine& vm )
 {
 	int gait = vm.FetchIntegerRV();
@@ -114,7 +270,6 @@ void CreatureHandlers::Command_GAIT( CAOSMachine& vm )
 	}
 	vm.GetCreatureTarg().SetGait(gait);
 }
-
 
 void CreatureHandlers::Command_DIRN( CAOSMachine& vm )
 {
@@ -125,12 +280,230 @@ void CreatureHandlers::Command_DIRN( CAOSMachine& vm )
 	vm.GetCreatureTarg().SetDirection(d);
 }
 
-
 int CreatureHandlers::IntegerRV_DIRN( CAOSMachine& vm )
 {
 	return vm.GetCreatureTarg().GetDirection();
 }
 
+void CreatureHandlers::Command_APPR( CAOSMachine& vm )
+{
+	Creature& c = vm.GetCreatureTarg();
+
+	// Approach:
+	if (c.Approach())
+	{
+		if (!vm.IsBlocking())					// we want to keep walking every tick
+			vm.Block();
+	}
+	else
+	{
+		if (vm.IsBlocking())
+			vm.UnBlock();
+	}
+}
+
+void CreatureHandlers::Command_FLEE( CAOSMachine& vm )
+{
+	Creature& c = vm.GetCreatureTarg();
+
+	// Retreat:
+	if (c.Approach(false))
+	{
+		if (!vm.IsBlocking())					// we want to keep walking every tick
+			vm.Block();
+	}
+	else
+	{
+		if (vm.IsBlocking())
+			vm.UnBlock();
+	}
+}
+
+
+
+AgentHandle CreatureHandlers::AgentRV_HHLD( CAOSMachine& vm )
+{
+	return thePointer.GetPointerAgentReference().GetHandHeldSkeletalCreature();
+}
+
+// command to stop holding hands (no holding hands):
+void CreatureHandlers::Command_NOHH( CAOSMachine& vm)
+{
+	if (vm.GetTarg().IsInvalid())
+		return;						// Silently ignore bad targs on nohh
+	vm.ValidateTarg();
+	vm.GetCreatureTarg().StopHoldingHandsWithThePointer
+		(vm.GetOwner(), INTEGERZERO, INTEGERZERO);
+}
+
+void CreatureHandlers::Command_HAIR( CAOSMachine& vm)
+{
+	vm.GetCreatureTarg().ChangeHairStateInSomeWay(vm.FetchIntegerRV());
+}
+
+float CreatureHandlers::FloatRV_DFTX( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetDownFootPosition().x;
+}
+
+
+float CreatureHandlers::FloatRV_DFTY( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetDownFootPosition().y;
+}
+
+
+float CreatureHandlers::FloatRV_UFTX( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetUpFootPosition().x;
+}
+
+
+float CreatureHandlers::FloatRV_UFTY( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetUpFootPosition().y;
+}
+
+int CreatureHandlers::IntegerRV_BODY( CAOSMachine& vm )
+{
+	int bodypart = vm.FetchIntegerRV();
+	int index = vm.GetCreatureTarg().GetClothingSet(bodypart,-1);
+
+	return index;
+}
+
+void CreatureHandlers::Command_WEAR( CAOSMachine& vm )
+{
+	int bodyid = vm.FetchIntegerRV();
+	int setNumber = vm.FetchIntegerRV();
+	int layer = vm.FetchIntegerRV();
+	
+	vm.GetCreatureTarg().WearItem(bodyid,setNumber,layer);
+
+}
+
+void CreatureHandlers::Command_BODY( CAOSMachine& vm )
+{
+	int setNumber = vm.FetchIntegerRV();
+	int layer = vm.FetchIntegerRV();
+	vm.GetCreatureTarg().WearOutfit(setNumber,layer);
+}
+
+void CreatureHandlers::Command_NUDE( CAOSMachine& vm )
+{
+	vm.GetCreatureTarg().WearOutfit(-1,-1);
+}
+
+int CreatureHandlers::IntegerRV_FACE( CAOSMachine& vm )
+{
+	int index = vm.GetCreatureTarg().GetOverlayIndex(REGION_HEAD);
+
+	// for the head work out which set it is and
+	// then return the facing forward sprite
+		index = index / 16;
+
+	return (index * 16) + 9;
+}
+
+void CreatureHandlers::StringRV_FACE( CAOSMachine& vm, std::string &str)
+{
+	vm.GetCreatureTarg().GetBodyPartFileName(0,str);
+}
+
+
+void CreatureHandlers::Command_TOUC( CAOSMachine& vm )
+{
+	if (!vm.IsBlocking()) {		// we want to keep reaching every tick
+		vm.Block();
+		// make the attempt to reach out to IT:
+		int reachReturnValue = vm.GetCreatureTarg().ReachOut();
+		if (reachReturnValue!=0) {	// not still moving (either failed or finished)
+			vm.UnBlock();
+			return;
+		}
+	}
+	if (vm.GetCreatureTarg().HasTargetPoseStringBeenReached())
+		vm.UnBlock();
+}
+
+void CreatureHandlers::Command_FACE(CAOSMachine& vm )
+{
+	int setNumber = vm.FetchIntegerRV();
+
+	vm.GetCreatureTarg().SetFacialExpression(setNumber);
+
+}
+
+int CreatureHandlers::IntegerRV_EXPR( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().GetFacialExpression();
+}
+
+int CreatureHandlers::IntegerRV_BYIT( CAOSMachine& vm )
+{
+	return (vm.GetCreatureTarg().CanReachIt()) ? 1 : 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+// valid for nonskeletal creatures:
+//
+//
+
+
+
+void CreatureHandlers::Command_DONE( CAOSMachine& vm )
+{
+	Creature& c = vm.GetCreatureTarg();
+
+	c.Motor()->StopCurrentInvoluntaryAction();
+}
+
+int CreatureHandlers::IntegerRV_DEAD( CAOSMachine& vm )
+{
+	return vm.GetCreatureTarg().Life()->GetWhetherDead() ? 1 : 0;
+}
+
+void CreatureHandlers::Command_DEAD( CAOSMachine& vm )
+{
+	vm.GetCreatureTarg().Life()->SetWhetherDead(true);
+}
+
+void CreatureHandlers::Command_SPNL( CAOSMachine& vm )
+{
+	std::string lobeToken;
+	vm.FetchStringRV(lobeToken);
+	int neuronNo = vm.FetchIntegerRV();
+	vm.GetCreatureTarg().GetBrain()->SetInput(lobeToken.c_str(), neuronNo, vm.FetchFloatRV());
+}
 
 
 void CreatureHandlers::Command_DRIV( CAOSMachine& vm ) 
@@ -203,145 +576,6 @@ void CreatureHandlers::Command_INJR( CAOSMachine& vm )
 	organ->Injure(organ->LocToLf(amountOfInjury) / 10.0);
 }
 
-void CreatureHandlers::Command_APPR( CAOSMachine& vm )
-{
-	Creature& c = vm.GetCreatureTarg();
-
-	// Approach:
-	c.Walk();
-	if (!vm.IsBlocking()) {					// we want to keep walking every tick
-		vm.Block();
-	}
-
-	// Map:
-	Map& map = theApp.GetWorld().GetMap();
-	int creatureFootRoomId;
-	if (!map.GetRoomIDForPoint(c.GetDownFootPosition(), creatureFootRoomId)) {
-		c.ResetAnimationString();		// stop walking if not in a room
-		if (vm.IsBlocking())
-			vm.UnBlock();
-		return;
-	}
-	int attnId = c.Motor()->GetCurrentAttentionId();
-	int creatureTargCategory = SensoryFaculty::GetCategoryIdOfAgent(AgentHandle(c));
-	int caIndex = theAgentManager.GetSmellIdFromCategoryId(attnId);
-	int creatureRealRoomId = -1;
-	// set it so you can't smell yourself if you're navigating to other creatures of your category:
-	if (attnId==creatureTargCategory)
-	{	
-		if (c.GetRoomID(creatureRealRoomId))
-			map.AlterCAEmission(creatureRealRoomId, caIndex, -c.GetCAIncrease());
-		else
-			creatureRealRoomId = -1;
-	}
-	int mapDirection = GO_NOWHERE;
-	map.WhichDirectionToFollowCA(creatureFootRoomId, caIndex, mapDirection, true);		// true means approach
-	// set it so you can smell yourself again:
-	if (attnId==creatureTargCategory && creatureRealRoomId>=0)
-		map.AlterCAEmission(creatureRealRoomId, caIndex, +c.GetCAIncrease());
-
-	
-	// Send peak of smell signal:
-	if (mapDirection==GO_NOWHERE)
-	{ 
-		AgentHandle targ = vm.GetTarg();
-		c.Sensory()->Stimulate(targ, STIM_REACHED_PEAK_OF_SMELL0 + caIndex, -1);
-	}
-
-	// Regular walking:
-	if (c.GetItAgent().IsValid()) {
-		c.SetIntrospective(false);
-		if (!c.CannotBeMuchCloser())		// keep trying to get to it:
-			return;
-
-		c.ResetAnimationString();			// got as close as we can get so stop walking!
-		if (vm.IsBlocking())
-			vm.UnBlock();
-		return;
-	}
-	else
-	{
-		// CA stuff:
-		c.SetIntrospective(true);
-		NavigateDirection(c, mapDirection, caIndex);
-	}
-}
-
-
-
-
-
-
-void CreatureHandlers::Command_FLEE( CAOSMachine& vm )
-{
-	Creature& c = vm.GetCreatureTarg();
-
-	c.Walk();
-	if (!vm.IsBlocking()) {					// we want to keep walking every tick
-		vm.Block();
-	}
-
-	// Regular walking:
-	if (c.GetItAgent().IsValid()) {
-//		if (!c.ByWall())		// keep trying to get to it:
-			return;
-
-//		c.ResetAnimationString();			// got as close as we can get so stop walking!
-//		if (vm.IsBlocking())
-//			vm.UnBlock();
-//		return;
-	}
-
-
-	// default is ignoring the IT agent:
-	c.SetIntrospective(true);
-
-	// Get Current Room:
-	Map& map = theApp.GetWorld().GetMap();
-	int creatureFootRoomId;
-	if (!theApp.GetWorld().GetMap().GetRoomIDForPoint(c.GetDownFootPosition(), creatureFootRoomId)) {
-		c.ResetAnimationString();		// stop walking!
-		if (vm.IsBlocking())
-			vm.UnBlock();
-		return;							// not in a room?
-	}
-
-	// check which smell to approach given the winning attention id
-	int caIndex = theAgentManager.
-		GetSmellIdFromCategoryId(c.Motor()->GetCurrentAttentionId());
-
-	int mapDirection = GO_NOWHERE;
-	map.WhichDirectionToFollowCA(creatureFootRoomId, caIndex, mapDirection, false);		// false means retreat
-
-	NavigateDirection(c, mapDirection, caIndex);
-}
-
-
-void CreatureHandlers::NavigateDirection(Creature& c, int mapDirection, int caIndex)
-{
-	if (mapDirection==GO_WALK_LEFT || mapDirection==GO_WALK_RIGHT) 
-	{
-		// Set to walk left or right:
-		Vector2D pos = c.GetDownFootPosition();
-		pos.x += (mapDirection==GO_WALK_LEFT) ? -500.0f : +500.0f;
-		c.SetItPosition(pos);
-		c.SetIntrospective(false);
-	} 
-	else 
-	{
-		//Otherwise if we're there already keep walking anyway (introspectively)
-		//in the hope of getting to the linked door.
-		if (c.GetDirection()==NORTH || c.GetDirection()==SOUTH)
-		{
-			// (but if we're walking into the screen try to walk west or east)
-			c.SetDirection(RndFloat()>0.5f ? WEST : EAST);
-		}
-
-		// Stimulate the creature that we want to go a particular direction:
-		AgentHandle onC(c);
-		c.Sensory()->Stimulate(onC, STIM_GO_NOWHERE + mapDirection, -1);
-	}
-}
 
 
 
@@ -385,11 +619,6 @@ int CreatureHandlers::IntegerRV_BVAR( CAOSMachine& vm )
 	return vm.GetCreatureTarg().Life()->GetVariant();
 }
 
-int CreatureHandlers::IntegerRV_EXPR( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().GetFacialExpression();
-}
-
 int CreatureHandlers::IntegerRV_INS(  CAOSMachine& vm )
 {
 	return vm.GetCreatureTarg().GetBrain()->GetNoOfInstinctsLeftToProcess();
@@ -400,6 +629,15 @@ int CreatureHandlers::IntegerRV_INS(  CAOSMachine& vm )
 void CreatureHandlers::Command_ZOMB( CAOSMachine& vm ) {
 	int i = vm.FetchIntegerRV();
 	vm.GetCreatureTarg().Life()->SetWhetherZombie(i>0);
+
+	// if we're going zombie and the creature isn't the current
+	// script then stop all creature scripts and go to a null pose:
+	// AND (gtb fix) the creature is not dead:
+	if (i>0 && !vm.GetCreatureTarg().Life()->GetWhetherDead() && vm.GetOwner()!=vm.GetTarg())
+	{
+		vm.GetCreatureTarg().StopAllScripts();
+		vm.GetCreatureTarg().ShowPose(58, 0);
+	}
 }
 int CreatureHandlers::IntegerRV_ZOMB( CAOSMachine& vm ) {
 	return vm.GetCreatureTarg().Life()->GetWhetherZombie() ? 1 : 0;
@@ -449,7 +687,7 @@ void CreatureHandlers::Command_STIM( CAOSMachine& vm )
 
 	s.stimulusType = (Stimulus::StimulusType)vm.FetchOp();
 
-	if (s.stimulusType==WRIT) {
+	if (s.stimulusType==Stimulus::typeWRIT) {
 		s.toCreature = vm.FetchAgentRV();	// returns NULL if not a creature
 	} else {
 		vm.ValidateOwner();
@@ -475,7 +713,7 @@ void CreatureHandlers::Command_URGE( CAOSMachine& vm )
 
 	s.stimulusType = (Stimulus::StimulusType)vm.FetchOp();
 
-	if (s.stimulusType==WRIT) {
+	if (s.stimulusType==Stimulus::typeWRIT) {
 		s.toCreature = vm.FetchAgentRV();	// returns NULL if not a creature
 		s.nounIdToStim = vm.FetchIntegerRV();
 	} else {
@@ -501,7 +739,7 @@ void CreatureHandlers::Command_SWAY( CAOSMachine& vm )
 
 	s.stimulusType = (Stimulus::StimulusType)vm.FetchOp();
 
-	if (s.stimulusType==WRIT) {
+	if (s.stimulusType==Stimulus::typeWRIT) {
 		s.toCreature = vm.FetchAgentRV();	// returns NULL if not a creature
 	} else {
 		vm.ValidateOwner();
@@ -527,7 +765,7 @@ void CreatureHandlers::Command_ORDR( CAOSMachine& vm )
 
 	s.stimulusType = (Stimulus::StimulusType)vm.FetchOp();
 
-	if (s.stimulusType==WRIT) {
+	if (s.stimulusType==Stimulus::typeWRIT) {
 		s.toCreature = vm.FetchAgentRV();	// returns NULL if not a creature
 	}
 
@@ -559,67 +797,6 @@ void CreatureHandlers::Command_VOCB( CAOSMachine& vm )
 	vm.GetCreatureTarg().Linguistic()->LearnVocab();
 }
 
-void CreatureHandlers::Command_TOUC( CAOSMachine& vm )
-{
-	if (!vm.IsBlocking()) {		// we want to keep reaching every tick
-		vm.Block();
-		// make the attempt to reach out to IT:
-		int reachReturnValue = vm.GetCreatureTarg().ReachOut();
-		if (reachReturnValue!=0) {	// not still moving (either failed or finished)
-			vm.UnBlock();
-			return;
-		}
-	}
-	if (vm.GetCreatureTarg().HasTargetPoseStringBeenReached())
-		vm.UnBlock();
-}
-
-
-void CreatureHandlers::Command_FACE(CAOSMachine& vm )
-{
-	int setNumber = vm.FetchIntegerRV();
-
-	vm.GetCreatureTarg().SetFacialExpression(setNumber);
-
-}
-
-void CreatureHandlers::Command_WEAR( CAOSMachine& vm )
-{
-	int bodyid = vm.FetchIntegerRV();
-	int setNumber = vm.FetchIntegerRV();
-	int layer = vm.FetchIntegerRV();
-	
-	vm.GetCreatureTarg().WearItem(bodyid,setNumber,layer);
-
-}
-
-void CreatureHandlers::Command_BODY( CAOSMachine& vm )
-{
-	int setNumber = vm.FetchIntegerRV();
-	int layer = vm.FetchIntegerRV();
-	vm.GetCreatureTarg().WearOutfit(setNumber,layer);
-}
-
-void CreatureHandlers::Command_NUDE( CAOSMachine& vm )
-{
-	vm.GetCreatureTarg().WearOutfit(-1,-1);
-}
-
-int CreatureHandlers::IntegerRV_BYIT( CAOSMachine& vm )
-{
-	return (vm.GetCreatureTarg().CanReachIt()) ? 1 : 0;
-}
-
-int CreatureHandlers::IntegerRV_FACE( CAOSMachine& vm )
-{
-	int index = vm.GetCreatureTarg().GetOverlayIndex(REGION_HEAD);
-
-	// for the head work out which set it is and
-	// then return the facing forward sprite
-		index = index / 16;
-
-	return (index * 16) + 9;
-}
 
 float CreatureHandlers::FloatRV_DRIV( CAOSMachine& vm )
 {
@@ -635,20 +812,6 @@ int CreatureHandlers::IntegerRV_DRV( CAOSMachine& vm )
 	return vm.GetCreatureTarg().GetHighestDrive();
 }
 
-int CreatureHandlers::IntegerRV_BODY( CAOSMachine& vm )
-{
-	int bodypart = vm.FetchIntegerRV();
-	int index = vm.GetCreatureTarg().GetClothingSet(bodypart,-1);
-
-	return index;
-}
-
-void CreatureHandlers::StringRV_FACE( CAOSMachine& vm, std::string &str)
-{
-//	int ageset = vm.FetchIntegerRV();
-	// TO DO: use the ageset when SKELETON.CPP is free
-	vm.GetCreatureTarg().GetBodyPartFileName(0,str);
-}
 
 void CreatureHandlers::Command_LOCI( CAOSMachine& vm )
 {
@@ -821,35 +984,6 @@ void CreatureHandlers::StringRV_GTOS( CAOSMachine& vm, std::string &str)
 
 
 
-float CreatureHandlers::FloatRV_DFTX( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().GetDownFootPosition().x;
-}
-
-
-float CreatureHandlers::FloatRV_DFTY( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().GetDownFootPosition().y;
-}
-
-
-float CreatureHandlers::FloatRV_UFTX( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().GetUpFootPosition().x;
-}
-
-
-float CreatureHandlers::FloatRV_UFTY( CAOSMachine& vm )
-{
-	return vm.GetCreatureTarg().GetUpFootPosition().y;
-}
-
-
-
-void CreatureHandlers::Command_HAIR( CAOSMachine& vm)
-{
-	vm.GetCreatureTarg().ChangeHairStateInSomeWay(vm.FetchIntegerRV());
-}
 
 
 int CreatureHandlers::IntegerRV_CATI(CAOSMachine& vm)
@@ -866,6 +1000,19 @@ void CreatureHandlers::StringRV_CATX(CAOSMachine& vm, std::string& str )
 {
 	int id = vm.FetchIntegerRV();
 	str = SensoryFaculty::GetCategoryName(id);
+}
+
+void CreatureHandlers::Command_CATO(CAOSMachine& vm)
+{
+	int category = vm.FetchIntegerRV();
+	vm.ValidateTarg();
+	vm.GetTarg().GetAgentReference().SetOverrideCategory(category);
+}
+
+int CreatureHandlers::IntegerRV_CATA(CAOSMachine& vm)
+{
+	vm.ValidateTarg();
+	return SensoryFaculty::GetCategoryIdOfAgent(vm.GetTarg());
 }
 
 AgentHandle CreatureHandlers::AgentRV_IITT( CAOSMachine& vm )
@@ -886,8 +1033,10 @@ void CreatureHandlers::Command_GENE( CAOSMachine& vm )
 	};
 	int subcmd;
 
+
 	subcmd = vm.FetchOp();
 	(HandlerTable[ subcmd ])( vm );
+
 }
 
 void CreatureHandlers::SubCommand_GENE_CROS( CAOSMachine& vm )
@@ -1004,21 +1153,6 @@ int CreatureHandlers::IntegerRV_TAGE( CAOSMachine& vm )
 	return vm.GetCreatureTarg().Life()->GetTickAge();
 }
 
-// command to stop holding hands (no holding hands)
-
-AgentHandle CreatureHandlers::AgentRV_HHLD( CAOSMachine& vm )
-{
-	return thePointer.GetPointerAgentReference().GetHandHeldCreature();
-}
-
-void CreatureHandlers::Command_NOHH( CAOSMachine& vm)
-{
-	if (vm.GetTarg().IsInvalid())
-		return;						// Silently ignore bad targs on nohh
-	vm.ValidateTarg();
-	vm.GetCreatureTarg().StopHoldingHandsWithThePointer
-		(vm.GetOwner(), INTEGERZERO, INTEGERZERO);
-}
 
 AgentHandle CreatureHandlers::AgentRV_MTOC( CAOSMachine& vm )
 {
@@ -1113,3 +1247,4 @@ void CreatureHandlers::Command_LIKE( CAOSMachine& vm )
 	if(from.IsCreature() || from.IsPointerAgent()) 
 		c.Linguistic()->ExpressOpinion(from);
 }
+

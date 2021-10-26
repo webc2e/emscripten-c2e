@@ -5,12 +5,13 @@
 #pragma warning( disable : 4786 4503)
 #endif
 
-#include "CAOSMachine.h"
+class CAOSMachine;
 
 #include <string>
 
 class LifeEvent;
 class CreatureHistory;
+class HistoryStore;
 
 class HistoryHandlers
 {
@@ -19,6 +20,8 @@ public:
 	static int IntegerRV_HIST( CAOSMachine& vm );
 	static void StringRV_HIST( CAOSMachine& vm, std::string& str );
 	static int IntegerRV_OOWW( CAOSMachine& vm );
+
+	static bool WipeHistoryHelper(HistoryStore& historyStore, const std::string& moniker);
 
 private:
 	static void SubCommand_HIST_EVNT( CAOSMachine& vm );
@@ -36,6 +39,7 @@ private:
 	static int IntegerRV_HIST_GEND( CAOSMachine& vm );
 	static int IntegerRV_HIST_GNUS( CAOSMachine& vm );
 	static int IntegerRV_HIST_VARI( CAOSMachine& vm );
+	static int IntegerRV_HIST_WVET( CAOSMachine& vm );
 	static int IntegerRV_HIST_FIND( CAOSMachine& vm );
 	static int IntegerRV_HIST_FINR( CAOSMachine& vm );
 	static int IntegerRV_HIST_SEAN( CAOSMachine& vm );
@@ -54,9 +58,11 @@ private:
 	static void StringRV_HIST_NEXT( CAOSMachine& vm, std::string& str );
 	static void StringRV_HIST_PREV( CAOSMachine& vm, std::string& str );
 	static void StringRV_HIST_FOTO( CAOSMachine& vm, std::string& str );
+	static void StringRV_HIST_NETU( CAOSMachine& vm, std::string& str );
 
 	static LifeEvent& LifeEventHelper( CAOSMachine& vm );
 	static CreatureHistory& CreatureHistoryHelper( CAOSMachine& vm );
 };
 
 #endif //HISTORY_HANDLERS_H
+

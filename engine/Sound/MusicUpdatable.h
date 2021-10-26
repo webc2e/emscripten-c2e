@@ -269,3 +269,4 @@ class MusicUpdatable : public MusicVariableContainer
 };
 
 #endif
+

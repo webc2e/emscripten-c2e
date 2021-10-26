@@ -18,27 +18,19 @@
 #include "CosInstaller.h"
 
 #include <fstream>
-#ifndef C2E_OLD_CPP_LIB
 #include <sstream>
-#endif
 #include <algorithm>
 #include <strstream>
 
 #include "App.h"
 #include "World.h"
+#include "FilePath.h"
+
 #include "Caos/CAOSMachine.h"
 #include "Caos/Orderiser.h"
 #include "Display/ErrorMessageHandler.h"
-
-void eatwhite(std::istream& in)
-{
-	char ch = in.peek();
-	while (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
-	{
-		in.get();
-		ch = in.peek();
-	}
-}
+#include "../common/FileFuncs.h"
+#include "DirectoryManager.h"
 
 // this is the old constructor kept so that
 // we can still load any files that are in the 
@@ -50,23 +42,25 @@ CosInstaller::CosInstaller()
 	// get list of files in bootstrap directory
 	// if there is a switcher folder (which is always the very first in the list)
 	// then load it if not then load whatever is in the base.  This is so as not
-	// to disturb C3 layouts
+	// to disturb older layouts
 
-	std::string path(theApp.GetDirectory(BOOTSTRAP_DIR));
+	std::string path(theDirectoryManager.GetDirectory(BOOTSTRAP_DIR));
 	std::string switcher(path);
-	switcher+="000 Switcher\\";
-#ifdef _WIN32
-	if(GetFileAttributes(switcher.data()) !=-1)
-	{
+//	if(theApp.GetScreenSaverConfig())
+//		switcher += "Configuration" + std::string(PathSeparator());
+//	else
+		switcher += "000 Switcher" + std::string(PathSeparator());
+
+	if(FileExists(switcher.c_str()))
 		LoadCosFiles(switcher,false);
-	}
 	else
-	{
 		LoadCosFiles(path,false);
-	}
-#else
-	ASSERT( false );	// TODO - non-win32 version
-#endif
+}
+
+// Read commands from any stream
+CosInstaller::CosInstaller(std::istream& in, std::ostream& out)
+{
+	ReadScriptStream(in, false, false, false, &out);
 }
 
 // This is the new world switcher style constructor where you tell it
@@ -77,26 +71,22 @@ CosInstaller::CosInstaller()
 // not that the very first bootstrap folder is the world switcher
 CosInstaller::CosInstaller(std::vector<std::string>& bootstrapFoldersToLoad)
 {
-#ifdef _WIN32
-	// should probably just use fwd slash for all.
-	const char* pathsep = "\\";
-#else
-	const char* pathsep = "/";
-#endif
 	if(bootstrapFoldersToLoad.empty())
 		return;
 
-	FilePath path( "", BOOTSTRAP_DIR );
-
 	std::vector<std::string> allBootStraps;
 
-	GetDirsInDirectory( path.GetFullPath(), allBootStraps );
+	for (int i = 0; i < theDirectoryManager.GetAuxDirCount(BOOTSTRAP_DIR); ++i)
+	{
+		GetDirsInDirectory( theDirectoryManager.GetAuxDir(BOOTSTRAP_DIR, i), allBootStraps );
+	}
 
 	// put them in alphabetical
 	std::sort(allBootStraps.begin(), allBootStraps.end());
+	// remove duplicates
+	allBootStraps.erase(std::unique(allBootStraps.begin(), allBootStraps.end()), allBootStraps.end());
 
-
-	//delete the bootstrap folder reserved for the world switcher
+	// delete the bootstrap folder reserved for the world switcher
 	allBootStraps.erase(allBootStraps.begin());
 
 	// if the size of the unloaded bootstraps is equal to the
@@ -114,16 +104,11 @@ CosInstaller::CosInstaller(std::vector<std::string>& bootstrapFoldersToLoad)
 	// this will be the top of the list of the unloaded list.
 
 	// Get rid of all folders above that.
-
 	itLoadAll =  std::find(allBootStraps.begin(),
-		allBootStraps.end(), *(bootstrapFoldersToLoad.begin()) );
-
+	allBootStraps.end(), *(bootstrapFoldersToLoad.begin()) );
 
 	// erase up to but not including the first new folder
 	allBootStraps.erase(allBootStraps.begin(),itLoadAll);
-
-
-
 
 	// now go through the full list and do this:
 	// if the folder appears on the Toload list then we need to load all
@@ -132,18 +117,18 @@ CosInstaller::CosInstaller(std::vector<std::string>& bootstrapFoldersToLoad)
 	// event scripts for that folder
 	for(it = allBootStraps.begin(); it != allBootStraps.end(); it++)
 	{
-
 		// the folder is in the to load list so load everything
 		itLoadAll = std::find(bootstrapFoldersToLoad.begin(),
 								bootstrapFoldersToLoad.end(), (*it));
+		FilePath path( *itLoadAll, BOOTSTRAP_DIR );
 		if(itLoadAll != bootstrapFoldersToLoad.end())
 		{
-			LoadCosFiles(path.GetFullPath() + (*it) + pathsep,true);
+			LoadCosFiles(path.GetFullPath() + PathSeparator(),true);
 		}
 		else // the folder is old so just update the event scripts
 		{
-			bool updateScriptoriumOnly = true;
-			LoadCosFiles(path.GetFullPath() + (*it)+ pathsep,true,updateScriptoriumOnly);
+			bool dontInjectInstallScript = true;
+			LoadCosFiles(path.GetFullPath() + PathSeparator(),true,dontInjectInstallScript);
 		}
 	}
 
@@ -152,15 +137,44 @@ CosInstaller::CosInstaller(std::vector<std::string>& bootstrapFoldersToLoad)
 
 }
 
+CosInstaller::CosInstaller(int32 subbootCheckNumber, int32 folderNumbers)
+{
+	// check through the list of subboot folders
+	int32 folderCheckNumber = 1;
+
+	//std::string path(theDirectoryManager.GetDirectory(BOOTSTRAP_DIR));
+	std::string subfolderpath;
+
+	
+	char temp[_MAX_PATH];
+
+	sprintf(temp,"Subboot %d",subbootCheckNumber);
+	subfolderpath = theDirectoryManager.GetDirectory(BOOTSTRAP_DIR) + temp + PathSeparator();
+
+	// find the folder and load all the required bootstrap folders
+	while(folderCheckNumber <= folderNumbers)
+	{
+		if(folderCheckNumber & folderNumbers)
+		{
+			sprintf(temp,"%d",folderCheckNumber);
+
+			LoadCosFiles(subfolderpath + temp + PathSeparator());
+		}
+			
+		folderCheckNumber <<= 1;
+	}
+		
+}
+
 
 void CosInstaller::LoadCosFiles(const std::string& bootstrap_dir,
 								bool showProgress/* = false*/,
-								bool updateScriptoriumOnly /*=false*/ )
+								bool dontInjectInstallScript /*=false*/ )
 {
 	
 
 	std::vector<std::string> files;
-	GetFilesInDirectory(bootstrap_dir.data(), files);
+	GetFilesInDirectory(bootstrap_dir.c_str(), files);
 
 	// sort into alphabetical order, so we can
 	// easily force map.cos to be at the start
@@ -180,7 +194,7 @@ void CosInstaller::LoadCosFiles(const std::string& bootstrap_dir,
 		if (len >= 4)
 		{
 			if (files[i].substr(len - 4, 4) == ".cos")
-				ReadScriptFile(std::string(bootstrap_dir) + files[i]);
+				ReadScriptFile(std::string(bootstrap_dir) + files[i], dontInjectInstallScript);
 		}
 	}
 }
@@ -194,13 +208,10 @@ void CosInstaller::SetUpProgressBar(std::vector<std::string>& bootstrapFoldersTo
 	std::vector<std::string> files;
 
 	std::vector<std::string>::const_iterator it;
-
-	FilePath path( "", BOOTSTRAP_DIR );
-
-
 	for(it = bootstrapFoldersToLoad.begin(); it != bootstrapFoldersToLoad.end(); it++)
 	{
-		GetFilesInDirectory(path.GetFullPath() + (*it).c_str() + "\\", files);
+		FilePath path( (*it).c_str(), BOOTSTRAP_DIR );
+		GetFilesInDirectory(path.GetFullPath() + PathSeparator(), files);
 
 		// read them all in
 
@@ -212,29 +223,28 @@ void CosInstaller::SetUpProgressBar(std::vector<std::string>& bootstrapFoldersTo
 }
 
 // read  just one cos file right away
-CosInstaller::CosInstaller(std::string& script)
+CosInstaller::CosInstaller(std::string& script,
+	bool dontInjectInstallScript, bool injectUninstallScript, bool dontInjectEventScripts,
+	std::ostream* out)
 {
 	if (script != "")
-		ReadScriptFile(script);
+		ReadScriptFile(script, dontInjectInstallScript, injectUninstallScript, dontInjectEventScripts, out);
 }
 
 CosInstaller::~CosInstaller()
 {
-//	OutputFormattedDebugString("Destructor COSInstaller...");
 	myTextBuffer = "";
-	myInstallScripts.clear();
 	myExecuteScripts.clear();
-//	OutputFormattedDebugString("Done\n");
 }
 
 
-bool CosInstaller::AddScript(Classifier classifier)
+bool CosInstaller::AddScript(const std::string& text, Classifier classifier, std::ostream* finalOut)
 {
 	Orderiser o;
 	MacroScript* m;
 
 	// get the script compiled
-	m = o.OrderFromCAOS( myTextBuffer.data() );
+	m = o.OrderFromCAOS( text.c_str() );
 
 	if (m)
 	{
@@ -246,20 +256,14 @@ bool CosInstaller::AddScript(Classifier classifier)
 #ifdef _DEBUG
 		else
 		{
-	#ifdef C2E_OLD_CPP_LIB
-		char hackbuf1[1024];
-		std::ostrstream out(hackbuf1,sizeof(hackbuf1) );
-	#else
 			std::ostringstream out;
-	#endif
 			if (!myCurrentFileForErrorMessages.empty())
 				out << myCurrentFileForErrorMessages << std::endl;
 			out << theCatalogue.Get("script_error", 1);
 			classifier.StreamClassifier(out);
 			classifier.StreamAgentNameIfAvailable(out);
 			out << theCatalogue.Get("script_error", 2);
-			out << '\0';
-			ErrorMessageHandler::Show("script_error", 4, "CosInstaller::AddScript", out.str());
+			ShowError("script_error", 4, out.str(), finalOut);
 		}
 #endif
 		// Don't delete this, as it is referenced from the scriptorium
@@ -267,49 +271,41 @@ bool CosInstaller::AddScript(Classifier classifier)
 	}
 	else
 	{
-#ifdef C2E_OLD_CPP_LIB
-		char hackbuf2[1024];
-		std::ostrstream out(hackbuf2,sizeof(hackbuf2) );
-#else
 		std::ostringstream out;
-#endif
 		if (!myCurrentFileForErrorMessages.empty())
 			out << myCurrentFileForErrorMessages << std::endl;
 		classifier.StreamClassifier(out);
 		classifier.StreamAgentNameIfAvailable(out);
 		out << std::endl;
 		out << o.GetLastError() << std::endl;
-		CAOSMachine::FormatErrorPos(out, o.GetLastErrorPos(), myTextBuffer.data());
-		out << '\0';
+		CAOSMachine::FormatErrorPos(out, o.GetLastErrorPos(),
+			text.c_str());
 
-		ErrorMessageHandler::Show("script_error", 4, "CosInstaller::AddScript", out.str());
+		ShowError("script_error", 4, out.str(), finalOut);
 		return false;
 	}
-	
-	// now clear the text buffer 
-	myTextBuffer.erase(myTextBuffer.begin(), myTextBuffer.end());
 
 	return true;
 }
 
 // when loading in a series of new products we may only want to update the scriptorium
-bool CosInstaller::ReadScriptFile(std::string const& filename, bool updateScriptoriumOnly /*=false*/ )
+bool CosInstaller::ReadScriptFile(std::string const& filename, bool dontInjectInstallScript, bool injectUninstallScript, bool dontInjectEventScripts, std::ostream* out)
 {
-	std::ifstream in(filename.data());
+	std::ifstream in(filename.c_str());
 	myCurrentFileForErrorMessages = filename;
-	bool OK = ReadScriptStream(in,updateScriptoriumOnly);
+	bool OK = ReadScriptStream(in,dontInjectInstallScript,injectUninstallScript,dontInjectEventScripts,out);
 	myCurrentFileForErrorMessages = "";
 	return OK;
 }
 
 // when loading in a series of new products we may only want to update the scriptorium
-bool CosInstaller::ReadScriptStream(std::istream& in, bool updateScriptoriumOnly)
+bool CosInstaller::ReadScriptStream(std::istream& in, bool dontInjectInstallScript, bool injectUninstallScript, bool dontInjectEventScripts, std::ostream* out)
 {
 	char buf[1024];
 	buf[0] = 0;
+	std::string removeScript;
 
-	eatwhite(in);
-	in.getline(buf, 1024);
+	GetLineCompatibleMunch(in, buf, 1024);
 	do 
 	{
 		// check what kind of statement we are getting and
@@ -334,8 +330,7 @@ bool CosInstaller::ReadScriptStream(std::istream& in, bool updateScriptoriumOnly
 			// get the text
 			while(in.good() && strncmp(buf,"endm",4))
 			{
-				eatwhite(in);
-				in.getline(buf, 1024);
+				GetLineCompatibleMunch(in, buf, 1024);
 
 				// don't add endm or comments			
 				if(strncmp(buf,"endm", 4) && strncmp(buf, "*", 1))
@@ -346,12 +341,32 @@ bool CosInstaller::ReadScriptStream(std::istream& in, bool updateScriptoriumOnly
 		
 			}
 
-			if (!AddScript(Classifier(family,genus,species,event)))
-				return false;
+			myEventScripts.push_back(myTextBuffer);
+			myEventScriptsClassifiers.push_back(Classifier(family,genus,species,event));
+			myTextBuffer  = "";
 		}
 		else if(!strncmp(buf,"rscr", 4))
 		{
 			// finish on a remove script
+			if (injectUninstallScript)
+			{
+				// get the text
+				while(in.good() && strncmp(buf,"endm",4))
+				{
+					GetLineCompatibleMunch(in, buf, 1024);
+
+					// don't add endm or comments			
+					if(strncmp(buf,"endm", 4) && strncmp(buf, "*", 1))
+					{
+						myTextBuffer += buf;
+						myTextBuffer += " ";
+					}
+			
+				}
+
+				removeScript = myTextBuffer;
+				myTextBuffer = "";
+			}
 			break;
 		}
 		else if (!strncmp(buf, "iscr", 4))
@@ -370,8 +385,7 @@ bool CosInstaller::ReadScriptStream(std::istream& in, bool updateScriptoriumOnly
 
 			while(in.good() && strncmp(buf,"endm", 4) && strncmp(buf,"scrp", 4) && strncmp(buf,"rscr", 4))
 			{
-				eatwhite(in);
-				in.getline(buf, 1024);
+				GetLineCompatibleMunch(in, buf, 1024);
 				// don't add endm, scrp or comments			
 				if(strncmp(buf,"endm", 4) && strncmp(buf,"scrp", 4) && strncmp(buf, "*", 1) && strncmp(buf,"rscr", 4))
 				{
@@ -380,122 +394,143 @@ bool CosInstaller::ReadScriptStream(std::istream& in, bool updateScriptoriumOnly
 				}
 			}
 
-			if(!updateScriptoriumOnly)
+			if(!dontInjectInstallScript)
 			{
-			// then add to my Exection scripts
-			myExecuteScripts.push_back(myTextBuffer);
+				// then add to my Exection scripts
+				myExecuteScripts.push_back(myTextBuffer);
 			}
-			myTextBuffer.erase(myTextBuffer.begin(), myTextBuffer.end());
+			myTextBuffer = "";
 		}
 
 		if (strncmp(buf,"scrp",4) && strncmp(buf,"rscr", 4))
 		{
-			eatwhite(in);
-			in.getline(buf, 1024);
+			GetLineCompatibleMunch(in, buf, 1024);
 		}
 	}
 	while(in.good());
 
-	// finished now execute the immediate scripts
-	if (!ExecuteScripts())
+	// Execute things in the right order...
+
+	// Remove script
+	if (!removeScript.empty())
+	{
+		ExecuteScript(removeScript, out);
+		removeScript = "";
+	}
+
+	// Event scripts
+	if (!dontInjectEventScripts)
+	{
+		for (int i = 0; i < myEventScripts.size(); ++i)
+		{
+			if (!AddScript(myEventScripts[i], myEventScriptsClassifiers[i], out))
+				return false;
+		}
+	}
+	myEventScripts.clear();
+	myEventScriptsClassifiers.clear();
+
+	// Install scripts
+	if (!ExecuteScripts(out))
 		return false;
 
 	return true;
-
 }
 
-bool CosInstaller::ExecuteScripts()
+bool CosInstaller::ExecuteScript(const std::string& text, std::ostream* finalOut)
 {
+	Orderiser o;
 	MacroScript* m;
 	CAOSMachine vm;
 	std::ostream* out=NULL;
 
-
-	std::vector<std::string>::iterator it;
-
-	for(it = myExecuteScripts.begin(); it!= myExecuteScripts.end();it++)
+	m = o.OrderFromCAOS( text.c_str() );
+	
+	if( m )
 	{
-		Orderiser o;
-
-		m = o.OrderFromCAOS( (*it).data() );
-		
-		if( m )
+		try
 		{
-			try {
-				vm.StartScriptExecuting
-					(m, NULLHANDLE, NULLHANDLE, 
-					INTEGERZERO, 
-					INTEGERZERO);
-				vm.SetOutputStream(out);
-				vm.UpdateVM(-1);
-			}
-			catch( CAOSMachine::RunError& e )
-			{
-#ifdef C2E_OLD_CPP_LIB
-		char hackbuf3[1024];
-		std::ostrstream out(hackbuf3,sizeof(hackbuf3) );
-#else
-				std::ostringstream out;
-#endif
-				if (!myCurrentFileForErrorMessages.empty())
-					out << myCurrentFileForErrorMessages << std::endl;
-				out << e.what();
-				vm.StreamIPLocationInSource(out);
-				out << std::endl;
-				out << '\0';
-
-
-				ErrorMessageHandler::Show("script_error", 4, "CosInstaller::ExecuteScripts", out.str());
-
-				// clean up after the error
-				vm.StopScriptExecuting();
-			}
-			catch(BasicException& e)
-			{
-#ifdef C2E_OLD_CPP_LIB
-				char hackbuf4[1024];
-				std::ostrstream out(hackbuf4,sizeof(hackbuf4) );
-#else
-				std::ostringstream out;
-#endif
-				if (!myCurrentFileForErrorMessages.empty())
-					out << myCurrentFileForErrorMessages << std::endl;
-				out << e.what();
-				vm.StreamIPLocationInSource(out);
-				out << std::endl;
-				out << '\0';
-
-				ErrorMessageHandler::Show("script_error", 4, "CosInstaller::ExecuteScripts", out.str());
-					// clean up after the error
-				vm.StopScriptExecuting();
-
-			}
-
-			// finished with this script now.
-			delete m;
+			CAOSVar from;
+			from.SetAgent(NULLHANDLE);
+			vm.StartScriptExecuting
+				(m, NULLHANDLE, from,
+				INTEGERZERO, 
+				INTEGERZERO);
+			vm.SetOutputStream(finalOut);
+			vm.UpdateVM(-1);
 		}
-		else
+		catch( CAOSMachineRunError& e )
 		{
-#ifdef C2E_OLD_CPP_LIB
-			char hackbuf5[1024];
-			std::ostrstream out(hackbuf5,sizeof(hackbuf5) );
-#else
 			std::ostringstream out;
-#endif
 			if (!myCurrentFileForErrorMessages.empty())
 				out << myCurrentFileForErrorMessages << std::endl;
-			out << o.GetLastError() << std::endl;
-			CAOSMachine::FormatErrorPos(out, o.GetLastErrorPos(), (*it).data());
-			out << '\0';
+			out << e.what();
+			vm.StreamIPLocationInSource(out);
+			out << std::endl;
 
-			ErrorMessageHandler::Show("script_error", 4, "CosInstaller::ExecuteScripts", out.str());
+			ShowError("script_error", 4, out.str(), finalOut);
+
+			// clean up after the error
+			vm.StopScriptExecuting();
+
 			return false;
 		}
+		catch(std::exception& e)
+		{
+			std::ostringstream out;
+			if (!myCurrentFileForErrorMessages.empty())
+				out << myCurrentFileForErrorMessages << std::endl;
+			out << e.what();
+			vm.StreamIPLocationInSource(out);
+			out << std::endl;
+
+			ShowError("script_error", 4, out.str(), finalOut);
+
+			// clean up after the error
+			vm.StopScriptExecuting();
+
+			return false;
+		}
+
+		// finished with this script now.
+		delete m;
+	}
+	else
+	{
+		std::ostringstream out;
+		if (!myCurrentFileForErrorMessages.empty())
+			out << myCurrentFileForErrorMessages << std::endl;
+		out << o.GetLastError() << std::endl;
+		CAOSMachine::FormatErrorPos(out, o.GetLastErrorPos(), text.c_str());
+
+		ShowError("script_error", 4, out.str(), finalOut);
+
+		return false;
+	}
+
+	return true;
+}
+
+bool CosInstaller::ExecuteScripts(std::ostream* finalOut)
+{
+	std::vector<std::string>::iterator it;
+	for(it = myExecuteScripts.begin(); it!= myExecuteScripts.end();it++)
+	{
+		if (!ExecuteScript(*it, finalOut))
+			return false;
 	}
 
 	// now clear the scripts
-	myExecuteScripts.erase(myExecuteScripts.begin(), myExecuteScripts.end());
+	myExecuteScripts.clear();
 
 	return true;
+}
+
+void CosInstaller::ShowError(const std::string& tag, int offset, const std::string& report, std::ostream* out)
+{
+	if (out)
+		*out << report;
+	else
+		ErrorMessageHandler::Show(tag.c_str(), offset, "CosInstaller::ShowError", report.c_str());
 }
 

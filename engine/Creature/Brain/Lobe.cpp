@@ -38,7 +38,7 @@ Lobe::Lobe()
 // Description: 
 // Arguments:   Genome &genome = 
 // ------------------------------------------------------------------------
-Lobe::Lobe(Genome &genome)
+Lobe::Lobe(Genome &genome) throw(GenomeInitFailedException)
 {
 	myWinningNeuronId = 0;
 	myNeuronInput = NULL;
@@ -118,7 +118,7 @@ void Lobe::Initialise()
 		Neuron* n = myNeurons[i];
 		_ASSERT(n->idInList == i);
 
-		if( myRunInitRuleAlwaysFlag )
+		if (myRunInitRuleAlwaysFlag)
 			n->ClearStates();
 		else
 		{
@@ -137,7 +137,8 @@ void Lobe::Initialise()
 // Description: 
 // Arguments:   std::istream &in = 
 // ------------------------------------------------------------------------
-Lobe::Lobe(std::istream &in) {
+Lobe::Lobe(std::istream &in) throw(GenomeInitFailedException)
+{
 	// DESCRIPTION READING:
 
 	// update and ID:
@@ -161,6 +162,9 @@ Lobe::Lobe(std::istream &in) {
 	ReadDesc(&myTissueId, in);
 
 	// init SV-Rules:
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		myInitRule.InitFromDesc(in);
+	
 	myUpdateRule.InitFromDesc(in);
 
 
@@ -189,6 +193,9 @@ Lobe::Lobe(std::istream &in) {
 
 	// init spare neuron variables to first neuron (default)
 	mySpareNeuronVariables = &(myNeurons[0]->states);
+
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		ReadDesc(&myRunInitRuleAlwaysFlag, in);
 }
 
 
@@ -295,7 +302,12 @@ void Lobe::DoUpdateFromDesc(std::istream &in)
 	// update and ID:
 	in.seekg(4, std::ios::cur);
 	ReadDesc(&myWinningNeuronId, in);
-	in.seekg(40+(7*SVRule::length), std::ios::cur);
+
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		in.seekg(40+(sizeof(SVRuleEntry)*(SVRule::length*2)), std::ios::cur);
+	else
+		in.seekg(40+(7*SVRule::length), std::ios::cur);
+	
 	int noOfNeurons = myWidth * myHeight;
 	for (int i=0; i<noOfNeurons; i++) 
 		DoUpdateNeuronFromDesc(i, in);
@@ -380,32 +392,6 @@ void Lobe::SetNeuronInput(int whichNeuron, float toWhat)
 
 
 // ------------------------------------------------------------------------
-// Function:    ClearNeuronActivity
-// Class:       Lobe
-// Description: 
-// Arguments:   int whichNeuron = 
-// ------------------------------------------------------------------------
-void Lobe::ClearNeuronActivity(int whichNeuron)
-{
-	if (whichNeuron<0 || whichNeuron>=myNeurons.size())
-		return;
-
-	myNeurons[whichNeuron]->states[STATE_VAR] = 0.0f;
-}
-
-// ------------------------------------------------------------------------
-// Function:    SetLobeWideInput
-// Class:       Lobe
-// Description: 
-// Arguments:   float toWhat = 
-// ------------------------------------------------------------------------
-void Lobe::SetLobeWideInput(float toWhat)
-{
-	for (int i=0; i<myNeurons.size(); i++)
-	{
-		SetNeuronInput(i, toWhat);
-	}
-}
 
 
 // ------------------------------------------------------------------------
@@ -495,6 +481,7 @@ bool Lobe::Read(CreaturesArchive &archive)
 
 		uint32 n;
 		archive >> n;
+		CreaturesArchive::ForceOpenRangeException(n, 1, MAX_NEURONS_PER_LOBE);
 		myNeurons.resize(n);
 		for (int i=0; i<n; i++)
 		{
@@ -509,6 +496,7 @@ bool Lobe::Read(CreaturesArchive &archive)
 		archive >> myColour[0] >> myColour[1] >> myColour[2];
 		archive.Read( myName, 5 );
 		int neuronCount = myWidth * myHeight;
+		CreaturesArchive::ForceOpenRangeException(neuronCount, 1, MAX_NEURONS_PER_LOBE);
 		myNeuronInput = new float[ neuronCount ];
 		{
 			for( int i = 0; i < neuronCount; ++i )
@@ -535,7 +523,7 @@ bool Lobe::Read(CreaturesArchive &archive)
 // ------------------------------------------------------------------------
 bool Lobe::SetNeuronState(const int neuron, const int state, const float value)
 {
-	if(neuron < 0 || neuron > myNeurons.size()-1 || 
+	if(neuron < 0 || neuron >= myNeurons.size() || 
 		state < 0 || state > NUM_SVRULE_VARIABLES-1 ||
 		value < -1 || value > 1)
 		return false;
@@ -554,7 +542,13 @@ bool Lobe::SetNeuronState(const int neuron, const int state, const float value)
 // ------------------------------------------------------------------------
 bool Lobe::SetSVFloat(int entryNo, float value)
 {
-	return myUpdateRule.SetFloat(entryNo, value);
+	if(entryNo<0 || entryNo >= SVRule::length*2)
+		return 0.0f;
+
+	if(entryNo >= SVRule::length)
+		return myUpdateRule.SetFloat(entryNo-SVRule::length, value);
+	else
+		return myInitRule.SetFloat(entryNo, value);
 }
 
 // ------------------------------------------------------------------------
@@ -584,11 +578,17 @@ void Lobe::DumpLobe(std::ostream& out)
 
 	WriteDesc(&myTissueId, out);
 
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		myInitRule.Dump(out);
+
 	myUpdateRule.Dump(out);
 	
 	int noNeurons = myNeurons.size();
 	for(int n = 0; n != noNeurons; n++)
 		DumpNeuron(n, out);
+
+	if(BrainAccess::BrainDumpVersion() != 1.0f)
+		WriteDesc(&myRunInitRuleAlwaysFlag, out);
 };
 
 
@@ -602,7 +602,7 @@ void Lobe::DumpLobe(std::ostream& out)
 // ------------------------------------------------------------------------
 bool Lobe::DumpNeuron(int n, std::ostream& out)
 {
-	if(n < 0 || n > myNeurons.size()-1)
+	if(n < 0 || n >= myNeurons.size())
 		return false;
 
 	WriteDesc(&myNeuronInput[n], out);

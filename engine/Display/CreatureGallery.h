@@ -38,11 +38,9 @@
 
 #include "../Creature/Definitions.h"
 #include	"MemoryMappedFile.h"
-#include	"Gallery.h"
-#include	"../../common/BasicException.h"
-#include "CompressedGallery.h"
 
-class Gallery;
+#include	"../../common/BasicException.h"
+#include "Gallery.h"
 
 class CreatureGallery
 {
@@ -63,42 +61,20 @@ public:
 	CreatureGallery();
 
 	// one creature gallery per creature
-	CreatureGallery(int32 sizeOfSpriteSet,std::string name);
+	CreatureGallery(std::string const & creatureGalleryFolderPath,
+		int32 sizeOfSpriteSet,
+		std::string const& filename);
 
 	virtual ~CreatureGallery();
 
 
-// ----------------------------------------------------------------------
-// Method:		AddCreature
-// Arguments:	moniker - the unique id for a creature by which we identify
-//							its genome.  Also used as a key for the 
-//						composite creature gallery file.
-// Returns:		a pointer to the 
-// Description:	Creates a creature gallery getting the correct body parts
-//				as defined in the genome.  Then slots the data in the 
-//				first free slot.
-//				
-// ----------------------------------------------------------------------
-/* Gallery* AddCreature(uint32 moniker,
-				  int32 PVariantGenus[NUMPARTS],
-				  int32 PVariant[NUMPARTS],
-				  uint32 ValidParts,
-				   uint16 ImagesPerPart[NUMPARTS],
-				  uint8_t Sex,
-				  uint8_t Age,
-				  uint16 tintTable[65536],
-				  int32 BodySprites[NUMPARTS]);
-*/
-
 Gallery* AddCompressedCreature(std::string moniker,
 							  uint32 uniqueID,
-							  int32 PVariantGenus[NUMPARTS],
-							  int32 PVariant[NUMPARTS],
 							  uint32 ValidParts,
-							  uint8_t Sex,
-							  uint8_t Age,
+							  uint8 Sex,
+							  uint8 Age,
 							  int32 BodySprites[NUMPARTS],
-							  CompressedGallery creatureParts[NUMPARTS],
+							  Gallery creatureParts[NUMPARTS],
 								int32 numSpritesInFile);
 
 // ----------------------------------------------------------------------
@@ -118,6 +94,21 @@ void RemoveAll();
 
 bool IsComplete(){return myCreatureBuildingStage == STAGE_COMPLETE;}
 
+
+bool BuildGalleries(std::string& galleryName,
+									int32& numSpritesInFile,
+									 uint32& currentPart,
+									 const uint16* tintTable);
+
+bool	CreateGallery(std::string moniker,
+									  uint32 uniqueID,
+									  uint32 ValidParts,
+									  uint8 Sex,
+									  uint8 Age,
+									  int32 BodySprites[NUMPARTS],
+									  CreatureGallery* bodyPartGallery,
+									  int32 numSpritesInFile,
+									   bool onePassOnly = false);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -157,17 +148,20 @@ private:
 	CreatureGallery& operator= (const CreatureGallery&);
 
 	bool Part1CreatureBuilder( int32 BodySprites[NUMPARTS],
-							 CompressedGallery creatureParts[NUMPARTS],
+							 Gallery creatureParts[NUMPARTS],
 							 int32 numSpritesInFile,
 							 uint32 uniqueID,
 							 uint32 ValidParts);
 
 	void Part2CreatureBuilder(uint32 ValidParts,int32 BodySprites[NUMPARTS],
-									  CompressedGallery creatureParts[NUMPARTS]);
-	void Part3CreatureBuilder(  CompressedGallery creatureParts[NUMPARTS],
+							Gallery creatureParts[NUMPARTS]);
+	void Part3CreatureBuilder(  Gallery creatureParts[NUMPARTS],
 		 uint32 ValidParts);
-	void Part4CreatureBuilder( CompressedGallery creatureParts[NUMPARTS],
+	void Part4CreatureBuilder( Gallery creatureParts[NUMPARTS],
 		 uint32 ValidParts);
+
+
+
 
 // ----------------------------------------------------------------------
 // Method:		FindSlot
@@ -205,6 +199,8 @@ void CreateTemplateFile();
 
 	Gallery* myGallery;
 
+	Gallery	myIndividualBodyPartGalleries[NUMPARTS];
 };
 
 #endif // CREATUREGALLERY_H
+

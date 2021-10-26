@@ -17,6 +17,7 @@
 #include "Chemical.h"
 #include "Reaction.h"
 #include "../Brain/SVRule.h"
+#include "../../Maths.h"
 
 CREATURES_IMPLEMENT_SERIAL(Organ)
 
@@ -60,6 +61,7 @@ Organ::Organ()
 }
 
 
+
 /*********************************************************************
 * Public: Helper fn.
 *********************************************************************/
@@ -68,7 +70,7 @@ void Organ::Init(float ClockRate, float RateOfRepair, float LifeForce,
 	loc_ClockRate = ClockRate;
 	myClock = InitialClock;
 
-	loc_LifeForce = fmax(1.0f, LifeForce);
+	loc_LifeForce = OUR_MAX(1.0f, LifeForce);
 	myInitialLifeForce = loc_LifeForce * myBaseLifeForce;
 	myShortTermLifeForce = myInitialLifeForce;
 	myLongTermLifeForce = myInitialLifeForce;
@@ -219,9 +221,11 @@ bool Organ::Read(CreaturesArchive &archive)
 		archive >> myLongTermRateOfRepair >> myEnergyCost;
 		archive >> myDamageDueToZeroEnergy >> myEnergyAvailableFlag;
 		archive >> myNoOfReceptors >> myNoOfReceptorGroups;
-
+		CreaturesArchive::ForceOpenRange(myNoOfReceptorGroups, 0, MAXRECEPTORGROUPS);
+		CreaturesArchive::ForceOpenRange(myNoOfReceptors, 0, MAXRECEPTORS);
 
 		archive >> myNoOfReactions;
+		CreaturesArchive::ForceOpenRange(myNoOfReactions, 0, MAXREACTIONS);
 		for	(i = 0, rn = myReactions; i < myNoOfReactions; i++, rn++) {
 			archive >> rn->propR1 >> rn->R1;
 			archive >> rn->propR2 >> rn->R2;
@@ -236,6 +240,10 @@ bool Organ::Read(CreaturesArchive &archive)
 			// format, so we'll have to do it explicitly.
 			int size;
 			archive >> size;
+			if (size < 0)
+				throw CreaturesArchive::Exception( "Organ::Read: negative vector size" );
+			if (size > 10000) // sanity check
+				size = 10000;
 			myReceptorGroups[i].resize(size);
 			for (int j=0;j<size;j++) {
 				archive >> myReceptorGroups[i][j];
@@ -243,6 +251,7 @@ bool Organ::Read(CreaturesArchive &archive)
 		}
 
 		archive >> myNoOfEmitters;
+		CreaturesArchive::ForceOpenRange(myNoOfEmitters, 0, MAXEMITTERS);
 		for	(i = 0, e = myEmitters; i < myNoOfEmitters; i++, e++) {
 			archive >> e->IDOrgan >> e->IDTissue >> e->IDLocus;
 			archive >> e->Chem >> e->Threshold >> e->bioTickRate >> e->Gain >> e->Effect;

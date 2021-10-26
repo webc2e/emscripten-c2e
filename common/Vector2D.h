@@ -108,6 +108,12 @@ public:
 		d=sqrtf(f);return Vector2D(x*d, y*d);
 	}
 
+	inline Vector2D GetPerpendicular(void) const
+	{
+		return Vector2D(y,-x);
+	}
+
+
 	inline float DotProduct(const Vector2D & v) const
 		{return x*v.x + y*v.y;}
 
@@ -133,3 +139,4 @@ public:
 const Vector2D ZERO_VECTOR(0.0f, 0.0f);
 
 #endif	// VECTOR_2D_H
+

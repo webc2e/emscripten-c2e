@@ -13,30 +13,8 @@
 #include "BrainConstants.h"
 #include "../../PersistentObject.h"
 #include "../../Maths.h"
-#include "../../Map/Map.h" // FastFloatToInteger
 #include "../Biochemistry/BiochemistryConstants.h"
 
-enum NeuronVariableNames {
-	STATE_VAR,
-	INPUT_VAR,
-	OUTPUT_VAR,
-	THIRD_VAR,
-	FOURTH_VAR,
-	FIFTH_VAR,
-	SIXTH_VAR,
-	NGF_VAR				// Neural Growth Factor - controls dendrite migration
-};
-
-enum DendriteVariableNames {
-	WEIGHT_SHORTTERM_VAR,
-	WEIGHT_LONGTERM_VAR,
-	SECOND_DENDRITE_VAR,
-	THIRD_DENDRITE_VAR,
-	FOURTH_DENDRITE_VAR,
-	FIFTH_DENDRITE_VAR,
-	SIXTH_DENDRITE_VAR,
-	STRENGTH_VAR		// Determines how 'permanent' the dendrite is (i.e. unwilling to migrate)
-};
 
 struct SVRuleEntry {
 	int opCode;
@@ -348,7 +326,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 						operand = svRuleEntry.floatValue / 10.0f;
 						break;
 					case valueIntCode:
-						operand = (float) ( Map::FastFloatToInteger ((svRuleEntry.floatValue * FloatDivisor)) );
+						operand = (float) ( FastFloatToInteger ((svRuleEntry.floatValue * FloatDivisor)) );
 						break;
 					default:
 						operand = 0.0f;
@@ -422,7 +400,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 					case ifZeroGoto:
 						if (accumulator==0)
 						{
-							int newLoc = Map::FastFloatToInteger(operand) - 1;
+							int newLoc = FastFloatToInteger(operand) - 1;
 
 							// Do not over-run the end of the SVRule
 							if (newLoc > length)
@@ -436,7 +414,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 					case ifNZeroGoto:
 						if (accumulator!=0)
 						{
-							int newLoc = Map::FastFloatToInteger(operand) - 1;
+							int newLoc = FastFloatToInteger(operand) - 1;
 
 							// Do not over-run the end of the SVRule
 							if (newLoc > length)
@@ -450,7 +428,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 					case ifNegativeGoto:
 						if (accumulator<0)
 						{
-							int newLoc = Map::FastFloatToInteger(operand) - 1;
+							int newLoc = FastFloatToInteger(operand) - 1;
 
 							// Do not over-run the end of the SVRule
 							if (newLoc > length)
@@ -464,7 +442,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 					case ifPositiveGoto:
 						if (accumulator>0)
 						{
-							int newLoc = Map::FastFloatToInteger(operand) - 1;
+							int newLoc = FastFloatToInteger(operand) - 1;
 
 							// Do not over-run the end of the SVRule
 							if (newLoc > length)
@@ -477,7 +455,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 						break;
 					case gotoLine:
 						{
-							int newLoc = Map::FastFloatToInteger(operand) - 1;
+							int newLoc = FastFloatToInteger(operand) - 1;
 
 							// Do not over-run the end of the SVRule
 							if (newLoc > length)
@@ -512,7 +490,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 						HandleSetRewardRate( myOwner, operand );
 						break;
 					case setRewardChemicalIndex:
-						HandleSetRewardChemicalIndex( myOwner, operand );
+						HandleSetRewardChemicalIndex( myOwner, (unsigned char)operand );
 						break;
 					case setPunishmentThreshold:
 						HandleSetPunishmentThreshold( myOwner, operand );
@@ -521,7 +499,7 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 						HandleSetPunishmentRate( myOwner, operand );
 						break;
 					case setPunishmentChemicalIndex:
-						HandleSetPunishmentChemicalIndex( myOwner, operand );
+						HandleSetPunishmentChemicalIndex( myOwner, (unsigned char)operand );
 						break;
 
 
@@ -593,25 +571,25 @@ SVRule::ProcessReturnCode SVRule::ProcessGivenVariables(SVRuleVariables& inputVa
 					*/
 					case preserveVariable:
 						{
-							int varIdx = Map::FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
+							int varIdx = FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
 							neuronVariables[FOURTH_VAR] = neuronVariables[varIdx];
 							break;
 						}
 					case restoreVariable:
 						{
-							int varIdx = Map::FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
+							int varIdx = FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
 							neuronVariables[varIdx] = neuronVariables[FOURTH_VAR];
 							break;
 						}
 					case preserveSpareVariable:
 						{
-							int varIdx = Map::FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
+							int varIdx = FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
 							spareNeuronVariables[FOURTH_VAR] = spareNeuronVariables[varIdx];
 							break;
 						}
 					case restoreSpareVariable:
 						{
-							int varIdx = Map::FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
+							int varIdx = FastFloatToInteger(operand) % NUM_SVRULE_VARIABLES;
 							spareNeuronVariables[varIdx] = spareNeuronVariables[FOURTH_VAR];
 							break;
 						}

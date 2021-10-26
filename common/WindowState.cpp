@@ -75,3 +75,4 @@ void WindowState::Save(LPCTSTR szSection, LPCTSTR szEntry, HWND hWnd)
 		}
 	}
 }
+

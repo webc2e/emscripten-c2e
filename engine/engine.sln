@@ -1,0 +1,117 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Direct Display Engine", "..\DisplayLibrary\Direct Display Engine\Direct Display Engine.vcproj", "{AA117A94-5084-4FA0-9E57-EC62A46DB017}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDLStretch", "Display\SDL\SDLStretch\SDLStretch.vcproj", "{6333F640-1DA0-4DC4-AB7F-B310241A79E1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine.vcproj", "{D97B6FFB-3741-476F-911C-B5FD6F837267}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c2m", "..\..\c2m\c2m.vcproj", "{0DEFED49-13AD-4DF7-8A50-164C2D133F73}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Direct Display Debug = Direct Display Debug
+		Direct Display Release = Direct Display Release
+		Direct Display Release for profiling = Direct Display Release for profiling
+		No optimize debug symbols = No optimize debug symbols
+		Release = Release
+		Release for profiling = Release for profiling
+		Release with Debug Symbols = Release with Debug Symbols
+		SDL Debug = SDL Debug
+		SDL Release = SDL Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Debug.ActiveCfg = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Debug.Build.0 = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Debug.ActiveCfg = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Debug.Build.0 = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Release.ActiveCfg = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Release.Build.0 = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Release for profiling.ActiveCfg = Release for profiling|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Direct Display Release for profiling.Build.0 = Release for profiling|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.No optimize debug symbols.ActiveCfg = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.No optimize debug symbols.Build.0 = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release.ActiveCfg = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release.Build.0 = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release for profiling.ActiveCfg = Release for profiling|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release for profiling.Build.0 = Release for profiling|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release with Debug Symbols.ActiveCfg = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.Release with Debug Symbols.Build.0 = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.SDL Debug.ActiveCfg = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.SDL Debug.Build.0 = Debug|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.SDL Release.ActiveCfg = Release|Win32
+		{AA117A94-5084-4FA0-9E57-EC62A46DB017}.SDL Release.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Debug.ActiveCfg = Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Debug.Build.0 = Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Debug.ActiveCfg = Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Debug.Build.0 = Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Release.ActiveCfg = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Release.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Release for profiling.ActiveCfg = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Direct Display Release for profiling.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.No optimize debug symbols.ActiveCfg = SDL Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.No optimize debug symbols.Build.0 = SDL Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release.ActiveCfg = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release for profiling.ActiveCfg = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release for profiling.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release with Debug Symbols.ActiveCfg = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.Release with Debug Symbols.Build.0 = Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.SDL Debug.ActiveCfg = SDL Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.SDL Debug.Build.0 = SDL Debug|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.SDL Release.ActiveCfg = SDL Release|Win32
+		{6333F640-1DA0-4DC4-AB7F-B310241A79E1}.SDL Release.Build.0 = SDL Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Debug.ActiveCfg = Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Debug.Build.0 = Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Debug.ActiveCfg = Direct Display Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Debug.Build.0 = Direct Display Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Release.ActiveCfg = Direct Display Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Release.Build.0 = Direct Display Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Release for profiling.ActiveCfg = Direct Display Release for profiling|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Direct Display Release for profiling.Build.0 = Direct Display Release for profiling|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.No optimize debug symbols.ActiveCfg = No optimize debug symbols|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.No optimize debug symbols.Build.0 = No optimize debug symbols|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release.ActiveCfg = Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release.Build.0 = Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release for profiling.ActiveCfg = Direct Display Release for profiling|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release for profiling.Build.0 = Direct Display Release for profiling|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release with Debug Symbols.ActiveCfg = Release with Debug Symbols|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.Release with Debug Symbols.Build.0 = Release with Debug Symbols|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.SDL Debug.ActiveCfg = SDL Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.SDL Debug.Build.0 = SDL Debug|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.SDL Release.ActiveCfg = SDL Release|Win32
+		{D97B6FFB-3741-476F-911C-B5FD6F837267}.SDL Release.Build.0 = SDL Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Debug.ActiveCfg = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Debug.Build.0 = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Debug.ActiveCfg = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Debug.Build.0 = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Release.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Release.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Release for profiling.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Direct Display Release for profiling.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.No optimize debug symbols.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.No optimize debug symbols.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release for profiling.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release for profiling.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release with Debug Symbols.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.Release with Debug Symbols.Build.0 = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.SDL Debug.ActiveCfg = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.SDL Debug.Build.0 = Debug|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.SDL Release.ActiveCfg = Release|Win32
+		{0DEFED49-13AD-4DF7-8A50-164C2D133F73}.SDL Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

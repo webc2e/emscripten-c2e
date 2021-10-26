@@ -56,8 +56,8 @@ TAG "app_error"
 "Creatures 3 sembra essere già in esecuzione.\nIn caso contrario, aspetta un attimo e riprova.\nSe il problema persiste, prova a riavviare."
 "Errore di scrittura del file usato dallo strumento CAOS\n%s"
 
-TAG "app_cd_needed"
-"Per giocare, il disco di Creatures 3 deve rimanere inserito nell'unità CD-ROM.\nInserisci il CD-ROM di Creatures 3 e riprova."
+# TAG "app_cd_needed"
+# "Per giocare, il disco di Creatures 3 deve rimanere inserito nell'unità CD-ROM.\nInserisci il CD-ROM di Creatures 3 e riprova."
 
 TAG "app_insufficient_disk_space"
 "Attenzione!\n\nNon c'è abbastanza spazio libero sul disco rigido per eseguire Creatures 3.\nSono necessari 75 Mb liberi sull'unità di sistema principale e\nsull'unità in cui è stato installato il gioco.\n\nEseguire comunque il gioco?"
@@ -173,13 +173,6 @@ TAG "agent_profiler_columns"
 
 TAG "invalid_map_error"
 "Posizione mappa non valida a causa di modifica del riquadro...\nRiquadro precedente:\t%d x %d\nRiquadro attuale:\t\t%d x %d\n"
-
-TAG "Pray System File Extensions"
-"creature"
-"agent"
-"agents"
-"blueprint"
-"family"
 
 TAG "creature_head_sprite_out_of_range"
 "Si è tentato di passare allo sprite di indice %d quando solo %d erano stati letti.\nEspressione normale."

@@ -40,6 +40,7 @@ struct InputEvent
 	// mouse velocity at time of event.
 	// What units? Pixels per millisecond?
 	// not yet implemented.
+	// (is a function in InputManger instead)
 //	int MouseVX;
 //	int MountVY;
 

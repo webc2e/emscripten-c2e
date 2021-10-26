@@ -76,34 +76,34 @@ ARRAY "Brain Lobe Quads" 12  #TRANSLATOR'S NOTE - DO NOT TRANSLATE WORDS IN THIS
 "stim"
 
 
-ARRAY "Creature Drives" 20 #TRANSLATOR'S NOTE - translate this one.please keep to the glossary
+ARRAY OVERRIDE "Creature Drives" 20 #TRANSLATOR'S NOTE - translate this one.please keep to the glossary
 "verletzt"
 "braucht Proteine" # protein
 "braucht Stärke" # carbohydrate
 "braucht Fett" # fat
-"kalt"
-"heiß"
+"friert"
+"schwitzt"
 "müde"
 "schläfrig"
 "einsam"
 "eingeengt"
-"ängstlich"
-"gelangweilt"
+"fürchtet sich"
+"langweilt sich"
 "wütend"
 "lieb"
 "hat Heimweh"
 "will nach oben"
 "will nach unten"
-"kann nicht weiter"
-"kann nicht weiter"
+"will weg von hier"
+"will weg von hier"
 "wartet"
 
 
-ARRAY "Creature Actions" 17   #TRANSLATOR'S NOTE - translate this one.please keep to the glossary
-"Guck"
-"Drück"
-"Zieh"
-"deaktivieren"	
+ARRAY OVERRIDE "Creature Actions" 17   #TRANSLATOR'S NOTE - translate this one.please keep to the glossary
+"guck"
+"drück"
+"zieh"
+"ausschalten"	
 "näherkommen"
 "weggehen"
 "holen"
@@ -159,3 +159,5 @@ ARRAY "Migration Parameters" 2  #TRANSLATOR'S NOTE - DO NOT TRANSLATE WORDS IN T
 ARRAY "Brain Parameters" 2   #TRANSLATOR'S NOTE - DO NOT TRANSLATE WORDS IN THIS ARRAY
 "213"
 "212"
+
+

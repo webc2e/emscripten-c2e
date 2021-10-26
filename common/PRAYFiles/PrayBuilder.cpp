@@ -1,20 +1,16 @@
 #include "PrayBuilder.h"
 
 #include "../SimpleLexer.h"
+#include "../FileFuncs.h"
 
 #include "StringIntGroup.h"
 #include "PrayManager.h"
 #include "PrayChunk.h"
+#include "PrayException.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable:4786 4503)
 #endif
-
-
-#ifdef C2E_OLD_CPP_LIB
-#include <strstream>
-#endif
-
 
 
 void PrayBuilder::munchComment(int& currentTokenType, std::string& currentToken, SimpleLexer& inputLexer)
@@ -36,7 +32,7 @@ void PrayBuilder::munchComment(int& currentTokenType, std::string& currentToken,
 		// Eaten comment - ready to carry on :)
 		if (currentTokenType == SimpleLexer::typeFinished)
 		{
-			outputStream << "Unexpected end of file processing comment :(" << std::endl;
+			myOutputStream << "Unexpected end of file processing comment :(" << std::endl;
 			// TODO: yell at Daniel ;-)
 			exit(1);
 		}
@@ -53,7 +49,7 @@ bool PrayBuilder::expect(int thisType, std::string& thisToken, int expectedType,
 
 	decodeType(thisType,gotType);
 	decodeType(expectedType,wantType);
-	outputStream << "Error on line " << linenumber
+	myOutputStream << "Error on line " << linenumber
 		<< ". Expecting " << wantType << ", got " << gotType
 		<< " (" << thisToken << ")" << std::endl;
 	return false;
@@ -85,30 +81,20 @@ void PrayBuilder::decodeType(int thisType,std::string& into)
 }
 
 
-#ifdef C2E_OLD_CPP_LIB
-PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile):
-	outputStream( myHackBuf, sizeof( myHackBuf ) )
-#else
-PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
-#endif
+PrayBuilder::PrayBuilder(std::string sourceFile, std::string destFile)
 {
-	SuccessfulBuild = false;
+	mySuccessfulBuild = false;
 
-	outputStream.clear();
+	myOutputStream.clear();
 
-	outputStream << "Embedded PRAYBuilder now processing..." << std::endl;
+	myOutputStream << "Embedded PRAYBuilder now processing..." << std::endl;
 
-	std::ifstream sourceFileStream;
-
-	try
+	std::ifstream sourceFileStream(sourceFile.c_str());
+	if (!sourceFileStream.good())
 	{
-		sourceFileStream.open(sourceFile.c_str());
-	}
-	catch (...)
-	{
-		outputStream << "Oh dear, couldn't open input stream" << std::endl;
-		Output = outputStream.str();
-		Output.resize(outputStream.tellp());
+		myOutputStream << "Oh dear, couldn't open input file " << sourceFile << std::endl;
+		myOutput = myOutputStream.str();
+		myOutput.resize(myOutputStream.tellp());
 		return;
 	}
 
@@ -134,11 +120,12 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 
 	if (!EXPECT(typeString))
 	{ 
-		Output = outputStream.str();
-		Output.resize(outputStream.tellp());
+		myOutput = myOutputStream.str();
+		myOutput.resize(myOutputStream.tellp());
 		return;
 	}
-	PrayManager pm(currentToken);
+	PrayManager pm;
+	pm.SetLanguage(currentToken);
 
 	currentTokenType = inputLexer.GetToken(currentToken);
 
@@ -152,33 +139,33 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 			// We are looking for a chunk identifier (Symbol/Token)
 			if (!EXPECT(typeSymbol))
 			{ 
-				Output = outputStream.str();
-				Output.resize(outputStream.tellp());
+				myOutput = myOutputStream.str();
+				myOutput.resize(myOutputStream.tellp());
 				return;
 			}
 			// Right then, let's think... If "inline" do file chunk, if "chunk" do prep for stringintgroup.
 
 			if (currentToken == "inline")
 			{
-				outputStream << "Parsing inline chunk..." << std::endl;
+				myOutputStream << "Parsing inline chunk..." << std::endl;
 				// Deal with inline chunk...
 				currentTokenType = inputLexer.GetToken(currentToken);
 				munchComment(currentTokenType,currentToken,inputLexer);
 				// Expecting a nice Symbol...
 				if (!EXPECT(typeSymbol))
 				{ 
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The symbol should be 4 chars exactly
 				if (currentToken.size() != 4)
 				{
-					outputStream << "Expecting chunk symbol type. It was not four chars. " <<
+					myOutputStream << "Expecting chunk symbol type. It was not four chars. " <<
 						"PRAYBuilder aborting." << std::endl << "Offending token was " << 
 						currentToken << " on line " << inputLexer.GetLineNum() << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The symbol is indeed 4 chars.
@@ -187,38 +174,41 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 				munchComment(currentTokenType,currentToken,inputLexer);
 				if (!EXPECT(typeString))
 				{ 
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The string is the name of the chunk.
 				chunkName = currentToken;
-				outputStream << "Chunk is of type: " << chunkType <<
+				MakeFilenameSafe(chunkName); // paranoia (in case there's a way of making these files by their names)
+				myOutputStream << "Chunk is of type: " << chunkType <<
 					" and is called " << chunkName << std::endl;
 				currentTokenType = inputLexer.GetToken(currentToken);
 				munchComment(currentTokenType,currentToken,inputLexer);
 				if (!EXPECT(typeString))
 				{ 
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The string is the name of the file.
-				outputStream << "The data for the inline chunk comes from " << currentToken << std::endl;
+				std::string filename = currentToken;
+				MakeFilenameSafe(filename);
+				myOutputStream << "The data for the inline chunk comes from " << filename << std::endl;
 				FILE* inlineFile;
-				inlineFile = fopen(currentToken.c_str(),"rb");
+				inlineFile = fopen(filename.c_str(),"rb");
 				if (inlineFile == NULL)
 				{
-					outputStream << "Oh dear, couldn't open the file :(" << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutputStream << "Oh dear, couldn't open the file " << filename << " :(" << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// File opened, let's munch in the data...
 				fseek(inlineFile,0,SEEK_END);
 				int bytes = ftell(inlineFile);
 				fseek(inlineFile,0,SEEK_SET);
-				uint8_t* filedata = new uint8_t[bytes];
+				uint8* filedata = new uint8[bytes];
 				fread(filedata,bytes,1,inlineFile);
 				fclose(inlineFile);
 				// Let's dump that good old chunk into the file (nice and compressed too :)
@@ -226,11 +216,18 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 				{
 					pm.AddChunkToFile(chunkName,chunkType,destFile,bytes,filedata,CompressionFlag);
 				}
+				catch (PrayException& pe)
+				{
+					myOutputStream << "Erkleroo, excepted during chunk add :( (" << pe.GetMessage() << ")" << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
+					return;
+				}
 				catch (...)
 				{
-					outputStream << "Erkleroo, excepted during chunk add :( (Some day I'll put some better error routines in :)" << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutputStream << "Erkleroo, excepted during chunk add :( (Some day I'll put some better error routines in :)" << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				delete [] filedata;
@@ -239,24 +236,24 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 			} // inline
 			if (currentToken == "group")
 			{
-				outputStream << "Please wait, preparing StringIntGroup chunk..." << std::endl;
+				myOutputStream << "Please wait, preparing StringIntGroup chunk..." << std::endl;
 				currentTokenType = inputLexer.GetToken(currentToken);
 				munchComment(currentTokenType,currentToken,inputLexer);
 				// Expecting a nice Symbol...
 				if (!EXPECT(typeSymbol))
 				{ 
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The symbol should be 4 chars exactly
 				if (currentToken.size() != 4)
 				{
-					outputStream << "Expecting chunk symbol type. It was not four chars. "
+					myOutputStream << "Expecting chunk symbol type. It was not four chars. "
 						<< "PRAYBuilder aborting." << std::endl << "Offending token was " <<
 						currentToken << " on line " << inputLexer.GetLineNum() << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				chunkType = currentToken;
@@ -264,13 +261,13 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 				munchComment(currentTokenType,currentToken,inputLexer);
 				if (!EXPECT(typeString))
 				{ 
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				// The string is the name of the chunk.
 				chunkName = currentToken;
-				outputStream << "Chunk is of type: " << chunkType <<
+				myOutputStream << "Chunk is of type: " << chunkType <<
 					" and is called " << chunkName << std::endl;
 				currentTokenType = inputLexer.GetToken(currentToken);
 				myState = lookingTag;
@@ -283,25 +280,27 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 			if (currentTokenType == SimpleLexer::typeSymbol)
 			{
 				// Hit end of chunk, so write it out, and reset state
-#ifdef C2E_OLD_CPP_LIB
-				char hackbuf[2048];
-				std::ostrstream os(hackbuf, sizeof(hackbuf) );
-#else
 				std::ostringstream os;
-#endif
 				sg.SaveToStream(os);
 				std::string tempStr = os.str();
-				const char* str = tempStr.data();
+				const char* str = tempStr.c_str();
 				int leng = os.tellp();
 				try
 				{
 					pm.AddChunkToFile(chunkName,chunkType,destFile,leng,(unsigned char *)str,CompressionFlag);
 				}
+				catch (PrayException& pe)
+				{
+					myOutputStream << "Erkleroo, excepted during group add :( (" << pe.GetMessage() << ")" << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
+					return;
+				}
 				catch (...)
 				{
-					outputStream << "Erkleroo, excepted during group add :( (Some day I'll put some better error routines in :)" << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutputStream << "Erkleroo, excepted during group add :( (Some day I'll put some better error routines in :)" << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				sg.Clear();
@@ -321,59 +320,72 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 				int bytes;
 				char* filedata;
 
+				std::string t;
+				std::string is;
+				int i;
 				switch(currentTokenType)
 				{
 				case SimpleLexer::typeString:
 					// We have a string->string mapping
+					if (sg.FindString(thisTag,t))
+						myOutputStream << "Warning, redefinition of " << thisTag << " from " << t << " to " << currentToken << std::endl;
 					sg.AddString(thisTag,currentToken);
 					break;
 				case SimpleLexer::typeNumber:
 					// We have a string->int mapping
+					if (sg.FindInt(thisTag,i))
+						myOutputStream << "Warning, redefinition of " << thisTag << " from " << i << " to " << currentToken << std::endl;
 					sg.AddInt(thisTag,atoi(currentToken.c_str()));
 					break;
 				case SimpleLexer::typeSymbol:
-					// We have a string->file (I.E. string) mapping
-					if (currentToken != "@")
 					{
-						outputStream << "The only valid symbol in this context is \"@\". Error on line " << inputLexer.GetLineNum() << std::endl;
-						Output = outputStream.str();
-						Output.resize(outputStream.tellp());
-						return;
-					}
-					currentTokenType = inputLexer.GetToken(currentToken);
-					munchComment(currentTokenType,currentToken,inputLexer);
-					if (!EXPECT(typeString))
-					{ 
-						Output = outputStream.str();
-						Output.resize(outputStream.tellp());
-						return;
-					}
-					outputStream << "Trying to add a file mapping to " << currentToken << std::endl;
-					FILE* inlineFile;
-					inlineFile = fopen(currentToken.c_str(),"rb");
-					if (inlineFile == NULL)
-					{
-						outputStream << "Oh dear, couldn't open the file :(" << std::endl;
-						Output = outputStream.str();
-						Output.resize(outputStream.tellp());
-						return;
-					}
-					// File opened, let's munch in the data...
-					fseek(inlineFile,0,SEEK_END);
-					bytes = ftell(inlineFile);
-					fseek(inlineFile,0,SEEK_SET);
-					filedata = new char[bytes];
-					fread(filedata,bytes,1,inlineFile);
-					fclose(inlineFile);
+						// We have a string->file (I.E. string) mapping
+						if (sg.FindString(thisTag,is))
+							myOutputStream << "Warning redefinition of file tag " << thisTag << std::endl;
+						if (currentToken != "@")
+						{
+							myOutputStream << "The only valid symbol in this context is \"@\". Error on line " << inputLexer.GetLineNum() << std::endl;
+							myOutput = myOutputStream.str();
+							myOutput.resize(myOutputStream.tellp());
+							return;
+						}
+						currentTokenType = inputLexer.GetToken(currentToken);
+						munchComment(currentTokenType,currentToken,inputLexer);
+						if (!EXPECT(typeString))
+						{ 
+							myOutput = myOutputStream.str();
+							myOutput.resize(myOutputStream.tellp());
+							return;
+						}
+						std::string filename = currentToken;
+						MakeFilenameSafe(filename);
+						myOutputStream << "Trying to add a file mapping to " << filename << std::endl;
+						FILE* inlineFile;
+						inlineFile = fopen(filename.c_str(),"rb");
+						if (inlineFile == NULL)
+						{
+							myOutputStream << "Oh dear, couldn't open the file " << filename << " :(" << std::endl;
+							myOutput = myOutputStream.str();
+							myOutput.resize(myOutputStream.tellp());
+							return;
+						}
+						// File opened, let's munch in the data...
+						fseek(inlineFile,0,SEEK_END);
+						bytes = ftell(inlineFile);
+						fseek(inlineFile,0,SEEK_SET);
+						filedata = new char[bytes];
+						fread(filedata,bytes,1,inlineFile);
+						fclose(inlineFile);
 
-					tempString.assign(filedata,bytes);
-					delete [] filedata;
-					sg.AddString(thisTag,tempString);
-					break;
+						tempString.assign(filedata,bytes);
+						delete [] filedata;
+						sg.AddString(thisTag,tempString);
+						break;
+					}
 				default:
-					outputStream << "Expecting number,symbol or string. Error on line " << inputLexer.GetLineNum() << std::endl;
-					Output = outputStream.str();
-					Output.resize(outputStream.tellp());
+					myOutputStream << "Expecting number,symbol or string. Error on line " << inputLexer.GetLineNum() << std::endl;
+					myOutput = myOutputStream.str();
+					myOutput.resize(myOutputStream.tellp());
 					return;
 				}
 				currentTokenType = inputLexer.GetToken(currentToken);
@@ -382,9 +394,9 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 		}
 		else
 		{
-			outputStream << "Unknown lookahead state :(" << std::endl;
-			Output = outputStream.str();
-			Output.resize(outputStream.tellp());
+			myOutputStream << "Unknown lookahead state :(" << std::endl;
+			myOutput = myOutputStream.str();
+			myOutput.resize(myOutputStream.tellp());
 			return;
 		}
 	}
@@ -392,37 +404,50 @@ PrayBuilder::PrayBuilder(std::string& sourceFile, std::string& destFile)
 	if (myState == lookingTag)
 	{
 		
-#ifdef C2E_OLD_CPP_LIB
-		char hackbuf[2048];
-		std::ostrstream os( hackbuf, sizeof(hackbuf) );
-#else
 		std::ostringstream os;
-#endif
 		sg.SaveToStream(os);
 		std::string tempStr = os.str();
-		const char* str = tempStr.data();
+		const char* str = tempStr.c_str();
 		int leng = os.tellp();
 		try
 		{
 			pm.AddChunkToFile(chunkName,chunkType,destFile,leng,(unsigned char *)str,CompressionFlag);
 		}
+		catch (PrayException& pe)
+		{
+			myOutputStream << "Erkleroo, excepted during group add :( (" << pe.GetMessage() << ")" << std::endl;
+			myOutput = myOutputStream.str();
+			myOutput.resize(myOutputStream.tellp());
+			return;
+		}
 		catch (...)
 		{
-			outputStream << "Erkleroo, excepted during group add :( (Some day I'll put some better error routines in :)" << std::endl;
-			Output = outputStream.str();
-			Output.resize(outputStream.tellp());
+			myOutputStream << "Erkleroo, excepted during group add :( (Some day I'll put some better error routines in :)" << std::endl;
+			myOutput = myOutputStream.str();
+			myOutput.resize(myOutputStream.tellp());
 			return;
 		}
 		sg.Clear();
 		os.clear();
 		myState = lookingChunk;
 	}
-	SuccessfulBuild = true;
-	outputStream << std::endl << std::endl << "***END***" << std::endl << "\0";
+	mySuccessfulBuild = true;
+	myOutputStream << std::endl << std::endl << "***END***" << std::endl << "\0";
 	
-	Output = outputStream.str();
-	Output.resize(outputStream.tellp());
-	outputStream.clear();
+	myOutput = myOutputStream.str();
+	myOutput.resize(myOutputStream.tellp());
+	myOutputStream.clear();
 	pm.GarbageCollect(true);
 
 }
+
+bool PrayBuilder::Successful()
+{
+	return mySuccessfulBuild;
+}
+
+std::string PrayBuilder::Output()
+{
+	return myOutput;
+}
+

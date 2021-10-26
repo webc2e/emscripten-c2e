@@ -58,7 +58,7 @@ enum expressions
     EXPR_HAPPY,
     EXPR_SAD,
     EXPR_ANGRY,
-    EXPR_SURPRISE,
+    EXPR_SCARED,
     EXPR_SLEEPY,
 	/* EXPR_VERY_SLEEPY,
 	EXPR_VERY_HAPPY,
@@ -82,6 +82,7 @@ enum earSets
 
 
 
-#define BODY_DATA_EXTENSION	"ATT"
+#define BODY_DATA_EXTENSION	"att"
 
 #endif//SkeletonConstants_H
+

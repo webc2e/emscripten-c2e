@@ -18,13 +18,44 @@
 #endif
 
 #include "../Agents/AgentHandle.h"
+#include "../FilePath.h"
+#include <string>
+
 class CAOSMachine;
 class CAOSVar;
 
 class AgentHandlers {
 
 public:
+  static void Command_DCOR(CAOSMachine &vm);
+  static int IntegerRV_TCOR(CAOSMachine &vm);
+  static void Command_CORE(CAOSMachine &vm);
+
+  static void Command_VARC(CAOSMachine &vm);
+  static float FloatRV_VARC(CAOSMachine &vm);
+  static void Command_ROTN(CAOSMachine &vm);
+
+  static float FloatRV_AVEL(CAOSMachine &vm);
+  static void Command_AVEL(CAOSMachine &vm);
+  static float FloatRV_FVEL(CAOSMachine &vm);
+  static void Command_FVEL(CAOSMachine &vm);
+  static float FloatRV_SVEL(CAOSMachine &vm);
+  static void Command_SVEL(CAOSMachine &vm);
+  static float FloatRV_SPIN(CAOSMachine &vm);
+  static void Command_SPIN(CAOSMachine &vm);
+  static float FloatRV_ANGL(CAOSMachine &vm);
+
+  static float FloatRV_VECX(CAOSMachine &vm);
+  static float FloatRV_VECY(CAOSMachine &vm);
+  static float FloatRV_ADMP(CAOSMachine &vm);
+  static void Command_ADMP(CAOSMachine &vm);
+  static float FloatRV_FDMP(CAOSMachine &vm);
+  static void Command_FDMP(CAOSMachine &vm);
+  static float FloatRV_SDMP(CAOSMachine &vm);
+  static void Command_SDMP(CAOSMachine &vm);
+
   // Commands
+  static void Command_CALL(CAOSMachine &vm);
   static void Command_NEW(CAOSMachine &vm);
   static void Command_KILL(CAOSMachine &vm);
   static void Command_BASE(CAOSMachine &vm);
@@ -78,8 +109,18 @@ public:
   static void Command_NEWC(CAOSMachine &vm);
   static void Command_CABW(CAOSMachine &vm);
   static void Command_MIRA(CAOSMachine &vm);
+  static void Command_FLIP(CAOSMachine &vm);
+  static void Command_ROTA(CAOSMachine &vm);
   static void Command_CABV(CAOSMachine &vm);
   static void Command_HAND(CAOSMachine &vm);
+  static void Command_DROP(CAOSMachine &vm);
+  static void Command_OUTL(CAOSMachine &vm);
+  static void Command_UCLN(CAOSMachine &vm);
+
+  static void Command_BLCK(CAOSMachine &vm);
+
+  static void Command_DELN(CAOSMachine &vm);
+  static void Command_NAMN(CAOSMachine &vm);
 
   // Integer RValues
   static int IntegerRV_FALL(CAOSMachine &vm);
@@ -100,6 +141,8 @@ public:
   static int IntegerRV_POSE(CAOSMachine &vm);
   static int IntegerRV_MOWS(CAOSMachine &vm);
   static int IntegerRV_MIRA(CAOSMachine &vm);
+  static int IntegerRV_FLIP(CAOSMachine &vm);
+  static int IntegerRV_ROTA(CAOSMachine &vm);
 
   static float FloatRV_POSX(CAOSMachine &vm);
   static float FloatRV_POSY(CAOSMachine &vm);
@@ -145,6 +188,13 @@ public:
   static int IntegerRV_CLIK(CAOSMachine &vm);
   static int IntegerRV_CLAC(CAOSMachine &vm);
 
+  static int IntegerRV_ABBA(CAOSMachine &vm);
+  static int IntegerRV_PNXT(CAOSMachine &vm);
+  static int IntegerRV_TINT(CAOSMachine &vm);
+  static int IntegerRV_TRAN(CAOSMachine &vm);
+
+  static int IntegerRV_HOTP(CAOSMachine &vm);
+
   // Float RValues
   static float FloatRV_RNGE(CAOSMachine &vm);
   static float FloatRV_ACCG(CAOSMachine &vm);
@@ -154,6 +204,7 @@ public:
   // String RValues
   static void StringRV_VOIS(CAOSMachine &vm, std::string &str);
   static void StringRV_HAND(CAOSMachine &vm, std::string &str);
+  static void StringRV_GALL(CAOSMachine &vm, std::string &str);
 
   // Agent RValues
   static AgentHandle AgentRV_PNTR(CAOSMachine &vm);
@@ -173,6 +224,8 @@ public:
   static CAOSVar &Variable_VELX(CAOSMachine &vm);
   static CAOSVar &Variable_VELY(CAOSMachine &vm);
   static CAOSVar &Variable_AVAR(CAOSMachine &vm);
+  static CAOSVar &Variable_NAME(CAOSMachine &vm);
+  static CAOSVar &Variable_MAME(CAOSMachine &vm);
 
 private:
   static void SubCommand_MESG_WRIT(CAOSMachine &vm);
@@ -180,8 +233,10 @@ private:
 
   static void SubCommand_NEW_SIMP(CAOSMachine &vm);
   static void SubCommand_NEW_CREA(CAOSMachine &vm);
+  static void SubCommand_NEW_CRAG(CAOSMachine &vm);
   static void SubCommand_NEW_VHCL(CAOSMachine &vm);
   static void SubCommand_NEW_COMP(CAOSMachine &vm);
+  static void SubCommand_NEW_GROW(CAOSMachine &vm);
 
   static void MoveAndFloatHelper(CAOSMachine &vm, bool floater);
 };

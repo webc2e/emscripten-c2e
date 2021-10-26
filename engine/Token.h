@@ -47,3 +47,4 @@ inline char* Ezinekot(TOKEN t) {
 	return c;
 }
 #endif
+

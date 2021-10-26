@@ -1,0 +1,16 @@
+----------------------------------------------------
+LOG STARTED Windows NT/2000 5.0 build 2195 ()
+OriginalDisplay DirectX (no modules)
+Fri Mar 05 09:53:03 2004 - camms - 2.296
+
+Error in: DirectoryManager::ReadFromConfigurationFiles
+NLE0001: 'Main Directory' setting not found.
+
+Windows NT/2000 5.0 build 2195 ()
+OriginalDisplay DirectX (no modules)
+Fri Mar 05 09:53:03 2004 - camms - 2.296
+Action: Quit
+
+LOG ENDED Windows NT/2000 5.0 build 2195 ()
+OriginalDisplay DirectX (no modules)
+Fri Mar 05 09:53:19 2004 - camms - 2.296

@@ -145,3 +145,4 @@ class MusicLoopLayer : public MusicLayer
 	};
 
 #endif
+

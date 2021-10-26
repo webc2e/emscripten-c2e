@@ -6,7 +6,7 @@
 //
 //
 // Pretty much all the public CAOSMachine functions will throw a
-// CAOSMachine::RunError if an error occurs.
+// CAOSMachineRunError if an error occurs.
 // Since most of the public functions are only used by the CAOS handler
 // classes, UpdateVM() is really the only function that needs to be in a
 // try..catch block.
@@ -35,6 +35,7 @@
 #include "../PersistentObject.h"
 
 class DebugHandlers;
+#include <exception>
 
 // disable annoying warning in VC when using stl (debug symbols > 255 chars)
 #ifdef _MSC_VER
@@ -44,6 +45,7 @@ class DebugHandlers;
 #include "../../common/C2eTypes.h"
 #include <string>
 #include <vector>
+#include "../../modules/ModuleAPI.h"
 
 // not sure which one is more ansi...
 #ifdef _MSC_VER
@@ -58,8 +60,22 @@ class Camera;
 
 #include "../Agents/AgentHandle.h"
 
-class CAOSMachine : public PersistentObject
+// If anything bad happens while a CAOSMachine is running a script,
+// a RunError object will be thrown. The catch block is responsible
+// for cleaning up/resuming after the error. The easiest way is
+// just to call the StopScriptExecuting() member from the catch block.
+class CAOSMachineRunError : public BasicException
+	{ public:	CAOSMachineRunError( const char* msg ):BasicException(msg) {}; };
+
+
+#ifdef _MSC_VER
+#pragma warning (disable : 4275)
+#endif
+class C2E_MODULE_API CAOSMachine : public PersistentObject
 {
+#ifdef _MSC_VER
+#pragma warning (default: 4275)
+#endif
 	CREATURES_DECLARE_SERIAL( CAOSMachine )
 public:
 
@@ -164,7 +180,7 @@ public:
 		sidLifeEventIndexOutofRange,
 		sidNullInputStream,
 		sidOnlyWipeTrulyDeadHistory,
-		sidCompoundPartAlreadyExists,
+		sidCompoundPartAlreadyExists, // Not used, but left in for partial catalogue backward compatibility
 		sidFailedToCreateCreature,
 		sidUserAbortedPossiblyFrozenScript,
 		sidCAOSAssertionFailed,
@@ -182,22 +198,18 @@ public:
 		sidFailedToFindSafeLocation,
 		sidBehaviourWithoutScript,
 		sidSoundFileNotFound,
+		sidNotUsingDirectDisplayEngine,
+		sidCompoundPartAlreadyExistsExtraInfo,
+		sidNotImplementedYet,
 	};
 
 
 
 
-	// If anything bad happens while a CAOSMachine is running a script,
-	// a RunError object will be thrown. The catch block is responsible
-	// for cleaning up/resuming after the error. The easiest way is
-	// just to call the StopScriptExecuting() member from the catch block.
-	class RunError : public BasicException
-		{ public:	RunError( const char* msg ):BasicException(msg) {}; };
-
 	// exceptions for lost-agent accesses
 	
-	class InvalidAgentHandle : public RunError
-		{ public: InvalidAgentHandle( const char* msg):RunError(msg) {}; };
+	class InvalidAgentHandle : public CAOSMachineRunError
+		{ public: InvalidAgentHandle( const char* msg):CAOSMachineRunError(msg) {}; };
 
 	// ---------------------------------------------------------------------
 	// Method:      CopyBasicState
@@ -208,7 +220,7 @@ public:
 	void CopyBasicState( CAOSMachine& destination );
 
 	void StartScriptExecuting(MacroScript* m, const AgentHandle& owner,
-		const AgentHandle& from, const CAOSVar& p1, const CAOSVar& p2);
+		const CAOSVar& from, const CAOSVar& p1, const CAOSVar& p2);
 
 	// ---------------------------------------------------------------------
 	// Method:      GetScript
@@ -368,9 +380,10 @@ public:
 	// ---------------------------------------------------------------------
 	void Push( int i )
 		{ myStack.push_back(i); }
+	void PushString( const std::string& str )
+		{ myStringStack.push_back(str); }
 	void PushHandle( AgentHandle& a )
 		{ myAgentStack.push_back(a); }
-//		{ myStack.push(i); }
 
 	// ---------------------------------------------------------------------
 	// Method:      Pop
@@ -382,8 +395,8 @@ public:
 		{ int i=myStack.back(); myStack.pop_back(); return i; }
 	AgentHandle PopHandle()
 		{ AgentHandle h = myAgentStack.back(); myAgentStack.pop_back(); return h; }
-//		{ int i=myStack.top(); myStack.pop(); return i; }
-
+	std::string PopString()
+		{ std::string str=myStringStack.back(); myStringStack.pop_back(); return str; }
 
 	// ---------------------------------------------------------------------
 	// Method:      GetTarg, GetCreatureTarg, GetFrom, GetIT, GetOwner, GetPart
@@ -394,9 +407,10 @@ public:
 	AgentHandle GetTarg()
 		{ return myTarg; }
 	Creature& GetCreatureTarg();
+	SkeletalCreature& GetSkeletalCreatureTarg();
 	AgentHandle GetOwner()
 		{ return myOwner; }
-	AgentHandle GetFrom()
+	CAOSVar GetFrom()
 		{ return myFrom; }
 	AgentHandle GetIT()
 		{ return myIT; }
@@ -455,13 +469,14 @@ public:
 	// Method:      ThrowRunError / InvalidAgentHandle
 	// Arguments:   fmt - printf-style format string and parameters
 	// Returns:     None (never returns, just throws an exception)
-	// Description:	Throws a CAOSMachine::RunError exception with a
+	// Description:	Throws a CAOSMachineRunError exception with a
 	//				formatted error message.  Enforces localisation
 	//              by only reading from catalogue.
 	// ---------------------------------------------------------------------
 	static void ThrowRunError( int stringid, ... );		// localised version
 	static void ThrowInvalidAgentHandle( int stringid, ... );		// localised version
-	void ThrowRunError( const BasicException& e );
+	static void ThrowTagRunError( const char* tag, int stringid, ... ); // with any tag you like, rather than caos tag
+	void ThrowRunError( const std::exception& e );
 
 	static void FormatErrorPos(std::ostream& out, int pos, const std::string& source);
 	void StreamIPLocationInSource(std::ostream& out);
@@ -521,6 +536,10 @@ public:
 		{ myInstFlag = yepnope; }
 
 
+	bool GetInstFlag()
+		{ return myInstFlag; }
+
+
 	std::ostream* GetOutStream()
 	{
 		if (myOutputStream == NULL)
@@ -539,9 +558,6 @@ public:
 		return myOutputStream;
 	}
 
-	// stream out the VM state (for debugging)
-	void DumpState( std::ostream& out, const char sep = '\n' );
-
 	AgentHandle GetAgentFromID( int id );
 
 	bool IsRunning()
@@ -549,6 +565,9 @@ public:
 
 	bool IsLocked()
 		{ return myLockedFlag; }
+
+	void ClearQuanta()
+		{ myQuanta = 0; }
 
 
 	CAOSMachine();
@@ -573,8 +592,15 @@ private:
 	int				myCommandIP;	// The IP of the command currently Executing.
 	int				myState;
 	OpType			myCurrentCmd;	// currently executing cmd
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
 	std::vector<int> myStack;
 	std::vector<AgentHandle> myAgentStack;
+	std::vector<std::string> myStringStack;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 
 	bool			myInstFlag;		// INST mode on/off?
 	int				myQuanta;		// number of steps left for this UpdateVM()
@@ -584,7 +610,7 @@ private:
 	Camera* myCamera; // if this is null we use the main camera
 	AgentHandle myTarg;
 	AgentHandle myOwner;
-	AgentHandle myFrom;
+	CAOSVar myFrom;
 	AgentHandle myIT;	// If owner is a creature, this is the object it
 					// was paying attention to at the beginning of the
 					// macro.
@@ -607,6 +633,9 @@ private:
 	bool EvaluateSingle();
 	void DeleteOutputStreamIfResponsible();
 	
+#ifdef _MSC_VER
+#pragma warning (disable : 4251)
+#endif
 	static std::vector<CommandHandler> ourCommandHandlers;
 	static std::vector<std::string> ourCommandNames;
 	static std::vector<IntegerRVHandler> ourIntegerRVHandlers;
@@ -614,6 +643,9 @@ private:
 	static std::vector<StringRVHandler> ourStringRVHandlers;
 	static std::vector<AgentRVHandler> ourAgentRVHandlers;
 	static std::vector<FloatRVHandler> ourFloatRVHandlers;
+#ifdef _MSC_VER
+#pragma warning (default : 4251)
+#endif
 
 public:
 	// Some handlers
@@ -624,12 +656,13 @@ public:
 	
 	static AgentHandle AgentRV_TARG( CAOSMachine& vm );
 	static AgentHandle AgentRV_OWNR( CAOSMachine& vm );
-	static AgentHandle AgentRV_FROM( CAOSMachine& vm );
 	static AgentHandle AgentRV_IT( CAOSMachine& vm );
 
 	static void Command_TARG( CAOSMachine& vm );
 	static void Command_LOCK( CAOSMachine& vm );
 	static void Command_UNLK( CAOSMachine& vm );
+
+	static CAOSVar& Variable_FROM( CAOSMachine& vm );
 
 	static CAOSVar& Variable_P1( CAOSMachine& vm );
 	static CAOSVar& Variable_P2( CAOSMachine& vm );

@@ -7,14 +7,18 @@
 #endif
 
 #include "MotorFaculty.h"
-#include "Creature.h"
+#include "AgentFacultyInterface.h"
+#include "CreatureFacultyInterface.h"
 #include "Brain/Brain.h"
 #include "SensoryFaculty.h"
 #include "LinguisticFaculty.h"
 #include "LifeFaculty.h"
 #include "../App.h"
 #include "Brain/BrainScriptFunctions.h"
-
+#include "../AgentManager.h" // for smell->cat mapping
+#include "../Agents/AgentConstants.h"
+#include "../Maths.h"
+#include "Brain/BrainConstants.h"
 
 
 /* involuntary actions:
@@ -34,6 +38,10 @@
 CREATURES_IMPLEMENT_SERIAL(MotorFaculty)
 
 
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -45,6 +53,8 @@ CREATURES_IMPLEMENT_SERIAL(MotorFaculty)
 // ------------------------------------------------------------------------
 MotorFaculty::MotorFaculty()
 {
+	myCurrentFocusOfAttention = -1;
+
 	for	(int i=0; i<NUMINVOL; i++) {				
 		myInvoluntaryActions[i].locus = 0.0f;
 		myInvoluntaryActions[i].latency = 0;
@@ -92,47 +102,48 @@ MotorFaculty::~MotorFaculty()
 //				5. If the IT object is a creature a special "creature-creature"
 //				script is called instead if it exists.
 // ------------------------------------------------------------------------
-void MotorFaculty::Update() {
-	Creature& c = myCreature.GetCreatureReference();
-
-
+void MotorFaculty::Update()
+{
 	// shouldn't move at all?
-	if (c.Life()->GetWhetherUnconscious() || c.Life()->GetWhetherZombie())
+	if (myCreature->Life()->GetWhetherUnconscious() || myCreature->Life()->GetWhetherZombie())
 		return;
 
 
-
-	AgentHandle oldIt = c.GetItAgent();
+	AgentHandle oldIt = myCreature->GetItAgent();
 
 	int winningAttentionId = (myVoluntaryScriptOverrides.attentionScriptNo>=0) ?
 		myVoluntaryScriptOverrides.attentionScriptNo :
-		c.GetBrain()->GetWinningId("attn");
-	AgentHandle winningAgent = c.Sensory()->GetKnownAgent(winningAttentionId);
+		myCreature->GetBrain()->GetWinningId("attn");
+	AgentHandle winningAgent = myCreature->Sensory()->GetKnownAgent(winningAttentionId);
 
 	if (winningAgent!=oldIt) {			// agent who won isn't IT at the moment:
 		// if IT agent was involved in the script we might want to stop the script:
-		if (!c.IsIntrospective() && winningAttentionId!=myCurrentFocusOfAttention) {
-			c.GetVirtualMachine().StopScriptExecuting();
+		if (!myCreature->IsIntrospective() && winningAttentionId!=myCurrentFocusOfAttention) {
+			myCreatureAsAgent->StopAllScripts();
 		}
 
 		// check if brain still has signal set
-		if(c.GetBrain()->GetNeuronState("visn", winningAttentionId, STATE_VAR) == 0.0f)
+		if(myCreature->GetBrain()->GetNeuronState("visn", winningAttentionId, STATE_VAR) == 0.0f)
+		{
 			winningAgent = NULLHANDLE;
+		}
 
 		// in any case, set the IT object:
-        c.SetItAgent(winningAgent);
+        myCreature->SetItAgent(winningAgent);
 		if (winningAgent.IsInvalid())
-			c.SetIntrospective(true);		// can be overridden by approaching a smell
+		{
+			myCreature->SetIntrospective(true);		// can be overridden by approaching a smell
+		}
+		myCurrentFocusOfAttention = winningAttentionId;
     }
 
-	myCurrentFocusOfAttention = winningAttentionId;
-	AgentHandle newIt = c.GetItAgent();
+	AgentHandle newIt = myCreature->GetItAgent();
 
 
 
 	// DEBUG command to highlight the IT object in red:
 	if (theApp.ShouldHighlightAgentsKnownToCreature() && (newIt.IsValid())) {
-		newIt.GetAgentReference().SetWhetherHighlighted(true, 255, 40, 40);
+		newIt.GetAgentFacultyInterfaceReference().SetWhetherHighlighted(true, 255, 40, 40);
 	}
 
 
@@ -140,7 +151,7 @@ void MotorFaculty::Update() {
 	// When any script is finished (an involuntary action or something
 	// which interrupted that) make sure our current involuntary action 
 	// is reset to nothing:
-	if (c.GetVirtualMachine().IsRunning()==false)
+	if (myCreatureAsAgent->VmIsRunning()==false)
 		myCurrentInvoluntaryAction = -1;
 	// Don't start another action if an involuntary action is still in progress
 	// (DONE cmd hasn't yet executed in its macro script)
@@ -174,18 +185,18 @@ void MotorFaculty::Update() {
 
 	// If an involuntary action recommends itself do it:
 	if	((strongestSoFar > 0)&&	
-		 (c.Life()->GetWhetherAlert()) &&			// NO INVOLS DURING SLEEP!! - CAUSES TROUBLE!
+		 (myCreature->Life()->GetWhetherAlert()) &&			// NO INVOLS DURING SLEEP!! - CAUSES TROUBLE!
 		 (bestInvoluntaryActionId != myCurrentInvoluntaryAction)) {		// not already doing that
 		myCurrentInvoluntaryAction = bestInvoluntaryActionId;				// start doing it
-		Classifier scriptClassifier = c.GetClassifier();
+		Classifier scriptClassifier = myCreatureAsAgent->GetClassifier();
 		scriptClassifier.SetEvent(SCRIPTINVOLUNTARY0 + bestInvoluntaryActionId);
 
 		// this creature is OWNR of macro event comes FROM this creature
 		// and classifier is also this creature's:
-		if (c.ExecuteScriptForClassifier(scriptClassifier,(AgentHandle)myCreature, INTEGERZERO, INTEGERZERO) == Agent::EXECUTE_SCRIPT_STARTED) 
+		if (myCreatureAsAgent->ExecuteScriptForClassifier(scriptClassifier,myCreatureAsAgent->GetAsAgentHandle(), INTEGERZERO, INTEGERZERO) == EXECUTE_SCRIPT_STARTED) 
 		{// event# is 64 upwards	
 			myCurrentAction = -1;							// pretend conscious action is quiescent?????
-			c.SetIntrospective(true);
+			myCreature->SetIntrospective(true);
 			return;									// if found a script, action has been started
 		} 
 		else 
@@ -195,49 +206,49 @@ void MotorFaculty::Update() {
 	}
 
 
-	if (!c.Life()->GetWhetherAlert())
+	if (!myCreature->Life()->GetWhetherAlert())
 		return;
 
 
 	int scriptAction = (myVoluntaryScriptOverrides.decisionScriptNo>=0) ?
 		myVoluntaryScriptOverrides.decisionScriptNo :
-		GetScriptOffsetFromNeuronId(c.GetBrain()->GetWinningId("decn"));
+		GetScriptOffsetFromNeuronId(myCreature->GetBrain()->GetWinningId("decn"));
 
 
 	if (scriptAction!=myCurrentAction || 
-		(newIt!=oldIt && !c.IsIntrospective()) ||
-		!c.GetVirtualMachine().IsRunning()) {		// restart script if finished
+		(newIt!=oldIt && !myCreature->IsIntrospective()) ||
+		!myCreatureAsAgent->VmIsRunning()) {		// restart script if finished
 
         // initiate action sequence & store myCurrentAction:
 		myCurrentAction = scriptAction;
 		myCurrentInvoluntaryAction = -1;	// can't be doing anything involuntary
 
 		// set whether introspective:
-		c.SetIntrospective(!DoesThisScriptRequireAnItObject(scriptAction));
+		myCreature->SetIntrospective(!DoesThisScriptRequireAnItObject(scriptAction));
 
 
 		// set classifier of script
-		Classifier scriptClassifier = c.GetClassifier();
+		Classifier scriptClassifier = myCreatureAsAgent->GetClassifier();
 		scriptClassifier.SetEvent(scriptAction + (newIt.IsCreature() ? 32 : 16));
 
 		// if there's no new IT object but the script we want to run is extraspective
 		// and there's no smell for that IT object then stop the VM:
-		if (newIt.IsInvalid() && !c.IsIntrospective() && 
+		if (newIt.IsInvalid() && !myCreature->IsIntrospective() && 
 			theAgentManager.GetSmellIdFromCategoryId(myCurrentFocusOfAttention)==-1)
 		{
-			c.ResetAnimationString();
-			c.GetVirtualMachine().StopScriptExecuting();
+			myCreature->ResetAnimationString();
+			myCreatureAsAgent->StopAllScripts();
 			return;
 		}
 
 		// try execute the script but if it's not there make sure you stop the current script anyway:
-		if (c.ExecuteScriptForClassifier(scriptClassifier, myCreature, INTEGERZERO, INTEGERZERO) != Agent::EXECUTE_SCRIPT_STARTED) 
+		if (myCreatureAsAgent->ExecuteScriptForClassifier(scriptClassifier, myCreatureAsAgent->GetAsAgentHandle(), INTEGERZERO, INTEGERZERO) != EXECUTE_SCRIPT_STARTED) 
 		{
 			// the regular scripts should be executed if there are no creature-creature ones available:
 			scriptClassifier.SetEvent(scriptAction + 16);
-			if (c.ExecuteScriptForClassifier(scriptClassifier, myCreature, INTEGERZERO, INTEGERZERO) != Agent::EXECUTE_SCRIPT_STARTED) {
-				c.ResetAnimationString();
-				c.GetVirtualMachine().StopScriptExecuting();
+			if (myCreatureAsAgent->ExecuteScriptForClassifier(scriptClassifier, myCreatureAsAgent->GetAsAgentHandle(), INTEGERZERO, INTEGERZERO) != EXECUTE_SCRIPT_STARTED) {
+				myCreature->ResetAnimationString();
+				myCreatureAsAgent->StopAllScripts();
 				return;
 			}
 		}
@@ -297,6 +308,8 @@ bool MotorFaculty::Write(CreaturesArchive &archive) const {
 		archive << myInvoluntaryActions[i].latency;
 		archive.WriteFloatRefTarget( myInvoluntaryActions[i].locus );
 	}
+
+	archive << myActiveFlag;
 	return true;
 }
 
@@ -328,6 +341,11 @@ bool MotorFaculty::Read(CreaturesArchive &archive)
 			archive >> myInvoluntaryActions[i].latency;
 			archive.ReadFloatRefTarget( myInvoluntaryActions[i].locus );
 		}
+
+		if (version >= 37)
+		{
+			archive >> myActiveFlag;
+		}
 	}
 	else
 	{
@@ -336,3 +354,4 @@ bool MotorFaculty::Read(CreaturesArchive &archive)
 	}
 	return true;
 }
+

@@ -4,9 +4,11 @@
 
 #include "Vocab.h"
 #include "../Maths.h"	// for Rnd()
-#include "../Agents/Agent.h"
 #include "CreatureConstants.h"
 
+#include <vector>
+std::vector<std::string> Vocab::ourWordSections;
+int Vocab::ourNumWordChunks = 0;
 
 const float PRONUNTHRES1 = 0.31f;    // thresholds: how well wd must be learned b4
 const float PRONUNTHRES2 = 0.8f;    // using a more sophisticated pronunciation
@@ -19,6 +21,15 @@ Vocab::Vocab() {
 }
 
 
+bool Vocab::SetupCatalogueVector()
+{
+	ourNumWordChunks = theCatalogue.GetArrayCountForTag("vocab_convert_chunks");
+	for (int i=0; i<ourNumWordChunks; i++)
+	{
+		ourWordSections.push_back(theCatalogue.Get("vocab_convert_chunks",i));
+	}	
+	return true;
+}
 
 // fill both in & out slots with this text
 void Vocab::InitBabyWord(const std::string& text)
@@ -64,8 +75,8 @@ void Vocab::DoReallyTerribleInfantSpeak()
     std::string srcString;
 	std::string dstString;
 	std::string endString;
-    static std::string vowels("aeiouAEIOU");
-    static std::string consonants("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ");
+    static std::string vowels(theCatalogue.Get("vocab_vowels"));
+    static std::string consonants(theCatalogue.Get("vocab_consonants"));
 	std::string tempString;
 
 
@@ -94,45 +105,23 @@ void Vocab::DoReallyTerribleInfantSpeak()
 
 // Convert a word to a moderately mispronounced form
 // (phonic mistakes - "this"->"dis")
-// Array of src,dst letter groups for mispronunciation:
-const int NumISCvt = 18;    // # entries below
-char ISCvt[][2][4] = {
-    {"ph","f"},
-    {"ss","s"},
-	{"sh","th"},
-    {"s","th"},
-    {"th","d"},
-    {"j","d"},
-    {"r","w"},
-    {"ion","un"},
-    {"in","im"},
-    {"nn","n"},
-    {"rr","r"},
-    {"ea","ee"},
-    {"ai","ay"},
-    {"v","w"},
-	{"ck","k"},
-	{"ng","nk"},
-	{"oa","ow"},
-	{"or","aw"},
-};
 
-
-void Vocab::DoReasonablyGoodInfantSpeak() {
-    // Rule is: look for any letter groups that can be converted to
+void Vocab::DoReasonablyGoodInfantSpeak() {	
+	// Rule is: look for any letter groups that can be converted to
     // mispronounced/babyish forms, eg. "th"->"d"
     outWord = platonicWord;								// start perfectly
-    for (int i=0; i<NumISCvt; i++) {				// for each letter group:
-		std::string syllableToFind(ISCvt[i][0]);
-		std::string syllableToReplaceWith(ISCvt[i][1]);
+	// If you look at "vocab constructs.catalogue", the following should become clear.
+	for (int i=0; i<ourNumWordChunks; i=i+2) {				// for each letter group:
+		std::string syllableToFind(ourWordSections[i]);
+		std::string syllableToReplaceWith(ourWordSections[i+1]);
         int syllableId = outWord.find(syllableToFind);	// find it if poss
 
-        if (syllableId>=0) {						// if exists:
+        if (syllableId>=0) {							// if exists:
 			outWord.erase(syllableId, syllableToFind.length());
 			outWord.insert(syllableId, syllableToReplaceWith);
-            return;                                 // no further changes
+            return;										// no further changes
         }
-    }												// repeat for all groups
+    }													// repeat for all groups
 }
 
 
@@ -145,8 +134,6 @@ void Vocab::DoReasonablyGoodInfantSpeak() {
 // not, weaken it.
 // 18/4/94: HearWord() is also called when a creature speaks, so that creatures
 // can learn language from each other
-
-
 void Vocab::HearWord(std::string wordHeard) {
     float prevStrength = learnedStrength;
 
@@ -183,3 +170,4 @@ void Vocab::HearWord(std::string wordHeard) {
         learnedStrength = CONFIRM;	// initial strength
     }
 }
+

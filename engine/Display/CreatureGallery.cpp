@@ -37,25 +37,18 @@
 #endif
 
 #include "CreatureGallery.h"
-#include "ClonedGallery.h"
-#include "CompressedGallery.h"
-#include "NormalGallery.h"
+#include	"Gallery.h"
 #include "SharedGallery.h"
 #include <string>
-#include "../App.h"
 #include "../General.h"
 #include "ErrorMessageHandler.h"
-#ifdef _WIN32
-#include "../resource.h"
-#endif
-#include "../Creature/Skeleton.h"
 #include "../../common/Catalogue.h"
+#include "CompressedBitmap.h"
 #include "DisplayEngine.h"
 #ifdef _WIN32
-#include	"io.h"
-#else
-#include "../unix/FileFuncs.h"
+#include "io.h"
 #endif
+#include "../../common/FileFuncs.h"
 
 
 //std::string theCreatureGalleryFile("CreatureGallery");
@@ -67,7 +60,9 @@ const uint32 ONE_MEG = 1048576;
 // Constructors
 ////////////////////////////////////////////////////////////////////////////
 
-CreatureGallery::CreatureGallery(int32 sizeOfSpriteSet,std::string name)
+CreatureGallery::CreatureGallery(std::string const& creatureGalleryFolderPath,
+								 int32 sizeOfSpriteSet,
+								 std::string const &filename)
 :mySizeOfASetOfNornSprites(sizeOfSpriteSet),
 myMaxCreatures(1),
 myCurrentPartNumber(0),
@@ -76,6 +71,9 @@ myGallery(NULL),
 myPart(0),
 myNumberOfBytesWritten(0)
 {
+	SharedGallery::theSharedGallery().SetCreatureGalleryFolder(creatureGalleryFolderPath);
+	std::string fullpath = SharedGallery::theSharedGallery().GetCreatureGalleriesFolder() + filename;
+
 	// just check for nonsense values
 	if(mySizeOfASetOfNornSprites == 0)
 		mySizeOfASetOfNornSprites = 6;
@@ -85,10 +83,8 @@ myNumberOfBytesWritten(0)
 	myTemplateSize = mySizeOfASetOfNornSprites *1048576; // all creature files should fit in
 	myCreatureGallerySize =myMaxCreatures * myTemplateSize; //room for 4 creatures 
 	
-	char path[_MAX_PATH];
-	theApp.GetDirectory(CREATURE_DATABASE_DIR, path);
-	strcat(path,name.c_str());
-	myName = std::string(path) + ".creaturegallery";
+	myName = std::string(fullpath) + ".creaturegallery";
+
 	// delete the old and possibly corrupt Creature Gallery
 	DeleteFile(myName.c_str());
 
@@ -149,6 +145,9 @@ void CreatureGallery::BuildDatabase()
 
 CreatureGallery::~CreatureGallery()
 {	
+	for( int i = 0; i < NUMPARTS; ++i )
+		myIndividualBodyPartGalleries[i].Trash();
+
 	myMemoryMappedFile.Close();
 	SharedGallery::theSharedGallery().RemoveCreatureGallery(myGallery);
 	BOOL res = DeleteFile(myName.c_str());
@@ -168,7 +167,7 @@ void CreatureGallery::CreateTemplateFile()
 
 	uint32 bytesWritten = 0;
 
-	uint8_t* data = NULL;//myFileData;
+	uint8* data = NULL;//myFileData;
 	uint32* lastOffset = NULL;//data;
 
 
@@ -210,13 +209,11 @@ void CreatureGallery::CreateTemplateFile()
 // ----------------------------------------------------------------------
 Gallery* CreatureGallery::AddCompressedCreature(std::string moniker,
 									  uint32 uniqueID,
-									  int32 PVariantGenus[NUMPARTS],
-									  int32 PVariant[NUMPARTS],
 									  uint32 validParts,
-									  uint8_t Sex,
-									  uint8_t Age,
+									  uint8 Sex,
+									  uint8 Age,
 									  int32 BodySprites[NUMPARTS],
-									  CompressedGallery creatureParts[NUMPARTS],
+									  Gallery creatureParts[NUMPARTS],
 									  int32 numSpritesInFile)
 {
 
@@ -244,20 +241,20 @@ Gallery* CreatureGallery::AddCompressedCreature(std::string moniker,
 
 			*myNumImagesHolder = myCurrentPartNumber;
 
-			FilePath galleryName(moniker + ".C16", IMAGES_DIR);
 
-#ifdef _WIN32
-			myGallery = new CompressedGallery(galleryName,
-											myMemoryMappedFile.GetFileMapping(),
-											0,
-											8,
-											myNumberOfBytesWritten);
-#else
-// TODO: non-win32 version...
-#endif
+			myGallery = new Gallery(moniker,
+									myMemoryMappedFile.GetFileMapping(),
+									0,
+									8,
+									myNumberOfBytesWritten);
+
 			ASSERT(myGallery);
 
 			myCreatureBuildingStage = STAGE_COMPLETE;
+
+			for( int i = 0; i < NUMPARTS; ++i )
+				myIndividualBodyPartGalleries[i].Trash();
+
 			return myGallery;
 
 		}
@@ -267,7 +264,7 @@ return NULL;
 }
 
 bool CreatureGallery::Part1CreatureBuilder( int32 BodySprites[NUMPARTS],
-									  CompressedGallery creatureParts[NUMPARTS],
+									  Gallery creatureParts[NUMPARTS],
 									  int32 numSpritesInFile,
 									  uint32 uniqueID,
 									  uint32 ValidParts)
@@ -337,7 +334,7 @@ bool CreatureGallery::Part1CreatureBuilder( int32 BodySprites[NUMPARTS],
 // remember not to count those bytes twice 
 void CreatureGallery::Part2CreatureBuilder(uint32 ValidParts,
 										   int32 BodySprites[NUMPARTS],
-									  CompressedGallery creatureParts[NUMPARTS])
+											Gallery creatureParts[NUMPARTS])
 {
 	
 
@@ -371,14 +368,14 @@ void CreatureGallery::Part2CreatureBuilder(uint32 ValidParts,
 		else
 		{
 			myPart = 0;
-				myCreatureBuildingStage = STAGE_THREE;
+			myCreatureBuildingStage = STAGE_THREE;
 		}
 	
 }
 
 // workout what the data offsets are for each bitmap after writing the
 // pixel data to the file
-void CreatureGallery::Part3CreatureBuilder( CompressedGallery creatureParts[NUMPARTS],
+void CreatureGallery::Part3CreatureBuilder( Gallery creatureParts[NUMPARTS],
 										    uint32 ValidParts)
 {
 	// For each gallery...
@@ -405,13 +402,13 @@ void CreatureGallery::Part3CreatureBuilder( CompressedGallery creatureParts[NUMP
 			}
 
 				// Destroy source gallery
-	myCreatureBuildingStage = STAGE_FOUR;
+		myCreatureBuildingStage = STAGE_FOUR;
 	}//end for	
 }
 	
 // we now have the up to date header information for
 // each bitmap - the offset values are now correct so rewrite them
-void CreatureGallery::Part4CreatureBuilder( CompressedGallery creatureParts[NUMPARTS],
+void CreatureGallery::Part4CreatureBuilder( Gallery creatureParts[NUMPARTS],
 										    uint32 ValidParts)
 {
 	if(myPart == 0)
@@ -472,7 +469,7 @@ uint32 CreatureGallery::FindSlot(uint32 key)
 	uint32 sanityCheck = lastOffset;
 
 	// read the moniker
-	while(myMemoryMappedFile.ReadUINT32() != key)//GetUINT32At(data) != key)
+	while(myMemoryMappedFile.ReadUINT32() != key)
 	{
 		// read the offset
 		lastOffset = myMemoryMappedFile.ReadUINT32();
@@ -530,7 +527,7 @@ void CreatureGallery::RemoveAll()
 {
 	// Find the first free slot in our composite file
 	uint32 lastOffset = 0;
-	uint8_t* data  = NULL;
+	uint8* data  = NULL;
 	// if this is zero something is wrong or we have reached the
 	// end of the file.
 	while(lastOffset < myCreatureGallerySize)
@@ -544,5 +541,68 @@ void CreatureGallery::RemoveAll()
 		}
 }
 
+bool CreatureGallery::BuildGalleries(std::string& galleryName,
+									int32& numSpritesInFile,
+									 uint32& currentPart,
+									 const uint16* tintTable)
+{
+		
+		try
+		{
+			if(galleryName != myIndividualBodyPartGalleries[currentPart].GetName())
+			{
+				myIndividualBodyPartGalleries[currentPart].LoadFromC16(galleryName);
+				myIndividualBodyPartGalleries[currentPart].Recolour(tintTable);
+			
+			}
+			numSpritesInFile+= myIndividualBodyPartGalleries[currentPart].GetCount();
+		
+		}
+		catch(Gallery::GalleryException&)
+		{
+			return false;
+		}
+			
 
+			// next body part is....
+	currentPart++;
+	return true;
+}
+
+bool CreatureGallery::CreateGallery(std::string moniker,
+									  uint32 uniqueID,
+									  uint32 ValidParts,
+									  uint8 Sex,
+									  uint8 Age,
+									  int32 BodySprites[NUMPARTS],
+									  CreatureGallery* bodyPartGallery,
+									  int32 numSpritesInFile,
+									   bool onePassOnly /*= false*/)
+{
+	bool ok = false;
+
+	if(SharedGallery::theSharedGallery().CreateGallery(moniker,
+										  uniqueID,
+										   ValidParts,
+										   Sex,
+										   Age,
+										   BodySprites,
+										   bodyPartGallery,
+										   myIndividualBodyPartGalleries,
+										   numSpritesInFile,
+										   onePassOnly))
+										   ok = true;
+										   
+										    // do this in one fell swoop
+										 //  ok = true;
+		if (ok)
+		{
+			for( int i = 0; i < NUMPARTS; ++i )
+				myIndividualBodyPartGalleries[i].Trash();
+
+			return true;
+		}
+
+		return false;
+}
 

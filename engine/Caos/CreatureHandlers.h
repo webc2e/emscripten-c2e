@@ -26,6 +26,27 @@ class CreatureHandlers
 {
 
 public:
+	static void Command_STEP( CAOSMachine& vm );
+	static void Command_SOUL( CAOSMachine& vm );
+	static int IntegerRV_SOUL( CAOSMachine& vm );
+
+	static void Command_DSEE( CAOSMachine& vm );
+	static void Command_MOTR( CAOSMachine& vm );
+	static int IntegerRV_MOTR( CAOSMachine& vm );
+	
+	static void Command_MIND( CAOSMachine& vm );
+	static int IntegerRV_MIND( CAOSMachine& vm );
+	static AgentHandle AgentRV_SEEN( CAOSMachine& vm );
+
+	static void Command_DOIN( CAOSMachine& vm );
+	static void Command_ADIN( CAOSMachine& vm );
+
+	static void Command_CALG( CAOSMachine& vm );
+	static int IntegerRV_CALG( CAOSMachine& vm );
+
+	
+	static void Command_PLMD( CAOSMachine& vm );
+	static void Command_PLMU( CAOSMachine& vm );
 	// Commands
 	static void Command_DONE( CAOSMachine& vm );
 	static void Command_WALK( CAOSMachine& vm );
@@ -77,9 +98,6 @@ public:
 	static void Command_SPNL( CAOSMachine& vm );
 	static void Command_NOHH( CAOSMachine& vm);
 
-
-	enum {SHOU, SIGN, TACT, WRIT};
-
 	static void Command_CHEM( CAOSMachine& vm );
 	static void Command_DRIV( CAOSMachine& vm );
 
@@ -106,6 +124,8 @@ public:
 	static void Command_FORF( CAOSMachine& vm );
 	static void Command_LIKE( CAOSMachine& vm );
 
+	static void Command_CATO( CAOSMachine& vm );
+
 	// Integer r-values
 	static int IntegerRV_DEAD( CAOSMachine& vm );
 	static int IntegerRV_DIRN( CAOSMachine& vm );
@@ -118,7 +138,8 @@ public:
 	static int IntegerRV_CATI( CAOSMachine& vm );
 	static int IntegerRV_TAGE( CAOSMachine& vm );
 	static int IntegerRV_ORGI( CAOSMachine& vm );
-
+	static int IntegerRV_CATA( CAOSMachine& vm );
+	
 	// Float r-values
 	static float FloatRV_CHEM( CAOSMachine& vm );
 	static float FloatRV_DRIV( CAOSMachine& vm );
@@ -142,10 +163,6 @@ public:
 	static AgentHandle AgentRV_MTOC( CAOSMachine& vm );
 	static AgentHandle AgentRV_MTOA( CAOSMachine& vm );
 	static AgentHandle AgentRV_HHLD( CAOSMachine& vm );
-
-
-protected:
-	static void NavigateDirection(Creature& c, int mapDirection, int caIndex);
 };
 
 

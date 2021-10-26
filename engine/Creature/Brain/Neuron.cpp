@@ -34,3 +34,4 @@ void Neuron::ClearStates()
 		states[i] = 0.0f;
 	}
 }
+

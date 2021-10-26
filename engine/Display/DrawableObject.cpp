@@ -11,40 +11,9 @@ DrawableObject::DrawableObject()
 		myPlane(0),
 		myAmIASpriteFlag(false),
 		myAmIALineFlag(false),
-		myAmIACameraFlag(false)
+		myAmIACameraFlag(false),
+		myAmRemoteCameraFlag(false)
 {
 	;
 }
 
-
-// new serialization stuff
-bool DrawableObject::Write( CreaturesArchive &ar ) const
-{
-	ar << myScreenPosition;
-	ar << myCurrentBound;
-	ar << myAmIACameraFlag;
-	ar << myAmIALineFlag;
-	ar << myAmIASpriteFlag;
-	return true;
-}
-
-bool DrawableObject::Read( CreaturesArchive &ar )
-{
-	int32 version = ar.GetFileVersion();
-
-	if(version >= 3)
-	{
-
-		ar >> myScreenPosition;
-		ar >> myCurrentBound;
-		ar >> myAmIACameraFlag;
-		ar >> myAmIALineFlag;
-		ar >> myAmIASpriteFlag;
-	}
-	else
-	{
-		_ASSERT(false);
-		return false;
-	}
-	return true;
-}

@@ -33,11 +33,6 @@
 #include <map>
 #include <list>
 
-
-// GLOBAL
-extern CAOSDescription theCAOSDescription;
-
-
 class OpSpec;
 class MacroScript;
 
@@ -182,3 +177,4 @@ private:
 
 
 #endif // ORDERISER_H
+

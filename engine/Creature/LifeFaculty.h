@@ -85,3 +85,4 @@ protected:
 	int myNumberOfForceAgeingRequestsPending;
 };
 #endif//LifeFaculty_H
+
