@@ -61,7 +61,11 @@ static bool ourSingleTick = false;
 static SockServer *ourSockServer = NULL;
 #endif
 
+SDL_Event event;
+
 extern "C" int main(int argc, char *argv[]) {
+  EM_ASM({ Module.logReadFiles = 'true'; });
+
   try {
     ourRunning = true;
 
@@ -97,13 +101,13 @@ extern "C" int main(int argc, char *argv[]) {
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
     // Icon for Window managers that cope with it
-    std::string iconFilename;
-    theApp.UserSettings().Get("Icon", iconFilename);
-    SDL_Surface *icon = SDL_LoadBMP(iconFilename.c_str());
-    if (icon) {
-      SDL_WM_SetIcon(icon, NULL);
-      SDL_FreeSurface(icon);
-    }
+    // std::string iconFilename;
+    // theApp.UserSettings().Get("Icon", iconFilename);
+    // SDL_Surface *icon = SDL_LoadBMP(iconFilename.c_str());
+    // if (icon) {
+    //   SDL_WM_SetIcon(icon, NULL);
+    //   SDL_FreeSurface(icon);
+    // }
 
     // #ifndef _WIN32
     // 	// Set up the clipboard
@@ -123,8 +127,6 @@ extern "C" int main(int argc, char *argv[]) {
 #ifdef _WIN32
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
-
-    SDL_Event event;
     ourQuit = false;
 
     {
@@ -148,34 +150,15 @@ extern "C" int main(int argc, char *argv[]) {
 #endif
 
       int tick = (int)SDL_GetTicks();
-      while (!ourQuit) {
-        int tickDelta =
-            App::GetWorldTickInterval() - ((int)SDL_GetTicks() - tick);
-        if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
-          SDL_Delay(tickDelta);
-        tick = (int)SDL_GetTicks();
+      //       while (!ourQuit) {
 
-        while (SDL_PollEvent(&event) == 1) {
-          HandleEvent(event);
-        }
+      // #ifndef _WIN32
+      //         sockServer.ProcessRequests();
+      // #endif
+      //       }
 
-        if (theApp.myToggleFullScreenNextTick) {
-          theApp.ToggleFullScreenMode();
-          theApp.myToggleFullScreenNextTick = false;
-        }
-
-        if (ourCurrentlyTicking || ourSingleTick) {
-          ourSingleTick = false;
-          // Tell the app to update;
-          theApp.UpdateApp();
-          // App has finished with this set of events now.
-          theApp.GetInputManager().SysFlushEventBuffer();
-        }
-
-#ifndef _WIN32
-        sockServer.ProcessRequests();
-#endif
-      }
+      emscripten_set_main_loop(mainloop, 0, 1);
+      // }
     }
 
     DoShutdown();
@@ -193,6 +176,35 @@ extern "C" int main(int argc, char *argv[]) {
 
   SDL_Quit();
   return TRUE;
+}
+
+void mainloop() {
+  int tick = (int)SDL_GetTicks();
+  if (ourQuit) {
+    emscripten_cancel_main_loop();
+  }
+
+  int tickDelta = App::GetWorldTickInterval() - ((int)SDL_GetTicks() - tick);
+  if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
+    SDL_Delay(tickDelta);
+  tick = (int)SDL_GetTicks();
+
+  while (SDL_PollEvent(&event) == 1) {
+    HandleEvent(event);
+  }
+
+  if (theApp.myToggleFullScreenNextTick) {
+    theApp.ToggleFullScreenMode();
+    theApp.myToggleFullScreenNextTick = false;
+  }
+
+  if (ourCurrentlyTicking || ourSingleTick) {
+    ourSingleTick = false;
+    // Tell the app to update;
+    theApp.UpdateApp();
+    // App has finished with this set of events now.
+    theApp.GetInputManager().SysFlushEventBuffer();
+  }
 }
 
 int SDLKeyToWinKey(SDLKey sym) {

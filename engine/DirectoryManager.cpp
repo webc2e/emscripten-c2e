@@ -11,11 +11,21 @@
 #include "Display/ErrorMessageHandler.h"
 #include "World.h"
 
+#include "emscripten.h"
+
 DirectoryManager DirectoryManager::ourDirectoryManager;
 // ****************************************************************************
 bool DirectoryManager::ReadFromConfigurationFiles() {
   myMainAuxiliary = 0;
   theApp.MachineSettings().Get("Main Auxiliary", myMainAuxiliary);
+
+  EM_ASM({ console.log('I received: ' + $0); }, 100);
+  EM_ASM(
+      {
+        FS.mkdir("/mydocs");
+        console.log($0);
+      },
+      theApp.MyDocuments);
 
   // SPARKY
   // Added for Windows XP!

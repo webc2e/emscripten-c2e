@@ -4,7 +4,7 @@
 #define SDL_MAIN_H
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #include "../../../common/C2eTypes.h"
@@ -13,6 +13,8 @@
 #ifdef _WIN32
 extern HWND theMainWindow;
 #endif
+
+void mainloop();
 
 void ResetWindowTitle();
 
@@ -24,11 +26,10 @@ bool GetGameTicking();
 void SendTickMessage();
 
 extern AgentHandle waitingForAgent;
-inline bool CheckSingleStepAgent(AgentHandle agent)
-{
-	return agent == waitingForAgent && agent.IsValid();
+inline bool CheckSingleStepAgent(AgentHandle agent) {
+  return agent == waitingForAgent && agent.IsValid();
 }
-void SetSingleStepAgent( AgentHandle agent );
+void SetSingleStepAgent(AgentHandle agent);
 AgentHandle GetSingleStepAgent();
 void WaitForSingleStepCommand();
 
@@ -40,4 +41,3 @@ void GlobalReleaseCapture();
 void GlobalWarpMouse(int newX, int newY);
 
 #endif // OURWINDOW_H
-

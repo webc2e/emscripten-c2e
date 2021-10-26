@@ -7,7 +7,8 @@
             ],
             "defines": [],
             "macFrameworkPath": [],
-            "compilerPath": "/usr/local/bin/gcc-11"
+            "compilerPath": "/usr/local/bin/gcc-11",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

@@ -7,6 +7,7 @@ add_definitions(
   -DC2E_NO_INLINE_ASM
   -DC2E_SDL
 	-s USE_PTHREADS
+	-s USE_SDL=2
 )
 
 add_subdirectory(common)
@@ -46,7 +47,7 @@ add_executable(webc2e
 	engine/QuickFsp.cpp
 )
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_ZLIB -s USE_PTHREADS -s LLD_REPORT_UNDEFINED")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_ZLIB -s USE_PTHREADS -s USE_SDL=2 -s LLD_REPORT_UNDEFINED -s NO_DISABLE_EXCEPTION_CATCHING --preload-file '../../C2E/GAMES/Creatures\ 3@/'")
 
 target_link_libraries(webc2e
 	unix

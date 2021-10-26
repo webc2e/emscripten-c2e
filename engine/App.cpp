@@ -263,6 +263,7 @@ bool App::Init() {
   if (!theCAOSDescription.SaveSyntax(syntaxfile)) {
     ErrorMessageHandler::Show("app_error", 1, "App::Init", syntaxfile.c_str());
   }
+
   CAOSMachine::InitialiseHandlerTables();
 
   std::string langid = GetLangCatalogue();

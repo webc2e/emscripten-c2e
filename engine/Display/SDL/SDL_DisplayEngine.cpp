@@ -52,7 +52,6 @@ void NasmDrawCompressedSprite();
 #include "SDLStretch/SDLStretch.h"
 #include <string>
 
-
 #include <algorithm>
 
 DisplayEngine DisplayEngine::myRenderer;
@@ -114,13 +113,14 @@ void DisplayEngine::ClearBuffers(void) {
 // Method:      Start
 // Arguments:   window - handle of a window to associate the engine with
 //				fullScreen - true if this engine should run full
-//screen 								false if it should run in a window.
+// screen 								false if it should run in
+// a window.
 //
 // Returns:     true if the engine has started up OK false otherwise
 //
 // Description: Creates the direct draw object and surfaces either for
-//				fullscreen mode or for windowed mode - the set up
-//is 				slightly different
+//				fullscreen mode or for windowed mode - the set
+// up is 				slightly different
 //
 // ----------------------------------------------------------------------
 bool DisplayEngine::Start(uint32 storedDisplayType,
@@ -599,7 +599,8 @@ void DisplayEngine::Stop(void) {
 //				entityHandler - list of drawable objects
 //				monitor - not used yet
 //				completeRedraw - wether we are drawing the whole
-//scene 									or just dirty rects
+// scene 									or just
+// dirty rects
 //
 // Returns:     None
 //
@@ -753,7 +754,7 @@ void DisplayEngine::Burst() {}
 // Method:      DrawSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw
+// draw
 // Returns:     None
 //
 // Description: Draw the sprite to the back buffer
@@ -842,7 +843,7 @@ void DisplayEngine::DrawSprite(Position &position, Bitmap &bitmap) {
 // Method:      DrawMirroredSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw
+// draw
 // Returns:     None
 //
 // Description: Miror the sprite to the back buffer.
@@ -898,14 +899,17 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
-//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
-//				screen_step - place to put the amount of screen pixels
-//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
-//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
-//need 								to draw due to lipping 				right - whether we'll need to clip right 				wether -
-//whether we'll need to clip bottom
-// Returns:     None
+// draw 				data_step - place to put the amount of bitmap
+// data we need 							 to skip
+// when drawing 				data_ptr - workout where to
+// start drawing from in the bitmap
+// data 				screen_step
+//- place to put the amount of screen pixels
+// we need 							 to skip when
+// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
+// bitmapHeigth - workout exactly how much of the bitmap we need
+// to draw due to lipping right - whether we'll need to clip right
+// wether - whether we'll need to clip bottom Returns:     None
 //
 // Description: Get all the information we need for drawing
 //
@@ -993,13 +997,17 @@ bool DisplayEngine::GetCompressedDrawingParameters(
 // Method:      GetDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
-//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
-//				screen_step - place to put the amount of screen pixels
-//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
-//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
-//need 								to draw due to lipping
-// Returns:     true if the bitmap is on screen and can be drawn
+// draw 				data_step - place to put the amount of bitmap
+// data we need 							 to skip
+// when drawing 				data_ptr - workout where to
+// start drawing from in the bitmap
+// data 				screen_step
+//- place to put the amount of screen pixels
+// we need 							 to skip when
+// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
+// bitmapHeigth - workout exactly how much of the bitmap we need
+// to draw due to lipping Returns:     true if the bitmap is on screen and can
+// be drawn
 //              false otherwise
 //
 // Description: Get all the information we need for drawing
@@ -1096,14 +1104,17 @@ bool DisplayEngine::GetDrawingParameters(Position &position, Bitmap *bitmap,
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw 				data_step - place to put the amount of bitmap data we need 							 to skip when
-//drawing 				data_ptr - workout where to start drawing from in the bitmap 							data
-//				screen_step - place to put the amount of screen pixels
-//we need 							 to skip when drawing 				screen_ptr - workout where on screen to start
-//drawing 				bitmapWidth - 				bitmapHeigth - workout exactly how much of the bitmap we
-//need 								to draw due to lipping 				right - whether we'll need to clip right 				wether -
-//whether we'll need to clip bottom
-// Returns:     None
+// draw 				data_step - place to put the amount of bitmap
+// data we need 							 to skip
+// when drawing 				data_ptr - workout where to
+// start drawing from in the bitmap
+// data 				screen_step
+//- place to put the amount of screen pixels
+// we need 							 to skip when
+// drawing screen_ptr - workout where on screen to start drawing bitmapWidth -
+// bitmapHeigth - workout exactly how much of the bitmap we need
+// to draw due to lipping right - whether we'll need to clip right
+// wether - whether we'll need to clip bottom Returns:     None
 //
 // Description: Get all the information we need for drawing
 //
@@ -1245,8 +1256,10 @@ void DisplayEngine::DrawSpriteToBitmap(Bitmap *destination, Position position,
 // ----------------------------------------------------------------------
 // Method:      DrawLine
 // Arguments:   bitmap - bitmap to write to
-//				x and y coordinates of start point and end point of
-//the 				line 				r,g,b colour values for the line
+//				x and y coordinates of start point and end point
+// of
+// the 				line 				r,g,b colour values for
+// the line
 //
 // Returns:     none
 //
@@ -1801,12 +1814,13 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 // 	mov ebx,dword ptr [bitmapHeight]
 
 // topOfLineLoop:
-// 	lodsw									;Get tag and increment
-// ptr lodsb 	and eax,0ffffh			;0ffh 	test eax,eax 	je
-// lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax 	shr ecx,1 	rep movsw ;dword
-// ptr [edi],dword ptr [esi] 	jmp topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp
-// topOfLineLoop lineLoopEpilogue: 	lea edi,[edi+edx*2] 	;sub ebx,1 	dec ebx 	;test
-// ebx,ebx 	jne topOfLineLoop 	;popa
+// 	lodsw									;Get tag
+// and increment ptr lodsb 	and eax,0ffffh			;0ffh 	test
+// eax,eax je lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax
+// shr ecx,1 	rep movsw ;dword ptr [edi],dword ptr [esi] 	jmp
+// topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp topOfLineLoop
+// lineLoopEpilogue: 	lea edi,[edi+edx*2] 	;sub ebx,1 	dec ebx
+// ;test ebx,ebx 	jne topOfLineLoop 	;popa
 // }
 #endif // C2E_NASM_RENDERING
     return;
@@ -2047,7 +2061,7 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 // Method:      DrawMirroredCompressedSprite
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-//draw
+// draw
 // Returns:     None
 //
 // Description: Mirror the sprite to the back buffer taking account of
@@ -2563,8 +2577,9 @@ bool DisplayEngine::CreateProgressBar(Bitmap *bitmap) {
   myProgressBitmap = bitmap;
 
   //	myProgressSurface = SDL_CreateRGBSurface( SDL_SWSURFACE,
-  //			myProgressBitmap->GetWidth(), myProgressBitmap->GetHeight(),
-  //16, 			0xF800, 			0x07E0, 			0x001F,0 );
+  //			myProgressBitmap->GetWidth(),
+  // myProgressBitmap->GetHeight(), 16, 			0xF800,
+  // 0x07E0, 			0x001F,0 );
 
   myProgressSurface = CreateSurface(myProgressBitmap->GetWidth(),
                                     myProgressBitmap->GetHeight());

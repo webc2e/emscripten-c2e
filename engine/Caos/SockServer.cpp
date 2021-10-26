@@ -39,11 +39,11 @@
 SockServer::SockServer(int port, bool secure) {
   myPort = port;
   mySecure = secure;
-  if (myPort >= 0) {
-    myThread = SDL_CreateThread(&SockServer::Main, this);
-    if (myThread == NULL)
-      throw BasicException("Failed to make SockServer thread");
-  }
+  // if (myPort >= 0) {
+  //   myThread = SDL_CreateThread(&SockServer::Main, this);
+  //   if (myThread == NULL)
+  //     throw BasicException("Failed to make SockServer thread");
+  // }
 }
 
 SockServer::~SockServer() {

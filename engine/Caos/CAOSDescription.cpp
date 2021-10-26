@@ -260,7 +260,7 @@ bool CAOSDescription::SaveSyntax(const std::string &filename) const {
       arch << myScriptNames;
 
       int tables = myTables.size();
-      ASSERT(tables > 0);
+      // ASSERT(tables > 0);
       arch << tables;
       for (int table = 0; table < tables; ++table) {
         int entries = myTables[table].size();
@@ -734,12 +734,15 @@ void CAOSDescription::LoadDefaultTables() {
   // add new commands to the tables
   std::vector<TableRegisterFunction> &tableRegisterFunctions =
       GetTableRegisterFunctions();
+
+  // assert(tableRegisterFunctions.size() > 0);
+
   for (int i = 0; i < tableRegisterFunctions.size(); ++i) {
     tableRegisterFunctions[i](*this);
   }
 
 #ifdef _DEBUG
-  SanityCheck();
+  // SanityCheck();
 #endif // _DEBUG
 }
 

@@ -11,6 +11,9 @@
 *.gch
 *.pch
 
+build
+
+CMakeFiles
 # Compiled Dynamic libraries
 *.so
 *.dylib
