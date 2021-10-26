@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libbiochemistry.a CMakeFiles/biochemistry.dir/Biochemistry.cpp.o CMakeFiles/biochemistry.dir/BiochemistryConstants.cpp.o CMakeFiles/biochemistry.dir/Chemical.cpp.o CMakeFiles/biochemistry.dir/Emitter.cpp.o CMakeFiles/biochemistry.dir/NeuroEmitter.cpp.o CMakeFiles/biochemistry.dir/Organ.cpp.o CMakeFiles/biochemistry.dir/Receptor.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libbiochemistry.a

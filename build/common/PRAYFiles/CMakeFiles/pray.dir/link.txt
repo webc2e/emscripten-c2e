@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libpray.a CMakeFiles/pray.dir/PrayBuilder.cpp.o CMakeFiles/pray.dir/PrayChunk.cpp.o CMakeFiles/pray.dir/PrayHandlers.cpp.o CMakeFiles/pray.dir/PrayManager.cpp.o CMakeFiles/pray.dir/StringIntGroup.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libpray.a

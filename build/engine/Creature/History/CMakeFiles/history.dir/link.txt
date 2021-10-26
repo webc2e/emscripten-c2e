@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libhistory.a CMakeFiles/history.dir/CreatureHistory.cpp.o CMakeFiles/history.dir/HistoryStore.cpp.o CMakeFiles/history.dir/LifeEvent.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libhistory.a

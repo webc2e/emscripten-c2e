@@ -1,2 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libcamera.a CMakeFiles/camera.dir/MapImage.cpp.o CMakeFiles/camera.dir/Camera.cpp.o CMakeFiles/camera.dir/RemoteCamera.cpp.o CMakeFiles/camera.dir/MainCamera.cpp.o CMakeFiles/camera.dir/CameraSprite.cpp.o
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libcamera.a
