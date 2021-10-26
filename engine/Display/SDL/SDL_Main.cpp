@@ -185,8 +185,8 @@ void mainloop() {
   }
 
   int tickDelta = App::GetWorldTickInterval() - ((int)SDL_GetTicks() - tick);
-  if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
-    SDL_Delay(tickDelta);
+  // if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
+  // SDL_Delay(tickDelta);
   tick = (int)SDL_GetTicks();
 
   while (SDL_PollEvent(&event) == 1) {
