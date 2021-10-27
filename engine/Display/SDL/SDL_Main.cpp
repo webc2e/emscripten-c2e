@@ -25,6 +25,7 @@
 #else
 #include "../../../common/UnixSignals.h"
 #include "../../Caos/SockServer.h"
+
 // #include "scrap.h"
 #endif
 
@@ -120,6 +121,7 @@ extern "C" int main(int argc, char *argv[]) {
     ResetWindowTitle();
 
     if (!DoStartup()) {
+      std::cout << "startup failed" << std::endl;
       SDL_Quit();
       return 0;
     }
@@ -161,7 +163,7 @@ extern "C" int main(int argc, char *argv[]) {
       // }
     }
 
-    DoShutdown();
+    // DoShutdown();
   }
   // We catch all exceptions for robustness.
   catch (std::exception &e) {
@@ -174,7 +176,7 @@ extern "C" int main(int argc, char *argv[]) {
         std::string("main"));
   }
 
-  SDL_Quit();
+  // SDL_Quit();
   return TRUE;
 }
 

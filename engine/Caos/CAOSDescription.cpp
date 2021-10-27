@@ -719,6 +719,7 @@ std::string CAOSDescription::GetTypeAsText(char param) {
 
 // static
 int CAOSDescription::AddTableRegisterFunction(TableRegisterFunction function) {
+  std::cout << "Adding table register function" << std::endl;
   GetTableRegisterFunctions().push_back(function);
   return 0;
 }
@@ -735,14 +736,14 @@ void CAOSDescription::LoadDefaultTables() {
   std::vector<TableRegisterFunction> &tableRegisterFunctions =
       GetTableRegisterFunctions();
 
-  // assert(tableRegisterFunctions.size() > 0);
+  assert(tableRegisterFunctions.size() > 0);
 
   for (int i = 0; i < tableRegisterFunctions.size(); ++i) {
     tableRegisterFunctions[i](*this);
   }
 
 #ifdef _DEBUG
-  // SanityCheck();
+  SanityCheck();
 #endif // _DEBUG
 }
 

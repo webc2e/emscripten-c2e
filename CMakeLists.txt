@@ -15,7 +15,14 @@ add_subdirectory(engine)
 
 set(CMAKE_EXECUTABLE_SUFFIX ".html")
 
-add_executable(webc2e 
+set(
+	SOURCES
+	${SOURCES}
+	engine/Caos/CAOSTables.cpp
+)
+set(
+	SOURCES
+	${SOURCES}
   engine/Display/SDL/SDL_Main.cpp
   engine/AgentManager.cpp
 	engine/App.cpp
@@ -47,7 +54,11 @@ add_executable(webc2e
 	engine/QuickFsp.cpp
 )
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_ZLIB -s USE_PTHREADS -s USE_SDL=2 -s LLD_REPORT_UNDEFINED -s NO_DISABLE_EXCEPTION_CATCHING --preload-file '../../C2E/GAMES/Creatures\ 3@/'")
+add_executable(webc2e
+  ${SOURCES}
+)
+
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_ZLIB -s USE_PTHREADS -s USE_SDL=2 -s LLD_REPORT_UNDEFINED -s NO_DISABLE_EXCEPTION_CATCHING --preload-file '../../C2E/GAMES/Creatures\ 3@/' --preload-file '../../C2E/GAMES/Creatures\ 3@/'")
 
 target_link_libraries(webc2e
 	unix

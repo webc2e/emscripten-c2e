@@ -13,7 +13,6 @@
 #include "../../FilePath.h"
 #include "../../General.h" // for BuildFspNoCache
 
-
 CREATURES_IMPLEMENT_SERIAL(SoundManager)
 
 // static
@@ -109,7 +108,7 @@ void SoundManager::Update() {
     ++itnext;
 
     // in-use sounds don't get stale
-    if ((*it).second->refcount = 0) {
+    if ((*it).second->refcount == 0) {
       if ((*it).second->staleness++ > 100) {
         Mix_FreeChunk((*it).second->chunk);
         delete (*it).second;
@@ -347,6 +346,8 @@ void SoundManager::SetMNGFile(const std::string &mng) {
 
   FilePath filePath(mng, SOUNDS_DIR);
   std::string path = filePath.GetFullPath();
+
+  std::cout << path << std::endl;
 
   myMungedFP = fopen(path.c_str(), "rb");
   if (!myMungedFP) {

@@ -19,25 +19,25 @@ bool DirectoryManager::ReadFromConfigurationFiles() {
   myMainAuxiliary = 0;
   theApp.MachineSettings().Get("Main Auxiliary", myMainAuxiliary);
 
-  EM_ASM({ console.log('I received: ' + $0); }, 100);
-  EM_ASM(
-      {
-        FS.mkdir("/mydocs");
-        console.log($0);
-      },
-      theApp.MyDocuments);
+  // EM_ASM({ console.log('I received: ' + $0); }, 100);
+  // EM_ASM(
+  //     {
+  //       FS.mkdir("/mydocs");
+  //       console.log($0);
+  //     },
+  //     theApp.MyDocuments);
 
-  // SPARKY
-  // Added for Windows XP!
-  // Why? Because simple file sharing means that non-admin users can't create
-  // worlds Best I get the My Documents location!
-  // NOTE: need something to show the difference between DS and C3!
-  strcat((char *)&theApp.MyDocuments, "/Creatures/");
-  CreateDirectory((char *)&theApp.MyDocuments, 0);
-  strcat((char *)&theApp.MyDocuments,
-         (theApp.MachineSettings().Get("Game Name")).c_str());
-  strcat((char *)&theApp.MyDocuments, "/");
-  CreateDirectory((char *)&theApp.MyDocuments, 0);
+  // // SPARKY
+  // // Added for Windows XP!
+  // // Why? Because simple file sharing means that non-admin users can't create
+  // // worlds Best I get the My Documents location!
+  // // NOTE: need something to show the difference between DS and C3!
+  // strcat((char *)&theApp.MyDocuments, "/Creatures/");
+  // CreateDirectory((char *)&theApp.MyDocuments, 0);
+  // strcat((char *)&theApp.MyDocuments,
+  //        (theApp.MachineSettings().Get("Game Name")).c_str());
+  // strcat((char *)&theApp.MyDocuments, "/");
+  // CreateDirectory((char *)&theApp.MyDocuments, 0);
 
   // MessageBox(NULL,(theApp.MachineSettings().Get("Game
   // Name")).c_str(),"Hello",MB_OK);
@@ -121,8 +121,8 @@ bool DirectoryManager::ReadFromConfigurationFiles() {
         if (aux > 0)
           break;
 
-        buffer = (char *)&theApp.MyDocuments + defaultdir;
-        bufferCU = (char *)&theApp.MyDocuments + defaultdir;
+        buffer = defaultdir;
+        bufferCU = defaultdir;
         // AddTrailingPathSeparator(buffer);
         CreateDirectory(buffer.c_str(), NULL);
       } else {
@@ -186,7 +186,7 @@ bool DirectoryManager::ReadFromConfigurationFiles() {
       // For type 3 directories we need to create the directory
       // *and* create a different entry in the CU list
       if (special[dir] == 3) {
-        bufferCU = (char *)&theApp.MyDocuments + defaultdir + "/";
+        bufferCU = defaultdir + "/";
         CreateDirectory(bufferCU.c_str(), NULL);
       } else {
         bufferCU = buffer; // buffer;

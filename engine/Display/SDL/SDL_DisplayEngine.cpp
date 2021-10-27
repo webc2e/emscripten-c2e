@@ -113,8 +113,8 @@ void DisplayEngine::ClearBuffers(void) {
 // Method:      Start
 // Arguments:   window - handle of a window to associate the engine with
 //				fullScreen - true if this engine should run full
-// screen 								false if it should run in
-// a window.
+// screen 								false if it should run
+// in a window.
 //
 // Returns:     true if the engine has started up OK false otherwise
 //
@@ -599,8 +599,8 @@ void DisplayEngine::Stop(void) {
 //				entityHandler - list of drawable objects
 //				monitor - not used yet
 //				completeRedraw - wether we are drawing the whole
-// scene 									or just
-// dirty rects
+// scene 									or
+// just dirty rects
 //
 // Returns:     None
 //
@@ -715,10 +715,10 @@ void DisplayEngine::DrawToFrontBuffer() {
   // The pretty flashing rectangle in the corner
   // which shows you that SDL is working when
   // things look bad
-  //	SDL_Rect r;
-  //	r.x = r.y =0;
-  //	r.w = r.h = 10;
-  //	SDL_FillRect( myBackBuffer, &r, rand() );
+  SDL_Rect r;
+  r.x = r.y = 0;
+  r.w = r.h = 10;
+  SDL_FillRect(myBackBuffer, &r, rand());
 
   // BEGIN ROUND WORLD EASTER EGG
   if (myIsTheWorldRoundFlag || myDesiredWorldRoundness) {
@@ -899,8 +899,8 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of bitmap
-// data we need 							 to skip
+// draw 				data_step - place to put the amount of
+// bitmap data we need 							 to skip
 // when drawing 				data_ptr - workout where to
 // start drawing from in the bitmap
 // data 				screen_step
@@ -997,8 +997,8 @@ bool DisplayEngine::GetCompressedDrawingParameters(
 // Method:      GetDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of bitmap
-// data we need 							 to skip
+// draw 				data_step - place to put the amount of
+// bitmap data we need 							 to skip
 // when drawing 				data_ptr - workout where to
 // start drawing from in the bitmap
 // data 				screen_step
@@ -1104,8 +1104,8 @@ bool DisplayEngine::GetDrawingParameters(Position &position, Bitmap *bitmap,
 // Method:      GetCompressedDrawingParameters
 // Arguments:   position - x,y coordinates of where to draw the bitmap
 //				bitmap - bitmap (with transparent pixels) to
-// draw 				data_step - place to put the amount of bitmap
-// data we need 							 to skip
+// draw 				data_step - place to put the amount of
+// bitmap data we need 							 to skip
 // when drawing 				data_ptr - workout where to
 // start drawing from in the bitmap
 // data 				screen_step
@@ -1258,8 +1258,8 @@ void DisplayEngine::DrawSpriteToBitmap(Bitmap *destination, Position position,
 // Arguments:   bitmap - bitmap to write to
 //				x and y coordinates of start point and end point
 // of
-// the 				line 				r,g,b colour values for
-// the line
+// the 				line 				r,g,b colour values
+// for the line
 //
 // Returns:     none
 //
@@ -1814,8 +1814,8 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 // 	mov ebx,dword ptr [bitmapHeight]
 
 // topOfLineLoop:
-// 	lodsw									;Get tag
-// and increment ptr lodsb 	and eax,0ffffh			;0ffh 	test
+// 	lodsw									;Get
+// tag and increment ptr lodsb 	and eax,0ffffh			;0ffh 	test
 // eax,eax je lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax
 // shr ecx,1 	rep movsw ;dword ptr [edi],dword ptr [esi] 	jmp
 // topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp topOfLineLoop
