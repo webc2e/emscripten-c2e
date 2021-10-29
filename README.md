@@ -8,11 +8,13 @@ I would like to upgrade to SDL2 and use SDL2_Mixer instead of SDL 1.0 + SDL_Mixe
 
 ## Building:
 
+Requires emscripten SDK to be avialable in `$EMSDK_PATH` and normal c++ build tools to be available
+
 The code expects the linux version of the data files to be available in `../../C2E/GAMES/Creatures\ 3` directory.
 
 ```
 ./scripts/clean.sh
-mcmake cmake -DCMAKE_TOOLCHAIN_FILE=/Users/robin/srs/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=/Users/robin/srs/emsdk/node/14.15.5_64bit/bin/node --build .
+mcmake cmake -DCMAKE_TOOLCHAIN_FILE=$EMSDK_PATH/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=$EMSDK_PATH/node/14.15.5_64bit/bin/node --build .
 emmake make -j<number of CPU cores>
 ```
 
