@@ -14,7 +14,7 @@ The code expects the linux version of the data files to be available in `../../C
 
 ```
 ./scripts/clean.sh
-mcmake cmake -DCMAKE_TOOLCHAIN_FILE=$EMSDK_PATH/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=$EMSDK_PATH/node/14.15.5_64bit/bin/node --build .
+emcmake cmake -DCMAKE_TOOLCHAIN_FILE=$EMSDK_PATH/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_CROSSCOMPILING_EMULATOR=$EMSDK_PATH/node/14.15.5_64bit/bin/node --build .
 emmake make -j<number of CPU cores>
 ```
 
