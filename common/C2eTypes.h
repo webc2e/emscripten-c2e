@@ -51,8 +51,8 @@ typedef long long int64;
 // #include "Vector2D.h"
 
 // CRect CSize etc...
-#include "../engine/Display/Position.h"
 #include "../engine/mfchack.h"
+#include "../engine/Display/Position.h"
 
 #define ConvertByteToFloat(aByte) (((float)aByte) / 255.0f)
 #define ConvertFloatToByte(aFloat) (int)(aFloat * 255.0f)

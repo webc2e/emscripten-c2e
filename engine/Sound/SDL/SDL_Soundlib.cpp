@@ -8,10 +8,10 @@
 
 #include "../Soundlib.h"
 
-#include "../../App.h"
+#include "../../General.h"	// for BuildFspNoCache
 #include "../../DirectoryManager.h"
 #include "../../FilePath.h"
-#include "../../General.h" // for BuildFspNoCache
+#include "../../App.h"
 
 CREATURES_IMPLEMENT_SERIAL(SoundManager)
 

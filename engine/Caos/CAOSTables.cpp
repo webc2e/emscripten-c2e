@@ -8,27 +8,25 @@
 
 #include "CAOSDescription.h"
 
-#include "../../common/PRAYFiles/PrayHandlers.h"
-#include "AgentHandlers.h"
 #include "CAOSMachine.h"
+#include "GeneralHandlers.h" 
+#include "AgentHandlers.h"
 #include "CompoundHandlers.h"
 #include "CreatureHandlers.h"
-#include "DebugHandlers.h"
-#include "DisplayHandlers.h"
-#include "GeneralHandlers.h"
-#include "HistoryHandlers.h"
-#include "MapHandlers.h"
-#include "PortHandlers.h"
 #include "SoundHandlers.h"
+#include "PortHandlers.h"
+#include "DebugHandlers.h"
+#include "MapHandlers.h"
+#include "DisplayHandlers.h"
+#include "../../common/PRAYFiles/PrayHandlers.h"
+#include "HistoryHandlers.h"
 
-
-#include "../App.h"
 #include "../build.h"
+#include "../App.h"
 
-
+#include "TableSpec.h"
 #include "../Agents/AgentConstants.h"
 #include "../ModuleImporter.h"
-#include "TableSpec.h"
 
 
 // Categories for ordering the manual better -

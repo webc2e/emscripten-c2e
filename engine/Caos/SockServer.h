@@ -6,29 +6,27 @@
 #include <vector>
 #include <SDL/SDL_thread.h>
 
-class SockServer
-{
+class SockServer {
 public:
-	SockServer(int port, bool secure);
-	~SockServer();
+  SockServer(int port, bool secure);
+  ~SockServer();
 
-	void ProcessRequests();
+  void ProcessRequests();
 
 private:
-	static int Main(void *data);
-	int Main();
-	void ShutdownSocket(int fd);
+  static int Main(void *data);
+  int Main();
+  void ShutdownSocket(int fd);
 
-	int myPort;
-	bool mySecure;
-	SDL_Thread* myThread;
+  int myPort;
+  bool mySecure;
+  SDL_Thread *myThread;
 
-	std::vector<int> myPendingSockets;
-	SimpleMutex myPendingSocketsMutex;
+  std::vector<int> myPendingSockets;
+  SimpleMutex myPendingSocketsMutex;
 
-	bool myTerminateFlag;
-	SimpleMutex myTerminateFlagMutex;
+  bool myTerminateFlag;
+  SimpleMutex myTerminateFlagMutex;
 };
 
 #endif
-

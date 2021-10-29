@@ -479,6 +479,8 @@ bool Map::GetRoomInformationForPoint
 {
 	int xSquare, ySquare;
 
+	// std::cout << position.x << ":" << position.y << std::endl;
+
 	// Get which grid square the point lies in
 	GetGridIndexesForPoint(position, xSquare, ySquare);
 	// Get the index of the grid square
@@ -957,7 +959,11 @@ void Map::GetReflectionFromVertex
 	// Get the rooms that contain the vertex
 	ok = GetRoomInformationForPoint(positionVertex, roomIDList, roomList,
 		roomCount, dummy1);
-	_ASSERT(ok);
+	// _ASSERT(ok);
+
+	if (!ok) {
+		return;
+	}
 
 	for (i=0; i<roomCount; ++i) 
 	{

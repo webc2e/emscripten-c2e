@@ -12,42 +12,41 @@
 #include "App.h"
 
 #include "Agents/AgentConstants.h"
+#include "Maths.h"
 #include "Caos/CAOSMachine.h"
 #include "Caos/Orderiser.h"
 #include "Display/DisplayErrorConstants.h"
-#include "Maths.h"
 
 #include "Display/DisplayEngine.h"
 
 #include "AgentDisplay/EntityImage.h"
-#include "Camera/MainCamera.h"
 #include "Display/ErrorMessageHandler.h"
-#include "General.h" // for logging macros
+#include "Camera/MainCamera.h"
+#include "General.h"		// for logging macros
 #include "World.h"
-
 #ifdef _WIN32
 #include "RegistryHandler.h"
 #endif
 #include "C2eServices.h"
-#include "Display/SharedGallery.h"
 #include "Sound/Soundlib.h"
+#include "Display/SharedGallery.h"
 
-#include "Sound/MusicGlobals.h"
-#include "Sound/MusicManager.h"
 #include "Sound/MusicTimer.h"
+#include "Sound/MusicManager.h"
+#include "Sound/MusicGlobals.h"
 
 #include "AgentManager.h"
 
 #include "Creature/SensoryFaculty.h"
 #include "Creature/Vocab.h"
 
-#include "../common/FileFuncs.h"
 #include "../common/PRAYFiles/PrayManager.h"
-#include "../common/StringFuncs.h"
-#include "Caos/AutoDocumentationTable.h"
 #include "Creature/Brain/BrainScriptFunctions.h"
-#include "DirectoryManager.h"
+#include "Caos/AutoDocumentationTable.h"
 #include "TimeFuncs.h"
+#include "../common/FileFuncs.h"
+#include "../common/StringFuncs.h"
+#include "DirectoryManager.h"
 
 #include "build.h"
 
@@ -66,16 +65,19 @@
 #endif
 
 #ifdef C2E_SDL
-#include "Display/SDL/SDL_Main.h" // for SignalTerminateApp()
+#include "Display/SDL/SDL_Main.h"	// for SignalTerminateApp()
 #endif
 
 #include <fstream>
 #include <locale.h>
 
 ////////////////////// GLOBALS ////////////////////////
-// CAOSDescription theCAOSDescription;
+
 App App::ourApp;
-App &App::GetTheApp() { return ourApp; }
+App& App::GetTheApp()
+{
+	return ourApp;
+}
 
 const int App::ourTickLengthsAgo = 10;
 int App::myWorldTickInterval = 50;
@@ -86,6 +88,8 @@ MusicManager *theMusicManager = NULL; // pointer to global Music Manager
 // App
 
 App::App() {
+  std::cout << "The app has been created" << std::endl;
+
 #ifdef NETTY
   Netty = new TheNetty();
   Netty->TitleOut("DS");
@@ -831,6 +835,7 @@ bool App::InitLocalCatalogueFilesFromTheWorldsDirectory() {
 
 bool App::CreateNewWorld(std::string &worldName) {
   bool ret;
+  std::cout << "Creating new world: " << worldName << std::endl;
   FilePath path(worldName, WORLDS_DIR);
   //	MessageBox(NULL,path.GetFullPath().c_str(),"",MB_OK);
   ret = CreateDirectory(path.GetFullPath().c_str(), NULL) ? true : false;

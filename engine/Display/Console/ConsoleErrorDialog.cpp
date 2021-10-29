@@ -4,10 +4,10 @@
 
 #include "ConsoleErrorDialog.h"
 #include "../../C2eServices.h"
-#include "../../FlightRecorder.h"
 #include "../DisplayEngine.h"
+#include "../../FlightRecorder.h"
 
-// #include <sstream.h>
+#include <sstream>
 
 bool ErrorDialog::ourDisableContinueButton = false;
 

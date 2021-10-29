@@ -207,7 +207,7 @@ Module['FS_createPath']("/", "Catalogue", true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/machine.cfg", "start": 0, "end": 1323}, {"filename": "/.DS_Store", "start": 1323, "end": 11567}, {"filename": "/ShortcutCard.pdf", "start": 11567, "end": 28998}, {"filename": "/Creatures 3.ico", "start": 28998, "end": 33708}, {"filename": "/creatures3.bmp", "start": 33708, "end": 36834}, {"filename": "/user.cfg", "start": 36834, "end": 37006}, {"filename": "/zlib1.dll", "start": 37006, "end": 92814}, {"filename": "/creatures_engine_logfile.txt", "start": 92814, "end": 92992}, {"filename": "/Walkthrough.pdf", "start": 92992, "end": 1258616}, {"filename": "/engine.exe", "start": 1258616, "end": 3867831}, {"filename": "/language.cfg", "start": 3867831, "end": 3867876}, {"filename": "/Manual.pdf", "start": 3867876, "end": 5251552}, {"filename": "/Home Page.url", "start": 5251552, "end": 5251618}, {"filename": "/lc2e", "start": 5251618, "end": 8196138}, {"filename": "/Body Data/l14a.att", "start": 8196138, "end": 8196362}, {"filename": "/Body Data/a10a.att", "start": 8196362, "end": 8196778}, {"filename": "/Body Data/m10a.att", "start": 8196778, "end": 8196987}, {"filename": "/Body Data/l02a.att", "start": 8196987, "end": 8197197}, {"filename": "/Body Data/k00a.att", "start": 8197197, "end": 8197389}, {"filename": "/Body Data/f04a.att", "start": 8197389, "end": 8197612}, {"filename": "/Body Data/j12a.att", "start": 8197612, "end": 8197836}, {"filename": "/Body Data/f12a.att", "start": 8197836, "end": 8198058}, {"filename": "/Body Data/j04a.att", "start": 8198058, "end": 8198275}, {"filename": "/Body Data/g00a.att", "start": 8198275, "end": 8198482}, {"filename": "/Body Data/j24a.att", "start": 8198482, "end": 8198692}, {"filename": "/Body Data/g20a.att", "start": 8198692, "end": 8198899}, {"filename": "/Body Data/k20a.att", "start": 8198899, "end": 8199091}, {"filename": "/Body Data/f24a.att", "start": 8199091, "end": 8199313}, {"filename": "/Body Data/l22a.att", "start": 8199313, "end": 8199522}, {"filename": "/Body Data/d24a.att", "start": 8199522, "end": 8199736}, {"filename": "/Body Data/i20a.att", "start": 8199736, "end": 8199928}, {"filename": "/Body Data/e20a.att", "start": 8199928, "end": 8200146}, {"filename": "/Body Data/z22a.att", "start": 8200146, "end": 8200274}, {"filename": "/Body Data/h24a.att", "start": 8200274, "end": 8200494}, {"filename": "/Body Data/b22a.att", "start": 8200494, "end": 8201088}, {"filename": "/Body Data/n22a.att", "start": 8201088, "end": 8201292}, {"filename": "/Body Data/b14a.att", "start": 8201292, "end": 8201900}, {"filename": "/Body Data/n02a.att", "start": 8201900, "end": 8202108}, {"filename": "/Body Data/c10a.att", "start": 8202108, "end": 8202315}, {"filename": "/Body Data/b02a.att", "start": 8202315, "end": 8202911}, {"filename": "/Body Data/n14a.att", "start": 8202911, "end": 8203133}, {"filename": "/Body Data/e00a.att", "start": 8203133, "end": 8203351}, {"filename": "/Body Data/h04a.att", "start": 8203351, "end": 8203571}, {"filename": "/Body Data/z02a.att", "start": 8203571, "end": 8203699}, {"filename": "/Body Data/d12a.att", "start": 8203699, "end": 8203913}, {"filename": "/Body Data/h12a.att", "start": 8203913, "end": 8204136}, {"filename": "/Body Data/d04a.att", "start": 8204136, "end": 8204357}, {"filename": "/Body Data/z14a.att", "start": 8204357, "end": 8204485}, {"filename": "/Body Data/i00a.att", "start": 8204485, "end": 8204677}, {"filename": "/Body Data/j22a.att", "start": 8204677, "end": 8204886}, {"filename": "/Body Data/f22a.att", "start": 8204886, "end": 8205099}, {"filename": "/Body Data/a20a.att", "start": 8205099, "end": 8205515}, {"filename": "/Body Data/l24a.att", "start": 8205515, "end": 8205725}, {"filename": "/Body Data/m20a.att", "start": 8205725, "end": 8205908}, {"filename": "/Body Data/l12a.att", "start": 8205908, "end": 8206132}, {"filename": "/Body Data/m00a.att", "start": 8206132, "end": 8206315}, {"filename": "/Body Data/a00a.att", "start": 8206315, "end": 8206731}, {"filename": "/Body Data/l04a.att", "start": 8206731, "end": 8206950}, {"filename": "/Body Data/g10a.att", "start": 8206950, "end": 8207157}, {"filename": "/Body Data/f02a.att", "start": 8207157, "end": 8207379}, {"filename": "/Body Data/j14a.att", "start": 8207379, "end": 8207603}, {"filename": "/Body Data/f14a.att", "start": 8207603, "end": 8207826}, {"filename": "/Body Data/j02a.att", "start": 8207826, "end": 8208036}, {"filename": "/Body Data/k10a.att", "start": 8208036, "end": 8208229}, {"filename": "/Body Data/b12a.att", "start": 8208229, "end": 8208837}, {"filename": "/Body Data/n04a.att", "start": 8208837, "end": 8209046}, {"filename": "/Body Data/c00a.att", "start": 8209046, "end": 8209253}, {"filename": "/Body Data/b04a.att", "start": 8209253, "end": 8209854}, {"filename": "/Body Data/n12a.att", "start": 8209854, "end": 8210076}, {"filename": "/Body Data/i10a.att", "start": 8210076, "end": 8210269}, {"filename": "/Body Data/h02a.att", "start": 8210269, "end": 8210489}, {"filename": "/Body Data/z04a.att", "start": 8210489, "end": 8210617}, {"filename": "/Body Data/d14a.att", "start": 8210617, "end": 8210838}, {"filename": "/Body Data/h14a.att", "start": 8210838, "end": 8211062}, {"filename": "/Body Data/d02a.att", "start": 8211062, "end": 8211276}, {"filename": "/Body Data/z12a.att", "start": 8211276, "end": 8211404}, {"filename": "/Body Data/e10a.att", "start": 8211404, "end": 8211624}, {"filename": "/Body Data/d22a.att", "start": 8211624, "end": 8211837}, {"filename": "/Body Data/z24a.att", "start": 8211837, "end": 8211965}, {"filename": "/Body Data/h22a.att", "start": 8211965, "end": 8212185}, {"filename": "/Body Data/b24a.att", "start": 8212185, "end": 8212781}, {"filename": "/Body Data/n24a.att", "start": 8212781, "end": 8212989}, {"filename": "/Body Data/c20a.att", "start": 8212989, "end": 8213196}, {"filename": "/Body Data/m22a.att", "start": 8213196, "end": 8213400}, {"filename": "/Body Data/a22a.att", "start": 8213400, "end": 8213816}, {"filename": "/Body Data/f20a.att", "start": 8213816, "end": 8214023}, {"filename": "/Body Data/k24a.att", "start": 8214023, "end": 8214224}, {"filename": "/Body Data/g24a.att", "start": 8214224, "end": 8214438}, {"filename": "/Body Data/j20a.att", "start": 8214438, "end": 8214644}, {"filename": "/Body Data/g04a.att", "start": 8214644, "end": 8214866}, {"filename": "/Body Data/k12a.att", "start": 8214866, "end": 8215077}, {"filename": "/Body Data/j00a.att", "start": 8215077, "end": 8215283}, {"filename": "/Body Data/f00a.att", "start": 8215283, "end": 8215490}, {"filename": "/Body Data/g12a.att", "start": 8215490, "end": 8215704}, {"filename": "/Body Data/k04a.att", "start": 8215704, "end": 8215927}, {"filename": "/Body Data/m14a.att", "start": 8215927, "end": 8216145}, {"filename": "/Body Data/a02a.att", "start": 8216145, "end": 8216561}, {"filename": "/Body Data/m02a.att", "start": 8216561, "end": 8216770}, {"filename": "/Body Data/a14a.att", "start": 8216770, "end": 8217186}, {"filename": "/Body Data/l10a.att", "start": 8217186, "end": 8217396}, {"filename": "/Body Data/i04a.att", "start": 8217396, "end": 8217619}, {"filename": "/Body Data/e12a.att", "start": 8217619, "end": 8217842}, {"filename": "/Body Data/d00a.att", "start": 8217842, "end": 8218049}, {"filename": "/Body Data/z10a.att", "start": 8218049, "end": 8218177}, {"filename": "/Body Data/h00a.att", "start": 8218177, "end": 8218395}, {"filename": "/Body Data/i12a.att", "start": 8218395, "end": 8218609}, {"filename": "/Body Data/e04a.att", "start": 8218609, "end": 8218829}, {"filename": "/Body Data/n10a.att", "start": 8218829, "end": 8219039}, {"filename": "/Body Data/c14a.att", "start": 8219039, "end": 8219262}, {"filename": "/Body Data/c02a.att", "start": 8219262, "end": 8219484}, {"filename": "/Body Data/b10a.att", "start": 8219484, "end": 8220092}, {"filename": "/Body Data/c22a.att", "start": 8220092, "end": 8220305}, {"filename": "/Body Data/h20a.att", "start": 8220305, "end": 8220523}, {"filename": "/Body Data/e24a.att", "start": 8220523, "end": 8220743}, {"filename": "/Body Data/i24a.att", "start": 8220743, "end": 8220944}, {"filename": "/Body Data/d20a.att", "start": 8220944, "end": 8221151}, {"filename": "/Body Data/g02a.att", "start": 8221151, "end": 8221365}, {"filename": "/Body Data/k14a.att", "start": 8221365, "end": 8221589}, {"filename": "/Body Data/f10a.att", "start": 8221589, "end": 8221796}, {"filename": "/Body Data/j10a.att", "start": 8221796, "end": 8222006}, {"filename": "/Body Data/g14a.att", "start": 8222006, "end": 8222228}, {"filename": "/Body Data/k02a.att", "start": 8222228, "end": 8222429}, {"filename": "/Body Data/l00a.att", "start": 8222429, "end": 8222635}, {"filename": "/Body Data/m12a.att", "start": 8222635, "end": 8222845}, {"filename": "/Body Data/a04a.att", "start": 8222845, "end": 8223261}, {"filename": "/Body Data/m04a.att", "start": 8223261, "end": 8223475}, {"filename": "/Body Data/a12a.att", "start": 8223475, "end": 8223891}, {"filename": "/Body Data/m24a.att", "start": 8223891, "end": 8224100}, {"filename": "/Body Data/l20a.att", "start": 8224100, "end": 8224306}, {"filename": "/Body Data/a24a.att", "start": 8224306, "end": 8224722}, {"filename": "/Body Data/k22a.att", "start": 8224722, "end": 8224916}, {"filename": "/Body Data/g22a.att", "start": 8224916, "end": 8225129}, {"filename": "/Body Data/c24a.att", "start": 8225129, "end": 8225351}, {"filename": "/Body Data/n20a.att", "start": 8225351, "end": 8225539}, {"filename": "/Body Data/b20a.att", "start": 8225539, "end": 8226127}, {"filename": "/Body Data/z20a.att", "start": 8226127, "end": 8226255}, {"filename": "/Body Data/e22a.att", "start": 8226255, "end": 8226475}, {"filename": "/Body Data/i22a.att", "start": 8226475, "end": 8226669}, {"filename": "/Body Data/i02a.att", "start": 8226669, "end": 8226870}, {"filename": "/Body Data/e14a.att", "start": 8226870, "end": 8227094}, {"filename": "/Body Data/h10a.att", "start": 8227094, "end": 8227314}, {"filename": "/Body Data/z00a.att", "start": 8227314, "end": 8227442}, {"filename": "/Body Data/d10a.att", "start": 8227442, "end": 8227649}, {"filename": "/Body Data/i14a.att", "start": 8227649, "end": 8227873}, {"filename": "/Body Data/e02a.att", "start": 8227873, "end": 8228093}, {"filename": "/Body Data/b00a.att", "start": 8228093, "end": 8228681}, {"filename": "/Body Data/c12a.att", "start": 8228681, "end": 8228903}, {"filename": "/Body Data/c04a.att", "start": 8228903, "end": 8229126}, {"filename": "/Body Data/n00a.att", "start": 8229126, "end": 8229314}, {"filename": "/Bootstrap/.DS_Store", "start": 8229314, "end": 8237510}, {"filename": "/Bootstrap/000 Switcher/disable debug keys.cos", "start": 8237510, "end": 8237543}, {"filename": "/Bootstrap/000 Switcher/world switcher.cos", "start": 8237543, "end": 8249028}, {"filename": "/Bootstrap/000 Switcher/!map.cos", "start": 8249028, "end": 8249116}, {"filename": "/Bootstrap/001 World/creature history.cos", "start": 8249116, "end": 8268411}, {"filename": "/Bootstrap/001 World/apples.cos", "start": 8268411, "end": 8270584}, {"filename": "/Bootstrap/001 World/PLANT MODEL - foxglove plant.cos", "start": 8270584, "end": 8275241}, {"filename": "/Bootstrap/001 World/fungi.cos", "start": 8275241, "end": 8279044}, {"filename": "/Bootstrap/001 World/logicgate.cos", "start": 8279044, "end": 8281152}, {"filename": "/Bootstrap/001 World/garbage spewer.cos", "start": 8281152, "end": 8281890}, {"filename": "/Bootstrap/001 World/creatureDoneTo.cos", "start": 8281890, "end": 8284430}, {"filename": "/Bootstrap/001 World/disable debug keys.cos", "start": 8284430, "end": 8284463}, {"filename": "/Bootstrap/001 World/handlefish.cos", "start": 8284463, "end": 8304137}, {"filename": "/Bootstrap/001 World/radio machines.cos", "start": 8304137, "end": 8305821}, {"filename": "/Bootstrap/001 World/medicine maker.cos", "start": 8305821, "end": 8317625}, {"filename": "/Bootstrap/001 World/aquatic tunnel gates.cos", "start": 8317625, "end": 8321367}, {"filename": "/Bootstrap/001 World/GUI 1.cos", "start": 8321367, "end": 8348800}, {"filename": "/Bootstrap/001 World/smell emitter + detector.cos", "start": 8348800, "end": 8352868}, {"filename": "/Bootstrap/001 World/anti-bacterial spray.cos", "start": 8352868, "end": 8354638}, {"filename": "/Bootstrap/001 World/Grendel and Ettin Egg maker.cos", "start": 8354638, "end": 8356092}, {"filename": "/Bootstrap/001 World/recycler2.cos", "start": 8356092, "end": 8359176}, {"filename": "/Bootstrap/001 World/pregnancy indication device.cos", "start": 8359176, "end": 8361670}, {"filename": "/Bootstrap/001 World/Pointer scripts.cos", "start": 8361670, "end": 8363896}, {"filename": "/Bootstrap/001 World/output display device.cos", "start": 8363896, "end": 8364451}, {"filename": "/Bootstrap/001 World/pumperspikel.cos", "start": 8364451, "end": 8366708}, {"filename": "/Bootstrap/001 World/medical pod and screens.cos", "start": 8366708, "end": 8400760}, {"filename": "/Bootstrap/001 World/ball.cos", "start": 8400760, "end": 8402225}, {"filename": "/Bootstrap/001 World/Norn Egg layer.cos", "start": 8402225, "end": 8407729}, {"filename": "/Bootstrap/001 World/XBioenergy incrementer.cos", "start": 8407729, "end": 8407984}, {"filename": "/Bootstrap/001 World/opal sponge.cos", "start": 8407984, "end": 8413149}, {"filename": "/Bootstrap/001 World/wasp.cos", "start": 8413149, "end": 8418793}, {"filename": "/Bootstrap/001 World/engineering scenery.cos", "start": 8418793, "end": 8418897}, {"filename": "/Bootstrap/001 World/magic profiler.cos", "start": 8418897, "end": 8420259}, {"filename": "/Bootstrap/001 World/Knowledge Stones.cos", "start": 8420259, "end": 8421263}, {"filename": "/Bootstrap/001 World/angel fish.cos", "start": 8421263, "end": 8437580}, {"filename": "/Bootstrap/001 World/ettin accessways.cos", "start": 8437580, "end": 8442842}, {"filename": "/Bootstrap/001 World/aquatic_population_monitoring_device.cos", "start": 8442842, "end": 8446750}, {"filename": "/Bootstrap/001 World/internal terrarium door.cos", "start": 8446750, "end": 8449034}, {"filename": "/Bootstrap/001 World/numeric output tool.cos", "start": 8449034, "end": 8451677}, {"filename": "/Bootstrap/001 World/gene pod.cos", "start": 8451677, "end": 8454756}, {"filename": "/Bootstrap/001 World/norn cutaways 01.cos", "start": 8454756, "end": 8455058}, {"filename": "/Bootstrap/001 World/dragonfly.cos", "start": 8455058, "end": 8473327}, {"filename": "/Bootstrap/001 World/creaturesAffectingHand.cos", "start": 8473327, "end": 8473615}, {"filename": "/Bootstrap/001 World/beatbox.cos", "start": 8473615, "end": 8474934}, {"filename": "/Bootstrap/001 World/favourite places.cos", "start": 8474934, "end": 8484716}, {"filename": "/Bootstrap/001 World/stars and pickup panel.cos", "start": 8484716, "end": 8487117}, {"filename": "/Bootstrap/001 World/HoldingHandsControlScripts.cos", "start": 8487117, "end": 8487385}, {"filename": "/Bootstrap/001 World/vents.cos", "start": 8487385, "end": 8487709}, {"filename": "/Bootstrap/001 World/waterplant.cos", "start": 8487709, "end": 8488796}, {"filename": "/Bootstrap/001 World/ocean surface.cos", "start": 8488796, "end": 8489499}, {"filename": "/Bootstrap/001 World/rocklice.cos", "start": 8489499, "end": 8500431}, {"filename": "/Bootstrap/001 World/nudibranch.cos", "start": 8500431, "end": 8504892}, {"filename": "/Bootstrap/001 World/Norn seed launcher.cos", "start": 8504892, "end": 8524111}, {"filename": "/Bootstrap/001 World/PLANT MODEL - foxglove Leaf.cos", "start": 8524111, "end": 8525164}, {"filename": "/Bootstrap/001 World/Toilet Control.cos", "start": 8525164, "end": 8525446}, {"filename": "/Bootstrap/001 World/ettin seed bank.cos", "start": 8525446, "end": 8531288}, {"filename": "/Bootstrap/001 World/Lifts.cos", "start": 8531288, "end": 8549030}, {"filename": "/Bootstrap/001 World/Robin2.cos", "start": 8549030, "end": 8571377}, {"filename": "/Bootstrap/001 World/Carrot.cos", "start": 8571377, "end": 8574080}, {"filename": "/Bootstrap/001 World/wolf control.cos", "start": 8574080, "end": 8576382}, {"filename": "/Bootstrap/001 World/wysts.cos", "start": 8576382, "end": 8582077}, {"filename": "/Bootstrap/001 World/Water smell emitter.cos", "start": 8582077, "end": 8582938}, {"filename": "/Bootstrap/001 World/all Engineering airlock.cos", "start": 8582938, "end": 8590434}, {"filename": "/Bootstrap/001 World/ocean_pod.cos", "start": 8590434, "end": 8590528}, {"filename": "/Bootstrap/001 World/norn atmosphere machine.cos", "start": 8590528, "end": 8593343}, {"filename": "/Bootstrap/001 World/SeaLift.cos", "start": 8593343, "end": 8594189}, {"filename": "/Bootstrap/001 World/mosquito.cos", "start": 8594189, "end": 8597849}, {"filename": "/Bootstrap/001 World/space toy.cos", "start": 8597849, "end": 8598925}, {"filename": "/Bootstrap/001 World/creatureToCreature.cos", "start": 8598925, "end": 8600121}, {"filename": "/Bootstrap/001 World/neon fish.cos", "start": 8600121, "end": 8615348}, {"filename": "/Bootstrap/001 World/starplant.cos", "start": 8615348, "end": 8615691}, {"filename": "/Bootstrap/001 World/replicator.cos", "start": 8615691, "end": 8622056}, {"filename": "/Bootstrap/001 World/welcome screen.cos", "start": 8622056, "end": 8624937}, {"filename": "/Bootstrap/001 World/grendel seed bank.cos", "start": 8624937, "end": 8629812}, {"filename": "/Bootstrap/001 World/XY tool.cos", "start": 8629812, "end": 8631320}, {"filename": "/Bootstrap/001 World/textentry.cos", "start": 8631320, "end": 8633681}, {"filename": "/Bootstrap/001 World/orange sponge.cos", "start": 8633681, "end": 8638835}, {"filename": "/Bootstrap/001 World/object of attention indicator.cos", "start": 8638835, "end": 8639388}, {"filename": "/Bootstrap/001 World/Ettin area environment.cos", "start": 8639388, "end": 8642436}, {"filename": "/Bootstrap/001 World/z_agent smells.cos", "start": 8642436, "end": 8642648}, {"filename": "/Bootstrap/001 World/grazer2.cos", "start": 8642648, "end": 8656682}, {"filename": "/Bootstrap/001 World/man-o-war.cos", "start": 8656682, "end": 8665415}, {"filename": "/Bootstrap/001 World/count gate.cos", "start": 8665415, "end": 8667110}, {"filename": "/Bootstrap/001 World/Butterfly.cos", "start": 8667110, "end": 8682847}, {"filename": "/Bootstrap/001 World/z_creaturesAffectingAnimals.cos", "start": 8682847, "end": 8683114}, {"filename": "/Bootstrap/001 World/infinite_cheese_machine.cos", "start": 8683114, "end": 8688253}, {"filename": "/Bootstrap/001 World/antigen detector.cos", "start": 8688253, "end": 8690101}, {"filename": "/Bootstrap/001 World/toolbar.cos", "start": 8690101, "end": 8695579}, {"filename": "/Bootstrap/001 World/Corridor Doors.cos", "start": 8695579, "end": 8724166}, {"filename": "/Bootstrap/001 World/gumin grass.cos", "start": 8724166, "end": 8729264}, {"filename": "/Bootstrap/001 World/single chemical graphing gadget.cos", "start": 8729264, "end": 8733740}, {"filename": "/Bootstrap/001 World/ant.cos", "start": 8733740, "end": 8743937}, {"filename": "/Bootstrap/001 World/volcano.cos", "start": 8743937, "end": 8750257}, {"filename": "/Bootstrap/001 World/cacbana.cos", "start": 8750257, "end": 8758167}, {"filename": "/Bootstrap/001 World/piranha.cos", "start": 8758167, "end": 8764506}, {"filename": "/Bootstrap/001 World/pointer.cos", "start": 8764506, "end": 8764629}, {"filename": "/Bootstrap/001 World/grendel scenery.cos", "start": 8764629, "end": 8764849}, {"filename": "/Bootstrap/001 World/Genetic splicer panel2.cos", "start": 8764849, "end": 8769058}, {"filename": "/Bootstrap/001 World/Rock cutaway Norn terrarium.cos", "start": 8769058, "end": 8769152}, {"filename": "/Bootstrap/001 World/PLANT MODEL - foxglove Seed.cos", "start": 8769152, "end": 8771656}, {"filename": "/Bootstrap/001 World/agent help.cos", "start": 8771656, "end": 8776601}, {"filename": "/Bootstrap/001 World/bongo_drums.cos", "start": 8776601, "end": 8777693}, {"filename": "/Bootstrap/001 World/sepulchre.cos", "start": 8777693, "end": 8778729}, {"filename": "/Bootstrap/001 World/Hummingbird.cos", "start": 8778729, "end": 8798518}, {"filename": "/Bootstrap/001 World/trapdoor.cos", "start": 8798518, "end": 8800439}, {"filename": "/Bootstrap/001 World/bee.cos", "start": 8800439, "end": 8811770}, {"filename": "/Bootstrap/001 World/wetness monitor and designator.cos", "start": 8811770, "end": 8812967}, {"filename": "/Bootstrap/001 World/speech bubble factory.cos", "start": 8812967, "end": 8814453}, {"filename": "/Bootstrap/001 World/Hawk.cos", "start": 8814453, "end": 8823756}, {"filename": "/Bootstrap/001 World/gnats.cos", "start": 8823756, "end": 8828456}, {"filename": "/Bootstrap/001 World/aquatic_launcher.cos", "start": 8828456, "end": 8837883}, {"filename": "/Bootstrap/001 World/meerk.cos", "start": 8837883, "end": 8842007}, {"filename": "/Bootstrap/001 World/grass.cos", "start": 8842007, "end": 8848303}, {"filename": "/Bootstrap/001 World/!C3_game variables.cos", "start": 8848303, "end": 8849011}, {"filename": "/Bootstrap/001 World/rainbow_sharkling.cos", "start": 8849011, "end": 8857421}, {"filename": "/Bootstrap/001 World/delay gate.cos", "start": 8857421, "end": 8860371}, {"filename": "/Bootstrap/001 World/marine_airlocks.cos", "start": 8860371, "end": 8865991}, {"filename": "/Bootstrap/001 World/aquamites.cos", "start": 8865991, "end": 8868465}, {"filename": "/Bootstrap/001 World/blueprint agent scripts.cos", "start": 8868465, "end": 8872517}, {"filename": "/Bootstrap/001 World/creatureBubbles.cos", "start": 8872517, "end": 8873135}, {"filename": "/Bootstrap/001 World/desert grass.cos", "start": 8873135, "end": 8879718}, {"filename": "/Bootstrap/001 World/norn indicator.cos", "start": 8879718, "end": 8880106}, {"filename": "/Bootstrap/001 World/grasshopper.cos", "start": 8880106, "end": 8886822}, {"filename": "/Bootstrap/001 World/choppertoy.cos", "start": 8886822, "end": 8888773}, {"filename": "/Bootstrap/001 World/recycler overlay.cos", "start": 8888773, "end": 8888878}, {"filename": "/Bootstrap/001 World/kingfisher.cos", "start": 8888878, "end": 8899629}, {"filename": "/Bootstrap/001 World/marine cave water.cos", "start": 8899629, "end": 8902815}, {"filename": "/Bootstrap/001 World/hoppity.cos", "start": 8902815, "end": 8910909}, {"filename": "/Bootstrap/001 World/NOT gate.cos", "start": 8910909, "end": 8911694}, {"filename": "/Bootstrap/001 World/stickleback.cos", "start": 8911694, "end": 8920895}, {"filename": "/Bootstrap/001 World/scroll settings.cos", "start": 8920895, "end": 8920953}, {"filename": "/Bootstrap/001 World/pick-ups.cos", "start": 8920953, "end": 8923883}, {"filename": "/Bootstrap/001 World/switch.cos", "start": 8923883, "end": 8925082}, {"filename": "/Bootstrap/001 World/lung.cos", "start": 8925082, "end": 8925310}, {"filename": "/Bootstrap/001 World/connecting agent pointer change.cos", "start": 8925310, "end": 8925658}, {"filename": "/Bootstrap/001 World/creatureObjectVariables.cos", "start": 8925658, "end": 8925664}, {"filename": "/Bootstrap/001 World/fixed position fish egg launcher.cos", "start": 8925664, "end": 8931794}, {"filename": "/Bootstrap/001 World/teleporter.cos", "start": 8931794, "end": 8937290}, {"filename": "/Bootstrap/001 World/learning_machine.cos", "start": 8937290, "end": 8945524}, {"filename": "/Bootstrap/001 World/Creature detector.cos", "start": 8945524, "end": 8949902}, {"filename": "/Bootstrap/001 World/Creator.cos", "start": 8949902, "end": 8958108}, {"filename": "/Bootstrap/001 World/ettin_muscle_paralyser.cos", "start": 8958108, "end": 8958880}, {"filename": "/Bootstrap/001 World/palmplant.cos", "start": 8958880, "end": 8959459}, {"filename": "/Bootstrap/001 World/creatureInvoluntary.cos", "start": 8959459, "end": 8964284}, {"filename": "/Bootstrap/001 World/light & heat emitters NT.cos", "start": 8964284, "end": 8968991}, {"filename": "/Bootstrap/001 World/creatureBreeding.cos", "start": 8968991, "end": 8976212}, {"filename": "/Bootstrap/001 World/aquamite_maker.cos", "start": 8976212, "end": 8978757}, {"filename": "/Bootstrap/001 World/PLANT MODEL - foxglove Flower.cos", "start": 8978757, "end": 8979838}, {"filename": "/Bootstrap/001 World/norn to grendel door.cos", "start": 8979838, "end": 8982581}, {"filename": "/Bootstrap/001 World/crypt3.cos", "start": 8982581, "end": 8995006}, {"filename": "/Bootstrap/001 World/airlock agent.cos", "start": 8995006, "end": 8996488}, {"filename": "/Bootstrap/001 World/woodpigeon2.cos", "start": 8996488, "end": 9015130}, {"filename": "/Bootstrap/001 World/XEfficiency indicator.cos", "start": 9015130, "end": 9017967}, {"filename": "/Bootstrap/001 World/keyboard handler.cos", "start": 9017967, "end": 9026362}, {"filename": "/Bootstrap/001 World/!map.cos", "start": 9026362, "end": 9111514}, {"filename": "/Bootstrap/001 World/lightmodule.cos", "start": 9111514, "end": 9114812}, {"filename": "/Bootstrap/001 World/zzz_move camera.cos", "start": 9114812, "end": 9114861}, {"filename": "/Bootstrap/001 World/beetle.cos", "start": 9114861, "end": 9120504}, {"filename": "/Bootstrap/001 World/environmental controls.cos", "start": 9120504, "end": 9127306}, {"filename": "/Bootstrap/001 World/hover vehicle.cos", "start": 9127306, "end": 9130546}, {"filename": "/Bootstrap/001 World/all bridge airlock.cos", "start": 9130546, "end": 9138455}, {"filename": "/Bootstrap/001 World/Blueprint Agent Export As Pray File.cos", "start": 9138455, "end": 9140040}, {"filename": "/Bootstrap/001 World/pointer activate stimming norns.cos", "start": 9140040, "end": 9140257}, {"filename": "/Bootstrap/001 World/life event factory.cos", "start": 9140257, "end": 9143141}, {"filename": "/Bootstrap/001 World/plusminus switch.cos", "start": 9143141, "end": 9144058}, {"filename": "/Bootstrap/001 World/Frame rater.cos", "start": 9144058, "end": 9144890}, {"filename": "/Bootstrap/001 World/Uglee.cos", "start": 9144890, "end": 9149723}, {"filename": "/Bootstrap/001 World/camera unit.cos", "start": 9149723, "end": 9154765}, {"filename": "/Bootstrap/001 World/lightbox.cos", "start": 9154765, "end": 9156818}, {"filename": "/Bootstrap/001 World/bacteria.cos", "start": 9156818, "end": 9165341}, {"filename": "/Bootstrap/001 World/sludge gun.cos", "start": 9165341, "end": 9168123}, {"filename": "/Bootstrap/001 World/gene splicer overlay.cos", "start": 9168123, "end": 9168236}, {"filename": "/Bootstrap/001 World/marine room cutout.cos", "start": 9168236, "end": 9168355}, {"filename": "/Bootstrap/001 World/gnarler.cos", "start": 9168355, "end": 9175101}, {"filename": "/Bootstrap/001 World/autosave.cos", "start": 9175101, "end": 9175429}, {"filename": "/Bootstrap/001 World/death.cos", "start": 9175429, "end": 9176191}, {"filename": "/Bootstrap/001 World/Hatchery2.cos", "start": 9176191, "end": 9179893}, {"filename": "/Bootstrap/001 World/balloon bug.cos", "start": 9179893, "end": 9184373}, {"filename": "/Bootstrap/001 World/tendril.cos", "start": 9184373, "end": 9188025}, {"filename": "/Bootstrap/001 World/Home smell emitters.cos", "start": 9188025, "end": 9188648}, {"filename": "/Bootstrap/001 World/contact sensor.cos", "start": 9188648, "end": 9189485}, {"filename": "/Bootstrap/001 World/CAOS command line.cos", "start": 9189485, "end": 9191969}, {"filename": "/Bootstrap/001 World/norn platform.cos", "start": 9191969, "end": 9192110}, {"filename": "/Bootstrap/001 World/siren.cos", "start": 9192110, "end": 9193410}, {"filename": "/Bootstrap/001 World/cuttlefish.cos", "start": 9193410, "end": 9197487}, {"filename": "/Bootstrap/001 World/medical scanner.cos", "start": 9197487, "end": 9200010}, {"filename": "/Bootstrap/001 World/lung overlay.cos", "start": 9200010, "end": 9200187}, {"filename": "/Bootstrap/001 World/clown fish.cos", "start": 9200187, "end": 9217525}, {"filename": "/Bootstrap/001 World/Grendel Area environment.cos", "start": 9217525, "end": 9222173}, {"filename": "/Bootstrap/001 World/creatureDecisions.cos", "start": 9222173, "end": 9229375}, {"filename": "/Bootstrap/001 World/hedgehog.cos", "start": 9229375, "end": 9237571}, {"filename": "/Bootstrap/001 World/Kobold.cos", "start": 9237571, "end": 9244617}, {"filename": "/Bootstrap/001 World/mediporter.cos", "start": 9244617, "end": 9246133}, {"filename": "/Bootstrap/001 World/map display.cos", "start": 9246133, "end": 9260737}, {"filename": "/Bootstrap/001 World/snail.cos", "start": 9260737, "end": 9265108}, {"filename": "/Bootstrap/001 World/bluebell.cos", "start": 9265108, "end": 9265720}, {"filename": "/Images/g00a.c16", "start": 9265720, "end": 9273954}, {"filename": "/Images/c50a.c16", "start": 9273954, "end": 9282674}, {"filename": "/Images/f45a.c16", "start": 9282674, "end": 9301100}, {"filename": "/Images/b15a.c16", "start": 9301100, "end": 9715050}, {"filename": "/Images/mediscreen.c16", "start": 9715050, "end": 11003196}, {"filename": "/Images/j04a.c16", "start": 11003196, "end": 11018638}, {"filename": "/Images/n54a.c16", "start": 11018638, "end": 11036182}, {"filename": "/Images/b42a.c16", "start": 11036182, "end": 11170428}, {"filename": "/Images/f12a.c16", "start": 11170428, "end": 11183578}, {"filename": "/Images/caterpillar.c16", "start": 11183578, "end": 11250038}, {"filename": "/Images/n42a.c16", "start": 11250038, "end": 11259928}, {"filename": "/Images/j12a.c16", "start": 11259928, "end": 11280854}, {"filename": "/Images/062a.c16", "start": 11280854, "end": 11335196}, {"filename": "/Images/f04a.c16", "start": 11335196, "end": 11353622}, {"filename": "/Images/b54a.c16", "start": 11353622, "end": 11741712}, {"filename": "/Images/j45a.c16", "start": 11741712, "end": 11757154}, {"filename": "/Images/hoppity.c16", "start": 11757154, "end": 12386636}, {"filename": "/Images/n15a.c16", "start": 12386636, "end": 12404180}, {"filename": "/Images/k00a.c16", "start": 12404180, "end": 12409854}, {"filename": "/Images/042c.c16", "start": 12409854, "end": 12471876}, {"filename": "/Images/d44a.c16", "start": 12471876, "end": 12489168}, {"filename": "/Images/042b.c16", "start": 12489168, "end": 12551190}, {"filename": "/Images/l02a.c16", "start": 12551190, "end": 12562404}, {"filename": "/Images/h52a.c16", "start": 12562404, "end": 12577494}, {"filename": "/Images/dust cloud.c16", "start": 12577494, "end": 12650400}, {"filename": "/Images/Pick-ups.c16", "start": 12650400, "end": 13133620}, {"filename": "/Images/i40a.c16", "start": 13133620, "end": 13139294}, {"filename": "/Images/m10a.c16", "start": 13139294, "end": 13149456}, {"filename": "/Images/h05a.c16", "start": 13149456, "end": 13162196}, {"filename": "/Images/l55a.c16", "start": 13162196, "end": 13192002}, {"filename": "/Images/switch.c16", "start": 13192002, "end": 13210520}, {"filename": "/Images/door.c16", "start": 13210520, "end": 17385890}, {"filename": "/Images/d05a.c16", "start": 17385890, "end": 17403182}, {"filename": "/Images/e40a.c16", "start": 17403182, "end": 17409428}, {"filename": "/Images/a10a.c16", "start": 17409428, "end": 17951246}, {"filename": "/Images/d52a.c16", "start": 17951246, "end": 17963608}, {"filename": "/Images/h44a.c16", "start": 17963608, "end": 17976348}, {"filename": "/Images/gnat.c16", "start": 17976348, "end": 17991022}, {"filename": "/Images/l14a.c16", "start": 17991022, "end": 18020828}, {"filename": "/Images/rotorfly.c16", "start": 18020828, "end": 18155622}, {"filename": "/Images/lightmod.c16", "start": 18155622, "end": 18178464}, {"filename": "/Images/g00b.c16", "start": 18178464, "end": 18186698}, {"filename": "/Images/targ.c16", "start": 18186698, "end": 18215424}, {"filename": "/Images/e60a.c16", "start": 18215424, "end": 18221670}, {"filename": "/Images/fanplant.c16", "start": 18221670, "end": 18233288}, {"filename": "/Images/h44c.c16", "start": 18233288, "end": 18246028}, {"filename": "/Images/d25a.c16", "start": 18246028, "end": 18258390}, {"filename": "/Images/bridge airlock.c16", "start": 18258390, "end": 19069092}, {"filename": "/Images/mantis.c16", "start": 19069092, "end": 19092568}, {"filename": "/Images/f45b.c16", "start": 19092568, "end": 19110994}, {"filename": "/Images/door_ports.c16", "start": 19110994, "end": 19112126}, {"filename": "/Images/j04b.c16", "start": 19112126, "end": 19127568}, {"filename": "/Images/h64a.c16", "start": 19127568, "end": 19136850}, {"filename": "/Images/e40c.c16", "start": 19136850, "end": 19143096}, {"filename": "/Images/b42b.c16", "start": 19143096, "end": 19284006}, {"filename": "/Images/d05c.c16", "start": 19284006, "end": 19301298}, {"filename": "/Images/euro gui.c16", "start": 19301298, "end": 19301550}, {"filename": "/Images/l22a.c16", "start": 19301550, "end": 19310898}, {"filename": "/Images/h05c.c16", "start": 19310898, "end": 19323638}, {"filename": "/Images/n42b.c16", "start": 19323638, "end": 19333528}, {"filename": "/Images/lung.c16", "start": 19333528, "end": 21627628}, {"filename": "/Images/d64a.c16", "start": 21627628, "end": 21639990}, {"filename": "/Images/i40c.c16", "start": 21639990, "end": 21645664}, {"filename": "/Images/f04b.c16", "start": 21645664, "end": 21664090}, {"filename": "/Images/crypt door.c16", "start": 21664090, "end": 21724912}, {"filename": "/Images/l02c.c16", "start": 21724912, "end": 21736126}, {"filename": "/Images/j45b.c16", "start": 21736126, "end": 21751568}, {"filename": "/Images/h25a.c16", "start": 21751568, "end": 21760850}, {"filename": "/Images/i60a.c16", "start": 21760850, "end": 21766524}, {"filename": "/Images/graspit.c16", "start": 21766524, "end": 21879954}, {"filename": "/Images/d44c.c16", "start": 21879954, "end": 21897246}, {"filename": "/Images/k00b.c16", "start": 21897246, "end": 21902920}, {"filename": "/Images/042a.c16", "start": 21902920, "end": 21964942}, {"filename": "/Images/f24a.c16", "start": 21964942, "end": 21978092}, {"filename": "/Images/k00c.c16", "start": 21978092, "end": 21983766}, {"filename": "/Images/d44b.c16", "start": 21983766, "end": 22001058}, {"filename": "/Images/dead_fish.c16", "start": 22001058, "end": 22102802}, {"filename": "/Images/j45c.c16", "start": 22102802, "end": 22118244}, {"filename": "/Images/l02b.c16", "start": 22118244, "end": 22129458}, {"filename": "/Images/progress.s16", "start": 22129458, "end": 22322026}, {"filename": "/Images/k20a.c16", "start": 22322026, "end": 22327700}, {"filename": "/Images/f04c.c16", "start": 22327700, "end": 22346126}, {"filename": "/Images/i40b.c16", "start": 22346126, "end": 22351800}, {"filename": "/Images/015a.c16", "start": 22351800, "end": 22429182}, {"filename": "/Images/n42c.c16", "start": 22429182, "end": 22439072}, {"filename": "/Images/h05b.c16", "start": 22439072, "end": 22451812}, {"filename": "/Images/j65a.c16", "start": 22451812, "end": 22463026}, {"filename": "/Images/trout.c16", "start": 22463026, "end": 22535326}, {"filename": "/Images/airlock buttons.c16", "start": 22535326, "end": 22620662}, {"filename": "/Images/f65a.c16", "start": 22620662, "end": 22633812}, {"filename": "/Images/smell_machines.c16", "start": 22633812, "end": 22827810}, {"filename": "/Images/d05b.c16", "start": 22827810, "end": 22845102}, {"filename": "/Images/b42c.c16", "start": 22845102, "end": 22986012}, {"filename": "/Images/e40b.c16", "start": 22986012, "end": 22992258}, {"filename": "/Images/g20a.c16", "start": 22992258, "end": 23000492}, {"filename": "/Images/j04c.c16", "start": 23000492, "end": 23015934}, {"filename": "/Images/gren.c16", "start": 23015934, "end": 23019214}, {"filename": "/Images/mossie.c16", "start": 23019214, "end": 23043424}, {"filename": "/Images/clown.c16", "start": 23043424, "end": 23107376}, {"filename": "/Images/f45c.c16", "start": 23107376, "end": 23125802}, {"filename": "/Images/b62a.c16", "start": 23125802, "end": 23246428}, {"filename": "/Images/054a.c16", "start": 23246428, "end": 23323810}, {"filename": "/Images/h44b.c16", "start": 23323810, "end": 23336550}, {"filename": "/Images/j24a.c16", "start": 23336550, "end": 23347764}, {"filename": "/Images/g00c.c16", "start": 23347764, "end": 23355998}, {"filename": "/Images/wolf.c16", "start": 23355998, "end": 23487216}, {"filename": "/Images/k60a.c16", "start": 23487216, "end": 23492890}, {"filename": "/Images/f44c.c16", "start": 23492890, "end": 23511316}, {"filename": "/Images/hawk.c16", "start": 23511316, "end": 24007282}, {"filename": "/Images/i00b.c16", "start": 24007282, "end": 24012956}, {"filename": "/Images/055a.c16", "start": 24012956, "end": 24090338}, {"filename": "/Images/n02c.c16", "start": 24090338, "end": 24098840}, {"filename": "/Images/h45b.c16", "start": 24098840, "end": 24111580}, {"filename": "/Images/j25a.c16", "start": 24111580, "end": 24122794}, {"filename": "/Images/002a.c16", "start": 24122794, "end": 24184816}, {"filename": "/Images/f64a.c16", "start": 24184816, "end": 24197966}, {"filename": "/Images/k40c.c16", "start": 24197966, "end": 24203640}, {"filename": "/Images/d04b.c16", "start": 24203640, "end": 24220932}, {"filename": "/Images/j05c.c16", "start": 24220932, "end": 24236374}, {"filename": "/Images/l42b.c16", "start": 24236374, "end": 24247588}, {"filename": "/Images/Bubs.c16", "start": 24247588, "end": 24270542}, {"filename": "/Images/f05c.c16", "start": 24270542, "end": 24288968}, {"filename": "/Images/CAOS.c16", "start": 24288968, "end": 24305386}, {"filename": "/Images/b22a.c16", "start": 24305386, "end": 24417048}, {"filename": "/Images/014a.c16", "start": 24417048, "end": 24494430}, {"filename": "/Images/fish launcher things.c16", "start": 24494430, "end": 24544914}, {"filename": "/Images/h04b.c16", "start": 24544914, "end": 24557654}, {"filename": "/Images/j64a.c16", "start": 24557654, "end": 24568868}, {"filename": "/Images/g40c.c16", "start": 24568868, "end": 24577102}, {"filename": "/Images/f25a.c16", "start": 24577102, "end": 24590252}, {"filename": "/Images/d45b.c16", "start": 24590252, "end": 24607544}, {"filename": "/Images/b02c.c16", "start": 24607544, "end": 24735230}, {"filename": "/Images/e00b.c16", "start": 24735230, "end": 24741476}, {"filename": "/Images/g60a.c16", "start": 24741476, "end": 24749710}, {"filename": "/Images/j44c.c16", "start": 24749710, "end": 24765152}, {"filename": "/Images/j44b.c16", "start": 24765152, "end": 24780594}, {"filename": "/Images/h24a.c16", "start": 24780594, "end": 24789876}, {"filename": "/Images/e00c.c16", "start": 24789876, "end": 24796122}, {"filename": "/Images/b02b.c16", "start": 24796122, "end": 24923808}, {"filename": "/Images/d45c.c16", "start": 24923808, "end": 24941100}, {"filename": "/Images/beetle2.c16", "start": 24941100, "end": 25013298}, {"filename": "/Images/g40b.c16", "start": 25013298, "end": 25021532}, {"filename": "/Images/e20a.c16", "start": 25021532, "end": 25027778}, {"filename": "/Images/h04c.c16", "start": 25027778, "end": 25040518}, {"filename": "/Images/d65a.c16", "start": 25040518, "end": 25052880}, {"filename": "/Images/test.c16", "start": 25052880, "end": 25053852}, {"filename": "/Images/f05b.c16", "start": 25053852, "end": 25072278}, {"filename": "/Images/envi.c16", "start": 25072278, "end": 25221126}, {"filename": "/Images/l42c.c16", "start": 25221126, "end": 25232340}, {"filename": "/Images/j05b.c16", "start": 25232340, "end": 25247782}, {"filename": "/Images/h65a.c16", "start": 25247782, "end": 25257064}, {"filename": "/Images/i20a.c16", "start": 25257064, "end": 25262738}, {"filename": "/Images/d04c.c16", "start": 25262738, "end": 25280030}, {"filename": "/Images/k40b.c16", "start": 25280030, "end": 25285704}, {"filename": "/Images/apple.c16", "start": 25285704, "end": 25294726}, {"filename": "/Images/aquatic cave water.c16", "start": 25294726, "end": 29862006}, {"filename": "/Images/l62a.c16", "start": 29862006, "end": 29871354}, {"filename": "/Images/h45c.c16", "start": 29871354, "end": 29884094}, {"filename": "/Images/n02b.c16", "start": 29884094, "end": 29892596}, {"filename": "/Images/grass.c16", "start": 29892596, "end": 29917474}, {"filename": "/Images/graph.c16", "start": 29917474, "end": 30327740}, {"filename": "/Images/d24a.c16", "start": 30327740, "end": 30340102}, {"filename": "/Images/i00c.c16", "start": 30340102, "end": 30345776}, {"filename": "/Images/f44b.c16", "start": 30345776, "end": 30364202}, {"filename": "/Images/world switcher.c16", "start": 30364202, "end": 31910816}, {"filename": "/Images/splash.c16", "start": 31910816, "end": 31911848}, {"filename": "/Images/cameraunit.c16", "start": 31911848, "end": 32339028}, {"filename": "/Images/gumin.c16", "start": 32339028, "end": 32484678}, {"filename": "/Images/meerk.c16", "start": 32484678, "end": 32784888}, {"filename": "/Images/i00a.c16", "start": 32784888, "end": 32790562}, {"filename": "/Images/m50a.c16", "start": 32790562, "end": 32800724}, {"filename": "/Images/h45a.c16", "start": 32800724, "end": 32813464}, {"filename": "/Images/l15a.c16", "start": 32813464, "end": 32843270}, {"filename": "/Images/d04a.c16", "start": 32843270, "end": 32860562}, {"filename": "/Images/002b.c16", "start": 32860562, "end": 32922584}, {"filename": "/Images/l42a.c16", "start": 32922584, "end": 32933798}, {"filename": "/Images/h12a.c16", "start": 32933798, "end": 32948888}, {"filename": "/Images/d12a.c16", "start": 32948888, "end": 32961250}, {"filename": "/Images/h04a.c16", "start": 32961250, "end": 32973990}, {"filename": "/Images/l54a.c16", "start": 32973990, "end": 33003796}, {"filename": "/Images/d45a.c16", "start": 33003796, "end": 33021088}, {"filename": "/Images/aquamites.c16", "start": 33021088, "end": 33026552}, {"filename": "/Images/e00a.c16", "start": 33026552, "end": 33032798}, {"filename": "/Images/a50a.c16", "start": 33032798, "end": 33608704}, {"filename": "/Images/j44a.c16", "start": 33608704, "end": 33624146}, {"filename": "/Images/n14a.c16", "start": 33624146, "end": 33641690}, {"filename": "/Images/b02a.c16", "start": 33641690, "end": 33764840}, {"filename": "/Images/clickhere.c16", "start": 33764840, "end": 33945582}, {"filename": "/Images/f52a.c16", "start": 33945582, "end": 33958732}, {"filename": "/Images/hatch2.c16", "start": 33958732, "end": 35842976}, {"filename": "/Images/pirbubbs.c16", "start": 35842976, "end": 36302720}, {"filename": "/Images/g40a.c16", "start": 36302720, "end": 36310954}, {"filename": "/Images/c10a.c16", "start": 36310954, "end": 36319674}, {"filename": "/Images/f05a.c16", "start": 36319674, "end": 36338100}, {"filename": "/Images/b55a.c16", "start": 36338100, "end": 36726190}, {"filename": "/Images/euro medicine maker.c16", "start": 36726190, "end": 36797518}, {"filename": "/Images/airlock_mid.c16", "start": 36797518, "end": 36920894}, {"filename": "/Images/j05a.c16", "start": 36920894, "end": 36936336}, {"filename": "/Images/n55a.c16", "start": 36936336, "end": 36953880}, {"filename": "/Images/k40a.c16", "start": 36953880, "end": 36959554}, {"filename": "/Images/q00a.C16", "start": 36959554, "end": 36963752}, {"filename": "/Images/002c.c16", "start": 36963752, "end": 37025774}, {"filename": "/Images/n02a.c16", "start": 37025774, "end": 37034276}, {"filename": "/Images/recycler overlay.c16", "start": 37034276, "end": 37038310}, {"filename": "/Images/j52a.c16", "start": 37038310, "end": 37059236}, {"filename": "/Images/choppertoy.c16", "start": 37059236, "end": 37119110}, {"filename": "/Images/022a.c16", "start": 37119110, "end": 37173452}, {"filename": "/Images/f44a.c16", "start": 37173452, "end": 37191878}, {"filename": "/Images/grasshopper.c16", "start": 37191878, "end": 37251180}, {"filename": "/Images/b14a.c16", "start": 37251180, "end": 37645346}, {"filename": "/Images/death_sludge.c16", "start": 37645346, "end": 38207294}, {"filename": "/Images/n05b.c16", "start": 38207294, "end": 38219206}, {"filename": "/Images/h42c.c16", "start": 38219206, "end": 38228488}, {"filename": "/Images/l65a.c16", "start": 38228488, "end": 38239702}, {"filename": "/Images/m20a.c16", "start": 38239702, "end": 38242108}, {"filename": "/Images/progress-es.s16", "start": 38242108, "end": 38436596}, {"filename": "/Images/disease and injury screen.c16", "start": 38436596, "end": 39238692}, {"filename": "/Images/h62a.c16", "start": 39238692, "end": 39246554}, {"filename": "/Images/j02b.c16", "start": 39246554, "end": 39257768}, {"filename": "/Images/l45c.c16", "start": 39257768, "end": 39273210}, {"filename": "/Images/detector.c16", "start": 39273210, "end": 39355724}, {"filename": "/Images/m00c.c16", "start": 39355724, "end": 39359982}, {"filename": "/Images/b44b.c16", "start": 39359982, "end": 39567566}, {"filename": "/Images/Gene splicer overlay.c16", "start": 39567566, "end": 39704688}, {"filename": "/Images/n44b.c16", "start": 39704688, "end": 39718798}, {"filename": "/Images/l24a.c16", "start": 39718798, "end": 39730012}, {"filename": "/Images/a00c.c16", "start": 39730012, "end": 40127166}, {"filename": "/Images/f02b.c16", "start": 40127166, "end": 40140316}, {"filename": "/Images/d62a.c16", "start": 40140316, "end": 40150508}, {"filename": "/Images/greneggmask.c16", "start": 40150508, "end": 40450912}, {"filename": "/Images/Chars.s16", "start": 40450912, "end": 40468326}, {"filename": "/Images/marine room cutout.c16", "start": 40468326, "end": 40479944}, {"filename": "/Images/c40b.c16", "start": 40479944, "end": 40488664}, {"filename": "/Images/a20a.c16", "start": 40488664, "end": 40815434}, {"filename": "/Images/l04c.c16", "start": 40815434, "end": 40830876}, {"filename": "/Images/d42c.c16", "start": 40830876, "end": 40843238}, {"filename": "/Images/b05b.c16", "start": 40843238, "end": 41029644}, {"filename": "/Images/b05c.c16", "start": 41029644, "end": 41216050}, {"filename": "/Images/d42b.c16", "start": 41216050, "end": 41228412}, {"filename": "/Images/f22a.c16", "start": 41228412, "end": 41239216}, {"filename": "/Images/044a.c16", "start": 41239216, "end": 41316598}, {"filename": "/Images/l04b.c16", "start": 41316598, "end": 41332040}, {"filename": "/Images/c40c.c16", "start": 41332040, "end": 41340760}, {"filename": "/Images/grabber.c16", "start": 41340760, "end": 41650846}, {"filename": "/Images/tendril.c16", "start": 41650846, "end": 41717772}, {"filename": "/Images/b25a.c16", "start": 41717772, "end": 41857674}, {"filename": "/Images/f02c.c16", "start": 41857674, "end": 41870824}, {"filename": "/Images/a00b.c16", "start": 41870824, "end": 42247838}, {"filename": "/Images/c60a.c16", "start": 42247838, "end": 42256558}, {"filename": "/Images/n44c.c16", "start": 42256558, "end": 42270668}, {"filename": "/Images/medipod.c16", "start": 42270668, "end": 42851828}, {"filename": "/Images/sidebar.c16", "start": 42851828, "end": 42977544}, {"filename": "/Images/b44c.c16", "start": 42977544, "end": 43185128}, {"filename": "/Images/005a.c16", "start": 43185128, "end": 43262510}, {"filename": "/Images/m00b.c16", "start": 43262510, "end": 43266768}, {"filename": "/Images/mediscan.c16", "start": 43266768, "end": 43293780}, {"filename": "/Images/l45b.c16", "start": 43293780, "end": 43309222}, {"filename": "/Images/j02c.c16", "start": 43309222, "end": 43320436}, {"filename": "/Images/b64a.c16", "start": 43320436, "end": 43472018}, {"filename": "/Images/052a.c16", "start": 43472018, "end": 43534040}, {"filename": "/Images/syringe.c16", "start": 43534040, "end": 44143046}, {"filename": "/Images/j22a.c16", "start": 44143046, "end": 44152394}, {"filename": "/Images/bal2.c16", "start": 44152394, "end": 44170884}, {"filename": "/Images/h42b.c16", "start": 44170884, "end": 44180166}, {"filename": "/Images/n05c.c16", "start": 44180166, "end": 44192078}, {"filename": "/Images/cuttlefish.c16", "start": 44192078, "end": 44576268}, {"filename": "/Images/ettin_doors.c16", "start": 44576268, "end": 44692832}, {"filename": "/Images/n05a.c16", "start": 44692832, "end": 44704744}, {"filename": "/Images/j55a.c16", "start": 44704744, "end": 44734674}, {"filename": "/Images/siren.c16", "start": 44734674, "end": 44778898}, {"filename": "/Images/k10a.c16", "start": 44778898, "end": 44786280}, {"filename": "/Images/norn platform.c16", "start": 44786280, "end": 44941868}, {"filename": "/Images/025a.c16", "start": 44941868, "end": 45003890}, {"filename": "/Images/lung overlay.c16", "start": 45003890, "end": 45057968}, {"filename": "/Images/j02a.c16", "start": 45057968, "end": 45069182}, {"filename": "/Images/n52a.c16", "start": 45069182, "end": 45081556}, {"filename": "/Images/b44a.c16", "start": 45081556, "end": 45278282}, {"filename": "/Images/f14a.c16", "start": 45278282, "end": 45296708}, {"filename": "/Images/neon.c16", "start": 45296708, "end": 45351138}, {"filename": "/Images/005c.c16", "start": 45351138, "end": 45428520}, {"filename": "/Images/plnt.c16", "start": 45428520, "end": 45478424}, {"filename": "/Images/suckerplant.c16", "start": 45478424, "end": 46109638}, {"filename": "/Images/n44a.c16", "start": 46109638, "end": 46123748}, {"filename": "/Images/j14a.c16", "start": 46123748, "end": 46153678}, {"filename": "/Images/f02a.c16", "start": 46153678, "end": 46166828}, {"filename": "/Images/064a.c16", "start": 46166828, "end": 46228850}, {"filename": "/Images/b52a.c16", "start": 46228850, "end": 46490500}, {"filename": "/Images/injection.c16", "start": 46490500, "end": 47081390}, {"filename": "/Images/Transporter pod.c16", "start": 47081390, "end": 47363408}, {"filename": "/Images/c40a.c16", "start": 47363408, "end": 47372128}, {"filename": "/Images/g10a.c16", "start": 47372128, "end": 47380362}, {"filename": "/Images/b05a.c16", "start": 47380362, "end": 47559888}, {"filename": "/Images/f55a.c16", "start": 47559888, "end": 47578314}, {"filename": "/Images/044c.c16", "start": 47578314, "end": 47655696}, {"filename": "/Images/044b.c16", "start": 47655696, "end": 47733078}, {"filename": "/Images/d42a.c16", "start": 47733078, "end": 47745440}, {"filename": "/Images/click_here.c16", "start": 47745440, "end": 47846988}, {"filename": "/Images/l04a.c16", "start": 47846988, "end": 47862430}, {"filename": "/Images/h54a.c16", "start": 47862430, "end": 47883228}, {"filename": "/Images/mediporter.c16", "start": 47883228, "end": 47910256}, {"filename": "/Images/creature_history.c16", "start": 47910256, "end": 49579198}, {"filename": "/Images/button.c16", "start": 49579198, "end": 49582032}, {"filename": "/Images/d15a.c16", "start": 49582032, "end": 49599324}, {"filename": "/Images/infection detector.c16", "start": 49599324, "end": 49630318}, {"filename": "/Images/a00a.c16", "start": 49630318, "end": 49993558}, {"filename": "/Images/bluebell.c16", "start": 49993558, "end": 50022638}, {"filename": "/Images/e50a.c16", "start": 50022638, "end": 50032804}, {"filename": "/Images/snail.c16", "start": 50032804, "end": 50170934}, {"filename": "/Images/tank.c16", "start": 50170934, "end": 50186452}, {"filename": "/Images/m00a.c16", "start": 50186452, "end": 50190710}, {"filename": "/Images/i50a.c16", "start": 50190710, "end": 50198068}, {"filename": "/Images/005b.c16", "start": 50198068, "end": 50275450}, {"filename": "/Images/gender.c16", "start": 50275450, "end": 50276576}, {"filename": "/Images/l45a.c16", "start": 50276576, "end": 50292018}, {"filename": "/Images/h15a.c16", "start": 50292018, "end": 50312816}, {"filename": "/Images/logicgates.c16", "start": 50312816, "end": 50318578}, {"filename": "/Images/d54a.c16", "start": 50318578, "end": 50335870}, {"filename": "/Images/Kobold.c16", "start": 50335870, "end": 50768848}, {"filename": "/Images/h42a.c16", "start": 50768848, "end": 50778130}, {"filename": "/Images/l12a.c16", "start": 50778130, "end": 50798930}, {"filename": "/Images/hedgehog.c16", "start": 50798930, "end": 50931140}, {"filename": "/Images/d55a.c16", "start": 50931140, "end": 50948432}, {"filename": "/Images/crypt2.c16", "start": 50948432, "end": 53312166}, {"filename": "/Images/butterfly2.c16", "start": 53312166, "end": 53361940}, {"filename": "/Images/a40a.c16", "start": 53361940, "end": 53776392}, {"filename": "/Images/e10a.c16", "start": 53776392, "end": 53786558}, {"filename": "/Images/hhog.c16", "start": 53786558, "end": 54077662}, {"filename": "/Images/004b.c16", "start": 54077662, "end": 54155044}, {"filename": "/Images/d02a.c16", "start": 54155044, "end": 54167406}, {"filename": "/Images/bubblicious.c16", "start": 54167406, "end": 54170300}, {"filename": "/Images/woodpigeon.c16", "start": 54170300, "end": 54395234}, {"filename": "/Images/l44a.c16", "start": 54395234, "end": 54410676}, {"filename": "/Images/h14a.c16", "start": 54410676, "end": 54431474}, {"filename": "/Images/creator.c16", "start": 54431474, "end": 55233048}, {"filename": "/Images/d14a.c16", "start": 55233048, "end": 55250340}, {"filename": "/Images/liftcall.c16", "start": 55250340, "end": 55282392}, {"filename": "/Images/h02a.c16", "start": 55282392, "end": 55291674}, {"filename": "/Images/l52a.c16", "start": 55291674, "end": 55312474}, {"filename": "/Images/env_con.c16", "start": 55312474, "end": 55617304}, {"filename": "/Images/palmplant.c16", "start": 55617304, "end": 55651586}, {"filename": "/Images/m40a.c16", "start": 55651586, "end": 55655844}, {"filename": "/Images/i10a.c16", "start": 55655844, "end": 55663202}, {"filename": "/Images/045b.c16", "start": 55663202, "end": 55740584}, {"filename": "/Images/l05a.c16", "start": 55740584, "end": 55756026}, {"filename": "/Images/h55a.c16", "start": 55756026, "end": 55776824}, {"filename": "/Images/j42a.c16", "start": 55776824, "end": 55788038}, {"filename": "/Images/n12a.c16", "start": 55788038, "end": 55800412}, {"filename": "/Images/airlock agent.c16", "start": 55800412, "end": 57070830}, {"filename": "/Images/b04a.c16", "start": 57070830, "end": 57250356}, {"filename": "/Images/robot_toy.c16", "start": 57250356, "end": 57336228}, {"filename": "/Images/f54a.c16", "start": 57336228, "end": 57354654}, {"filename": "/Images/045c.c16", "start": 57354654, "end": 57432036}, {"filename": "/Images/creator_remove_button.c16", "start": 57432036, "end": 57437792}, {"filename": "/Images/n45a.c16", "start": 57437792, "end": 57451902}, {"filename": "/Images/delayer.c16", "start": 57451902, "end": 57527496}, {"filename": "/Images/j15a.c16", "start": 57527496, "end": 57557426}, {"filename": "/Images/o00a.C16", "start": 57557426, "end": 57574200}, {"filename": "/Images/k50a.c16", "start": 57574200, "end": 57581582}, {"filename": "/Images/065a.c16", "start": 57581582, "end": 57643604}, {"filename": "/Images/c00a.c16", "start": 57643604, "end": 57652324}, {"filename": "/Images/aquamite_maker.c16", "start": 57652324, "end": 57745342}, {"filename": "/Images/g50a.c16", "start": 57745342, "end": 57753576}, {"filename": "/Images/b45a.c16", "start": 57753576, "end": 57950302}, {"filename": "/Images/f15a.c16", "start": 57950302, "end": 57968728}, {"filename": "/Images/004c.c16", "start": 57968728, "end": 58046110}, {"filename": "/Images/n04a.c16", "start": 58046110, "end": 58058022}, {"filename": "/Images/norn to grendel door.c16", "start": 58058022, "end": 58312940}, {"filename": "/Images/j54a.c16", "start": 58312940, "end": 58342870}, {"filename": "/Images/f42a.c16", "start": 58342870, "end": 58356020}, {"filename": "/Images/024a.c16", "start": 58356020, "end": 58418042}, {"filename": "/Images/b12a.c16", "start": 58418042, "end": 58674736}, {"filename": "/Images/sludgegun.c16", "start": 58674736, "end": 58993072}, {"filename": "/Images/bone.c16", "start": 58993072, "end": 58998540}, {"filename": "/Images/new_agent_help.c16", "start": 58998540, "end": 59248742}, {"filename": "/Images/b65a.c16", "start": 59248742, "end": 59400324}, {"filename": "/Images/medical_main.c16", "start": 59400324, "end": 59635132}, {"filename": "/Images/f42c.c16", "start": 59635132, "end": 59648282}, {"filename": "/Images/progress-de.s16", "start": 59648282, "end": 59840850}, {"filename": "/Images/butterfly1.c16", "start": 59840850, "end": 59958666}, {"filename": "/Images/a40b.c16", "start": 59958666, "end": 60319684}, {"filename": "/Images/c20a.c16", "start": 60319684, "end": 60328404}, {"filename": "/Images/n04c.c16", "start": 60328404, "end": 60340316}, {"filename": "/Images/crypt.c16", "start": 60340316, "end": 62181546}, {"filename": "/Images/b45c.c16", "start": 62181546, "end": 62389130}, {"filename": "/Images/d02b.c16", "start": 62389130, "end": 62401492}, {"filename": "/Images/f62a.c16", "start": 62401492, "end": 62412296}, {"filename": "/Images/hover vehicle.c16", "start": 62412296, "end": 62478282}, {"filename": "/Images/004a.c16", "start": 62478282, "end": 62555664}, {"filename": "/Images/l44b.c16", "start": 62555664, "end": 62571106}, {"filename": "/Images/c00c.c16", "start": 62571106, "end": 62579826}, {"filename": "/Images/b24a.c16", "start": 62579826, "end": 62719728}, {"filename": "/Images/012a.c16", "start": 62719728, "end": 62781750}, {"filename": "/Images/j62a.c16", "start": 62781750, "end": 62791098}, {"filename": "/Images/h02b.c16", "start": 62791098, "end": 62800380}, {"filename": "/Images/n45c.c16", "start": 62800380, "end": 62814490}, {"filename": "/Images/coral.c16", "start": 62814490, "end": 62816660}, {"filename": "/Images/b04c.c16", "start": 62816660, "end": 63003066}, {"filename": "/Images/045a.c16", "start": 63003066, "end": 63080448}, {"filename": "/Images/m40b.c16", "start": 63080448, "end": 63084706}, {"filename": "/Images/l05b.c16", "start": 63084706, "end": 63100148}, {"filename": "/Images/j42c.c16", "start": 63100148, "end": 63111362}, {"filename": "/Images/beetle.c16", "start": 63111362, "end": 63150576}, {"filename": "/Images/h22a.c16", "start": 63150576, "end": 63158438}, {"filename": "/Images/j42b.c16", "start": 63158438, "end": 63169652}, {"filename": "/Images/l05c.c16", "start": 63169652, "end": 63185094}, {"filename": "/Images/m40c.c16", "start": 63185094, "end": 63189352}, {"filename": "/Images/b04b.c16", "start": 63189352, "end": 63375758}, {"filename": "/Images/lightbox.c16", "start": 63375758, "end": 63390036}, {"filename": "/Images/n45b.c16", "start": 63390036, "end": 63404146}, {"filename": "/Images/h02c.c16", "start": 63404146, "end": 63413428}, {"filename": "/Images/l25a.c16", "start": 63413428, "end": 63424642}, {"filename": "/Images/m60a.c16", "start": 63424642, "end": 63427104}, {"filename": "/Images/bacteria.c16", "start": 63427104, "end": 63427188}, {"filename": "/Images/hand.s16", "start": 63427188, "end": 63522298}, {"filename": "/Images/c00b.c16", "start": 63522298, "end": 63531018}, {"filename": "/Images/zzzz.c16", "start": 63531018, "end": 63546500}, {"filename": "/Images/a60a.c16", "start": 63546500, "end": 63878776}, {"filename": "/Images/l44c.c16", "start": 63878776, "end": 63894218}, {"filename": "/Images/euro welcome screen.c16", "start": 63894218, "end": 65913424}, {"filename": "/Images/d02c.c16", "start": 65913424, "end": 65925786}, {"filename": "/Images/b45b.c16", "start": 65925786, "end": 66133370}, {"filename": "/Images/uglee.c16", "start": 66133370, "end": 66539864}, {"filename": "/Images/n04b.c16", "start": 66539864, "end": 66551776}, {"filename": "/Images/l64a.c16", "start": 66551776, "end": 66562990}, {"filename": "/Images/a40c.c16", "start": 66562990, "end": 66955832}, {"filename": "/Images/f42b.c16", "start": 66955832, "end": 66968982}, {"filename": "/Images/d22a.c16", "start": 66968982, "end": 66979174}, {"filename": "/Images/flutterby.c16", "start": 66979174, "end": 67044730}, {"filename": "/Images/progress-it.s16", "start": 67044730, "end": 67237298}, {"filename": "/Images/launcher.c16", "start": 67237298, "end": 67354922}, {"filename": "/Images/Gene Splicer Panel.c16", "start": 67354922, "end": 67927698}, {"filename": "/Images/ball.c16", "start": 67927698, "end": 67967080}, {"filename": "/Images/h40b.c16", "start": 67967080, "end": 67973326}, {"filename": "/Images/j20a.c16", "start": 67973326, "end": 67980894}, {"filename": "/Images/g04c.c16", "start": 67980894, "end": 67998186}, {"filename": "/Images/k65a.c16", "start": 67998186, "end": 68006470}, {"filename": "/Images/Nornatmos.c16", "start": 68006470, "end": 68855974}, {"filename": "/Images/050a.c16", "start": 68855974, "end": 68902636}, {"filename": "/Images/i05b.c16", "start": 68902636, "end": 68913946}, {"filename": "/Images/e44b.c16", "start": 68913946, "end": 68926686}, {"filename": "/Images/g24a.c16", "start": 68926686, "end": 68939048}, {"filename": "/Images/wasp.c16", "start": 68939048, "end": 68961146}, {"filename": "/Images/j00c.c16", "start": 68961146, "end": 68968714}, {"filename": "/Images/k45c.c16", "start": 68968714, "end": 68980024}, {"filename": "/Images/m02b.c16", "start": 68980024, "end": 68985998}, {"filename": "/Images/infobar.c16", "start": 68985998, "end": 69018094}, {"filename": "/Images/teleport.c16", "start": 69018094, "end": 69543500}, {"filename": "/Images/c62a.c16", "start": 69543500, "end": 69554346}, {"filename": "/Images/a02b.c16", "start": 69554346, "end": 70159946}, {"filename": "/Images/g45c.c16", "start": 70159946, "end": 70177238}, {"filename": "/Images/recycler2.c16", "start": 70177238, "end": 70670866}, {"filename": "/Images/k24a.c16", "start": 70670866, "end": 70679150}, {"filename": "/Images/pregnancy indication device.c16", "start": 70679150, "end": 70900634}, {"filename": "/Images/f00c.c16", "start": 70900634, "end": 70909384}, {"filename": "/Images/i44b.c16", "start": 70909384, "end": 70920694}, {"filename": "/Images/medigraph.c16", "start": 70920694, "end": 71281360}, {"filename": "/Images/pumperspikel.c16", "start": 71281360, "end": 71351928}, {"filename": "/Images/knowledge.c16", "start": 71351928, "end": 71495330}, {"filename": "/Images/e05b.c16", "start": 71495330, "end": 71508070}, {"filename": "/Images/c42c.c16", "start": 71508070, "end": 71521294}, {"filename": "/Images/g65a.c16", "start": 71521294, "end": 71533656}, {"filename": "/Images/nidoor.c16", "start": 71533656, "end": 71557920}, {"filename": "/Images/f20a.c16", "start": 71557920, "end": 71566670}, {"filename": "/Images/k04c.c16", "start": 71566670, "end": 71577980}, {"filename": "/Images/d40b.c16", "start": 71577980, "end": 71586214}, {"filename": "/Images/medtextbox.c16", "start": 71586214, "end": 71638412}, {"filename": "/Images/i64a.c16", "start": 71638412, "end": 71646696}, {"filename": "/Images/d40c.c16", "start": 71646696, "end": 71654930}, {"filename": "/Images/k04b.c16", "start": 71654930, "end": 71666240}, {"filename": "/Images/a22a.c16", "start": 71666240, "end": 72083284}, {"filename": "/Images/c42b.c16", "start": 72083284, "end": 72096508}, {"filename": "/Images/e05c.c16", "start": 72096508, "end": 72109248}, {"filename": "/Images/PlusMinus.c16", "start": 72109248, "end": 72125564}, {"filename": "/Images/d60a.c16", "start": 72125564, "end": 72133798}, {"filename": "/Images/HeatherOnTransparentChars.s16", "start": 72133798, "end": 72166170}, {"filename": "/Images/i44c.c16", "start": 72166170, "end": 72177480}, {"filename": "/Images/f00b.c16", "start": 72177480, "end": 72186230}, {"filename": "/Images/g45b.c16", "start": 72186230, "end": 72203522}, {"filename": "/Images/a02c.c16", "start": 72203522, "end": 72806158}, {"filename": "/Images/e25a.c16", "start": 72806158, "end": 72815440}, {"filename": "/Images/i25a.c16", "start": 72815440, "end": 72823724}, {"filename": "/Images/Pick-ups2.c16", "start": 72823724, "end": 73307176}, {"filename": "/Images/fxgl.c16", "start": 73307176, "end": 73357032}, {"filename": "/Images/m02c.c16", "start": 73357032, "end": 73363006}, {"filename": "/Images/k45b.c16", "start": 73363006, "end": 73374316}, {"filename": "/Images/medical_control_panel_buttons.c16", "start": 73374316, "end": 73444644}, {"filename": "/Images/j00b.c16", "start": 73444644, "end": 73452212}, {"filename": "/Images/h60a.c16", "start": 73452212, "end": 73458458}, {"filename": "/Images/e44c.c16", "start": 73458458, "end": 73471198}, {"filename": "/Images/attention.c16", "start": 73471198, "end": 73475422}, {"filename": "/Images/i05c.c16", "start": 73475422, "end": 73486732}, {"filename": "/Images/m22a.c16", "start": 73486732, "end": 73489522}, {"filename": "/Images/g04b.c16", "start": 73489522, "end": 73506814}, {"filename": "/Images/e64a.c16", "start": 73506814, "end": 73516096}, {"filename": "/Images/h40c.c16", "start": 73516096, "end": 73522342}, {"filename": "/Images/drive_images.c16", "start": 73522342, "end": 73593770}, {"filename": "/Images/h40a.c16", "start": 73593770, "end": 73600016}, {"filename": "/Images/l10a.c16", "start": 73600016, "end": 73613514}, {"filename": "/Images/i05a.c16", "start": 73613514, "end": 73624824}, {"filename": "/Images/m55a.c16", "start": 73624824, "end": 73646602}, {"filename": "/Images/graz.c16", "start": 73646602, "end": 74514546}, {"filename": "/Images/engscen.c16", "start": 74514546, "end": 74523774}, {"filename": "/Images/ettinseedbank.c16", "start": 74523774, "end": 74572876}, {"filename": "/Images/e44a.c16", "start": 74572876, "end": 74585616}, {"filename": "/Images/a14a.c16", "start": 74585616, "end": 75874126}, {"filename": "/Images/m02a.c16", "start": 75874126, "end": 75880100}, {"filename": "/Images/i52a.c16", "start": 75880100, "end": 75891412}, {"filename": "/Images/numeric output tool.c16", "start": 75891412, "end": 75909144}, {"filename": "/Images/cmsh.c16", "start": 75909144, "end": 75955664}, {"filename": "/Images/aquatic_population_monitoring_device.c16", "start": 75955664, "end": 76125016}, {"filename": "/Images/a02a.c16", "start": 76125016, "end": 76704202}, {"filename": "/Images/e52a.c16", "start": 76704202, "end": 76719276}, {"filename": "/Images/i44a.c16", "start": 76719276, "end": 76730586}, {"filename": "/Images/m14a.c16", "start": 76730586, "end": 76752364}, {"filename": "/Images/indicator.c16", "start": 76752364, "end": 76760604}, {"filename": "/Images/dragonfly.c16", "start": 76760604, "end": 76832162}, {"filename": "/Images/e05a.c16", "start": 76832162, "end": 76844902}, {"filename": "/Images/a55a.c16", "start": 76844902, "end": 78227892}, {"filename": "/Images/gene pod.c16", "start": 78227892, "end": 80253932}, {"filename": "/Images/d40a.c16", "start": 80253932, "end": 80262166}, {"filename": "/Images/k04a.c16", "start": 80262166, "end": 80273476}, {"filename": "/Images/waterplant.c16", "start": 80273476, "end": 80414452}, {"filename": "/Images/c42a.c16", "start": 80414452, "end": 80427676}, {"filename": "/Images/g12a.c16", "start": 80427676, "end": 80440038}, {"filename": "/Images/sli4.c16", "start": 80440038, "end": 80454894}, {"filename": "/Images/smalltextbox.c16", "start": 80454894, "end": 80468432}, {"filename": "/Images/fishbowl.c16", "start": 80468432, "end": 80489492}, {"filename": "/Images/f00a.c16", "start": 80489492, "end": 80498242}, {"filename": "/Images/b50a.c16", "start": 80498242, "end": 80658116}, {"filename": "/Images/Norn seed launcher.c16", "start": 80658116, "end": 81233746}, {"filename": "/Images/g45a.c16", "start": 81233746, "end": 81251038}, {"filename": "/Images/c15a.c16", "start": 81251038, "end": 81269560}, {"filename": "/Images/nudibranch.c16", "start": 81269560, "end": 81464346}, {"filename": "/Images/rocklice.c16", "start": 81464346, "end": 81653392}, {"filename": "/Images/k45a.c16", "start": 81653392, "end": 81664702}, {"filename": "/Images/j00a.c16", "start": 81664702, "end": 81672270}, {"filename": "/Images/n50a.c16", "start": 81672270, "end": 81680746}, {"filename": "/Images/algae.c16", "start": 81680746, "end": 81691982}, {"filename": "/Images/beatbox.c16", "start": 81691982, "end": 81765808}, {"filename": "/Images/opalsponge.c16", "start": 81765808, "end": 81959532}, {"filename": "/Images/agent_help.c16", "start": 81959532, "end": 82480476}, {"filename": "/Images/ettn.c16", "start": 82480476, "end": 82483744}, {"filename": "/Images/vents.c16", "start": 82483744, "end": 83461758}, {"filename": "/Images/k12a.c16", "start": 83461758, "end": 83473094}, {"filename": "/Images/g04a.c16", "start": 83473094, "end": 83490386}, {"filename": "/Images/c54a.c16", "start": 83490386, "end": 83508908}, {"filename": "/Images/rockcut1.c16", "start": 83508908, "end": 83532960}, {"filename": "/Images/f40a.c16", "start": 83532960, "end": 83541710}, {"filename": "/Images/b10a.c16", "start": 83541710, "end": 83695484}, {"filename": "/Images/g05a.c16", "start": 83695484, "end": 83712776}, {"filename": "/Images/c55a.c16", "start": 83712776, "end": 83731298}, {"filename": "/Images/porc.c16", "start": 83731298, "end": 83847652}, {"filename": "/Images/progress-ru.s16", "start": 83847652, "end": 84040220}, {"filename": "/Images/k44a.c16", "start": 84040220, "end": 84051530}, {"filename": "/Images/c02a.c16", "start": 84051530, "end": 84064754}, {"filename": "/Images/g52a.c16", "start": 84064754, "end": 84077116}, {"filename": "/Images/lift(old).c16", "start": 84077116, "end": 84373264}, {"filename": "/Images/grendeleggbank.c16", "start": 84373264, "end": 84467408}, {"filename": "/Images/k52a.c16", "start": 84467408, "end": 84478744}, {"filename": "/Images/g44a.c16", "start": 84478744, "end": 84496036}, {"filename": "/Images/c14a.c16", "start": 84496036, "end": 84514558}, {"filename": "/Images/robin.c16", "start": 84514558, "end": 84729112}, {"filename": "/Images/king.c16", "start": 84729112, "end": 84913064}, {"filename": "/Images/k05a.c16", "start": 84913064, "end": 84924374}, {"filename": "/Images/fungi.c16", "start": 84924374, "end": 85020710}, {"filename": "/Images/grenscen.c16", "start": 85020710, "end": 85316082}, {"filename": "/Images/j40a.c16", "start": 85316082, "end": 85323650}, {"filename": "/Images/p00a.C16", "start": 85323650, "end": 85340424}, {"filename": "/Images/n10a.c16", "start": 85340424, "end": 85348900}, {"filename": "/Images/rabbit.c16", "start": 85348900, "end": 85394418}, {"filename": "/Images/e04a.c16", "start": 85394418, "end": 85407158}, {"filename": "/Images/a54a.c16", "start": 85407158, "end": 86790148}, {"filename": "/Images/carr.c16", "start": 86790148, "end": 86805708}, {"filename": "/Images/m42a.c16", "start": 86805708, "end": 86811682}, {"filename": "/Images/i12a.c16", "start": 86811682, "end": 86822994}, {"filename": "/Images/favouriteplaces.c16", "start": 86822994, "end": 86997362}, {"filename": "/Images/crypt2 patch.c16", "start": 86997362, "end": 86997662}, {"filename": "/Images/h00a.c16", "start": 86997662, "end": 87003908}, {"filename": "/Images/l50a.c16", "start": 87003908, "end": 87017406}, {"filename": "/Images/i45a.c16", "start": 87017406, "end": 87028716}, {"filename": "/Images/m15a.c16", "start": 87028716, "end": 87050494}, {"filename": "/Images/trapper.c16", "start": 87050494, "end": 87168584}, {"filename": "/Images/BlackOnWhiteChars.s16", "start": 87168584, "end": 87182098}, {"filename": "/Images/e45a.c16", "start": 87182098, "end": 87194838}, {"filename": "/Images/a15a.c16", "start": 87194838, "end": 88483348}, {"filename": "/Images/d00a.c16", "start": 88483348, "end": 88491582}, {"filename": "/Images/Cursor.c16", "start": 88491582, "end": 88493676}, {"filename": "/Images/a42a.c16", "start": 88493676, "end": 89159370}, {"filename": "/Images/e12a.c16", "start": 89159370, "end": 89174444}, {"filename": "/Images/i04a.c16", "start": 89174444, "end": 89185754}, {"filename": "/Images/m54a.c16", "start": 89185754, "end": 89207532}, {"filename": "/Images/d20a.c16", "start": 89207532, "end": 89215766}, {"filename": "/Images/i04c.c16", "start": 89215766, "end": 89227076}, {"filename": "/Images/launcher nozzle.c16", "start": 89227076, "end": 89293204}, {"filename": "/Images/f40b.c16", "start": 89293204, "end": 89301954}, {"filename": "/Images/g05b.c16", "start": 89301954, "end": 89319246}, {"filename": "/Images/a42c.c16", "start": 89319246, "end": 89957978}, {"filename": "/Images/e65a.c16", "start": 89957978, "end": 89967260}, {"filename": "/Images/redhot.c16", "start": 89967260, "end": 90021398}, {"filename": "/Images/i24a.c16", "start": 90021398, "end": 90029682}, {"filename": "/Images/d00c.c16", "start": 90029682, "end": 90037916}, {"filename": "/Images/k44b.c16", "start": 90037916, "end": 90049226}, {"filename": "/Images/a62a.c16", "start": 90049226, "end": 90474374}, {"filename": "/Images/c02b.c16", "start": 90474374, "end": 90487598}, {"filename": "/Images/e45c.c16", "start": 90487598, "end": 90500338}, {"filename": "/Images/aquatic tunnel gates.c16", "start": 90500338, "end": 90749752}, {"filename": "/Images/i45c.c16", "start": 90749752, "end": 90761062}, {"filename": "/Images/m62a.c16", "start": 90761062, "end": 90763852}, {"filename": "/Images/medicine maker.c16", "start": 90763852, "end": 90829002}, {"filename": "/Images/g44b.c16", "start": 90829002, "end": 90846294}, {"filename": "/Images/e24a.c16", "start": 90846294, "end": 90855576}, {"filename": "/Images/plant.c16", "start": 90855576, "end": 90862766}, {"filename": "/Images/h00c.c16", "start": 90862766, "end": 90869012}, {"filename": "/Images/euro scgg.c16", "start": 90869012, "end": 91059968}, {"filename": "/Images/bioenergy.c16", "start": 91059968, "end": 91078598}, {"filename": "/Images/i65a.c16", "start": 91078598, "end": 91086882}, {"filename": "/Images/m42c.c16", "start": 91086882, "end": 91092856}, {"filename": "/Images/k05b.c16", "start": 91092856, "end": 91104166}, {"filename": "/Images/j40b.c16", "start": 91104166, "end": 91111734}, {"filename": "/Images/h20a.c16", "start": 91111734, "end": 91117980}, {"filename": "/Images/e04c.c16", "start": 91117980, "end": 91130720}, {"filename": "/Images/e04b.c16", "start": 91130720, "end": 91143460}, {"filename": "/Images/g64a.c16", "start": 91143460, "end": 91155822}, {"filename": "/Images/j40c.c16", "start": 91155822, "end": 91163390}, {"filename": "/Images/surface.c16", "start": 91163390, "end": 92451212}, {"filename": "/Images/k05c.c16", "start": 92451212, "end": 92462522}, {"filename": "/Images/m42b.c16", "start": 92462522, "end": 92468496}, {"filename": "/Images/WhiteOnTransparentPasswordChars.s16", "start": 92468496, "end": 92480790}, {"filename": "/Images/h00b.c16", "start": 92480790, "end": 92487036}, {"filename": "/Images/j60a.c16", "start": 92487036, "end": 92494604}, {"filename": "/Images/g44c.c16", "start": 92494604, "end": 92511896}, {"filename": "/Images/k25a.c16", "start": 92511896, "end": 92520180}, {"filename": "/Images/010a.c16", "start": 92520180, "end": 92566842}, {"filename": "/Images/i45b.c16", "start": 92566842, "end": 92578152}, {"filename": "/Images/e45b.c16", "start": 92578152, "end": 92590892}, {"filename": "/Images/c02c.c16", "start": 92590892, "end": 92604116}, {"filename": "/Images/g25a.c16", "start": 92604116, "end": 92616478}, {"filename": "/Images/contactsensor.c16", "start": 92616478, "end": 92648768}, {"filename": "/Images/f60a.c16", "start": 92648768, "end": 92657518}, {"filename": "/Images/GUI1.c16", "start": 92657518, "end": 93071324}, {"filename": "/Images/k44c.c16", "start": 93071324, "end": 93082634}, {"filename": "/Images/d00b.c16", "start": 93082634, "end": 93090868}, {"filename": "/Images/c22a.c16", "start": 93090868, "end": 93101714}, {"filename": "/Images/a42b.c16", "start": 93101714, "end": 93688574}, {"filename": "/Images/g05c.c16", "start": 93688574, "end": 93705866}, {"filename": "/Images/k64a.c16", "start": 93705866, "end": 93714150}, {"filename": "/Images/gnarl.c16", "start": 93714150, "end": 94389072}, {"filename": "/Images/f40c.c16", "start": 94389072, "end": 94397822}, {"filename": "/Images/progress-fr.s16", "start": 94397822, "end": 94590390}, {"filename": "/Images/i04b.c16", "start": 94590390, "end": 94601700}, {"filename": "/Images/radio.c16", "start": 94601700, "end": 94623590}, {"filename": "/Images/BlackOnTransparentChars.s16", "start": 94623590, "end": 94655962}, {"filename": "/Images/loo_.c16", "start": 94655962, "end": 94662174}, {"filename": "/Images/a45a.c16", "start": 94662174, "end": 95639072}, {"filename": "/Images/e15a.c16", "start": 95639072, "end": 95659878}, {"filename": "/Images/d50a.c16", "start": 95659878, "end": 95668112}, {"filename": "/Images/e42a.c16", "start": 95668112, "end": 95677394}, {"filename": "/Images/a12a.c16", "start": 95677394, "end": 96553958}, {"filename": "/Images/m04a.c16", "start": 96553958, "end": 96561748}, {"filename": "/Images/i54a.c16", "start": 96561748, "end": 96577792}, {"filename": "/Images/graphing.c16", "start": 96577792, "end": 97440900}, {"filename": "/Images/a04a.c16", "start": 97440900, "end": 98285830}, {"filename": "/Images/learning machine text part.c16", "start": 98285830, "end": 98299362}, {"filename": "/Images/e54a.c16", "start": 98299362, "end": 98320168}, {"filename": "/Images/i42a.c16", "start": 98320168, "end": 98328452}, {"filename": "/Images/m12a.c16", "start": 98328452, "end": 98343876}, {"filename": "/Images/spacetoy.c16", "start": 98343876, "end": 98368716}, {"filename": "/Images/l00a.c16", "start": 98368716, "end": 98376284}, {"filename": "/Images/h50a.c16", "start": 98376284, "end": 98386442}, {"filename": "/Images/m45a.c16", "start": 98386442, "end": 98394232}, {"filename": "/Images/infinite_cheese_machine.c16", "start": 98394232, "end": 99367374}, {"filename": "/Images/040b.c16", "start": 99367374, "end": 99414036}, {"filename": "/Images/i15a.c16", "start": 99414036, "end": 99430080}, {"filename": "/Images/desertgrass.c16", "start": 99430080, "end": 99450910}, {"filename": "/Images/k02a.c16", "start": 99450910, "end": 99459194}, {"filename": "/Images/040c.c16", "start": 99459194, "end": 99505856}, {"filename": "/Images/rock.c16", "start": 99505856, "end": 99513192}, {"filename": "/Images/c44a.c16", "start": 99513192, "end": 99531714}, {"filename": "/Images/g14a.c16", "start": 99531714, "end": 99549006}, {"filename": "/Images/anti-infection spray.c16", "start": 99549006, "end": 99586944}, {"filename": "/Images/injection text part.c16", "start": 99586944, "end": 99603196}, {"filename": "/Images/cacbana.c16", "start": 99603196, "end": 99794128}, {"filename": "/Images/volcano.c16", "start": 99794128, "end": 108546274}, {"filename": "/Images/speech_bubbles.c16", "start": 108546274, "end": 108667324}, {"filename": "/Images/k55a.c16", "start": 108667324, "end": 108683346}, {"filename": "/Images/060a.c16", "start": 108683346, "end": 108730008}, {"filename": "/Images/n40a.c16", "start": 108730008, "end": 108736746}, {"filename": "/Images/j10a.c16", "start": 108736746, "end": 108750552}, {"filename": "/Images/blnk.c16", "start": 108750552, "end": 108752170}, {"filename": "/Images/b40a.c16", "start": 108752170, "end": 108835068}, {"filename": "/Images/balloonbug.c16", "start": 108835068, "end": 108864298}, {"filename": "/Images/f10a.c16", "start": 108864298, "end": 108873048}, {"filename": "/Images/c05a.c16", "start": 108873048, "end": 108891570}, {"filename": "/Images/g55a.c16", "start": 108891570, "end": 108908862}, {"filename": "/Images/ant.c16", "start": 108908862, "end": 108982200}, {"filename": "/Images/single chemical graphing gadget.c16", "start": 108982200, "end": 109131678}, {"filename": "/Images/k14a.c16", "start": 109131678, "end": 109147700}, {"filename": "/Images/g02a.c16", "start": 109147700, "end": 109160062}, {"filename": "/Images/c52a.c16", "start": 109160062, "end": 109173286}, {"filename": "/Images/Engineering airlock.c16", "start": 109173286, "end": 109784388}, {"filename": "/Images/g02c.c16", "start": 109784388, "end": 109796750}, {"filename": "/Images/a45b.c16", "start": 109796750, "end": 110711840}, {"filename": "/Images/c25a.c16", "start": 110711840, "end": 110725064}, {"filename": "/Images/b60a.c16", "start": 110725064, "end": 110818002}, {"filename": "/Images/g22a.c16", "start": 110818002, "end": 110828194}, {"filename": "/Images/bongo_drums.c16", "start": 110828194, "end": 110890802}, {"filename": "/Images/c05c.c16", "start": 110890802, "end": 110909324}, {"filename": "/Images/e42b.c16", "start": 110909324, "end": 110918606}, {"filename": "/Images/b40c.c16", "start": 110918606, "end": 111005332}, {"filename": "/Images/m04b.c16", "start": 111005332, "end": 111013122}, {"filename": "/Images/a04b.c16", "start": 111013122, "end": 111915460}, {"filename": "/Images/c64a.c16", "start": 111915460, "end": 111928684}, {"filename": "/Images/n40c.c16", "start": 111928684, "end": 111935422}, {"filename": "/Images/andtheworldexplodedintostars.C16", "start": 111935422, "end": 111955932}, {"filename": "/Images/i42b.c16", "start": 111955932, "end": 111964216}, {"filename": "/Images/k22a.c16", "start": 111964216, "end": 111970926}, {"filename": "/Images/rabb.c16", "start": 111970926, "end": 112014690}, {"filename": "/Images/eggs.c16", "start": 112014690, "end": 112541144}, {"filename": "/Images/lift.c16", "start": 112541144, "end": 112859322}, {"filename": "/Images/l00b.c16", "start": 112859322, "end": 112866890}, {"filename": "/Images/c44c.c16", "start": 112866890, "end": 112885412}, {"filename": "/Images/mapdisplay.c16", "start": 112885412, "end": 115459880}, {"filename": "/Images/040a.c16", "start": 115459880, "end": 115506542}, {"filename": "/Images/m45b.c16", "start": 115506542, "end": 115514332}, {"filename": "/Images/snotrock.c16", "start": 115514332, "end": 115589460}, {"filename": "/Images/k02c.c16", "start": 115589460, "end": 115597744}, {"filename": "/Images/k02b.c16", "start": 115597744, "end": 115606028}, {"filename": "/Images/m45c.c16", "start": 115606028, "end": 115613818}, {"filename": "/Images/i62a.c16", "start": 115613818, "end": 115620528}, {"filename": "/Images/bee.c16", "start": 115620528, "end": 115665390}, {"filename": "/Images/c44b.c16", "start": 115665390, "end": 115683912}, {"filename": "/Images/a24a.c16", "start": 115683912, "end": 116203744}, {"filename": "/Images/l00c.c16", "start": 116203744, "end": 116211312}, {"filename": "/Images/m65a.c16", "start": 116211312, "end": 116215468}, {"filename": "/Images/i42c.c16", "start": 116215468, "end": 116223752}, {"filename": "/Images/n40b.c16", "start": 116223752, "end": 116230490}, {"filename": "/Images/l20a.c16", "start": 116230490, "end": 116238058}, {"filename": "/Images/a04c.c16", "start": 116238058, "end": 117091568}, {"filename": "/Images/objects_of_learning.c16", "start": 117091568, "end": 117646822}, {"filename": "/Images/m04c.c16", "start": 117646822, "end": 117654612}, {"filename": "/Images/b40b.c16", "start": 117654612, "end": 117741338}, {"filename": "/Images/chemicalchoice.c16", "start": 117741338, "end": 117912338}, {"filename": "/Images/e42c.c16", "start": 117912338, "end": 117921620}, {"filename": "/Images/c05b.c16", "start": 117921620, "end": 117940142}, {"filename": "/Images/life_events.c16", "start": 117940142, "end": 117949460}, {"filename": "/Images/a65a.c16", "start": 117949460, "end": 118478600}, {"filename": "/Images/grid.c16", "start": 118478600, "end": 118515584}, {"filename": "/Images/WhiteOnTransparentChars.s16", "start": 118515584, "end": 118547956}, {"filename": "/Images/m24a.c16", "start": 118547956, "end": 118551130}, {"filename": "/Images/trapdoor.c16", "start": 118551130, "end": 118588982}, {"filename": "/Images/e62a.c16", "start": 118588982, "end": 118596844}, {"filename": "/Images/hummingbird.c16", "start": 118596844, "end": 118658032}, {"filename": "/Images/a45c.c16", "start": 118658032, "end": 119638106}, {"filename": "/Images/g02b.c16", "start": 119638106, "end": 119650468}, {"filename": "/Images/sepulchre.c16", "start": 119650468, "end": 119774356}, {"filename": "/Images/m25a.c16", "start": 119774356, "end": 119777530}, {"filename": "/Images/hatch.c16", "start": 119777530, "end": 121661184}, {"filename": "/Images/i02c.c16", "start": 121661184, "end": 121669468}, {"filename": "/Images/n00b.c16", "start": 121669468, "end": 121675410}, {"filename": "/Images/l60a.c16", "start": 121675410, "end": 121682978}, {"filename": "/Images/a44c.c16", "start": 121682978, "end": 122635948}, {"filename": "/Images/handle.c16", "start": 122635948, "end": 122743958}, {"filename": "/Images/blank.c16", "start": 122743958, "end": 122744770}, {"filename": "/Images/k42b.c16", "start": 122744770, "end": 122753054}, {"filename": "/Images/m05c.c16", "start": 122753054, "end": 122760844}, {"filename": "/Images/i22a.c16", "start": 122760844, "end": 122767554}, {"filename": "/Images/c04b.c16", "start": 122767554, "end": 122786076}, {"filename": "/Images/a64a.c16", "start": 122786076, "end": 123315216}, {"filename": "/Images/l40c.c16", "start": 123315216, "end": 123322784}, {"filename": "/Images/spew.c16", "start": 123322784, "end": 126509596}, {"filename": "/Images/m64a.c16", "start": 126509596, "end": 126512770}, {"filename": "/Images/learning_machine_buttons.c16", "start": 126512770, "end": 126530654}, {"filename": "/Images/e22a.c16", "start": 126530654, "end": 126538516}, {"filename": "/Images/a05c.c16", "start": 126538516, "end": 127395810}, {"filename": "/Images/g42b.c16", "start": 127395810, "end": 127408172}, {"filename": "/Images/m44c.c16", "start": 127408172, "end": 127415962}, {"filename": "/Images/b00b.c16", "start": 127415962, "end": 127495040}, {"filename": "/Images/e02c.c16", "start": 127495040, "end": 127504322}, {"filename": "/Images/c45b.c16", "start": 127504322, "end": 127522844}, {"filename": "/Images/a25a.c16", "start": 127522844, "end": 128042668}, {"filename": "/Images/g62a.c16", "start": 128042668, "end": 128052860}, {"filename": "/Images/c45c.c16", "start": 128052860, "end": 128071382}, {"filename": "/Images/e02b.c16", "start": 128071382, "end": 128080664}, {"filename": "/Images/b00c.c16", "start": 128080664, "end": 128159742}, {"filename": "/Images/m44b.c16", "start": 128159742, "end": 128167532}, {"filename": "/Images/wysts.c16", "start": 128167532, "end": 128199428}, {"filename": "/Images/g42c.c16", "start": 128199428, "end": 128211790}, {"filename": "/Images/a05b.c16", "start": 128211790, "end": 129143556}, {"filename": "/Images/airlock_right.c16", "start": 129143556, "end": 129279718}, {"filename": "/Images/c65a.c16", "start": 129279718, "end": 129292942}, {"filename": "/Images/b20a.c16", "start": 129292942, "end": 129379316}, {"filename": "/Images/ocean_pod.c16", "start": 129379316, "end": 129694954}, {"filename": "/Images/EggLayer.c16", "start": 129694954, "end": 129772970}, {"filename": "/Images/recycler.c16", "start": 129772970, "end": 130356916}, {"filename": "/Images/EggMakerDisplay.c16", "start": 130356916, "end": 130929692}, {"filename": "/Images/l40b.c16", "start": 130929692, "end": 130937260}, {"filename": "/Images/n20a.c16", "start": 130937260, "end": 130939794}, {"filename": "/Images/c04c.c16", "start": 130939794, "end": 130958316}, {"filename": "/Images/000a.c16", "start": 130958316, "end": 131004978}, {"filename": "/Images/m05b.c16", "start": 131004978, "end": 131012768}, {"filename": "/Images/k42c.c16", "start": 131012768, "end": 131021052}, {"filename": "/Images/WhiteOnGreenChars.s16", "start": 131021052, "end": 131034606}, {"filename": "/Images/death_cloud.c16", "start": 131034606, "end": 131380708}, {"filename": "/Images/a44b.c16", "start": 131380708, "end": 132264222}, {"filename": "/Images/c24a.c16", "start": 132264222, "end": 132277446}, {"filename": "/Images/n00c.c16", "start": 132277446, "end": 132283388}, {"filename": "/Images/i02b.c16", "start": 132283388, "end": 132291672}, {"filename": "/Images/k62a.c16", "start": 132291672, "end": 132298382}, {"filename": "/Images/norncut01.c16", "start": 132298382, "end": 132521956}, {"filename": "/Images/asteroids.c16", "start": 132521956, "end": 132537266}, {"filename": "/Images/rock2.c16", "start": 132537266, "end": 132553880}, {"filename": "/Images/starplant.c16", "start": 132553880, "end": 132575164}, {"filename": "/Images/progress-nl.s16", "start": 132575164, "end": 132767732}, {"filename": "/Images/k15a.c16", "start": 132767732, "end": 132783754}, {"filename": "/Images/020a.c16", "start": 132783754, "end": 132830416}, {"filename": "/Images/n00a.c16", "start": 132830416, "end": 132836358}, {"filename": "/Images/j50a.c16", "start": 132836358, "end": 132850164}, {"filename": "/Images/welcome screen.c16", "start": 132850164, "end": 133215108}, {"filename": "/Images/replicator.c16", "start": 133215108, "end": 134265256}, {"filename": "/Images/k42a.c16", "start": 134265256, "end": 134273540}, {"filename": "/Images/000c.c16", "start": 134273540, "end": 134320202}, {"filename": "/Images/watr.c16", "start": 134320202, "end": 134321902}, {"filename": "/Images/c04a.c16", "start": 134321902, "end": 134340424}, {"filename": "/Images/g54a.c16", "start": 134340424, "end": 134357716}, {"filename": "/Images/sealift.c16", "start": 134357716, "end": 134367158}, {"filename": "/Images/Angel.c16", "start": 134367158, "end": 134438672}, {"filename": "/Images/cactus.c16", "start": 134438672, "end": 134505732}, {"filename": "/Images/k54a.c16", "start": 134505732, "end": 134521754}, {"filename": "/Images/g42a.c16", "start": 134521754, "end": 134534116}, {"filename": "/Images/c12a.c16", "start": 134534116, "end": 134547340}, {"filename": "/Images/b00a.c16", "start": 134547340, "end": 134623826}, {"filename": "/Images/f50a.c16", "start": 134623826, "end": 134632576}, {"filename": "/Images/jaws.c16", "start": 134632576, "end": 134725110}, {"filename": "/Images/c45a.c16", "start": 134725110, "end": 134743632}, {"filename": "/Images/g15a.c16", "start": 134743632, "end": 134760924}, {"filename": "/Images/e02a.c16", "start": 134760924, "end": 134770206}, {"filename": "/Images/Man-o-war.c16", "start": 134770206, "end": 135130080}, {"filename": "/Images/a52a.c16", "start": 135130080, "end": 136068288}, {"filename": "/Images/outputdisplay.c16", "start": 136068288, "end": 136077082}, {"filename": "/Images/m44a.c16", "start": 136077082, "end": 136084872}, {"filename": "/Images/i14a.c16", "start": 136084872, "end": 136100916}, {"filename": "/Images/oraponge.c16", "start": 136100916, "end": 136178832}, {"filename": "/Images/ConnectingTest.c16", "start": 136178832, "end": 136209066}, {"filename": "/Images/a05a.c16", "start": 136209066, "end": 137053996}, {"filename": "/Images/counter.c16", "start": 137053996, "end": 137109560}, {"filename": "/Images/e55a.c16", "start": 137109560, "end": 137130366}, {"filename": "/Images/d10a.c16", "start": 137130366, "end": 137138600}, {"filename": "/Images/deth.c16", "start": 137138600, "end": 137326920}, {"filename": "/Images/l40a.c16", "start": 137326920, "end": 137334488}, {"filename": "/Images/h10a.c16", "start": 137334488, "end": 137344646}, {"filename": "/Images/m05a.c16", "start": 137344646, "end": 137352436}, {"filename": "/Images/000b.c16", "start": 137352436, "end": 137399098}, {"filename": "/Images/i55a.c16", "start": 137399098, "end": 137415142}, {"filename": "/Images/shark.c16", "start": 137415142, "end": 137485230}, {"filename": "/Images/airlock_left.c16", "start": 137485230, "end": 137633336}, {"filename": "/Images/potions.s16", "start": 137633336, "end": 137638382}, {"filename": "/Images/a44a.c16", "start": 137638382, "end": 138615280}, {"filename": "/Images/e14a.c16", "start": 138615280, "end": 138636086}, {"filename": "/Images/i02a.c16", "start": 138636086, "end": 138644370}, {"filename": "/Images/m52a.c16", "start": 138644370, "end": 138659794}, {"filename": "/Images/fairy.c16", "start": 138659794, "end": 138778142}, {"filename": "/My Agents/Starter Parent 2-de.family", "start": 138778142, "end": 138840459}, {"filename": "/My Agents/Starter Parent 2-es.family", "start": 138840459, "end": 138901275}, {"filename": "/My Agents/Starter Parent 1-fr.family", "start": 138901275, "end": 138964226}, {"filename": "/My Agents/Starter Parent 2.family", "start": 138964226, "end": 139025700}, {"filename": "/My Agents/Starter Parent 2-it.family", "start": 139025700, "end": 139088524}, {"filename": "/My Agents/Creator-nl.agents", "start": 139088524, "end": 139141906}, {"filename": "/My Agents/BruinBengalCivetEggs.agents", "start": 139141906, "end": 139143096}, {"filename": "/My Agents/Creator-fr.agents", "start": 139143096, "end": 139196478}, {"filename": "/My Agents/MagmaNornEggs.agents", "start": 139196478, "end": 143868854}, {"filename": "/My Agents/Starter Parent 1-nl.family", "start": 143868854, "end": 143933429}, {"filename": "/My Agents/Creator-es.agents", "start": 143933429, "end": 143986811}, {"filename": "/My Agents/Creator-de.agents", "start": 143986811, "end": 143996678}, {"filename": "/My Agents/expressiveeggs.agents", "start": 143996678, "end": 144106574}, {"filename": "/My Agents/HarlequinNornEggs.agents", "start": 144106574, "end": 148759390}, {"filename": "/My Agents/Creator-it.agents", "start": 148759390, "end": 148812772}, {"filename": "/My Agents/Starter Parent 1.family", "start": 148812772, "end": 148875940}, {"filename": "/My Agents/Starter Parent 2-nl.family", "start": 148875940, "end": 148932299}, {"filename": "/My Agents/Creator-ru.agents", "start": 148932299, "end": 148985681}, {"filename": "/My Agents/Starter Parent 2-fr.family", "start": 148985681, "end": 149047562}, {"filename": "/My Agents/Starter Parent 1-es.family", "start": 149047562, "end": 149110764}, {"filename": "/My Agents/Starter Parent 1-de.family", "start": 149110764, "end": 149168645}, {"filename": "/My Agents/FallowNornEggs.agents", "start": 149168645, "end": 153667111}, {"filename": "/My Agents/Creator.agents", "start": 153667111, "end": 153720493}, {"filename": "/My Agents/Starter Parent 1-it.family", "start": 153720493, "end": 153781007}, {"filename": "/Sounds/mcls.wav", "start": 153781007, "end": 153959729, "audio": 1}, {"filename": "/Sounds/rdrl.wav", "start": 153959729, "end": 154224373, "audio": 1}, {"filename": "/Sounds/Pus0.wav", "start": 154224373, "end": 154225841, "audio": 1}, {"filename": "/Sounds/Beh1.wav", "start": 154225841, "end": 154228565, "audio": 1}, {"filename": "/Sounds/cam1.wav", "start": 154228565, "end": 154415413, "audio": 1}, {"filename": "/Sounds/alrm.wav", "start": 154415413, "end": 154503645, "audio": 1}, {"filename": "/Sounds/Snor.wav", "start": 154503645, "end": 155012973, "audio": 1}, {"filename": "/Sounds/YauE.wav", "start": 155012973, "end": 155016300, "audio": 1}, {"filename": "/Sounds/lg_1.wav", "start": 155016300, "end": 155086488, "audio": 1}, {"filename": "/Sounds/drm1.wav", "start": 155086488, "end": 155092349, "audio": 1}, {"filename": "/Sounds/drnk.WAV", "start": 155092349, "end": 155119401}, {"filename": "/Sounds/Ke_m.wav", "start": 155119401, "end": 155122589, "audio": 1}, {"filename": "/Sounds/Bohm.wav", "start": 155122589, "end": 155124705, "audio": 1}, {"filename": "/Sounds/Step.wav", "start": 155124705, "end": 155127693, "audio": 1}, {"filename": "/Sounds/Foom.wav", "start": 155127693, "end": 155130308, "audio": 1}, {"filename": "/Sounds/st_1.wav", "start": 155130308, "end": 155347738, "audio": 1}, {"filename": "/Sounds/zyoE.wav", "start": 155347738, "end": 155351767, "audio": 1}, {"filename": "/Sounds/che2.wav", "start": 155351767, "end": 155413058, "audio": 1}, {"filename": "/Sounds/Beh0.wav", "start": 155413058, "end": 155415832, "audio": 1}, {"filename": "/Sounds/Nohm.wav", "start": 155415832, "end": 155419852, "audio": 1}, {"filename": "/Sounds/Pus1.wav", "start": 155419852, "end": 155421300, "audio": 1}, {"filename": "/Sounds/Seim.wav", "start": 155421300, "end": 155424476, "audio": 1}, {"filename": "/Sounds/cmc4.wav", "start": 155424476, "end": 155654080, "audio": 1}, {"filename": "/Sounds/gsnr.wav", "start": 155654080, "end": 155694380, "audio": 1}, {"filename": "/Sounds/cam2.wav", "start": 155694380, "end": 155725362, "audio": 1}, {"filename": "/Sounds/st_3.wav", "start": 155725362, "end": 155825304, "audio": 1}, {"filename": "/Sounds/zyo1.wav", "start": 155825304, "end": 155829278, "audio": 1}, {"filename": "/Sounds/Yau0.wav", "start": 155829278, "end": 155832606, "audio": 1}, {"filename": "/Sounds/pop_.wav", "start": 155832606, "end": 155838940, "audio": 1}, {"filename": "/Sounds/mwrn.wav", "start": 155838940, "end": 155844267, "audio": 1}, {"filename": "/Sounds/drm2.wav", "start": 155844267, "end": 155851373, "audio": 1}, {"filename": "/Sounds/Kahm.wav", "start": 155851373, "end": 155854281, "audio": 1}, {"filename": "/Sounds/nlnl.WAV", "start": 155854281, "end": 155864745}, {"filename": "/Sounds/cs_1.wav", "start": 155864745, "end": 155967459, "audio": 1}, {"filename": "/Sounds/Yau1.wav", "start": 155967459, "end": 155970837, "audio": 1}, {"filename": "/Sounds/st_2.wav", "start": 155970837, "end": 156179865, "audio": 1}, {"filename": "/Sounds/gsb1.wav", "start": 156179865, "end": 156459971, "audio": 1}, {"filename": "/Sounds/zyo0.wav", "start": 156459971, "end": 156464001, "audio": 1}, {"filename": "/Sounds/spew.wav", "start": 156464001, "end": 156592563, "audio": 1}, {"filename": "/Sounds/BehE.wav", "start": 156592563, "end": 156595337, "audio": 1}, {"filename": "/Sounds/che1.wav", "start": 156595337, "end": 156656628, "audio": 1}, {"filename": "/Sounds/move.wav", "start": 156656628, "end": 156680354, "audio": 1}, {"filename": "/Sounds/cmc5.wav", "start": 156680354, "end": 157697770, "audio": 1}, {"filename": "/Sounds/cmc1.wav", "start": 157697770, "end": 157832734, "audio": 1}, {"filename": "/Sounds/gr_1.wav", "start": 157832734, "end": 157883728, "audio": 1}, {"filename": "/Sounds/gr_p.wav", "start": 157883728, "end": 157911074, "audio": 1}, {"filename": "/Sounds/sgfr.wav", "start": 157911074, "end": 157975196, "audio": 1}, {"filename": "/Sounds/Bee0.wav", "start": 157975196, "end": 157979346, "audio": 1}, {"filename": "/Sounds/Koh0.wav", "start": 157979346, "end": 157981546, "audio": 1}, {"filename": "/Sounds/crak.wav", "start": 157981546, "end": 158065018, "audio": 1}, {"filename": "/Sounds/yoou.WAV", "start": 158065018, "end": 158078498}, {"filename": "/Sounds/Koh1.wav", "start": 158078498, "end": 158080812, "audio": 1}, {"filename": "/Sounds/esb1.wav", "start": 158080812, "end": 158230968, "audio": 1}, {"filename": "/Sounds/Bee1.wav", "start": 158230968, "end": 158235150, "audio": 1}, {"filename": "/Sounds/env2.wav", "start": 158235150, "end": 158499880, "audio": 1}, {"filename": "/Sounds/beep.wav", "start": 158499880, "end": 158518260, "audio": 1}, {"filename": "/Sounds/sirn.wav", "start": 158518260, "end": 158525701, "audio": 1}, {"filename": "/Sounds/ccls.wav", "start": 158525701, "end": 158527985, "audio": 1}, {"filename": "/Sounds/bep2.wav", "start": 158527985, "end": 158546365, "audio": 1}, {"filename": "/Sounds/cmc2.wav", "start": 158546365, "end": 158926737, "audio": 1}, {"filename": "/Sounds/but1.wav", "start": 158926737, "end": 159065713, "audio": 1}, {"filename": "/Sounds/gr_2.wav", "start": 159065713, "end": 159148713, "audio": 1}, {"filename": "/Sounds/pkup.wav", "start": 159148713, "end": 159360841, "audio": 1}, {"filename": "/Sounds/ghop.wav", "start": 159360841, "end": 159422967, "audio": 1}, {"filename": "/Sounds/BeeE.wav", "start": 159422967, "end": 159427116, "audio": 1}, {"filename": "/Sounds/Grendel.Mng", "start": 159427116, "end": 164493625}, {"filename": "/Sounds/bost.wav", "start": 164493625, "end": 164523648, "audio": 1}, {"filename": "/Sounds/Tckl.WAV", "start": 164523648, "end": 164534630}, {"filename": "/Sounds/KohE.wav", "start": 164534630, "end": 164536930, "audio": 1}, {"filename": "/Sounds/Ee_m.wav", "start": 164536930, "end": 164538532, "audio": 1}, {"filename": "/Sounds/Engineering.Mng", "start": 164538532, "end": 167203011}, {"filename": "/Sounds/env1.wav", "start": 167203011, "end": 167400583, "audio": 1}, {"filename": "/Sounds/garr.WAV", "start": 167400583, "end": 167408323}, {"filename": "/Sounds/know.wav", "start": 167408323, "end": 167631413, "audio": 1}, {"filename": "/Sounds/gr_e.wav", "start": 167631413, "end": 167790731, "audio": 1}, {"filename": "/Sounds/egg1.wav", "start": 167790731, "end": 167870019, "audio": 1}, {"filename": "/Sounds/buzz.wav", "start": 167870019, "end": 167890741, "audio": 1}, {"filename": "/Sounds/cmc3.wav", "start": 167890741, "end": 167910189, "audio": 1}, {"filename": "/Sounds/Berm.wav", "start": 167910189, "end": 167912329, "audio": 1}, {"filename": "/Sounds/RahE.wav", "start": 167912329, "end": 167915267, "audio": 1}, {"filename": "/Sounds/Ha_0.wav", "start": 167915267, "end": 167917933, "audio": 1}, {"filename": "/Sounds/Wehm.wav", "start": 167917933, "end": 167920824, "audio": 1}, {"filename": "/Sounds/Mahm.wav", "start": 167920824, "end": 167924132, "audio": 1}, {"filename": "/Sounds/snee.WAV", "start": 167924132, "end": 167930662}, {"filename": "/Sounds/dr_o.wav", "start": 167930662, "end": 167991220, "audio": 1}, {"filename": "/Sounds/sl_1.wav", "start": 167991220, "end": 168310530, "audio": 1}, {"filename": "/Sounds/eat1.wav", "start": 168310530, "end": 168346694, "audio": 1}, {"filename": "/Sounds/oogh.WAV", "start": 168346694, "end": 168353476}, {"filename": "/Sounds/gui1.wav", "start": 168353476, "end": 168442404, "audio": 1}, {"filename": "/Sounds/Soo0.wav", "start": 168442404, "end": 168445920, "audio": 1}, {"filename": "/Sounds/Mno0.wav", "start": 168445920, "end": 168450444, "audio": 1}, {"filename": "/Sounds/excl.wav", "start": 168450444, "end": 168480600, "audio": 1}, {"filename": "/Sounds/Woh0.wav", "start": 168480600, "end": 168483380, "audio": 1}, {"filename": "/Sounds/gs_c.wav", "start": 168483380, "end": 168579562, "audio": 1}, {"filename": "/Sounds/Woh1.wav", "start": 168579562, "end": 168582342, "audio": 1}, {"filename": "/Sounds/grun.WAV", "start": 168582342, "end": 168588500}, {"filename": "/Sounds/clak.wav", "start": 168588500, "end": 168595196, "audio": 1}, {"filename": "/Sounds/Soo1.wav", "start": 168595196, "end": 168598266, "audio": 1}, {"filename": "/Sounds/shiv.WAV", "start": 168598266, "end": 168632354}, {"filename": "/Sounds/mno1.wav", "start": 168632354, "end": 168637460, "audio": 1}, {"filename": "/Sounds/eshv.WAV", "start": 168637460, "end": 168671547}, {"filename": "/Sounds/goww.WAV", "start": 168671547, "end": 168681895}, {"filename": "/Sounds/rad1.wav", "start": 168681895, "end": 168696089, "audio": 1}, {"filename": "/Sounds/rok1.wav", "start": 168696089, "end": 168716769, "audio": 1}, {"filename": "/Sounds/Ha_1.wav", "start": 168716769, "end": 168719401, "audio": 1}, {"filename": "/Sounds/flap.wav", "start": 168719401, "end": 168800055, "audio": 1}, {"filename": "/Sounds/Rah0.wav", "start": 168800055, "end": 168802995, "audio": 1}, {"filename": "/Sounds/radr.wav", "start": 168802995, "end": 168806573, "audio": 1}, {"filename": "/Sounds/argh.WAV", "start": 168806573, "end": 168815679}, {"filename": "/Sounds/Ha_E.wav", "start": 168815679, "end": 168818783, "audio": 1}, {"filename": "/Sounds/pir2.wav", "start": 168818783, "end": 169660575, "audio": 1}, {"filename": "/Sounds/sqh3.wav", "start": 169660575, "end": 169783691, "audio": 1}, {"filename": "/Sounds/MnoE.wav", "start": 169783691, "end": 169788748, "audio": 1}, {"filename": "/Sounds/oarr.WAV", "start": 169788748, "end": 169798056}, {"filename": "/Sounds/Pohm.wav", "start": 169798056, "end": 169801065, "audio": 1}, {"filename": "/Sounds/ct_4.wav", "start": 169801065, "end": 170068425, "audio": 1}, {"filename": "/Sounds/btle.wav", "start": 170068425, "end": 170078817, "audio": 1}, {"filename": "/Sounds/gui3.wav", "start": 170078817, "end": 170169389, "audio": 1}, {"filename": "/Sounds/Rasm.wav", "start": 170169389, "end": 170171825, "audio": 1}, {"filename": "/Sounds/ragh.WAV", "start": 170171825, "end": 170179121}, {"filename": "/Sounds/rok2.wav", "start": 170179121, "end": 170323889, "audio": 1}, {"filename": "/Sounds/Rah1.wav", "start": 170323889, "end": 170326843, "audio": 1}, {"filename": "/Sounds/burp.wav", "start": 170326843, "end": 170337166, "audio": 1}, {"filename": "/Sounds/gauw.WAV", "start": 170337166, "end": 170345890}, {"filename": "/Sounds/Dah1.wav", "start": 170345890, "end": 170348350, "audio": 1}, {"filename": "/Sounds/pnt1.wav", "start": 170348350, "end": 170413616, "audio": 1}, {"filename": "/Sounds/beam.wav", "start": 170413616, "end": 170434440, "audio": 1}, {"filename": "/Sounds/Chn1.wav", "start": 170434440, "end": 170437140, "audio": 1}, {"filename": "/Sounds/Niy0.wav", "start": 170437140, "end": 170439518, "audio": 1}, {"filename": "/Sounds/Pah0.wav", "start": 170439518, "end": 170442394, "audio": 1}, {"filename": "/Sounds/dr10.wav", "start": 170442394, "end": 170447898, "audio": 1}, {"filename": "/Sounds/asba.WAV", "start": 170447898, "end": 170455406}, {"filename": "/Sounds/crea.wav", "start": 170455406, "end": 170675884, "audio": 1}, {"filename": "/Sounds/Pah1.wav", "start": 170675884, "end": 170678724, "audio": 1}, {"filename": "/Sounds/ct_1.wav", "start": 170678724, "end": 170793716, "audio": 1}, {"filename": "/Sounds/Niy1.wav", "start": 170793716, "end": 170796088, "audio": 1}, {"filename": "/Sounds/Chn0.wav", "start": 170796088, "end": 170798900, "audio": 1}, {"filename": "/Sounds/Weem.wav", "start": 170798900, "end": 170801296, "audio": 1}, {"filename": "/Sounds/gate.wav", "start": 170801296, "end": 170830462, "audio": 1}, {"filename": "/Sounds/Dah0.wav", "start": 170830462, "end": 170832686, "audio": 1}, {"filename": "/Sounds/rckl.wav", "start": 170832686, "end": 170845772, "audio": 1}, {"filename": "/Sounds/dor1.wav", "start": 170845772, "end": 171282904, "audio": 1}, {"filename": "/Sounds/ow!1.WAV", "start": 171282904, "end": 171286480}, {"filename": "/Sounds/dslg.wav", "start": 171286480, "end": 171638686, "audio": 1}, {"filename": "/Sounds/ow!3.WAV", "start": 171638686, "end": 171644794}, {"filename": "/Sounds/epng.wav", "start": 171644794, "end": 171732148, "audio": 1}, {"filename": "/Sounds/trap.wav", "start": 171732148, "end": 171741152, "audio": 1}, {"filename": "/Sounds/Chw0.wav", "start": 171741152, "end": 171745212, "audio": 1}, {"filename": "/Sounds/Cahm.wav", "start": 171745212, "end": 171747807, "audio": 1}, {"filename": "/Sounds/NiyE.wav", "start": 171747807, "end": 171750184, "audio": 1}, {"filename": "/Sounds/nudi.wav", "start": 171750184, "end": 171779114, "audio": 1}, {"filename": "/Sounds/ct_3.wav", "start": 171779114, "end": 171849160, "audio": 1}, {"filename": "/Sounds/PahE.wav", "start": 171849160, "end": 171852087, "audio": 1}, {"filename": "/Sounds/Wahm.wav", "start": 171852087, "end": 171855163, "audio": 1}, {"filename": "/Sounds/yhan.WAV", "start": 171855163, "end": 171865255}, {"filename": "/Sounds/Do_m.wav", "start": 171865255, "end": 171867799, "audio": 1}, {"filename": "/Sounds/ct_2.wav", "start": 171867799, "end": 171914745, "audio": 1}, {"filename": "/Sounds/wasp.wav", "start": 171914745, "end": 172089045, "audio": 1}, {"filename": "/Sounds/gror.WAV", "start": 172089045, "end": 172096111}, {"filename": "/Sounds/ChnE.wav", "start": 172096111, "end": 172099025, "audio": 1}, {"filename": "/Sounds/ndid.wav", "start": 172099025, "end": 172158507, "audio": 1}, {"filename": "/Sounds/DahE.wav", "start": 172158507, "end": 172161150, "audio": 1}, {"filename": "/Sounds/gshv.wav", "start": 172161150, "end": 172172058, "audio": 1}, {"filename": "/Sounds/Chw1.wav", "start": 172172058, "end": 172175964, "audio": 1}, {"filename": "/Sounds/chwp.WAV", "start": 172175964, "end": 172185400}, {"filename": "/Sounds/dor2.wav", "start": 172185400, "end": 172619538, "audio": 1}, {"filename": "/Sounds/ow!2.WAV", "start": 172619538, "end": 172626382}, {"filename": "/Sounds/map4.wav", "start": 172626382, "end": 172813500, "audio": 1}, {"filename": "/Sounds/gdie.wav", "start": 172813500, "end": 172844968, "audio": 1}, {"filename": "/Sounds/Ras0.wav", "start": 172844968, "end": 172847404, "audio": 1}, {"filename": "/Sounds/Me_1.wav", "start": 172847404, "end": 172851754, "audio": 1}, {"filename": "/Sounds/Doh1.wav", "start": 172851754, "end": 172853734, "audio": 1}, {"filename": "/Sounds/zzzz.wav", "start": 172853734, "end": 172971794, "audio": 1}, {"filename": "/Sounds/ecof.WAV", "start": 172971794, "end": 172977469}, {"filename": "/Sounds/warn.wav", "start": 172977469, "end": 173552913, "audio": 1}, {"filename": "/Sounds/cyc2.wav", "start": 173552913, "end": 173740393, "audio": 1}, {"filename": "/Sounds/pi_1.wav", "start": 173740393, "end": 173820611, "audio": 1}, {"filename": "/Sounds/grl2.wav", "start": 173820611, "end": 173932253, "audio": 1}, {"filename": "/Sounds/stm1.wav", "start": 173932253, "end": 174173655, "audio": 1}, {"filename": "/Sounds/Toww.wav", "start": 174173655, "end": 174390231, "audio": 1}, {"filename": "/Sounds/Poh0.wav", "start": 174390231, "end": 174393241, "audio": 1}, {"filename": "/Sounds/Poh1.wav", "start": 174393241, "end": 174396143, "audio": 1}, {"filename": "/Sounds/guio.wav", "start": 174396143, "end": 174528359, "audio": 1}, {"filename": "/Sounds/Doh0.wav", "start": 174528359, "end": 174530473, "audio": 1}, {"filename": "/Sounds/Me_0.wav", "start": 174530473, "end": 174535115, "audio": 1}, {"filename": "/Sounds/WehE.wav", "start": 174535115, "end": 174538006, "audio": 1}, {"filename": "/Sounds/MahE.wav", "start": 174538006, "end": 174541314, "audio": 1}, {"filename": "/Sounds/Ras1.wav", "start": 174541314, "end": 174543826, "audio": 1}, {"filename": "/Sounds/Rahm.wav", "start": 174543826, "end": 174546765, "audio": 1}, {"filename": "/Sounds/Alar.wav", "start": 174546765, "end": 174696221, "audio": 1}, {"filename": "/Sounds/Events.Mng", "start": 174696221, "end": 176976329}, {"filename": "/Sounds/mopn.wav", "start": 176976329, "end": 177155051, "audio": 1}, {"filename": "/Sounds/Weh1.wav", "start": 177155051, "end": 177157831, "audio": 1}, {"filename": "/Sounds/Mah1.wav", "start": 177157831, "end": 177161085, "audio": 1}, {"filename": "/Sounds/RasE.wav", "start": 177161085, "end": 177164851, "audio": 1}, {"filename": "/Sounds/open.wav", "start": 177164851, "end": 177363981, "audio": 1}, {"filename": "/Sounds/ug_1.wav", "start": 177363981, "end": 177416621, "audio": 1}, {"filename": "/Sounds/cyc1.wav", "start": 177416621, "end": 177667237, "audio": 1}, {"filename": "/Sounds/grl1.wav", "start": 177667237, "end": 177771163, "audio": 1}, {"filename": "/Sounds/PohE.wav", "start": 177771163, "end": 177774172, "audio": 1}, {"filename": "/Sounds/inje.wav", "start": 177774172, "end": 177846718, "audio": 1}, {"filename": "/Sounds/pod1.wav", "start": 177846718, "end": 178043880, "audio": 1}, {"filename": "/Sounds/Mnom.wav", "start": 178043880, "end": 178048404, "audio": 1}, {"filename": "/Sounds/cbz2.wav", "start": 178048404, "end": 178179860, "audio": 1}, {"filename": "/Sounds/grnn.WAV", "start": 178179860, "end": 178191040}, {"filename": "/Sounds/Mah0.wav", "start": 178191040, "end": 178194348, "audio": 1}, {"filename": "/Sounds/Weh0.wav", "start": 178194348, "end": 178197240, "audio": 1}, {"filename": "/Sounds/Ha_m.wav", "start": 178197240, "end": 178199905, "audio": 1}, {"filename": "/Sounds/sgtn.wav", "start": 178199905, "end": 178231485, "audio": 1}, {"filename": "/Sounds/spup.wav", "start": 178231485, "end": 178296315, "audio": 1}, {"filename": "/Sounds/rain.wav", "start": 178296315, "end": 178938077, "audio": 1}, {"filename": "/Sounds/map2.wav", "start": 178938077, "end": 178955721, "audio": 1}, {"filename": "/Sounds/fish.wav", "start": 178955721, "end": 179076357, "audio": 1}, {"filename": "/Sounds/copn.wav", "start": 179076357, "end": 179078641, "audio": 1}, {"filename": "/Sounds/hit_.wav", "start": 179078641, "end": 179158111, "audio": 1}, {"filename": "/Sounds/Cah1.wav", "start": 179158111, "end": 179161109, "audio": 1}, {"filename": "/Sounds/WeeE.wav", "start": 179161109, "end": 179163505, "audio": 1}, {"filename": "/Sounds/coil.wav", "start": 179163505, "end": 179253351, "audio": 1}, {"filename": "/Sounds/stup.wav", "start": 179253351, "end": 179295547, "audio": 1}, {"filename": "/Sounds/Do_0.wav", "start": 179295547, "end": 179298091, "audio": 1}, {"filename": "/Sounds/Wah0.wav", "start": 179298091, "end": 179301167, "audio": 1}, {"filename": "/Sounds/fp_1.wav", "start": 179301167, "end": 179352127, "audio": 1}, {"filename": "/Sounds/quen.wav", "start": 179352127, "end": 179494787, "audio": 1}, {"filename": "/Sounds/Wah1.wav", "start": 179494787, "end": 179498035, "audio": 1}, {"filename": "/Sounds/Do_1.wav", "start": 179498035, "end": 179500911, "audio": 1}, {"filename": "/Sounds/pop1.wav", "start": 179500911, "end": 179503195, "audio": 1}, {"filename": "/Sounds/Music.mng", "start": 179503195, "end": 187850989}, {"filename": "/Sounds/text.wav", "start": 187850989, "end": 187857685, "audio": 1}, {"filename": "/Sounds/Cah0.wav", "start": 187857685, "end": 187860281, "audio": 1}, {"filename": "/Sounds/brng.wav", "start": 187860281, "end": 187874305, "audio": 1}, {"filename": "/Sounds/map3.wav", "start": 187874305, "end": 188005257, "audio": 1}, {"filename": "/Sounds/map1.wav", "start": 188005257, "end": 188139797, "audio": 1}, {"filename": "/Sounds/Roh0.wav", "start": 188139797, "end": 188144085, "audio": 1}, {"filename": "/Sounds/Dahm.wav", "start": 188144085, "end": 188146308, "audio": 1}, {"filename": "/Sounds/punc.WAV", "start": 188146308, "end": 188152360}, {"filename": "/Sounds/Wee0.wav", "start": 188152360, "end": 188154756, "audio": 1}, {"filename": "/Sounds/dr_c.wav", "start": 188154756, "end": 188221892, "audio": 1}, {"filename": "/Sounds/Chnm.wav", "start": 188221892, "end": 188224703, "audio": 1}, {"filename": "/Sounds/edie.WAV", "start": 188224703, "end": 188240327}, {"filename": "/Sounds/Foh1.wav", "start": 188240327, "end": 188242815, "audio": 1}, {"filename": "/Sounds/Bridge.Mng", "start": 188242815, "end": 190010661}, {"filename": "/Sounds/hart.wav", "start": 190010661, "end": 190024028, "audio": 1}, {"filename": "/Sounds/WahE.wav", "start": 190024028, "end": 190027344, "audio": 1}, {"filename": "/Sounds/Do_E.wav", "start": 190027344, "end": 190030392, "audio": 1}, {"filename": "/Sounds/fp_2.wav", "start": 190030392, "end": 190238010, "audio": 1}, {"filename": "/Sounds/gs_o.wav", "start": 190238010, "end": 190334192, "audio": 1}, {"filename": "/Sounds/bzup.wav", "start": 190334192, "end": 190495322, "audio": 1}, {"filename": "/Sounds/aqua.wav", "start": 190495322, "end": 190521226, "audio": 1}, {"filename": "/Sounds/driv.wav", "start": 190521226, "end": 190634078, "audio": 1}, {"filename": "/Sounds/Pahm.wav", "start": 190634078, "end": 190636953, "audio": 1}, {"filename": "/Sounds/Foh0.wav", "start": 190636953, "end": 190639351, "audio": 1}, {"filename": "/Sounds/cbuz.wav", "start": 190639351, "end": 190762329, "audio": 1}, {"filename": "/Sounds/Niym.wav", "start": 190762329, "end": 190764706, "audio": 1}, {"filename": "/Sounds/Wee1.wav", "start": 190764706, "end": 190767082, "audio": 1}, {"filename": "/Sounds/spnk.WAV", "start": 190767082, "end": 190770586}, {"filename": "/Sounds/splt.wav", "start": 190770586, "end": 190798698, "audio": 1}, {"filename": "/Sounds/CahE.wav", "start": 190798698, "end": 190801293, "audio": 1}, {"filename": "/Sounds/Roh1.wav", "start": 190801293, "end": 190805533, "audio": 1}, {"filename": "/Sounds/tele.wav", "start": 190805533, "end": 190851991, "audio": 1}, {"filename": "/Sounds/Sei1.wav", "start": 190851991, "end": 190853999, "audio": 1}, {"filename": "/Sounds/cav2.wav", "start": 190853999, "end": 191064189, "audio": 1}, {"filename": "/Sounds/NohE.wav", "start": 191064189, "end": 191068209, "audio": 1}, {"filename": "/Sounds/coug.WAV", "start": 191068209, "end": 191073885}, {"filename": "/Sounds/snap.wav", "start": 191073885, "end": 191134601, "audio": 1}, {"filename": "/Sounds/gslp.wav", "start": 191134601, "end": 191143445, "audio": 1}, {"filename": "/Sounds/Main.Mng", "start": 191143445, "end": 199050222}, {"filename": "/Sounds/mb_4.wav", "start": 199050222, "end": 199661392, "audio": 1}, {"filename": "/Sounds/zyom.wav", "start": 199661392, "end": 199665421, "audio": 1}, {"filename": "/Sounds/bubf.wav", "start": 199665421, "end": 199721017, "audio": 1}, {"filename": "/Sounds/wav3.wav", "start": 199721017, "end": 199839759, "audio": 1}, {"filename": "/Sounds/DJ_G.wav", "start": 199839759, "end": 201979245, "audio": 1}, {"filename": "/Sounds/FooE.wav", "start": 201979245, "end": 201982548, "audio": 1}, {"filename": "/Sounds/exp1.wav", "start": 201982548, "end": 202265214, "audio": 1}, {"filename": "/Sounds/Kah0.wav", "start": 202265214, "end": 202268122, "audio": 1}, {"filename": "/Sounds/hat3.wav", "start": 202268122, "end": 202356374, "audio": 1}, {"filename": "/Sounds/atms.wav", "start": 202356374, "end": 202427144, "audio": 1}, {"filename": "/Sounds/Ke_E.wav", "start": 202427144, "end": 202430332, "audio": 1}, {"filename": "/Sounds/clik.wav", "start": 202430332, "end": 202432720, "audio": 1}, {"filename": "/Sounds/BohE.wav", "start": 202432720, "end": 202434849, "audio": 1}, {"filename": "/Sounds/scd1.wav", "start": 202434849, "end": 202560293, "audio": 1}, {"filename": "/Sounds/hat2.wav", "start": 202560293, "end": 202845173, "audio": 1}, {"filename": "/Sounds/Kah1.wav", "start": 202845173, "end": 202848041, "audio": 1}, {"filename": "/Sounds/gna1.wav", "start": 202848041, "end": 202911169, "audio": 1}, {"filename": "/Sounds/bp_1.wav", "start": 202911169, "end": 202961737, "audio": 1}, {"filename": "/Sounds/lg_o.wav", "start": 202961737, "end": 202985841, "audio": 1}, {"filename": "/Sounds/Yaum.wav", "start": 202985841, "end": 202989168, "audio": 1}, {"filename": "/Sounds/wav2.WAV", "start": 202989168, "end": 203087900}, {"filename": "/Sounds/kis2.WAV", "start": 203087900, "end": 203155144}, {"filename": "/Sounds/spdn.wav", "start": 203155144, "end": 203220300, "audio": 1}, {"filename": "/Sounds/col2.wav", "start": 203220300, "end": 203310146, "audio": 1}, {"filename": "/Sounds/cav3.wav", "start": 203310146, "end": 203507308, "audio": 1}, {"filename": "/Sounds/Sei0.wav", "start": 203507308, "end": 203510484, "audio": 1}, {"filename": "/Sounds/cav1.wav", "start": 203510484, "end": 203651326, "audio": 1}, {"filename": "/Sounds/Noh0.wav", "start": 203651326, "end": 203655346, "audio": 1}, {"filename": "/Sounds/Behm.wav", "start": 203655346, "end": 203658120, "audio": 1}, {"filename": "/Sounds/fly_.wav", "start": 203658120, "end": 203909860, "audio": 1}, {"filename": "/Sounds/brd5.wav", "start": 203909860, "end": 203985846, "audio": 1}, {"filename": "/Sounds/weak.wav", "start": 203985846, "end": 204005775, "audio": 1}, {"filename": "/Sounds/exp2.wav", "start": 204005775, "end": 204186883, "audio": 1}, {"filename": "/Sounds/Foo0.wav", "start": 204186883, "end": 204189499, "audio": 1}, {"filename": "/Sounds/gna3.wav", "start": 204189499, "end": 204264869, "audio": 1}, {"filename": "/Sounds/KahE.wav", "start": 204264869, "end": 204267777, "audio": 1}, {"filename": "/Sounds/ungr.WAV", "start": 204267777, "end": 204277737}, {"filename": "/Sounds/Boh0.wav", "start": 204277737, "end": 204279853, "audio": 1}, {"filename": "/Sounds/Ke_0.wav", "start": 204279853, "end": 204283041, "audio": 1}, {"filename": "/Sounds/Ke_1.wav", "start": 204283041, "end": 204286235, "audio": 1}, {"filename": "/Sounds/boh1.wav", "start": 204286235, "end": 204288963, "audio": 1}, {"filename": "/Sounds/hawk.wav", "start": 204288963, "end": 204710159, "audio": 1}, {"filename": "/Sounds/hat1.wav", "start": 204710159, "end": 205162055, "audio": 1}, {"filename": "/Sounds/gna2.wav", "start": 205162055, "end": 205294859, "audio": 1}, {"filename": "/Sounds/Foo1.wav", "start": 205294859, "end": 205297265, "audio": 1}, {"filename": "/Sounds/foop.wav", "start": 205297265, "end": 205307219, "audio": 1}, {"filename": "/Sounds/recy.wav", "start": 205307219, "end": 205897377, "audio": 1}, {"filename": "/Sounds/glaf.wav", "start": 205897377, "end": 205912853, "audio": 1}, {"filename": "/Sounds/poyy.wav", "start": 205912853, "end": 206021163, "audio": 1}, {"filename": "/Sounds/wav1.WAV", "start": 206021163, "end": 206169943}, {"filename": "/Sounds/kis1.WAV", "start": 206169943, "end": 206177203}, {"filename": "/Sounds/brd4.wav", "start": 206177203, "end": 206231925, "audio": 1}, {"filename": "/Sounds/Noh1.wav", "start": 206231925, "end": 206235765, "audio": 1}, {"filename": "/Sounds/SeiE.wav", "start": 206235765, "end": 206239781, "audio": 1}, {"filename": "/Sounds/Ber0.wav", "start": 206239781, "end": 206241921, "audio": 1}, {"filename": "/Sounds/noht.wav", "start": 206241921, "end": 206248501, "audio": 1}, {"filename": "/Sounds/sc_2.wav", "start": 206248501, "end": 206281571, "audio": 1}, {"filename": "/Sounds/mb_2.wav", "start": 206281571, "end": 206375698, "audio": 1}, {"filename": "/Sounds/maan.WAV", "start": 206375698, "end": 206381828}, {"filename": "/Sounds/cd_1.wav", "start": 206381828, "end": 206621408, "audio": 1}, {"filename": "/Sounds/undl.WAV", "start": 206621408, "end": 206631980}, {"filename": "/Sounds/Ee_0.wav", "start": 206631980, "end": 206633582, "audio": 1}, {"filename": "/Sounds/exit.wav", "start": 206633582, "end": 207825128, "audio": 1}, {"filename": "/Sounds/Ee_1.wav", "start": 207825128, "end": 207826716, "audio": 1}, {"filename": "/Sounds/shut.wav", "start": 207826716, "end": 207955890, "audio": 1}, {"filename": "/Sounds/gig1.WAV", "start": 207955890, "end": 207966848}, {"filename": "/Sounds/pl_1.wav", "start": 207966848, "end": 208000978, "audio": 1}, {"filename": "/Sounds/lg_i.wav", "start": 208000978, "end": 208013054, "audio": 1}, {"filename": "/Sounds/brd1.wav", "start": 208013054, "end": 208072176, "audio": 1}, {"filename": "/Sounds/mb_3.wav", "start": 208072176, "end": 208944678, "audio": 1}, {"filename": "/Sounds/lung.wav", "start": 208944678, "end": 209015560, "audio": 1}, {"filename": "/Sounds/elaf.WAV", "start": 209015560, "end": 209046439}, {"filename": "/Sounds/ayee.WAV", "start": 209046439, "end": 209056467}, {"filename": "/Sounds/Ber1.wav", "start": 209056467, "end": 209058587, "audio": 1}, {"filename": "/Sounds/BerE.wav", "start": 209058587, "end": 209060738, "audio": 1}, {"filename": "/Sounds/dcld.wav", "start": 209060738, "end": 209374844, "audio": 1}, {"filename": "/Sounds/mb_1.wav", "start": 209374844, "end": 209967484, "audio": 1}, {"filename": "/Sounds/sc_1.wav", "start": 209967484, "end": 209994262, "audio": 1}, {"filename": "/Sounds/brd3.wav", "start": 209994262, "end": 210076324, "audio": 1}, {"filename": "/Sounds/ding.wav", "start": 210076324, "end": 210098544, "audio": 1}, {"filename": "/Sounds/potn.wav", "start": 210098544, "end": 210112580, "audio": 1}, {"filename": "/Sounds/Desert.Mng", "start": 210112580, "end": 215759024}, {"filename": "/Sounds/gig3.WAV", "start": 215759024, "end": 215783992}, {"filename": "/Sounds/boi2.wav", "start": 215783992, "end": 215797628, "audio": 1}, {"filename": "/Sounds/Ee_E.wav", "start": 215797628, "end": 215799230, "audio": 1}, {"filename": "/Sounds/sce1.wav", "start": 215799230, "end": 215850026, "audio": 1}, {"filename": "/Sounds/dead.WAV", "start": 215850026, "end": 215865650}, {"filename": "/Sounds/Kohm.wav", "start": 215865650, "end": 215867850, "audio": 1}, {"filename": "/Sounds/gig2.WAV", "start": 215867850, "end": 215898730}, {"filename": "/Sounds/pl_2.wav", "start": 215898730, "end": 215931828, "audio": 1}, {"filename": "/Sounds/brd2.wav", "start": 215931828, "end": 216032116, "audio": 1}, {"filename": "/Sounds/Beem.wav", "start": 216032116, "end": 216036265, "audio": 1}, {"filename": "/Sounds/beez.wav", "start": 216036265, "end": 216249053, "audio": 1}, {"filename": "/Sounds/imem.WAV", "start": 216249053, "end": 216257315}, {"filename": "/Sounds/aiae.WAV", "start": 216257315, "end": 216263693}, {"filename": "/Backgrounds/crypt1.5.blk", "start": 216263693, "end": 217410863}, {"filename": "/Backgrounds/blank.blk", "start": 217410863, "end": 217804185}, {"filename": "/Backgrounds/gren3.4.blk", "start": 217804185, "end": 226457059}, {"filename": "/Backgrounds/Learning_room1.8.blk", "start": 226457059, "end": 227604229}, {"filename": "/Backgrounds/pinball2.blk", "start": 227604229, "end": 228751399}, {"filename": "/Backgrounds/norn3.0.blk", "start": 228751399, "end": 240649097}, {"filename": "/Backgrounds/space.blk", "start": 240649097, "end": 241796267}, {"filename": "/Backgrounds/c3_splash.blk", "start": 241796267, "end": 242943437}, {"filename": "/Backgrounds/aqua2.6.blk", "start": 242943437, "end": 250481927}, {"filename": "/Backgrounds/ettin1.8.blk", "start": 250481927, "end": 258348177}, {"filename": "/Backgrounds/main3.0.blk", "start": 258348177, "end": 281356939}, {"filename": "/Overlay Data/over_p00a.C16", "start": 281356939, "end": 281361137}, {"filename": "/Overlay Data/over_h00a.C16", "start": 281361137, "end": 281365335}, {"filename": "/Overlay Data/over_d00a.C16", "start": 281365335, "end": 281369533}, {"filename": "/Overlay Data/over_f00a.C16", "start": 281369533, "end": 281373731}, {"filename": "/Overlay Data/over_j00a.C16", "start": 281373731, "end": 281377929}, {"filename": "/Overlay Data/over_n00a.C16", "start": 281377929, "end": 281382127}, {"filename": "/Overlay Data/over_b00a.C16", "start": 281382127, "end": 281398901}, {"filename": "/Overlay Data/over_l00a.C16", "start": 281398901, "end": 281403099}, {"filename": "/Overlay Data/over_i00a.C16", "start": 281403099, "end": 281407297}, {"filename": "/Overlay Data/over_e00a.C16", "start": 281407297, "end": 281411495}, {"filename": "/Overlay Data/over_q00a.C16", "start": 281411495, "end": 281415693}, {"filename": "/Overlay Data/over_g00a.C16", "start": 281415693, "end": 281419891}, {"filename": "/Overlay Data/over_k00a.C16", "start": 281419891, "end": 281424089}, {"filename": "/Overlay Data/over_o00a.C16", "start": 281424089, "end": 281428287}, {"filename": "/Overlay Data/over_c00a.C16", "start": 281428287, "end": 281432485}, {"filename": "/Overlay Data/over_a00a.C16", "start": 281432485, "end": 281457643}, {"filename": "/Overlay Data/over_m00a.C16", "start": 281457643, "end": 281461841}, {"filename": "/Genetics/norn.civet46.gen.brain.gno", "start": 281461841, "end": 281594974}, {"filename": "/Genetics/ettn.final46e.gen.brain.gen", "start": 281594974, "end": 281630975}, {"filename": "/Genetics/norn.bengal46.gen.brain.gen", "start": 281630975, "end": 281666976}, {"filename": "/Genetics/gren.final46g.gen.brain.gen", "start": 281666976, "end": 281702977}, {"filename": "/Genetics/norn.bruin46.gen.brain.gno", "start": 281702977, "end": 281836110}, {"filename": "/Genetics/norn.bruin46.gen.brain.gen", "start": 281836110, "end": 281872111}, {"filename": "/Genetics/gren.final46g.gen.brain.gno", "start": 281872111, "end": 282003353}, {"filename": "/Genetics/norn.bengal46.gen.brain.gno", "start": 282003353, "end": 282136486}, {"filename": "/Genetics/norn.civet46.gen.brain.gen", "start": 282136486, "end": 282172487}, {"filename": "/Genetics/ettn.final46e.gen.brain.gno", "start": 282172487, "end": 282305358}, {"filename": "/Catalogue/Materia Medica-fr.catalogue", "start": 282305358, "end": 282332650}, {"filename": "/Catalogue/Creature History-de.catalogue", "start": 282332650, "end": 282334189}, {"filename": "/Catalogue/Scrolls of Learning-ru.catalogue", "start": 282334189, "end": 282340486}, {"filename": "/Catalogue/Brain-ru.catalogue", "start": 282340486, "end": 282342621}, {"filename": "/Catalogue/Scrolls of Learning-fr.catalogue", "start": 282342621, "end": 282349157}, {"filename": "/Catalogue/Materia Medica-ru.catalogue", "start": 282349157, "end": 282371282}, {"filename": "/Catalogue/GUItext.catalogue", "start": 282371282, "end": 282372250}, {"filename": "/Catalogue/Brain-fr.catalogue", "start": 282372250, "end": 282375121}, {"filename": "/Catalogue/Norn-it.catalogue", "start": 282375121, "end": 282378799}, {"filename": "/Catalogue/Materia Medica-nl.catalogue", "start": 282378799, "end": 282404768}, {"filename": "/Catalogue/Materia Medica.catalogue", "start": 282404768, "end": 282429255}, {"filename": "/Catalogue/Scrolls of Learning-nl.catalogue", "start": 282429255, "end": 282435720}, {"filename": "/Catalogue/Brain-nl.catalogue", "start": 282435720, "end": 282438471}, {"filename": "/Catalogue/System-de.catalogue", "start": 282438471, "end": 282446828}, {"filename": "/Catalogue/Creatures 3-nl.catalogue", "start": 282446828, "end": 282453416}, {"filename": "/Catalogue/Progress-ru.catalogue", "start": 282453416, "end": 282453877}, {"filename": "/Catalogue/AgentHelp-it.catalogue", "start": 282453877, "end": 282536847}, {"filename": "/Catalogue/Progress-fr.catalogue", "start": 282536847, "end": 282537311}, {"filename": "/Catalogue/Brain.catalogue", "start": 282537311, "end": 282539373}, {"filename": "/Catalogue/World Switcher-it.catalogue", "start": 282539373, "end": 282541011}, {"filename": "/Catalogue/labels-it.catalogue", "start": 282541011, "end": 282542760}, {"filename": "/Catalogue/vocab constructs-it.catalogue", "start": 282542760, "end": 282543382}, {"filename": "/Catalogue/Creatures 3-fr.catalogue", "start": 282543382, "end": 282550111}, {"filename": "/Catalogue/GUItext-es.catalogue", "start": 282550111, "end": 282551343}, {"filename": "/Catalogue/Creatures 3-ru.catalogue", "start": 282551343, "end": 282557397}, {"filename": "/Catalogue/Progress-nl.catalogue", "start": 282557397, "end": 282557861}, {"filename": "/Catalogue/labels-fr.catalogue", "start": 282557861, "end": 282559758}, {"filename": "/Catalogue/System-es.catalogue", "start": 282559758, "end": 282568912}, {"filename": "/Catalogue/Creatures 3-it.catalogue", "start": 282568912, "end": 282575496}, {"filename": "/Catalogue/vocab constructs-fr.catalogue", "start": 282575496, "end": 282576118}, {"filename": "/Catalogue/World Switcher-fr.catalogue", "start": 282576118, "end": 282577871}, {"filename": "/Catalogue/labels-ru.catalogue", "start": 282577871, "end": 282579198}, {"filename": "/Catalogue/vocab constructs-ru.catalogue", "start": 282579198, "end": 282579828}, {"filename": "/Catalogue/AgentHelp-nl.catalogue", "start": 282579828, "end": 282662297}, {"filename": "/Catalogue/World Switcher-ru.catalogue", "start": 282662297, "end": 282663500}, {"filename": "/Catalogue/vocab constructs-nl.catalogue", "start": 282663500, "end": 282664122}, {"filename": "/Catalogue/labels-nl.catalogue", "start": 282664122, "end": 282665959}, {"filename": "/Catalogue/World Switcher-nl.catalogue", "start": 282665959, "end": 282667685}, {"filename": "/Catalogue/AgentHelp-ru.catalogue", "start": 282667685, "end": 282741526}, {"filename": "/Catalogue/Progress-it.catalogue", "start": 282741526, "end": 282741990}, {"filename": "/Catalogue/GUItext-de.catalogue", "start": 282741990, "end": 282743157}, {"filename": "/Catalogue/AgentHelp-fr.catalogue", "start": 282743157, "end": 282830074}, {"filename": "/Catalogue/Creature History-es.catalogue", "start": 282830074, "end": 282831642}, {"filename": "/Catalogue/AgentHelp.catalogue", "start": 282831642, "end": 282911298}, {"filename": "/Catalogue/Norn.catalogue", "start": 282911298, "end": 282914562}, {"filename": "/Catalogue/Norn-nl.catalogue", "start": 282914562, "end": 282918250}, {"filename": "/Catalogue/Norn-ru.catalogue", "start": 282918250, "end": 282921573}, {"filename": "/Catalogue/Patch.catalogue", "start": 282921573, "end": 282921662}, {"filename": "/Catalogue/Materia Medica-it.catalogue", "start": 282921662, "end": 282949418}, {"filename": "/Catalogue/Brain-it.catalogue", "start": 282949418, "end": 282952229}, {"filename": "/Catalogue/Norn-fr.catalogue", "start": 282952229, "end": 282956060}, {"filename": "/Catalogue/Creature History.catalogue", "start": 282956060, "end": 282957200}, {"filename": "/Catalogue/World Switcher.catalogue", "start": 282957200, "end": 282958456}, {"filename": "/Catalogue/Scrolls of Learning-it.catalogue", "start": 282958456, "end": 282964969}, {"filename": "/Catalogue/Progress-es.catalogue", "start": 282964969, "end": 282965433}, {"filename": "/Catalogue/GUItext-nl.catalogue", "start": 282965433, "end": 282966685}, {"filename": "/Catalogue/vocab constructs-de.catalogue", "start": 282966685, "end": 282967307}, {"filename": "/Catalogue/labels-de.catalogue", "start": 282967307, "end": 282969226}, {"filename": "/Catalogue/World Switcher-de.catalogue", "start": 282969226, "end": 282971035}, {"filename": "/Catalogue/AgentHelp-en-GB.catalogue", "start": 282971035, "end": 283050700}, {"filename": "/Catalogue/GUItext-fr.catalogue", "start": 283050700, "end": 283051935}, {"filename": "/Catalogue/AgentHelp-de.catalogue", "start": 283051935, "end": 283141769}, {"filename": "/Catalogue/System-it.catalogue", "start": 283141769, "end": 283149902}, {"filename": "/Catalogue/GUItext-ru.catalogue", "start": 283149902, "end": 283150863}, {"filename": "/Catalogue/Creatures 3-es.catalogue", "start": 283150863, "end": 283157663}, {"filename": "/Catalogue/Scrolls of Learning-es.catalogue", "start": 283157663, "end": 283164191}, {"filename": "/Catalogue/Brain-es.catalogue", "start": 283164191, "end": 283166991}, {"filename": "/Catalogue/Materia Medica-es.catalogue", "start": 283166991, "end": 283194616}, {"filename": "/Catalogue/Scrolls of Learning.catalogue", "start": 283194616, "end": 283200913}, {"filename": "/Catalogue/Norn-de.catalogue", "start": 283200913, "end": 283204598}, {"filename": "/Catalogue/vocab constructs.catalogue", "start": 283204598, "end": 283205220}, {"filename": "/Catalogue/Creature History-it.catalogue", "start": 283205220, "end": 283206761}, {"filename": "/Catalogue/Creature History-ru.catalogue", "start": 283206761, "end": 283207930}, {"filename": "/Catalogue/Scrolls of Learning-de.catalogue", "start": 283207930, "end": 283214423}, {"filename": "/Catalogue/labels.catalogue", "start": 283214423, "end": 283215730}, {"filename": "/Catalogue/Brain-de.catalogue", "start": 283215730, "end": 283218534}, {"filename": "/Catalogue/Materia Medica-de.catalogue", "start": 283218534, "end": 283245821}, {"filename": "/Catalogue/Creature History-fr.catalogue", "start": 283245821, "end": 283247316}, {"filename": "/Catalogue/Genome.catalogue", "start": 283247316, "end": 283248092}, {"filename": "/Catalogue/System.catalogue", "start": 283248092, "end": 283255117}, {"filename": "/Catalogue/Norn-es.catalogue", "start": 283255117, "end": 283258801}, {"filename": "/Catalogue/ChemicalNames.catalogue", "start": 283258801, "end": 283262891}, {"filename": "/Catalogue/Creature History-nl.catalogue", "start": 283262891, "end": 283264403}, {"filename": "/Catalogue/Creatures 3.catalogue", "start": 283264403, "end": 283270625}, {"filename": "/Catalogue/CAOS.catalogue", "start": 283270625, "end": 283276083}, {"filename": "/Catalogue/System-ru.catalogue", "start": 283276083, "end": 283283055}, {"filename": "/Catalogue/GUItext-it.catalogue", "start": 283283055, "end": 283284250}, {"filename": "/Catalogue/Progress-de.catalogue", "start": 283284250, "end": 283284714}, {"filename": "/Catalogue/labels-es.catalogue", "start": 283284714, "end": 283286723}, {"filename": "/Catalogue/System-fr.catalogue", "start": 283286723, "end": 283295386}, {"filename": "/Catalogue/vocab constructs-es.catalogue", "start": 283295386, "end": 283296008}, {"filename": "/Catalogue/World Switcher-es.catalogue", "start": 283296008, "end": 283297760}, {"filename": "/Catalogue/AgentHelp-es.catalogue", "start": 283297760, "end": 283387096}, {"filename": "/Catalogue/System-nl.catalogue", "start": 283387096, "end": 283394973}, {"filename": "/Catalogue/voices.catalogue", "start": 283394973, "end": 283398657}, {"filename": "/Catalogue/Creatures 3-de.catalogue", "start": 283398657, "end": 283405299}, {"filename": "/Catalogue/Progress.catalogue", "start": 283405299, "end": 283405760}], "remote_package_size": 283405760, "package_uuid": "48716085-fdea-4bd1-9eff-211a4ea1a502"});
+   loadPackage({"files": [{"filename": "/machine.cfg", "start": 0, "end": 1335}, {"filename": "/de.xpm", "start": 1335, "end": 4767}, {"filename": "/it.xpm", "start": 4767, "end": 8275}, {"filename": "/es.xpm", "start": 8275, "end": 20037}, {"filename": "/.DS_Store", "start": 20037, "end": 26185}, {"filename": "/langpick.conf", "start": 26185, "end": 26578}, {"filename": "/langmovie.conf", "start": 26578, "end": 26932}, {"filename": "/build_number", "start": 26932, "end": 26936}, {"filename": "/Creatures 3.ico", "start": 26936, "end": 31646}, {"filename": "/creatures3.bmp", "start": 31646, "end": 34772}, {"filename": "/user.cfg", "start": 34772, "end": 34939}, {"filename": "/nl.xpm", "start": 34939, "end": 38417}, {"filename": "/fr.xpm", "start": 38417, "end": 41819}, {"filename": "/en.xpm", "start": 41819, "end": 51869}, {"filename": "/en-GB.xpm", "start": 51869, "end": 73039}, {"filename": "/Body Data/l14a.att", "start": 73039, "end": 73263}, {"filename": "/Body Data/a10a.att", "start": 73263, "end": 73679}, {"filename": "/Body Data/m10a.att", "start": 73679, "end": 73888}, {"filename": "/Body Data/l02a.att", "start": 73888, "end": 74098}, {"filename": "/Body Data/k00a.att", "start": 74098, "end": 74290}, {"filename": "/Body Data/f04a.att", "start": 74290, "end": 74513}, {"filename": "/Body Data/j12a.att", "start": 74513, "end": 74737}, {"filename": "/Body Data/f12a.att", "start": 74737, "end": 74959}, {"filename": "/Body Data/j04a.att", "start": 74959, "end": 75176}, {"filename": "/Body Data/g00a.att", "start": 75176, "end": 75383}, {"filename": "/Body Data/j24a.att", "start": 75383, "end": 75593}, {"filename": "/Body Data/g20a.att", "start": 75593, "end": 75800}, {"filename": "/Body Data/k20a.att", "start": 75800, "end": 75992}, {"filename": "/Body Data/f24a.att", "start": 75992, "end": 76214}, {"filename": "/Body Data/l22a.att", "start": 76214, "end": 76423}, {"filename": "/Body Data/d24a.att", "start": 76423, "end": 76637}, {"filename": "/Body Data/i20a.att", "start": 76637, "end": 76829}, {"filename": "/Body Data/e20a.att", "start": 76829, "end": 77047}, {"filename": "/Body Data/z22a.att", "start": 77047, "end": 77175}, {"filename": "/Body Data/h24a.att", "start": 77175, "end": 77395}, {"filename": "/Body Data/b22a.att", "start": 77395, "end": 77989}, {"filename": "/Body Data/n22a.att", "start": 77989, "end": 78193}, {"filename": "/Body Data/b14a.att", "start": 78193, "end": 78801}, {"filename": "/Body Data/n02a.att", "start": 78801, "end": 79009}, {"filename": "/Body Data/c10a.att", "start": 79009, "end": 79216}, {"filename": "/Body Data/b02a.att", "start": 79216, "end": 79812}, {"filename": "/Body Data/n14a.att", "start": 79812, "end": 80034}, {"filename": "/Body Data/e00a.att", "start": 80034, "end": 80252}, {"filename": "/Body Data/h04a.att", "start": 80252, "end": 80472}, {"filename": "/Body Data/z02a.att", "start": 80472, "end": 80600}, {"filename": "/Body Data/d12a.att", "start": 80600, "end": 80814}, {"filename": "/Body Data/h12a.att", "start": 80814, "end": 81037}, {"filename": "/Body Data/d04a.att", "start": 81037, "end": 81258}, {"filename": "/Body Data/z14a.att", "start": 81258, "end": 81386}, {"filename": "/Body Data/i00a.att", "start": 81386, "end": 81578}, {"filename": "/Body Data/j22a.att", "start": 81578, "end": 81787}, {"filename": "/Body Data/f22a.att", "start": 81787, "end": 82000}, {"filename": "/Body Data/a20a.att", "start": 82000, "end": 82416}, {"filename": "/Body Data/l24a.att", "start": 82416, "end": 82626}, {"filename": "/Body Data/m20a.att", "start": 82626, "end": 82809}, {"filename": "/Body Data/l12a.att", "start": 82809, "end": 83033}, {"filename": "/Body Data/m00a.att", "start": 83033, "end": 83216}, {"filename": "/Body Data/a00a.att", "start": 83216, "end": 83632}, {"filename": "/Body Data/l04a.att", "start": 83632, "end": 83851}, {"filename": "/Body Data/g10a.att", "start": 83851, "end": 84058}, {"filename": "/Body Data/f02a.att", "start": 84058, "end": 84280}, {"filename": "/Body Data/j14a.att", "start": 84280, "end": 84504}, {"filename": "/Body Data/f14a.att", "start": 84504, "end": 84727}, {"filename": "/Body Data/j02a.att", "start": 84727, "end": 84937}, {"filename": "/Body Data/k10a.att", "start": 84937, "end": 85130}, {"filename": "/Body Data/b12a.att", "start": 85130, "end": 85738}, {"filename": "/Body Data/n04a.att", "start": 85738, "end": 85947}, {"filename": "/Body Data/c00a.att", "start": 85947, "end": 86154}, {"filename": "/Body Data/b04a.att", "start": 86154, "end": 86755}, {"filename": "/Body Data/n12a.att", "start": 86755, "end": 86977}, {"filename": "/Body Data/i10a.att", "start": 86977, "end": 87170}, {"filename": "/Body Data/h02a.att", "start": 87170, "end": 87390}, {"filename": "/Body Data/z04a.att", "start": 87390, "end": 87518}, {"filename": "/Body Data/d14a.att", "start": 87518, "end": 87739}, {"filename": "/Body Data/h14a.att", "start": 87739, "end": 87963}, {"filename": "/Body Data/d02a.att", "start": 87963, "end": 88177}, {"filename": "/Body Data/z12a.att", "start": 88177, "end": 88305}, {"filename": "/Body Data/e10a.att", "start": 88305, "end": 88525}, {"filename": "/Body Data/d22a.att", "start": 88525, "end": 88738}, {"filename": "/Body Data/z24a.att", "start": 88738, "end": 88866}, {"filename": "/Body Data/h22a.att", "start": 88866, "end": 89086}, {"filename": "/Body Data/b24a.att", "start": 89086, "end": 89682}, {"filename": "/Body Data/n24a.att", "start": 89682, "end": 89890}, {"filename": "/Body Data/c20a.att", "start": 89890, "end": 90097}, {"filename": "/Body Data/m22a.att", "start": 90097, "end": 90301}, {"filename": "/Body Data/a22a.att", "start": 90301, "end": 90717}, {"filename": "/Body Data/f20a.att", "start": 90717, "end": 90924}, {"filename": "/Body Data/k24a.att", "start": 90924, "end": 91125}, {"filename": "/Body Data/g24a.att", "start": 91125, "end": 91339}, {"filename": "/Body Data/j20a.att", "start": 91339, "end": 91545}, {"filename": "/Body Data/g04a.att", "start": 91545, "end": 91767}, {"filename": "/Body Data/k12a.att", "start": 91767, "end": 91978}, {"filename": "/Body Data/j00a.att", "start": 91978, "end": 92184}, {"filename": "/Body Data/f00a.att", "start": 92184, "end": 92391}, {"filename": "/Body Data/g12a.att", "start": 92391, "end": 92605}, {"filename": "/Body Data/k04a.att", "start": 92605, "end": 92828}, {"filename": "/Body Data/m14a.att", "start": 92828, "end": 93046}, {"filename": "/Body Data/a02a.att", "start": 93046, "end": 93462}, {"filename": "/Body Data/m02a.att", "start": 93462, "end": 93671}, {"filename": "/Body Data/a14a.att", "start": 93671, "end": 94087}, {"filename": "/Body Data/l10a.att", "start": 94087, "end": 94297}, {"filename": "/Body Data/i04a.att", "start": 94297, "end": 94520}, {"filename": "/Body Data/e12a.att", "start": 94520, "end": 94743}, {"filename": "/Body Data/d00a.att", "start": 94743, "end": 94950}, {"filename": "/Body Data/z10a.att", "start": 94950, "end": 95078}, {"filename": "/Body Data/h00a.att", "start": 95078, "end": 95296}, {"filename": "/Body Data/i12a.att", "start": 95296, "end": 95510}, {"filename": "/Body Data/e04a.att", "start": 95510, "end": 95730}, {"filename": "/Body Data/n10a.att", "start": 95730, "end": 95940}, {"filename": "/Body Data/c14a.att", "start": 95940, "end": 96163}, {"filename": "/Body Data/c02a.att", "start": 96163, "end": 96385}, {"filename": "/Body Data/b10a.att", "start": 96385, "end": 96993}, {"filename": "/Body Data/c22a.att", "start": 96993, "end": 97206}, {"filename": "/Body Data/h20a.att", "start": 97206, "end": 97424}, {"filename": "/Body Data/e24a.att", "start": 97424, "end": 97644}, {"filename": "/Body Data/i24a.att", "start": 97644, "end": 97845}, {"filename": "/Body Data/d20a.att", "start": 97845, "end": 98052}, {"filename": "/Body Data/g02a.att", "start": 98052, "end": 98266}, {"filename": "/Body Data/k14a.att", "start": 98266, "end": 98490}, {"filename": "/Body Data/f10a.att", "start": 98490, "end": 98697}, {"filename": "/Body Data/j10a.att", "start": 98697, "end": 98907}, {"filename": "/Body Data/g14a.att", "start": 98907, "end": 99129}, {"filename": "/Body Data/k02a.att", "start": 99129, "end": 99330}, {"filename": "/Body Data/l00a.att", "start": 99330, "end": 99536}, {"filename": "/Body Data/m12a.att", "start": 99536, "end": 99746}, {"filename": "/Body Data/a04a.att", "start": 99746, "end": 100162}, {"filename": "/Body Data/m04a.att", "start": 100162, "end": 100376}, {"filename": "/Body Data/a12a.att", "start": 100376, "end": 100792}, {"filename": "/Body Data/m24a.att", "start": 100792, "end": 101001}, {"filename": "/Body Data/l20a.att", "start": 101001, "end": 101207}, {"filename": "/Body Data/a24a.att", "start": 101207, "end": 101623}, {"filename": "/Body Data/k22a.att", "start": 101623, "end": 101817}, {"filename": "/Body Data/g22a.att", "start": 101817, "end": 102030}, {"filename": "/Body Data/c24a.att", "start": 102030, "end": 102252}, {"filename": "/Body Data/n20a.att", "start": 102252, "end": 102440}, {"filename": "/Body Data/b20a.att", "start": 102440, "end": 103028}, {"filename": "/Body Data/z20a.att", "start": 103028, "end": 103156}, {"filename": "/Body Data/e22a.att", "start": 103156, "end": 103376}, {"filename": "/Body Data/i22a.att", "start": 103376, "end": 103570}, {"filename": "/Body Data/i02a.att", "start": 103570, "end": 103771}, {"filename": "/Body Data/e14a.att", "start": 103771, "end": 103995}, {"filename": "/Body Data/h10a.att", "start": 103995, "end": 104215}, {"filename": "/Body Data/z00a.att", "start": 104215, "end": 104343}, {"filename": "/Body Data/d10a.att", "start": 104343, "end": 104550}, {"filename": "/Body Data/i14a.att", "start": 104550, "end": 104774}, {"filename": "/Body Data/e02a.att", "start": 104774, "end": 104994}, {"filename": "/Body Data/b00a.att", "start": 104994, "end": 105582}, {"filename": "/Body Data/c12a.att", "start": 105582, "end": 105804}, {"filename": "/Body Data/c04a.att", "start": 105804, "end": 106027}, {"filename": "/Body Data/n00a.att", "start": 106027, "end": 106215}, {"filename": "/Bootstrap/000 Switcher/disable debug keys.cos", "start": 106215, "end": 106248}, {"filename": "/Bootstrap/000 Switcher/world switcher.cos", "start": 106248, "end": 117733}, {"filename": "/Bootstrap/000 Switcher/!map.cos", "start": 117733, "end": 117821}, {"filename": "/Bootstrap/001 World/creature history.cos", "start": 117821, "end": 137116}, {"filename": "/Bootstrap/001 World/apples.cos", "start": 137116, "end": 139289}, {"filename": "/Bootstrap/001 World/plant model - foxglove plant.cos", "start": 139289, "end": 143946}, {"filename": "/Bootstrap/001 World/fungi.cos", "start": 143946, "end": 147749}, {"filename": "/Bootstrap/001 World/logicgate.cos", "start": 147749, "end": 149857}, {"filename": "/Bootstrap/001 World/garbage spewer.cos", "start": 149857, "end": 150595}, {"filename": "/Bootstrap/001 World/creaturedoneto.cos", "start": 150595, "end": 153135}, {"filename": "/Bootstrap/001 World/disable debug keys.cos", "start": 153135, "end": 153168}, {"filename": "/Bootstrap/001 World/handlefish.cos", "start": 153168, "end": 172842}, {"filename": "/Bootstrap/001 World/radio machines.cos", "start": 172842, "end": 174526}, {"filename": "/Bootstrap/001 World/medicine maker.cos", "start": 174526, "end": 186330}, {"filename": "/Bootstrap/001 World/aquatic tunnel gates.cos", "start": 186330, "end": 190072}, {"filename": "/Bootstrap/001 World/gui 1.cos", "start": 190072, "end": 217505}, {"filename": "/Bootstrap/001 World/smell emitter + detector.cos", "start": 217505, "end": 221573}, {"filename": "/Bootstrap/001 World/anti-bacterial spray.cos", "start": 221573, "end": 223343}, {"filename": "/Bootstrap/001 World/grendel and ettin egg maker.cos", "start": 223343, "end": 224797}, {"filename": "/Bootstrap/001 World/recycler2.cos", "start": 224797, "end": 227881}, {"filename": "/Bootstrap/001 World/pregnancy indication device.cos", "start": 227881, "end": 230375}, {"filename": "/Bootstrap/001 World/pointer scripts.cos", "start": 230375, "end": 232601}, {"filename": "/Bootstrap/001 World/output display device.cos", "start": 232601, "end": 233156}, {"filename": "/Bootstrap/001 World/pumperspikel.cos", "start": 233156, "end": 235413}, {"filename": "/Bootstrap/001 World/medical pod and screens.cos", "start": 235413, "end": 269465}, {"filename": "/Bootstrap/001 World/ball.cos", "start": 269465, "end": 270930}, {"filename": "/Bootstrap/001 World/norn egg layer.cos", "start": 270930, "end": 276434}, {"filename": "/Bootstrap/001 World/xbioenergy incrementer.cos", "start": 276434, "end": 276689}, {"filename": "/Bootstrap/001 World/opal sponge.cos", "start": 276689, "end": 281854}, {"filename": "/Bootstrap/001 World/wasp.cos", "start": 281854, "end": 287498}, {"filename": "/Bootstrap/001 World/engineering scenery.cos", "start": 287498, "end": 287602}, {"filename": "/Bootstrap/001 World/magic profiler.cos", "start": 287602, "end": 288964}, {"filename": "/Bootstrap/001 World/knowledge stones.cos", "start": 288964, "end": 289968}, {"filename": "/Bootstrap/001 World/angel fish.cos", "start": 289968, "end": 306285}, {"filename": "/Bootstrap/001 World/ettin accessways.cos", "start": 306285, "end": 311547}, {"filename": "/Bootstrap/001 World/aquatic_population_monitoring_device.cos", "start": 311547, "end": 315455}, {"filename": "/Bootstrap/001 World/internal terrarium door.cos", "start": 315455, "end": 317739}, {"filename": "/Bootstrap/001 World/numeric output tool.cos", "start": 317739, "end": 320382}, {"filename": "/Bootstrap/001 World/gene pod.cos", "start": 320382, "end": 323461}, {"filename": "/Bootstrap/001 World/norn cutaways 01.cos", "start": 323461, "end": 323763}, {"filename": "/Bootstrap/001 World/dragonfly.cos", "start": 323763, "end": 342032}, {"filename": "/Bootstrap/001 World/creaturesaffectinghand.cos", "start": 342032, "end": 342320}, {"filename": "/Bootstrap/001 World/beatbox.cos", "start": 342320, "end": 343639}, {"filename": "/Bootstrap/001 World/favourite places.cos", "start": 343639, "end": 353421}, {"filename": "/Bootstrap/001 World/stars and pickup panel.cos", "start": 353421, "end": 355822}, {"filename": "/Bootstrap/001 World/holdinghandscontrolscripts.cos", "start": 355822, "end": 356090}, {"filename": "/Bootstrap/001 World/vents.cos", "start": 356090, "end": 356414}, {"filename": "/Bootstrap/001 World/waterplant.cos", "start": 356414, "end": 357501}, {"filename": "/Bootstrap/001 World/ocean surface.cos", "start": 357501, "end": 358204}, {"filename": "/Bootstrap/001 World/rocklice.cos", "start": 358204, "end": 369136}, {"filename": "/Bootstrap/001 World/nudibranch.cos", "start": 369136, "end": 373597}, {"filename": "/Bootstrap/001 World/norn seed launcher.cos", "start": 373597, "end": 392816}, {"filename": "/Bootstrap/001 World/plant model - foxglove leaf.cos", "start": 392816, "end": 393869}, {"filename": "/Bootstrap/001 World/toilet control.cos", "start": 393869, "end": 394151}, {"filename": "/Bootstrap/001 World/ettin seed bank.cos", "start": 394151, "end": 399993}, {"filename": "/Bootstrap/001 World/lifts.cos", "start": 399993, "end": 417735}, {"filename": "/Bootstrap/001 World/robin2.cos", "start": 417735, "end": 440082}, {"filename": "/Bootstrap/001 World/carrot.cos", "start": 440082, "end": 442785}, {"filename": "/Bootstrap/001 World/wolf control.cos", "start": 442785, "end": 445087}, {"filename": "/Bootstrap/001 World/wysts.cos", "start": 445087, "end": 450782}, {"filename": "/Bootstrap/001 World/water smell emitter.cos", "start": 450782, "end": 451643}, {"filename": "/Bootstrap/001 World/all engineering airlock.cos", "start": 451643, "end": 459139}, {"filename": "/Bootstrap/001 World/ocean_pod.cos", "start": 459139, "end": 459233}, {"filename": "/Bootstrap/001 World/norn atmosphere machine.cos", "start": 459233, "end": 462048}, {"filename": "/Bootstrap/001 World/sealift.cos", "start": 462048, "end": 462894}, {"filename": "/Bootstrap/001 World/mosquito.cos", "start": 462894, "end": 466554}, {"filename": "/Bootstrap/001 World/space toy.cos", "start": 466554, "end": 467630}, {"filename": "/Bootstrap/001 World/creaturetocreature.cos", "start": 467630, "end": 468826}, {"filename": "/Bootstrap/001 World/neon fish.cos", "start": 468826, "end": 484053}, {"filename": "/Bootstrap/001 World/starplant.cos", "start": 484053, "end": 484396}, {"filename": "/Bootstrap/001 World/replicator.cos", "start": 484396, "end": 490761}, {"filename": "/Bootstrap/001 World/welcome screen.cos", "start": 490761, "end": 493642}, {"filename": "/Bootstrap/001 World/grendel seed bank.cos", "start": 493642, "end": 498517}, {"filename": "/Bootstrap/001 World/xy tool.cos", "start": 498517, "end": 500025}, {"filename": "/Bootstrap/001 World/textentry.cos", "start": 500025, "end": 502386}, {"filename": "/Bootstrap/001 World/orange sponge.cos", "start": 502386, "end": 507540}, {"filename": "/Bootstrap/001 World/object of attention indicator.cos", "start": 507540, "end": 508093}, {"filename": "/Bootstrap/001 World/ettin area environment.cos", "start": 508093, "end": 511141}, {"filename": "/Bootstrap/001 World/z_agent smells.cos", "start": 511141, "end": 511353}, {"filename": "/Bootstrap/001 World/grazer2.cos", "start": 511353, "end": 525387}, {"filename": "/Bootstrap/001 World/man-o-war.cos", "start": 525387, "end": 534120}, {"filename": "/Bootstrap/001 World/count gate.cos", "start": 534120, "end": 535815}, {"filename": "/Bootstrap/001 World/butterfly.cos", "start": 535815, "end": 551552}, {"filename": "/Bootstrap/001 World/z_creaturesaffectinganimals.cos", "start": 551552, "end": 551819}, {"filename": "/Bootstrap/001 World/infinite_cheese_machine.cos", "start": 551819, "end": 556958}, {"filename": "/Bootstrap/001 World/antigen detector.cos", "start": 556958, "end": 558806}, {"filename": "/Bootstrap/001 World/toolbar.cos", "start": 558806, "end": 564284}, {"filename": "/Bootstrap/001 World/corridor doors.cos", "start": 564284, "end": 592871}, {"filename": "/Bootstrap/001 World/gumin grass.cos", "start": 592871, "end": 597969}, {"filename": "/Bootstrap/001 World/single chemical graphing gadget.cos", "start": 597969, "end": 602445}, {"filename": "/Bootstrap/001 World/ant.cos", "start": 602445, "end": 612642}, {"filename": "/Bootstrap/001 World/volcano.cos", "start": 612642, "end": 618962}, {"filename": "/Bootstrap/001 World/cacbana.cos", "start": 618962, "end": 626872}, {"filename": "/Bootstrap/001 World/piranha.cos", "start": 626872, "end": 633211}, {"filename": "/Bootstrap/001 World/pointer.cos", "start": 633211, "end": 633334}, {"filename": "/Bootstrap/001 World/grendel scenery.cos", "start": 633334, "end": 633554}, {"filename": "/Bootstrap/001 World/genetic splicer panel2.cos", "start": 633554, "end": 637763}, {"filename": "/Bootstrap/001 World/rock cutaway norn terrarium.cos", "start": 637763, "end": 637857}, {"filename": "/Bootstrap/001 World/plant model - foxglove seed.cos", "start": 637857, "end": 640361}, {"filename": "/Bootstrap/001 World/agent help.cos", "start": 640361, "end": 645306}, {"filename": "/Bootstrap/001 World/bongo_drums.cos", "start": 645306, "end": 646398}, {"filename": "/Bootstrap/001 World/sepulchre.cos", "start": 646398, "end": 647434}, {"filename": "/Bootstrap/001 World/hummingbird.cos", "start": 647434, "end": 667223}, {"filename": "/Bootstrap/001 World/trapdoor.cos", "start": 667223, "end": 669144}, {"filename": "/Bootstrap/001 World/bee.cos", "start": 669144, "end": 680475}, {"filename": "/Bootstrap/001 World/wetness monitor and designator.cos", "start": 680475, "end": 681672}, {"filename": "/Bootstrap/001 World/speech bubble factory.cos", "start": 681672, "end": 683158}, {"filename": "/Bootstrap/001 World/hawk.cos", "start": 683158, "end": 692461}, {"filename": "/Bootstrap/001 World/gnats.cos", "start": 692461, "end": 697161}, {"filename": "/Bootstrap/001 World/aquatic_launcher.cos", "start": 697161, "end": 706588}, {"filename": "/Bootstrap/001 World/meerk.cos", "start": 706588, "end": 710712}, {"filename": "/Bootstrap/001 World/grass.cos", "start": 710712, "end": 717008}, {"filename": "/Bootstrap/001 World/!c3_game variables.cos", "start": 717008, "end": 717716}, {"filename": "/Bootstrap/001 World/rainbow_sharkling.cos", "start": 717716, "end": 726126}, {"filename": "/Bootstrap/001 World/delay gate.cos", "start": 726126, "end": 729076}, {"filename": "/Bootstrap/001 World/marine_airlocks.cos", "start": 729076, "end": 734696}, {"filename": "/Bootstrap/001 World/aquamites.cos", "start": 734696, "end": 737170}, {"filename": "/Bootstrap/001 World/blueprint agent scripts.cos", "start": 737170, "end": 741222}, {"filename": "/Bootstrap/001 World/creaturebubbles.cos", "start": 741222, "end": 741840}, {"filename": "/Bootstrap/001 World/desert grass.cos", "start": 741840, "end": 748423}, {"filename": "/Bootstrap/001 World/norn indicator.cos", "start": 748423, "end": 748811}, {"filename": "/Bootstrap/001 World/grasshopper.cos", "start": 748811, "end": 755527}, {"filename": "/Bootstrap/001 World/choppertoy.cos", "start": 755527, "end": 757478}, {"filename": "/Bootstrap/001 World/recycler overlay.cos", "start": 757478, "end": 757583}, {"filename": "/Bootstrap/001 World/kingfisher.cos", "start": 757583, "end": 768334}, {"filename": "/Bootstrap/001 World/marine cave water.cos", "start": 768334, "end": 771520}, {"filename": "/Bootstrap/001 World/hoppity.cos", "start": 771520, "end": 779614}, {"filename": "/Bootstrap/001 World/not gate.cos", "start": 779614, "end": 780399}, {"filename": "/Bootstrap/001 World/stickleback.cos", "start": 780399, "end": 789600}, {"filename": "/Bootstrap/001 World/scroll settings.cos", "start": 789600, "end": 789658}, {"filename": "/Bootstrap/001 World/pick-ups.cos", "start": 789658, "end": 792588}, {"filename": "/Bootstrap/001 World/switch.cos", "start": 792588, "end": 793787}, {"filename": "/Bootstrap/001 World/lung.cos", "start": 793787, "end": 794015}, {"filename": "/Bootstrap/001 World/connecting agent pointer change.cos", "start": 794015, "end": 794363}, {"filename": "/Bootstrap/001 World/creatureobjectvariables.cos", "start": 794363, "end": 794369}, {"filename": "/Bootstrap/001 World/fixed position fish egg launcher.cos", "start": 794369, "end": 800499}, {"filename": "/Bootstrap/001 World/teleporter.cos", "start": 800499, "end": 805995}, {"filename": "/Bootstrap/001 World/learning_machine.cos", "start": 805995, "end": 814229}, {"filename": "/Bootstrap/001 World/creature detector.cos", "start": 814229, "end": 818607}, {"filename": "/Bootstrap/001 World/creator.cos", "start": 818607, "end": 826845}, {"filename": "/Bootstrap/001 World/ettin_muscle_paralyser.cos", "start": 826845, "end": 827617}, {"filename": "/Bootstrap/001 World/palmplant.cos", "start": 827617, "end": 828196}, {"filename": "/Bootstrap/001 World/creatureinvoluntary.cos", "start": 828196, "end": 833021}, {"filename": "/Bootstrap/001 World/light & heat emitters nt.cos", "start": 833021, "end": 837728}, {"filename": "/Bootstrap/001 World/creaturebreeding.cos", "start": 837728, "end": 844949}, {"filename": "/Bootstrap/001 World/aquamite_maker.cos", "start": 844949, "end": 847494}, {"filename": "/Bootstrap/001 World/plant model - foxglove flower.cos", "start": 847494, "end": 848575}, {"filename": "/Bootstrap/001 World/norn to grendel door.cos", "start": 848575, "end": 851318}, {"filename": "/Bootstrap/001 World/crypt3.cos", "start": 851318, "end": 863743}, {"filename": "/Bootstrap/001 World/airlock agent.cos", "start": 863743, "end": 865225}, {"filename": "/Bootstrap/001 World/woodpigeon2.cos", "start": 865225, "end": 883867}, {"filename": "/Bootstrap/001 World/xefficiency indicator.cos", "start": 883867, "end": 886704}, {"filename": "/Bootstrap/001 World/keyboard handler.cos", "start": 886704, "end": 895099}, {"filename": "/Bootstrap/001 World/!map.cos", "start": 895099, "end": 980251}, {"filename": "/Bootstrap/001 World/lightmodule.cos", "start": 980251, "end": 983549}, {"filename": "/Bootstrap/001 World/zzz_move camera.cos", "start": 983549, "end": 983598}, {"filename": "/Bootstrap/001 World/beetle.cos", "start": 983598, "end": 989241}, {"filename": "/Bootstrap/001 World/environmental controls.cos", "start": 989241, "end": 996043}, {"filename": "/Bootstrap/001 World/hover vehicle.cos", "start": 996043, "end": 999283}, {"filename": "/Bootstrap/001 World/all bridge airlock.cos", "start": 999283, "end": 1007192}, {"filename": "/Bootstrap/001 World/blueprint agent export as pray file.cos", "start": 1007192, "end": 1008777}, {"filename": "/Bootstrap/001 World/pointer activate stimming norns.cos", "start": 1008777, "end": 1008994}, {"filename": "/Bootstrap/001 World/life event factory.cos", "start": 1008994, "end": 1011878}, {"filename": "/Bootstrap/001 World/plusminus switch.cos", "start": 1011878, "end": 1012795}, {"filename": "/Bootstrap/001 World/frame rater.cos", "start": 1012795, "end": 1013627}, {"filename": "/Bootstrap/001 World/uglee.cos", "start": 1013627, "end": 1018460}, {"filename": "/Bootstrap/001 World/camera unit.cos", "start": 1018460, "end": 1023502}, {"filename": "/Bootstrap/001 World/lightbox.cos", "start": 1023502, "end": 1025555}, {"filename": "/Bootstrap/001 World/bacteria.cos", "start": 1025555, "end": 1034078}, {"filename": "/Bootstrap/001 World/sludge gun.cos", "start": 1034078, "end": 1036860}, {"filename": "/Bootstrap/001 World/gene splicer overlay.cos", "start": 1036860, "end": 1036973}, {"filename": "/Bootstrap/001 World/marine room cutout.cos", "start": 1036973, "end": 1037092}, {"filename": "/Bootstrap/001 World/gnarler.cos", "start": 1037092, "end": 1043838}, {"filename": "/Bootstrap/001 World/autosave.cos", "start": 1043838, "end": 1044166}, {"filename": "/Bootstrap/001 World/death.cos", "start": 1044166, "end": 1044928}, {"filename": "/Bootstrap/001 World/hatchery2.cos", "start": 1044928, "end": 1048630}, {"filename": "/Bootstrap/001 World/balloon bug.cos", "start": 1048630, "end": 1053110}, {"filename": "/Bootstrap/001 World/tendril.cos", "start": 1053110, "end": 1056762}, {"filename": "/Bootstrap/001 World/home smell emitters.cos", "start": 1056762, "end": 1057385}, {"filename": "/Bootstrap/001 World/contact sensor.cos", "start": 1057385, "end": 1058222}, {"filename": "/Bootstrap/001 World/caos command line.cos", "start": 1058222, "end": 1060706}, {"filename": "/Bootstrap/001 World/norn platform.cos", "start": 1060706, "end": 1060847}, {"filename": "/Bootstrap/001 World/siren.cos", "start": 1060847, "end": 1062147}, {"filename": "/Bootstrap/001 World/cuttlefish.cos", "start": 1062147, "end": 1066224}, {"filename": "/Bootstrap/001 World/medical scanner.cos", "start": 1066224, "end": 1068747}, {"filename": "/Bootstrap/001 World/lung overlay.cos", "start": 1068747, "end": 1068924}, {"filename": "/Bootstrap/001 World/clown fish.cos", "start": 1068924, "end": 1086262}, {"filename": "/Bootstrap/001 World/grendel area environment.cos", "start": 1086262, "end": 1090910}, {"filename": "/Bootstrap/001 World/creaturedecisions.cos", "start": 1090910, "end": 1098112}, {"filename": "/Bootstrap/001 World/hedgehog.cos", "start": 1098112, "end": 1106308}, {"filename": "/Bootstrap/001 World/kobold.cos", "start": 1106308, "end": 1113354}, {"filename": "/Bootstrap/001 World/mediporter.cos", "start": 1113354, "end": 1114870}, {"filename": "/Bootstrap/001 World/map display.cos", "start": 1114870, "end": 1129474}, {"filename": "/Bootstrap/001 World/snail.cos", "start": 1129474, "end": 1133845}, {"filename": "/Bootstrap/001 World/bluebell.cos", "start": 1133845, "end": 1134457}, {"filename": "/Images/g00a.c16", "start": 1134457, "end": 1142691}, {"filename": "/Images/c50a.c16", "start": 1142691, "end": 1151411}, {"filename": "/Images/f45a.c16", "start": 1151411, "end": 1169837}, {"filename": "/Images/b15a.c16", "start": 1169837, "end": 1583787}, {"filename": "/Images/mediscreen.c16", "start": 1583787, "end": 2871933}, {"filename": "/Images/j04a.c16", "start": 2871933, "end": 2887375}, {"filename": "/Images/n54a.c16", "start": 2887375, "end": 2904919}, {"filename": "/Images/b42a.c16", "start": 2904919, "end": 3039165}, {"filename": "/Images/f12a.c16", "start": 3039165, "end": 3052315}, {"filename": "/Images/caterpillar.c16", "start": 3052315, "end": 3118775}, {"filename": "/Images/n42a.c16", "start": 3118775, "end": 3128665}, {"filename": "/Images/j12a.c16", "start": 3128665, "end": 3149591}, {"filename": "/Images/062a.c16", "start": 3149591, "end": 3203933}, {"filename": "/Images/f04a.c16", "start": 3203933, "end": 3222359}, {"filename": "/Images/b54a.c16", "start": 3222359, "end": 3610449}, {"filename": "/Images/j45a.c16", "start": 3610449, "end": 3625891}, {"filename": "/Images/hoppity.c16", "start": 3625891, "end": 4255373}, {"filename": "/Images/n15a.c16", "start": 4255373, "end": 4272917}, {"filename": "/Images/k00a.c16", "start": 4272917, "end": 4278591}, {"filename": "/Images/042c.c16", "start": 4278591, "end": 4340613}, {"filename": "/Images/d44a.c16", "start": 4340613, "end": 4357905}, {"filename": "/Images/042b.c16", "start": 4357905, "end": 4419927}, {"filename": "/Images/l02a.c16", "start": 4419927, "end": 4431141}, {"filename": "/Images/h52a.c16", "start": 4431141, "end": 4446231}, {"filename": "/Images/dust cloud.c16", "start": 4446231, "end": 4519137}, {"filename": "/Images/pick-ups.c16", "start": 4519137, "end": 5002357}, {"filename": "/Images/i40a.c16", "start": 5002357, "end": 5008031}, {"filename": "/Images/m10a.c16", "start": 5008031, "end": 5018193}, {"filename": "/Images/h05a.c16", "start": 5018193, "end": 5030933}, {"filename": "/Images/l55a.c16", "start": 5030933, "end": 5060739}, {"filename": "/Images/switch.c16", "start": 5060739, "end": 5079257}, {"filename": "/Images/door.c16", "start": 5079257, "end": 9254627}, {"filename": "/Images/d05a.c16", "start": 9254627, "end": 9271919}, {"filename": "/Images/e40a.c16", "start": 9271919, "end": 9278165}, {"filename": "/Images/a10a.c16", "start": 9278165, "end": 9819983}, {"filename": "/Images/d52a.c16", "start": 9819983, "end": 9832345}, {"filename": "/Images/h44a.c16", "start": 9832345, "end": 9845085}, {"filename": "/Images/gnat.c16", "start": 9845085, "end": 9859759}, {"filename": "/Images/l14a.c16", "start": 9859759, "end": 9889565}, {"filename": "/Images/rotorfly.c16", "start": 9889565, "end": 10024359}, {"filename": "/Images/lightmod.c16", "start": 10024359, "end": 10047201}, {"filename": "/Images/g00b.c16", "start": 10047201, "end": 10055435}, {"filename": "/Images/targ.c16", "start": 10055435, "end": 10084161}, {"filename": "/Images/e60a.c16", "start": 10084161, "end": 10090407}, {"filename": "/Images/fanplant.c16", "start": 10090407, "end": 10102025}, {"filename": "/Images/h44c.c16", "start": 10102025, "end": 10114765}, {"filename": "/Images/d25a.c16", "start": 10114765, "end": 10127127}, {"filename": "/Images/bridge airlock.c16", "start": 10127127, "end": 10937829}, {"filename": "/Images/mantis.c16", "start": 10937829, "end": 10961305}, {"filename": "/Images/f45b.c16", "start": 10961305, "end": 10979731}, {"filename": "/Images/door_ports.c16", "start": 10979731, "end": 10980863}, {"filename": "/Images/j04b.c16", "start": 10980863, "end": 10996305}, {"filename": "/Images/h64a.c16", "start": 10996305, "end": 11005587}, {"filename": "/Images/e40c.c16", "start": 11005587, "end": 11011833}, {"filename": "/Images/b42b.c16", "start": 11011833, "end": 11152743}, {"filename": "/Images/d05c.c16", "start": 11152743, "end": 11170035}, {"filename": "/Images/euro gui.c16", "start": 11170035, "end": 11170287}, {"filename": "/Images/l22a.c16", "start": 11170287, "end": 11179635}, {"filename": "/Images/h05c.c16", "start": 11179635, "end": 11192375}, {"filename": "/Images/n42b.c16", "start": 11192375, "end": 11202265}, {"filename": "/Images/lung.c16", "start": 11202265, "end": 13496365}, {"filename": "/Images/d64a.c16", "start": 13496365, "end": 13508727}, {"filename": "/Images/i40c.c16", "start": 13508727, "end": 13514401}, {"filename": "/Images/f04b.c16", "start": 13514401, "end": 13532827}, {"filename": "/Images/crypt door.c16", "start": 13532827, "end": 13593649}, {"filename": "/Images/l02c.c16", "start": 13593649, "end": 13604863}, {"filename": "/Images/j45b.c16", "start": 13604863, "end": 13620305}, {"filename": "/Images/h25a.c16", "start": 13620305, "end": 13629587}, {"filename": "/Images/i60a.c16", "start": 13629587, "end": 13635261}, {"filename": "/Images/graspit.c16", "start": 13635261, "end": 13748691}, {"filename": "/Images/d44c.c16", "start": 13748691, "end": 13765983}, {"filename": "/Images/k00b.c16", "start": 13765983, "end": 13771657}, {"filename": "/Images/042a.c16", "start": 13771657, "end": 13833679}, {"filename": "/Images/f24a.c16", "start": 13833679, "end": 13846829}, {"filename": "/Images/k00c.c16", "start": 13846829, "end": 13852503}, {"filename": "/Images/d44b.c16", "start": 13852503, "end": 13869795}, {"filename": "/Images/dead_fish.c16", "start": 13869795, "end": 13971539}, {"filename": "/Images/j45c.c16", "start": 13971539, "end": 13986981}, {"filename": "/Images/l02b.c16", "start": 13986981, "end": 13998195}, {"filename": "/Images/progress.s16", "start": 13998195, "end": 14190763}, {"filename": "/Images/k20a.c16", "start": 14190763, "end": 14196437}, {"filename": "/Images/f04c.c16", "start": 14196437, "end": 14214863}, {"filename": "/Images/i40b.c16", "start": 14214863, "end": 14220537}, {"filename": "/Images/015a.c16", "start": 14220537, "end": 14297919}, {"filename": "/Images/n42c.c16", "start": 14297919, "end": 14307809}, {"filename": "/Images/h05b.c16", "start": 14307809, "end": 14320549}, {"filename": "/Images/j65a.c16", "start": 14320549, "end": 14331763}, {"filename": "/Images/trout.c16", "start": 14331763, "end": 14404063}, {"filename": "/Images/airlock buttons.c16", "start": 14404063, "end": 14489399}, {"filename": "/Images/f65a.c16", "start": 14489399, "end": 14502549}, {"filename": "/Images/smell_machines.c16", "start": 14502549, "end": 14696547}, {"filename": "/Images/d05b.c16", "start": 14696547, "end": 14713839}, {"filename": "/Images/b42c.c16", "start": 14713839, "end": 14854749}, {"filename": "/Images/e40b.c16", "start": 14854749, "end": 14860995}, {"filename": "/Images/g20a.c16", "start": 14860995, "end": 14869229}, {"filename": "/Images/j04c.c16", "start": 14869229, "end": 14884671}, {"filename": "/Images/gren.c16", "start": 14884671, "end": 14887951}, {"filename": "/Images/mossie.c16", "start": 14887951, "end": 14912161}, {"filename": "/Images/clown.c16", "start": 14912161, "end": 14976113}, {"filename": "/Images/f45c.c16", "start": 14976113, "end": 14994539}, {"filename": "/Images/b62a.c16", "start": 14994539, "end": 15115165}, {"filename": "/Images/054a.c16", "start": 15115165, "end": 15192547}, {"filename": "/Images/h44b.c16", "start": 15192547, "end": 15205287}, {"filename": "/Images/j24a.c16", "start": 15205287, "end": 15216501}, {"filename": "/Images/g00c.c16", "start": 15216501, "end": 15224735}, {"filename": "/Images/wolf.c16", "start": 15224735, "end": 15355953}, {"filename": "/Images/k60a.c16", "start": 15355953, "end": 15361627}, {"filename": "/Images/f44c.c16", "start": 15361627, "end": 15380053}, {"filename": "/Images/hawk.c16", "start": 15380053, "end": 15876019}, {"filename": "/Images/i00b.c16", "start": 15876019, "end": 15881693}, {"filename": "/Images/055a.c16", "start": 15881693, "end": 15959075}, {"filename": "/Images/n02c.c16", "start": 15959075, "end": 15967577}, {"filename": "/Images/h45b.c16", "start": 15967577, "end": 15980317}, {"filename": "/Images/j25a.c16", "start": 15980317, "end": 15991531}, {"filename": "/Images/002a.c16", "start": 15991531, "end": 16053553}, {"filename": "/Images/f64a.c16", "start": 16053553, "end": 16066703}, {"filename": "/Images/k40c.c16", "start": 16066703, "end": 16072377}, {"filename": "/Images/d04b.c16", "start": 16072377, "end": 16089669}, {"filename": "/Images/j05c.c16", "start": 16089669, "end": 16105111}, {"filename": "/Images/l42b.c16", "start": 16105111, "end": 16116325}, {"filename": "/Images/bubs.c16", "start": 16116325, "end": 16139279}, {"filename": "/Images/f05c.c16", "start": 16139279, "end": 16157705}, {"filename": "/Images/caos.c16", "start": 16157705, "end": 16174123}, {"filename": "/Images/b22a.c16", "start": 16174123, "end": 16285785}, {"filename": "/Images/014a.c16", "start": 16285785, "end": 16363167}, {"filename": "/Images/fish launcher things.c16", "start": 16363167, "end": 16413651}, {"filename": "/Images/h04b.c16", "start": 16413651, "end": 16426391}, {"filename": "/Images/j64a.c16", "start": 16426391, "end": 16437605}, {"filename": "/Images/g40c.c16", "start": 16437605, "end": 16445839}, {"filename": "/Images/f25a.c16", "start": 16445839, "end": 16458989}, {"filename": "/Images/d45b.c16", "start": 16458989, "end": 16476281}, {"filename": "/Images/b02c.c16", "start": 16476281, "end": 16603967}, {"filename": "/Images/e00b.c16", "start": 16603967, "end": 16610213}, {"filename": "/Images/g60a.c16", "start": 16610213, "end": 16618447}, {"filename": "/Images/j44c.c16", "start": 16618447, "end": 16633889}, {"filename": "/Images/j44b.c16", "start": 16633889, "end": 16649331}, {"filename": "/Images/h24a.c16", "start": 16649331, "end": 16658613}, {"filename": "/Images/e00c.c16", "start": 16658613, "end": 16664859}, {"filename": "/Images/b02b.c16", "start": 16664859, "end": 16792545}, {"filename": "/Images/d45c.c16", "start": 16792545, "end": 16809837}, {"filename": "/Images/beetle2.c16", "start": 16809837, "end": 16882035}, {"filename": "/Images/g40b.c16", "start": 16882035, "end": 16890269}, {"filename": "/Images/e20a.c16", "start": 16890269, "end": 16896515}, {"filename": "/Images/h04c.c16", "start": 16896515, "end": 16909255}, {"filename": "/Images/d65a.c16", "start": 16909255, "end": 16921617}, {"filename": "/Images/test.c16", "start": 16921617, "end": 16922589}, {"filename": "/Images/f05b.c16", "start": 16922589, "end": 16941015}, {"filename": "/Images/envi.c16", "start": 16941015, "end": 17089863}, {"filename": "/Images/l42c.c16", "start": 17089863, "end": 17101077}, {"filename": "/Images/j05b.c16", "start": 17101077, "end": 17116519}, {"filename": "/Images/h65a.c16", "start": 17116519, "end": 17125801}, {"filename": "/Images/i20a.c16", "start": 17125801, "end": 17131475}, {"filename": "/Images/d04c.c16", "start": 17131475, "end": 17148767}, {"filename": "/Images/k40b.c16", "start": 17148767, "end": 17154441}, {"filename": "/Images/apple.c16", "start": 17154441, "end": 17163463}, {"filename": "/Images/aquatic cave water.c16", "start": 17163463, "end": 21730743}, {"filename": "/Images/l62a.c16", "start": 21730743, "end": 21740091}, {"filename": "/Images/h45c.c16", "start": 21740091, "end": 21752831}, {"filename": "/Images/n02b.c16", "start": 21752831, "end": 21761333}, {"filename": "/Images/grass.c16", "start": 21761333, "end": 21786211}, {"filename": "/Images/graph.c16", "start": 21786211, "end": 22196477}, {"filename": "/Images/d24a.c16", "start": 22196477, "end": 22208839}, {"filename": "/Images/i00c.c16", "start": 22208839, "end": 22214513}, {"filename": "/Images/f44b.c16", "start": 22214513, "end": 22232939}, {"filename": "/Images/world switcher.c16", "start": 22232939, "end": 23779553}, {"filename": "/Images/splash.c16", "start": 23779553, "end": 23780585}, {"filename": "/Images/cameraunit.c16", "start": 23780585, "end": 24207765}, {"filename": "/Images/gumin.c16", "start": 24207765, "end": 24353415}, {"filename": "/Images/meerk.c16", "start": 24353415, "end": 24653625}, {"filename": "/Images/i00a.c16", "start": 24653625, "end": 24659299}, {"filename": "/Images/m50a.c16", "start": 24659299, "end": 24669461}, {"filename": "/Images/h45a.c16", "start": 24669461, "end": 24682201}, {"filename": "/Images/l15a.c16", "start": 24682201, "end": 24712007}, {"filename": "/Images/d04a.c16", "start": 24712007, "end": 24729299}, {"filename": "/Images/002b.c16", "start": 24729299, "end": 24791321}, {"filename": "/Images/l42a.c16", "start": 24791321, "end": 24802535}, {"filename": "/Images/h12a.c16", "start": 24802535, "end": 24817625}, {"filename": "/Images/d12a.c16", "start": 24817625, "end": 24829987}, {"filename": "/Images/h04a.c16", "start": 24829987, "end": 24842727}, {"filename": "/Images/l54a.c16", "start": 24842727, "end": 24872533}, {"filename": "/Images/d45a.c16", "start": 24872533, "end": 24889825}, {"filename": "/Images/aquamites.c16", "start": 24889825, "end": 24895289}, {"filename": "/Images/e00a.c16", "start": 24895289, "end": 24901535}, {"filename": "/Images/a50a.c16", "start": 24901535, "end": 25477441}, {"filename": "/Images/j44a.c16", "start": 25477441, "end": 25492883}, {"filename": "/Images/n14a.c16", "start": 25492883, "end": 25510427}, {"filename": "/Images/b02a.c16", "start": 25510427, "end": 25633577}, {"filename": "/Images/clickhere.c16", "start": 25633577, "end": 25814319}, {"filename": "/Images/f52a.c16", "start": 25814319, "end": 25827469}, {"filename": "/Images/hatch2.c16", "start": 25827469, "end": 27711713}, {"filename": "/Images/pirbubbs.c16", "start": 27711713, "end": 28171457}, {"filename": "/Images/g40a.c16", "start": 28171457, "end": 28179691}, {"filename": "/Images/c10a.c16", "start": 28179691, "end": 28188411}, {"filename": "/Images/f05a.c16", "start": 28188411, "end": 28206837}, {"filename": "/Images/b55a.c16", "start": 28206837, "end": 28594927}, {"filename": "/Images/euro medicine maker.c16", "start": 28594927, "end": 28666255}, {"filename": "/Images/airlock_mid.c16", "start": 28666255, "end": 28789631}, {"filename": "/Images/j05a.c16", "start": 28789631, "end": 28805073}, {"filename": "/Images/n55a.c16", "start": 28805073, "end": 28822617}, {"filename": "/Images/k40a.c16", "start": 28822617, "end": 28828291}, {"filename": "/Images/q00a.c16", "start": 28828291, "end": 28832489}, {"filename": "/Images/002c.c16", "start": 28832489, "end": 28894511}, {"filename": "/Images/n02a.c16", "start": 28894511, "end": 28903013}, {"filename": "/Images/recycler overlay.c16", "start": 28903013, "end": 28907047}, {"filename": "/Images/j52a.c16", "start": 28907047, "end": 28927973}, {"filename": "/Images/choppertoy.c16", "start": 28927973, "end": 28987847}, {"filename": "/Images/022a.c16", "start": 28987847, "end": 29042189}, {"filename": "/Images/f44a.c16", "start": 29042189, "end": 29060615}, {"filename": "/Images/grasshopper.c16", "start": 29060615, "end": 29119917}, {"filename": "/Images/b14a.c16", "start": 29119917, "end": 29514083}, {"filename": "/Images/death_sludge.c16", "start": 29514083, "end": 30076031}, {"filename": "/Images/n05b.c16", "start": 30076031, "end": 30087943}, {"filename": "/Images/h42c.c16", "start": 30087943, "end": 30097225}, {"filename": "/Images/l65a.c16", "start": 30097225, "end": 30108439}, {"filename": "/Images/m20a.c16", "start": 30108439, "end": 30110845}, {"filename": "/Images/progress-es.s16", "start": 30110845, "end": 30305333}, {"filename": "/Images/disease and injury screen.c16", "start": 30305333, "end": 31107429}, {"filename": "/Images/h62a.c16", "start": 31107429, "end": 31115291}, {"filename": "/Images/j02b.c16", "start": 31115291, "end": 31126505}, {"filename": "/Images/l45c.c16", "start": 31126505, "end": 31141947}, {"filename": "/Images/detector.c16", "start": 31141947, "end": 31224461}, {"filename": "/Images/m00c.c16", "start": 31224461, "end": 31228719}, {"filename": "/Images/b44b.c16", "start": 31228719, "end": 31436303}, {"filename": "/Images/gene splicer overlay.c16", "start": 31436303, "end": 31573425}, {"filename": "/Images/n44b.c16", "start": 31573425, "end": 31587535}, {"filename": "/Images/l24a.c16", "start": 31587535, "end": 31598749}, {"filename": "/Images/a00c.c16", "start": 31598749, "end": 31995903}, {"filename": "/Images/f02b.c16", "start": 31995903, "end": 32009053}, {"filename": "/Images/d62a.c16", "start": 32009053, "end": 32019245}, {"filename": "/Images/greneggmask.c16", "start": 32019245, "end": 32319649}, {"filename": "/Images/chars.s16", "start": 32319649, "end": 32337063}, {"filename": "/Images/marine room cutout.c16", "start": 32337063, "end": 32348681}, {"filename": "/Images/c40b.c16", "start": 32348681, "end": 32357401}, {"filename": "/Images/a20a.c16", "start": 32357401, "end": 32684171}, {"filename": "/Images/l04c.c16", "start": 32684171, "end": 32699613}, {"filename": "/Images/d42c.c16", "start": 32699613, "end": 32711975}, {"filename": "/Images/b05b.c16", "start": 32711975, "end": 32898381}, {"filename": "/Images/b05c.c16", "start": 32898381, "end": 33084787}, {"filename": "/Images/d42b.c16", "start": 33084787, "end": 33097149}, {"filename": "/Images/f22a.c16", "start": 33097149, "end": 33107953}, {"filename": "/Images/044a.c16", "start": 33107953, "end": 33185335}, {"filename": "/Images/l04b.c16", "start": 33185335, "end": 33200777}, {"filename": "/Images/c40c.c16", "start": 33200777, "end": 33209497}, {"filename": "/Images/grabber.c16", "start": 33209497, "end": 33519583}, {"filename": "/Images/tendril.c16", "start": 33519583, "end": 33586509}, {"filename": "/Images/b25a.c16", "start": 33586509, "end": 33726411}, {"filename": "/Images/f02c.c16", "start": 33726411, "end": 33739561}, {"filename": "/Images/a00b.c16", "start": 33739561, "end": 34116575}, {"filename": "/Images/c60a.c16", "start": 34116575, "end": 34125295}, {"filename": "/Images/n44c.c16", "start": 34125295, "end": 34139405}, {"filename": "/Images/medipod.c16", "start": 34139405, "end": 34720565}, {"filename": "/Images/sidebar.c16", "start": 34720565, "end": 34846281}, {"filename": "/Images/b44c.c16", "start": 34846281, "end": 35053865}, {"filename": "/Images/005a.c16", "start": 35053865, "end": 35131247}, {"filename": "/Images/m00b.c16", "start": 35131247, "end": 35135505}, {"filename": "/Images/mediscan.c16", "start": 35135505, "end": 35162517}, {"filename": "/Images/l45b.c16", "start": 35162517, "end": 35177959}, {"filename": "/Images/j02c.c16", "start": 35177959, "end": 35189173}, {"filename": "/Images/b64a.c16", "start": 35189173, "end": 35340755}, {"filename": "/Images/052a.c16", "start": 35340755, "end": 35402777}, {"filename": "/Images/syringe.c16", "start": 35402777, "end": 36011783}, {"filename": "/Images/j22a.c16", "start": 36011783, "end": 36021131}, {"filename": "/Images/bal2.c16", "start": 36021131, "end": 36039621}, {"filename": "/Images/h42b.c16", "start": 36039621, "end": 36048903}, {"filename": "/Images/n05c.c16", "start": 36048903, "end": 36060815}, {"filename": "/Images/cuttlefish.c16", "start": 36060815, "end": 36445005}, {"filename": "/Images/ettin_doors.c16", "start": 36445005, "end": 36561569}, {"filename": "/Images/n05a.c16", "start": 36561569, "end": 36573481}, {"filename": "/Images/j55a.c16", "start": 36573481, "end": 36603411}, {"filename": "/Images/siren.c16", "start": 36603411, "end": 36647635}, {"filename": "/Images/k10a.c16", "start": 36647635, "end": 36655017}, {"filename": "/Images/norn platform.c16", "start": 36655017, "end": 36810605}, {"filename": "/Images/025a.c16", "start": 36810605, "end": 36872627}, {"filename": "/Images/lung overlay.c16", "start": 36872627, "end": 36926705}, {"filename": "/Images/j02a.c16", "start": 36926705, "end": 36937919}, {"filename": "/Images/n52a.c16", "start": 36937919, "end": 36950293}, {"filename": "/Images/b44a.c16", "start": 36950293, "end": 37147019}, {"filename": "/Images/f14a.c16", "start": 37147019, "end": 37165445}, {"filename": "/Images/neon.c16", "start": 37165445, "end": 37219875}, {"filename": "/Images/005c.c16", "start": 37219875, "end": 37297257}, {"filename": "/Images/plnt.c16", "start": 37297257, "end": 37347161}, {"filename": "/Images/suckerplant.c16", "start": 37347161, "end": 37978375}, {"filename": "/Images/n44a.c16", "start": 37978375, "end": 37992485}, {"filename": "/Images/j14a.c16", "start": 37992485, "end": 38022415}, {"filename": "/Images/f02a.c16", "start": 38022415, "end": 38035565}, {"filename": "/Images/064a.c16", "start": 38035565, "end": 38097587}, {"filename": "/Images/b52a.c16", "start": 38097587, "end": 38359237}, {"filename": "/Images/injection.c16", "start": 38359237, "end": 38950127}, {"filename": "/Images/transporter pod.c16", "start": 38950127, "end": 39232145}, {"filename": "/Images/c40a.c16", "start": 39232145, "end": 39240865}, {"filename": "/Images/g10a.c16", "start": 39240865, "end": 39249099}, {"filename": "/Images/b05a.c16", "start": 39249099, "end": 39428625}, {"filename": "/Images/f55a.c16", "start": 39428625, "end": 39447051}, {"filename": "/Images/044c.c16", "start": 39447051, "end": 39524433}, {"filename": "/Images/044b.c16", "start": 39524433, "end": 39601815}, {"filename": "/Images/d42a.c16", "start": 39601815, "end": 39614177}, {"filename": "/Images/click_here.c16", "start": 39614177, "end": 39715725}, {"filename": "/Images/l04a.c16", "start": 39715725, "end": 39731167}, {"filename": "/Images/h54a.c16", "start": 39731167, "end": 39751965}, {"filename": "/Images/mediporter.c16", "start": 39751965, "end": 39778993}, {"filename": "/Images/creature_history.c16", "start": 39778993, "end": 41447935}, {"filename": "/Images/button.c16", "start": 41447935, "end": 41450769}, {"filename": "/Images/d15a.c16", "start": 41450769, "end": 41468061}, {"filename": "/Images/infection detector.c16", "start": 41468061, "end": 41499055}, {"filename": "/Images/a00a.c16", "start": 41499055, "end": 41862295}, {"filename": "/Images/bluebell.c16", "start": 41862295, "end": 41891375}, {"filename": "/Images/e50a.c16", "start": 41891375, "end": 41901541}, {"filename": "/Images/snail.c16", "start": 41901541, "end": 42039671}, {"filename": "/Images/tank.c16", "start": 42039671, "end": 42055189}, {"filename": "/Images/m00a.c16", "start": 42055189, "end": 42059447}, {"filename": "/Images/i50a.c16", "start": 42059447, "end": 42066805}, {"filename": "/Images/005b.c16", "start": 42066805, "end": 42144187}, {"filename": "/Images/gender.c16", "start": 42144187, "end": 42145313}, {"filename": "/Images/l45a.c16", "start": 42145313, "end": 42160755}, {"filename": "/Images/h15a.c16", "start": 42160755, "end": 42181553}, {"filename": "/Images/logicgates.c16", "start": 42181553, "end": 42187315}, {"filename": "/Images/d54a.c16", "start": 42187315, "end": 42204607}, {"filename": "/Images/kobold.c16", "start": 42204607, "end": 42637585}, {"filename": "/Images/h42a.c16", "start": 42637585, "end": 42646867}, {"filename": "/Images/l12a.c16", "start": 42646867, "end": 42667667}, {"filename": "/Images/hedgehog.c16", "start": 42667667, "end": 42799877}, {"filename": "/Images/d55a.c16", "start": 42799877, "end": 42817169}, {"filename": "/Images/crypt2.c16", "start": 42817169, "end": 45180903}, {"filename": "/Images/butterfly2.c16", "start": 45180903, "end": 45230677}, {"filename": "/Images/a40a.c16", "start": 45230677, "end": 45645129}, {"filename": "/Images/e10a.c16", "start": 45645129, "end": 45655295}, {"filename": "/Images/hhog.c16", "start": 45655295, "end": 45946399}, {"filename": "/Images/004b.c16", "start": 45946399, "end": 46023781}, {"filename": "/Images/d02a.c16", "start": 46023781, "end": 46036143}, {"filename": "/Images/bubblicious.c16", "start": 46036143, "end": 46039037}, {"filename": "/Images/woodpigeon.c16", "start": 46039037, "end": 46263971}, {"filename": "/Images/l44a.c16", "start": 46263971, "end": 46279413}, {"filename": "/Images/h14a.c16", "start": 46279413, "end": 46300211}, {"filename": "/Images/creator.c16", "start": 46300211, "end": 47101785}, {"filename": "/Images/d14a.c16", "start": 47101785, "end": 47119077}, {"filename": "/Images/liftcall.c16", "start": 47119077, "end": 47151129}, {"filename": "/Images/h02a.c16", "start": 47151129, "end": 47160411}, {"filename": "/Images/l52a.c16", "start": 47160411, "end": 47181211}, {"filename": "/Images/env_con.c16", "start": 47181211, "end": 47486041}, {"filename": "/Images/palmplant.c16", "start": 47486041, "end": 47520323}, {"filename": "/Images/m40a.c16", "start": 47520323, "end": 47524581}, {"filename": "/Images/i10a.c16", "start": 47524581, "end": 47531939}, {"filename": "/Images/045b.c16", "start": 47531939, "end": 47609321}, {"filename": "/Images/l05a.c16", "start": 47609321, "end": 47624763}, {"filename": "/Images/h55a.c16", "start": 47624763, "end": 47645561}, {"filename": "/Images/j42a.c16", "start": 47645561, "end": 47656775}, {"filename": "/Images/n12a.c16", "start": 47656775, "end": 47669149}, {"filename": "/Images/airlock agent.c16", "start": 47669149, "end": 48939567}, {"filename": "/Images/b04a.c16", "start": 48939567, "end": 49119093}, {"filename": "/Images/robot_toy.c16", "start": 49119093, "end": 49204965}, {"filename": "/Images/f54a.c16", "start": 49204965, "end": 49223391}, {"filename": "/Images/045c.c16", "start": 49223391, "end": 49300773}, {"filename": "/Images/creator_remove_button.c16", "start": 49300773, "end": 49306529}, {"filename": "/Images/n45a.c16", "start": 49306529, "end": 49320639}, {"filename": "/Images/delayer.c16", "start": 49320639, "end": 49396233}, {"filename": "/Images/j15a.c16", "start": 49396233, "end": 49426163}, {"filename": "/Images/o00a.c16", "start": 49426163, "end": 49442937}, {"filename": "/Images/k50a.c16", "start": 49442937, "end": 49450319}, {"filename": "/Images/065a.c16", "start": 49450319, "end": 49512341}, {"filename": "/Images/c00a.c16", "start": 49512341, "end": 49521061}, {"filename": "/Images/aquamite_maker.c16", "start": 49521061, "end": 49614079}, {"filename": "/Images/g50a.c16", "start": 49614079, "end": 49622313}, {"filename": "/Images/b45a.c16", "start": 49622313, "end": 49819039}, {"filename": "/Images/f15a.c16", "start": 49819039, "end": 49837465}, {"filename": "/Images/004c.c16", "start": 49837465, "end": 49914847}, {"filename": "/Images/n04a.c16", "start": 49914847, "end": 49926759}, {"filename": "/Images/norn to grendel door.c16", "start": 49926759, "end": 50181677}, {"filename": "/Images/j54a.c16", "start": 50181677, "end": 50211607}, {"filename": "/Images/f42a.c16", "start": 50211607, "end": 50224757}, {"filename": "/Images/024a.c16", "start": 50224757, "end": 50286779}, {"filename": "/Images/b12a.c16", "start": 50286779, "end": 50543473}, {"filename": "/Images/sludgegun.c16", "start": 50543473, "end": 50861809}, {"filename": "/Images/bone.c16", "start": 50861809, "end": 50867277}, {"filename": "/Images/new_agent_help.c16", "start": 50867277, "end": 51117479}, {"filename": "/Images/b65a.c16", "start": 51117479, "end": 51269061}, {"filename": "/Images/medical_main.c16", "start": 51269061, "end": 51503869}, {"filename": "/Images/f42c.c16", "start": 51503869, "end": 51517019}, {"filename": "/Images/progress-de.s16", "start": 51517019, "end": 51709587}, {"filename": "/Images/butterfly1.c16", "start": 51709587, "end": 51827403}, {"filename": "/Images/a40b.c16", "start": 51827403, "end": 52188421}, {"filename": "/Images/c20a.c16", "start": 52188421, "end": 52197141}, {"filename": "/Images/n04c.c16", "start": 52197141, "end": 52209053}, {"filename": "/Images/crypt.c16", "start": 52209053, "end": 54050283}, {"filename": "/Images/b45c.c16", "start": 54050283, "end": 54257867}, {"filename": "/Images/d02b.c16", "start": 54257867, "end": 54270229}, {"filename": "/Images/f62a.c16", "start": 54270229, "end": 54281033}, {"filename": "/Images/hover vehicle.c16", "start": 54281033, "end": 54347019}, {"filename": "/Images/004a.c16", "start": 54347019, "end": 54424401}, {"filename": "/Images/l44b.c16", "start": 54424401, "end": 54439843}, {"filename": "/Images/c00c.c16", "start": 54439843, "end": 54448563}, {"filename": "/Images/b24a.c16", "start": 54448563, "end": 54588465}, {"filename": "/Images/012a.c16", "start": 54588465, "end": 54650487}, {"filename": "/Images/j62a.c16", "start": 54650487, "end": 54659835}, {"filename": "/Images/h02b.c16", "start": 54659835, "end": 54669117}, {"filename": "/Images/n45c.c16", "start": 54669117, "end": 54683227}, {"filename": "/Images/coral.c16", "start": 54683227, "end": 54685397}, {"filename": "/Images/b04c.c16", "start": 54685397, "end": 54871803}, {"filename": "/Images/045a.c16", "start": 54871803, "end": 54949185}, {"filename": "/Images/m40b.c16", "start": 54949185, "end": 54953443}, {"filename": "/Images/l05b.c16", "start": 54953443, "end": 54968885}, {"filename": "/Images/j42c.c16", "start": 54968885, "end": 54980099}, {"filename": "/Images/beetle.c16", "start": 54980099, "end": 55019313}, {"filename": "/Images/h22a.c16", "start": 55019313, "end": 55027175}, {"filename": "/Images/j42b.c16", "start": 55027175, "end": 55038389}, {"filename": "/Images/l05c.c16", "start": 55038389, "end": 55053831}, {"filename": "/Images/m40c.c16", "start": 55053831, "end": 55058089}, {"filename": "/Images/b04b.c16", "start": 55058089, "end": 55244495}, {"filename": "/Images/lightbox.c16", "start": 55244495, "end": 55258773}, {"filename": "/Images/n45b.c16", "start": 55258773, "end": 55272883}, {"filename": "/Images/h02c.c16", "start": 55272883, "end": 55282165}, {"filename": "/Images/l25a.c16", "start": 55282165, "end": 55293379}, {"filename": "/Images/m60a.c16", "start": 55293379, "end": 55295841}, {"filename": "/Images/bacteria.c16", "start": 55295841, "end": 55295925}, {"filename": "/Images/hand.s16", "start": 55295925, "end": 55391035}, {"filename": "/Images/c00b.c16", "start": 55391035, "end": 55399755}, {"filename": "/Images/zzzz.c16", "start": 55399755, "end": 55415237}, {"filename": "/Images/a60a.c16", "start": 55415237, "end": 55747513}, {"filename": "/Images/l44c.c16", "start": 55747513, "end": 55762955}, {"filename": "/Images/euro welcome screen.c16", "start": 55762955, "end": 57782161}, {"filename": "/Images/d02c.c16", "start": 57782161, "end": 57794523}, {"filename": "/Images/b45b.c16", "start": 57794523, "end": 58002107}, {"filename": "/Images/uglee.c16", "start": 58002107, "end": 58408601}, {"filename": "/Images/n04b.c16", "start": 58408601, "end": 58420513}, {"filename": "/Images/l64a.c16", "start": 58420513, "end": 58431727}, {"filename": "/Images/a40c.c16", "start": 58431727, "end": 58824569}, {"filename": "/Images/f42b.c16", "start": 58824569, "end": 58837719}, {"filename": "/Images/d22a.c16", "start": 58837719, "end": 58847911}, {"filename": "/Images/flutterby.c16", "start": 58847911, "end": 58913467}, {"filename": "/Images/progress-it.s16", "start": 58913467, "end": 59106035}, {"filename": "/Images/launcher.c16", "start": 59106035, "end": 59223659}, {"filename": "/Images/gene splicer panel.c16", "start": 59223659, "end": 59796435}, {"filename": "/Images/ball.c16", "start": 59796435, "end": 59835817}, {"filename": "/Images/h40b.c16", "start": 59835817, "end": 59842063}, {"filename": "/Images/j20a.c16", "start": 59842063, "end": 59849631}, {"filename": "/Images/g04c.c16", "start": 59849631, "end": 59866923}, {"filename": "/Images/k65a.c16", "start": 59866923, "end": 59875207}, {"filename": "/Images/nornatmos.c16", "start": 59875207, "end": 60724711}, {"filename": "/Images/050a.c16", "start": 60724711, "end": 60771373}, {"filename": "/Images/i05b.c16", "start": 60771373, "end": 60782683}, {"filename": "/Images/e44b.c16", "start": 60782683, "end": 60795423}, {"filename": "/Images/g24a.c16", "start": 60795423, "end": 60807785}, {"filename": "/Images/wasp.c16", "start": 60807785, "end": 60829883}, {"filename": "/Images/j00c.c16", "start": 60829883, "end": 60837451}, {"filename": "/Images/k45c.c16", "start": 60837451, "end": 60848761}, {"filename": "/Images/m02b.c16", "start": 60848761, "end": 60854735}, {"filename": "/Images/infobar.c16", "start": 60854735, "end": 60886831}, {"filename": "/Images/teleport.c16", "start": 60886831, "end": 61412237}, {"filename": "/Images/c62a.c16", "start": 61412237, "end": 61423083}, {"filename": "/Images/a02b.c16", "start": 61423083, "end": 62028683}, {"filename": "/Images/g45c.c16", "start": 62028683, "end": 62045975}, {"filename": "/Images/recycler2.c16", "start": 62045975, "end": 62539603}, {"filename": "/Images/k24a.c16", "start": 62539603, "end": 62547887}, {"filename": "/Images/pregnancy indication device.c16", "start": 62547887, "end": 62769371}, {"filename": "/Images/f00c.c16", "start": 62769371, "end": 62778121}, {"filename": "/Images/i44b.c16", "start": 62778121, "end": 62789431}, {"filename": "/Images/medigraph.c16", "start": 62789431, "end": 63150097}, {"filename": "/Images/pumperspikel.c16", "start": 63150097, "end": 63220665}, {"filename": "/Images/knowledge.c16", "start": 63220665, "end": 63364067}, {"filename": "/Images/e05b.c16", "start": 63364067, "end": 63376807}, {"filename": "/Images/c42c.c16", "start": 63376807, "end": 63390031}, {"filename": "/Images/g65a.c16", "start": 63390031, "end": 63402393}, {"filename": "/Images/nidoor.c16", "start": 63402393, "end": 63426657}, {"filename": "/Images/f20a.c16", "start": 63426657, "end": 63435407}, {"filename": "/Images/k04c.c16", "start": 63435407, "end": 63446717}, {"filename": "/Images/d40b.c16", "start": 63446717, "end": 63454951}, {"filename": "/Images/medtextbox.c16", "start": 63454951, "end": 63507149}, {"filename": "/Images/i64a.c16", "start": 63507149, "end": 63515433}, {"filename": "/Images/d40c.c16", "start": 63515433, "end": 63523667}, {"filename": "/Images/k04b.c16", "start": 63523667, "end": 63534977}, {"filename": "/Images/a22a.c16", "start": 63534977, "end": 63952021}, {"filename": "/Images/c42b.c16", "start": 63952021, "end": 63965245}, {"filename": "/Images/e05c.c16", "start": 63965245, "end": 63977985}, {"filename": "/Images/plusminus.c16", "start": 63977985, "end": 63994301}, {"filename": "/Images/d60a.c16", "start": 63994301, "end": 64002535}, {"filename": "/Images/heatherontransparentchars.s16", "start": 64002535, "end": 64034907}, {"filename": "/Images/i44c.c16", "start": 64034907, "end": 64046217}, {"filename": "/Images/f00b.c16", "start": 64046217, "end": 64054967}, {"filename": "/Images/g45b.c16", "start": 64054967, "end": 64072259}, {"filename": "/Images/a02c.c16", "start": 64072259, "end": 64674895}, {"filename": "/Images/e25a.c16", "start": 64674895, "end": 64684177}, {"filename": "/Images/i25a.c16", "start": 64684177, "end": 64692461}, {"filename": "/Images/pick-ups2.c16", "start": 64692461, "end": 65175913}, {"filename": "/Images/fxgl.c16", "start": 65175913, "end": 65225769}, {"filename": "/Images/m02c.c16", "start": 65225769, "end": 65231743}, {"filename": "/Images/k45b.c16", "start": 65231743, "end": 65243053}, {"filename": "/Images/medical_control_panel_buttons.c16", "start": 65243053, "end": 65313381}, {"filename": "/Images/j00b.c16", "start": 65313381, "end": 65320949}, {"filename": "/Images/h60a.c16", "start": 65320949, "end": 65327195}, {"filename": "/Images/e44c.c16", "start": 65327195, "end": 65339935}, {"filename": "/Images/attention.c16", "start": 65339935, "end": 65344159}, {"filename": "/Images/i05c.c16", "start": 65344159, "end": 65355469}, {"filename": "/Images/m22a.c16", "start": 65355469, "end": 65358259}, {"filename": "/Images/g04b.c16", "start": 65358259, "end": 65375551}, {"filename": "/Images/e64a.c16", "start": 65375551, "end": 65384833}, {"filename": "/Images/h40c.c16", "start": 65384833, "end": 65391079}, {"filename": "/Images/drive_images.c16", "start": 65391079, "end": 65462507}, {"filename": "/Images/h40a.c16", "start": 65462507, "end": 65468753}, {"filename": "/Images/l10a.c16", "start": 65468753, "end": 65482251}, {"filename": "/Images/i05a.c16", "start": 65482251, "end": 65493561}, {"filename": "/Images/m55a.c16", "start": 65493561, "end": 65515339}, {"filename": "/Images/graz.c16", "start": 65515339, "end": 66383283}, {"filename": "/Images/engscen.c16", "start": 66383283, "end": 66392511}, {"filename": "/Images/ettinseedbank.c16", "start": 66392511, "end": 66441613}, {"filename": "/Images/e44a.c16", "start": 66441613, "end": 66454353}, {"filename": "/Images/a14a.c16", "start": 66454353, "end": 67742863}, {"filename": "/Images/m02a.c16", "start": 67742863, "end": 67748837}, {"filename": "/Images/i52a.c16", "start": 67748837, "end": 67760149}, {"filename": "/Images/numeric output tool.c16", "start": 67760149, "end": 67777881}, {"filename": "/Images/cmsh.c16", "start": 67777881, "end": 67824401}, {"filename": "/Images/aquatic_population_monitoring_device.c16", "start": 67824401, "end": 67993753}, {"filename": "/Images/a02a.c16", "start": 67993753, "end": 68572939}, {"filename": "/Images/e52a.c16", "start": 68572939, "end": 68588013}, {"filename": "/Images/i44a.c16", "start": 68588013, "end": 68599323}, {"filename": "/Images/m14a.c16", "start": 68599323, "end": 68621101}, {"filename": "/Images/indicator.c16", "start": 68621101, "end": 68629341}, {"filename": "/Images/dragonfly.c16", "start": 68629341, "end": 68700899}, {"filename": "/Images/e05a.c16", "start": 68700899, "end": 68713639}, {"filename": "/Images/a55a.c16", "start": 68713639, "end": 70096629}, {"filename": "/Images/gene pod.c16", "start": 70096629, "end": 72122669}, {"filename": "/Images/d40a.c16", "start": 72122669, "end": 72130903}, {"filename": "/Images/k04a.c16", "start": 72130903, "end": 72142213}, {"filename": "/Images/waterplant.c16", "start": 72142213, "end": 72283189}, {"filename": "/Images/c42a.c16", "start": 72283189, "end": 72296413}, {"filename": "/Images/g12a.c16", "start": 72296413, "end": 72308775}, {"filename": "/Images/sli4.c16", "start": 72308775, "end": 72323631}, {"filename": "/Images/smalltextbox.c16", "start": 72323631, "end": 72337169}, {"filename": "/Images/fishbowl.c16", "start": 72337169, "end": 72358229}, {"filename": "/Images/f00a.c16", "start": 72358229, "end": 72366979}, {"filename": "/Images/b50a.c16", "start": 72366979, "end": 72526853}, {"filename": "/Images/norn seed launcher.c16", "start": 72526853, "end": 73102483}, {"filename": "/Images/g45a.c16", "start": 73102483, "end": 73119775}, {"filename": "/Images/c15a.c16", "start": 73119775, "end": 73138297}, {"filename": "/Images/nudibranch.c16", "start": 73138297, "end": 73333083}, {"filename": "/Images/rocklice.c16", "start": 73333083, "end": 73522129}, {"filename": "/Images/k45a.c16", "start": 73522129, "end": 73533439}, {"filename": "/Images/j00a.c16", "start": 73533439, "end": 73541007}, {"filename": "/Images/n50a.c16", "start": 73541007, "end": 73549483}, {"filename": "/Images/algae.c16", "start": 73549483, "end": 73560719}, {"filename": "/Images/beatbox.c16", "start": 73560719, "end": 73634545}, {"filename": "/Images/opalsponge.c16", "start": 73634545, "end": 73828269}, {"filename": "/Images/agent_help.c16", "start": 73828269, "end": 74349213}, {"filename": "/Images/ettn.c16", "start": 74349213, "end": 74352481}, {"filename": "/Images/vents.c16", "start": 74352481, "end": 75330495}, {"filename": "/Images/k12a.c16", "start": 75330495, "end": 75341831}, {"filename": "/Images/g04a.c16", "start": 75341831, "end": 75359123}, {"filename": "/Images/c54a.c16", "start": 75359123, "end": 75377645}, {"filename": "/Images/rockcut1.c16", "start": 75377645, "end": 75401697}, {"filename": "/Images/f40a.c16", "start": 75401697, "end": 75410447}, {"filename": "/Images/b10a.c16", "start": 75410447, "end": 75564221}, {"filename": "/Images/g05a.c16", "start": 75564221, "end": 75581513}, {"filename": "/Images/c55a.c16", "start": 75581513, "end": 75600035}, {"filename": "/Images/porc.c16", "start": 75600035, "end": 75716389}, {"filename": "/Images/progress-ru.s16", "start": 75716389, "end": 75908957}, {"filename": "/Images/k44a.c16", "start": 75908957, "end": 75920267}, {"filename": "/Images/c02a.c16", "start": 75920267, "end": 75933491}, {"filename": "/Images/g52a.c16", "start": 75933491, "end": 75945853}, {"filename": "/Images/lift(old).c16", "start": 75945853, "end": 76242001}, {"filename": "/Images/grendeleggbank.c16", "start": 76242001, "end": 76336145}, {"filename": "/Images/k52a.c16", "start": 76336145, "end": 76347481}, {"filename": "/Images/g44a.c16", "start": 76347481, "end": 76364773}, {"filename": "/Images/c14a.c16", "start": 76364773, "end": 76383295}, {"filename": "/Images/robin.c16", "start": 76383295, "end": 76597849}, {"filename": "/Images/king.c16", "start": 76597849, "end": 76781801}, {"filename": "/Images/k05a.c16", "start": 76781801, "end": 76793111}, {"filename": "/Images/fungi.c16", "start": 76793111, "end": 76889447}, {"filename": "/Images/grenscen.c16", "start": 76889447, "end": 77184819}, {"filename": "/Images/j40a.c16", "start": 77184819, "end": 77192387}, {"filename": "/Images/p00a.c16", "start": 77192387, "end": 77209161}, {"filename": "/Images/n10a.c16", "start": 77209161, "end": 77217637}, {"filename": "/Images/rabbit.c16", "start": 77217637, "end": 77263155}, {"filename": "/Images/e04a.c16", "start": 77263155, "end": 77275895}, {"filename": "/Images/a54a.c16", "start": 77275895, "end": 78658885}, {"filename": "/Images/carr.c16", "start": 78658885, "end": 78674445}, {"filename": "/Images/m42a.c16", "start": 78674445, "end": 78680419}, {"filename": "/Images/i12a.c16", "start": 78680419, "end": 78691731}, {"filename": "/Images/favouriteplaces.c16", "start": 78691731, "end": 78866099}, {"filename": "/Images/crypt2 patch.c16", "start": 78866099, "end": 78866399}, {"filename": "/Images/h00a.c16", "start": 78866399, "end": 78872645}, {"filename": "/Images/l50a.c16", "start": 78872645, "end": 78886143}, {"filename": "/Images/i45a.c16", "start": 78886143, "end": 78897453}, {"filename": "/Images/m15a.c16", "start": 78897453, "end": 78919231}, {"filename": "/Images/trapper.c16", "start": 78919231, "end": 79037321}, {"filename": "/Images/blackonwhitechars.s16", "start": 79037321, "end": 79050835}, {"filename": "/Images/e45a.c16", "start": 79050835, "end": 79063575}, {"filename": "/Images/a15a.c16", "start": 79063575, "end": 80352085}, {"filename": "/Images/d00a.c16", "start": 80352085, "end": 80360319}, {"filename": "/Images/cursor.c16", "start": 80360319, "end": 80362413}, {"filename": "/Images/a42a.c16", "start": 80362413, "end": 81028107}, {"filename": "/Images/e12a.c16", "start": 81028107, "end": 81043181}, {"filename": "/Images/i04a.c16", "start": 81043181, "end": 81054491}, {"filename": "/Images/m54a.c16", "start": 81054491, "end": 81076269}, {"filename": "/Images/d20a.c16", "start": 81076269, "end": 81084503}, {"filename": "/Images/i04c.c16", "start": 81084503, "end": 81095813}, {"filename": "/Images/launcher nozzle.c16", "start": 81095813, "end": 81161941}, {"filename": "/Images/f40b.c16", "start": 81161941, "end": 81170691}, {"filename": "/Images/g05b.c16", "start": 81170691, "end": 81187983}, {"filename": "/Images/a42c.c16", "start": 81187983, "end": 81826715}, {"filename": "/Images/e65a.c16", "start": 81826715, "end": 81835997}, {"filename": "/Images/redhot.c16", "start": 81835997, "end": 81890135}, {"filename": "/Images/i24a.c16", "start": 81890135, "end": 81898419}, {"filename": "/Images/d00c.c16", "start": 81898419, "end": 81906653}, {"filename": "/Images/k44b.c16", "start": 81906653, "end": 81917963}, {"filename": "/Images/a62a.c16", "start": 81917963, "end": 82343111}, {"filename": "/Images/c02b.c16", "start": 82343111, "end": 82356335}, {"filename": "/Images/e45c.c16", "start": 82356335, "end": 82369075}, {"filename": "/Images/aquatic tunnel gates.c16", "start": 82369075, "end": 82618489}, {"filename": "/Images/i45c.c16", "start": 82618489, "end": 82629799}, {"filename": "/Images/m62a.c16", "start": 82629799, "end": 82632589}, {"filename": "/Images/medicine maker.c16", "start": 82632589, "end": 82697739}, {"filename": "/Images/g44b.c16", "start": 82697739, "end": 82715031}, {"filename": "/Images/e24a.c16", "start": 82715031, "end": 82724313}, {"filename": "/Images/plant.c16", "start": 82724313, "end": 82731503}, {"filename": "/Images/h00c.c16", "start": 82731503, "end": 82737749}, {"filename": "/Images/euro scgg.c16", "start": 82737749, "end": 82928705}, {"filename": "/Images/bioenergy.c16", "start": 82928705, "end": 82947335}, {"filename": "/Images/i65a.c16", "start": 82947335, "end": 82955619}, {"filename": "/Images/m42c.c16", "start": 82955619, "end": 82961593}, {"filename": "/Images/k05b.c16", "start": 82961593, "end": 82972903}, {"filename": "/Images/j40b.c16", "start": 82972903, "end": 82980471}, {"filename": "/Images/h20a.c16", "start": 82980471, "end": 82986717}, {"filename": "/Images/e04c.c16", "start": 82986717, "end": 82999457}, {"filename": "/Images/e04b.c16", "start": 82999457, "end": 83012197}, {"filename": "/Images/g64a.c16", "start": 83012197, "end": 83024559}, {"filename": "/Images/j40c.c16", "start": 83024559, "end": 83032127}, {"filename": "/Images/surface.c16", "start": 83032127, "end": 84319949}, {"filename": "/Images/k05c.c16", "start": 84319949, "end": 84331259}, {"filename": "/Images/m42b.c16", "start": 84331259, "end": 84337233}, {"filename": "/Images/whiteontransparentpasswordchars.s16", "start": 84337233, "end": 84349527}, {"filename": "/Images/h00b.c16", "start": 84349527, "end": 84355773}, {"filename": "/Images/j60a.c16", "start": 84355773, "end": 84363341}, {"filename": "/Images/g44c.c16", "start": 84363341, "end": 84380633}, {"filename": "/Images/k25a.c16", "start": 84380633, "end": 84388917}, {"filename": "/Images/010a.c16", "start": 84388917, "end": 84435579}, {"filename": "/Images/i45b.c16", "start": 84435579, "end": 84446889}, {"filename": "/Images/e45b.c16", "start": 84446889, "end": 84459629}, {"filename": "/Images/c02c.c16", "start": 84459629, "end": 84472853}, {"filename": "/Images/g25a.c16", "start": 84472853, "end": 84485215}, {"filename": "/Images/contactsensor.c16", "start": 84485215, "end": 84517505}, {"filename": "/Images/f60a.c16", "start": 84517505, "end": 84526255}, {"filename": "/Images/gui1.c16", "start": 84526255, "end": 84940061}, {"filename": "/Images/k44c.c16", "start": 84940061, "end": 84951371}, {"filename": "/Images/d00b.c16", "start": 84951371, "end": 84959605}, {"filename": "/Images/c22a.c16", "start": 84959605, "end": 84970451}, {"filename": "/Images/a42b.c16", "start": 84970451, "end": 85557311}, {"filename": "/Images/g05c.c16", "start": 85557311, "end": 85574603}, {"filename": "/Images/k64a.c16", "start": 85574603, "end": 85582887}, {"filename": "/Images/gnarl.c16", "start": 85582887, "end": 86257809}, {"filename": "/Images/f40c.c16", "start": 86257809, "end": 86266559}, {"filename": "/Images/progress-fr.s16", "start": 86266559, "end": 86459127}, {"filename": "/Images/i04b.c16", "start": 86459127, "end": 86470437}, {"filename": "/Images/radio.c16", "start": 86470437, "end": 86492327}, {"filename": "/Images/blackontransparentchars.s16", "start": 86492327, "end": 86524699}, {"filename": "/Images/loo_.c16", "start": 86524699, "end": 86530911}, {"filename": "/Images/a45a.c16", "start": 86530911, "end": 87507809}, {"filename": "/Images/e15a.c16", "start": 87507809, "end": 87528615}, {"filename": "/Images/d50a.c16", "start": 87528615, "end": 87536849}, {"filename": "/Images/e42a.c16", "start": 87536849, "end": 87546131}, {"filename": "/Images/a12a.c16", "start": 87546131, "end": 88422695}, {"filename": "/Images/m04a.c16", "start": 88422695, "end": 88430485}, {"filename": "/Images/i54a.c16", "start": 88430485, "end": 88446529}, {"filename": "/Images/graphing.c16", "start": 88446529, "end": 89309637}, {"filename": "/Images/a04a.c16", "start": 89309637, "end": 90154567}, {"filename": "/Images/learning machine text part.c16", "start": 90154567, "end": 90168099}, {"filename": "/Images/e54a.c16", "start": 90168099, "end": 90188905}, {"filename": "/Images/i42a.c16", "start": 90188905, "end": 90197189}, {"filename": "/Images/m12a.c16", "start": 90197189, "end": 90212613}, {"filename": "/Images/spacetoy.c16", "start": 90212613, "end": 90237453}, {"filename": "/Images/l00a.c16", "start": 90237453, "end": 90245021}, {"filename": "/Images/h50a.c16", "start": 90245021, "end": 90255179}, {"filename": "/Images/m45a.c16", "start": 90255179, "end": 90262969}, {"filename": "/Images/infinite_cheese_machine.c16", "start": 90262969, "end": 91236111}, {"filename": "/Images/040b.c16", "start": 91236111, "end": 91282773}, {"filename": "/Images/i15a.c16", "start": 91282773, "end": 91298817}, {"filename": "/Images/desertgrass.c16", "start": 91298817, "end": 91319647}, {"filename": "/Images/k02a.c16", "start": 91319647, "end": 91327931}, {"filename": "/Images/040c.c16", "start": 91327931, "end": 91374593}, {"filename": "/Images/rock.c16", "start": 91374593, "end": 91381929}, {"filename": "/Images/c44a.c16", "start": 91381929, "end": 91400451}, {"filename": "/Images/g14a.c16", "start": 91400451, "end": 91417743}, {"filename": "/Images/anti-infection spray.c16", "start": 91417743, "end": 91455681}, {"filename": "/Images/injection text part.c16", "start": 91455681, "end": 91471933}, {"filename": "/Images/cacbana.c16", "start": 91471933, "end": 91662865}, {"filename": "/Images/volcano.c16", "start": 91662865, "end": 100415011}, {"filename": "/Images/speech_bubbles.c16", "start": 100415011, "end": 100536061}, {"filename": "/Images/k55a.c16", "start": 100536061, "end": 100552083}, {"filename": "/Images/060a.c16", "start": 100552083, "end": 100598745}, {"filename": "/Images/n40a.c16", "start": 100598745, "end": 100605483}, {"filename": "/Images/j10a.c16", "start": 100605483, "end": 100619289}, {"filename": "/Images/blnk.c16", "start": 100619289, "end": 100620907}, {"filename": "/Images/b40a.c16", "start": 100620907, "end": 100703805}, {"filename": "/Images/balloonbug.c16", "start": 100703805, "end": 100733035}, {"filename": "/Images/f10a.c16", "start": 100733035, "end": 100741785}, {"filename": "/Images/c05a.c16", "start": 100741785, "end": 100760307}, {"filename": "/Images/g55a.c16", "start": 100760307, "end": 100777599}, {"filename": "/Images/ant.c16", "start": 100777599, "end": 100850937}, {"filename": "/Images/single chemical graphing gadget.c16", "start": 100850937, "end": 101000415}, {"filename": "/Images/k14a.c16", "start": 101000415, "end": 101016437}, {"filename": "/Images/g02a.c16", "start": 101016437, "end": 101028799}, {"filename": "/Images/c52a.c16", "start": 101028799, "end": 101042023}, {"filename": "/Images/engineering airlock.c16", "start": 101042023, "end": 101653125}, {"filename": "/Images/g02c.c16", "start": 101653125, "end": 101665487}, {"filename": "/Images/a45b.c16", "start": 101665487, "end": 102580577}, {"filename": "/Images/c25a.c16", "start": 102580577, "end": 102593801}, {"filename": "/Images/b60a.c16", "start": 102593801, "end": 102686739}, {"filename": "/Images/g22a.c16", "start": 102686739, "end": 102696931}, {"filename": "/Images/bongo_drums.c16", "start": 102696931, "end": 102759539}, {"filename": "/Images/c05c.c16", "start": 102759539, "end": 102778061}, {"filename": "/Images/e42b.c16", "start": 102778061, "end": 102787343}, {"filename": "/Images/b40c.c16", "start": 102787343, "end": 102874069}, {"filename": "/Images/m04b.c16", "start": 102874069, "end": 102881859}, {"filename": "/Images/a04b.c16", "start": 102881859, "end": 103784197}, {"filename": "/Images/c64a.c16", "start": 103784197, "end": 103797421}, {"filename": "/Images/n40c.c16", "start": 103797421, "end": 103804159}, {"filename": "/Images/andtheworldexplodedintostars.c16", "start": 103804159, "end": 103824669}, {"filename": "/Images/i42b.c16", "start": 103824669, "end": 103832953}, {"filename": "/Images/k22a.c16", "start": 103832953, "end": 103839663}, {"filename": "/Images/rabb.c16", "start": 103839663, "end": 103883427}, {"filename": "/Images/eggs.c16", "start": 103883427, "end": 104409881}, {"filename": "/Images/lift.c16", "start": 104409881, "end": 104728059}, {"filename": "/Images/l00b.c16", "start": 104728059, "end": 104735627}, {"filename": "/Images/c44c.c16", "start": 104735627, "end": 104754149}, {"filename": "/Images/mapdisplay.c16", "start": 104754149, "end": 107328617}, {"filename": "/Images/040a.c16", "start": 107328617, "end": 107375279}, {"filename": "/Images/m45b.c16", "start": 107375279, "end": 107383069}, {"filename": "/Images/snotrock.c16", "start": 107383069, "end": 107458197}, {"filename": "/Images/k02c.c16", "start": 107458197, "end": 107466481}, {"filename": "/Images/k02b.c16", "start": 107466481, "end": 107474765}, {"filename": "/Images/m45c.c16", "start": 107474765, "end": 107482555}, {"filename": "/Images/i62a.c16", "start": 107482555, "end": 107489265}, {"filename": "/Images/bee.c16", "start": 107489265, "end": 107534127}, {"filename": "/Images/c44b.c16", "start": 107534127, "end": 107552649}, {"filename": "/Images/a24a.c16", "start": 107552649, "end": 108072481}, {"filename": "/Images/l00c.c16", "start": 108072481, "end": 108080049}, {"filename": "/Images/m65a.c16", "start": 108080049, "end": 108084205}, {"filename": "/Images/i42c.c16", "start": 108084205, "end": 108092489}, {"filename": "/Images/n40b.c16", "start": 108092489, "end": 108099227}, {"filename": "/Images/l20a.c16", "start": 108099227, "end": 108106795}, {"filename": "/Images/a04c.c16", "start": 108106795, "end": 108960305}, {"filename": "/Images/objects_of_learning.c16", "start": 108960305, "end": 109515559}, {"filename": "/Images/m04c.c16", "start": 109515559, "end": 109523349}, {"filename": "/Images/b40b.c16", "start": 109523349, "end": 109610075}, {"filename": "/Images/chemicalchoice.c16", "start": 109610075, "end": 109781075}, {"filename": "/Images/e42c.c16", "start": 109781075, "end": 109790357}, {"filename": "/Images/c05b.c16", "start": 109790357, "end": 109808879}, {"filename": "/Images/life_events.c16", "start": 109808879, "end": 109818197}, {"filename": "/Images/a65a.c16", "start": 109818197, "end": 110347337}, {"filename": "/Images/grid.c16", "start": 110347337, "end": 110384321}, {"filename": "/Images/whiteontransparentchars.s16", "start": 110384321, "end": 110416693}, {"filename": "/Images/m24a.c16", "start": 110416693, "end": 110419867}, {"filename": "/Images/trapdoor.c16", "start": 110419867, "end": 110457719}, {"filename": "/Images/e62a.c16", "start": 110457719, "end": 110465581}, {"filename": "/Images/hummingbird.c16", "start": 110465581, "end": 110526769}, {"filename": "/Images/a45c.c16", "start": 110526769, "end": 111506843}, {"filename": "/Images/g02b.c16", "start": 111506843, "end": 111519205}, {"filename": "/Images/sepulchre.c16", "start": 111519205, "end": 111643093}, {"filename": "/Images/m25a.c16", "start": 111643093, "end": 111646267}, {"filename": "/Images/hatch.c16", "start": 111646267, "end": 113529921}, {"filename": "/Images/i02c.c16", "start": 113529921, "end": 113538205}, {"filename": "/Images/n00b.c16", "start": 113538205, "end": 113544147}, {"filename": "/Images/l60a.c16", "start": 113544147, "end": 113551715}, {"filename": "/Images/a44c.c16", "start": 113551715, "end": 114504685}, {"filename": "/Images/handle.c16", "start": 114504685, "end": 114612695}, {"filename": "/Images/blank.c16", "start": 114612695, "end": 114613507}, {"filename": "/Images/k42b.c16", "start": 114613507, "end": 114621791}, {"filename": "/Images/m05c.c16", "start": 114621791, "end": 114629581}, {"filename": "/Images/i22a.c16", "start": 114629581, "end": 114636291}, {"filename": "/Images/c04b.c16", "start": 114636291, "end": 114654813}, {"filename": "/Images/a64a.c16", "start": 114654813, "end": 115183953}, {"filename": "/Images/l40c.c16", "start": 115183953, "end": 115191521}, {"filename": "/Images/spew.c16", "start": 115191521, "end": 118378333}, {"filename": "/Images/m64a.c16", "start": 118378333, "end": 118381507}, {"filename": "/Images/learning_machine_buttons.c16", "start": 118381507, "end": 118399391}, {"filename": "/Images/e22a.c16", "start": 118399391, "end": 118407253}, {"filename": "/Images/a05c.c16", "start": 118407253, "end": 119264547}, {"filename": "/Images/g42b.c16", "start": 119264547, "end": 119276909}, {"filename": "/Images/m44c.c16", "start": 119276909, "end": 119284699}, {"filename": "/Images/b00b.c16", "start": 119284699, "end": 119363777}, {"filename": "/Images/e02c.c16", "start": 119363777, "end": 119373059}, {"filename": "/Images/c45b.c16", "start": 119373059, "end": 119391581}, {"filename": "/Images/a25a.c16", "start": 119391581, "end": 119911405}, {"filename": "/Images/g62a.c16", "start": 119911405, "end": 119921597}, {"filename": "/Images/c45c.c16", "start": 119921597, "end": 119940119}, {"filename": "/Images/e02b.c16", "start": 119940119, "end": 119949401}, {"filename": "/Images/b00c.c16", "start": 119949401, "end": 120028479}, {"filename": "/Images/m44b.c16", "start": 120028479, "end": 120036269}, {"filename": "/Images/wysts.c16", "start": 120036269, "end": 120068165}, {"filename": "/Images/g42c.c16", "start": 120068165, "end": 120080527}, {"filename": "/Images/a05b.c16", "start": 120080527, "end": 121012293}, {"filename": "/Images/airlock_right.c16", "start": 121012293, "end": 121148455}, {"filename": "/Images/c65a.c16", "start": 121148455, "end": 121161679}, {"filename": "/Images/b20a.c16", "start": 121161679, "end": 121248053}, {"filename": "/Images/ocean_pod.c16", "start": 121248053, "end": 121563691}, {"filename": "/Images/egglayer.c16", "start": 121563691, "end": 121641707}, {"filename": "/Images/recycler.c16", "start": 121641707, "end": 122225653}, {"filename": "/Images/eggmakerdisplay.c16", "start": 122225653, "end": 122798429}, {"filename": "/Images/l40b.c16", "start": 122798429, "end": 122805997}, {"filename": "/Images/n20a.c16", "start": 122805997, "end": 122808531}, {"filename": "/Images/c04c.c16", "start": 122808531, "end": 122827053}, {"filename": "/Images/000a.c16", "start": 122827053, "end": 122873715}, {"filename": "/Images/m05b.c16", "start": 122873715, "end": 122881505}, {"filename": "/Images/k42c.c16", "start": 122881505, "end": 122889789}, {"filename": "/Images/whiteongreenchars.s16", "start": 122889789, "end": 122903343}, {"filename": "/Images/death_cloud.c16", "start": 122903343, "end": 123249445}, {"filename": "/Images/a44b.c16", "start": 123249445, "end": 124132959}, {"filename": "/Images/c24a.c16", "start": 124132959, "end": 124146183}, {"filename": "/Images/n00c.c16", "start": 124146183, "end": 124152125}, {"filename": "/Images/i02b.c16", "start": 124152125, "end": 124160409}, {"filename": "/Images/k62a.c16", "start": 124160409, "end": 124167119}, {"filename": "/Images/norncut01.c16", "start": 124167119, "end": 124390693}, {"filename": "/Images/asteroids.c16", "start": 124390693, "end": 124406003}, {"filename": "/Images/rock2.c16", "start": 124406003, "end": 124422617}, {"filename": "/Images/starplant.c16", "start": 124422617, "end": 124443901}, {"filename": "/Images/progress-nl.s16", "start": 124443901, "end": 124636469}, {"filename": "/Images/k15a.c16", "start": 124636469, "end": 124652491}, {"filename": "/Images/020a.c16", "start": 124652491, "end": 124699153}, {"filename": "/Images/n00a.c16", "start": 124699153, "end": 124705095}, {"filename": "/Images/j50a.c16", "start": 124705095, "end": 124718901}, {"filename": "/Images/welcome screen.c16", "start": 124718901, "end": 125083845}, {"filename": "/Images/replicator.c16", "start": 125083845, "end": 126133993}, {"filename": "/Images/k42a.c16", "start": 126133993, "end": 126142277}, {"filename": "/Images/000c.c16", "start": 126142277, "end": 126188939}, {"filename": "/Images/watr.c16", "start": 126188939, "end": 126190639}, {"filename": "/Images/c04a.c16", "start": 126190639, "end": 126209161}, {"filename": "/Images/g54a.c16", "start": 126209161, "end": 126226453}, {"filename": "/Images/sealift.c16", "start": 126226453, "end": 126235895}, {"filename": "/Images/angel.c16", "start": 126235895, "end": 126307409}, {"filename": "/Images/cactus.c16", "start": 126307409, "end": 126374469}, {"filename": "/Images/k54a.c16", "start": 126374469, "end": 126390491}, {"filename": "/Images/g42a.c16", "start": 126390491, "end": 126402853}, {"filename": "/Images/c12a.c16", "start": 126402853, "end": 126416077}, {"filename": "/Images/b00a.c16", "start": 126416077, "end": 126492563}, {"filename": "/Images/f50a.c16", "start": 126492563, "end": 126501313}, {"filename": "/Images/jaws.c16", "start": 126501313, "end": 126593847}, {"filename": "/Images/c45a.c16", "start": 126593847, "end": 126612369}, {"filename": "/Images/g15a.c16", "start": 126612369, "end": 126629661}, {"filename": "/Images/e02a.c16", "start": 126629661, "end": 126638943}, {"filename": "/Images/man-o-war.c16", "start": 126638943, "end": 126998817}, {"filename": "/Images/a52a.c16", "start": 126998817, "end": 127937025}, {"filename": "/Images/outputdisplay.c16", "start": 127937025, "end": 127945819}, {"filename": "/Images/m44a.c16", "start": 127945819, "end": 127953609}, {"filename": "/Images/i14a.c16", "start": 127953609, "end": 127969653}, {"filename": "/Images/oraponge.c16", "start": 127969653, "end": 128047569}, {"filename": "/Images/connectingtest.c16", "start": 128047569, "end": 128077803}, {"filename": "/Images/a05a.c16", "start": 128077803, "end": 128922733}, {"filename": "/Images/counter.c16", "start": 128922733, "end": 128978297}, {"filename": "/Images/e55a.c16", "start": 128978297, "end": 128999103}, {"filename": "/Images/d10a.c16", "start": 128999103, "end": 129007337}, {"filename": "/Images/deth.c16", "start": 129007337, "end": 129195657}, {"filename": "/Images/l40a.c16", "start": 129195657, "end": 129203225}, {"filename": "/Images/h10a.c16", "start": 129203225, "end": 129213383}, {"filename": "/Images/m05a.c16", "start": 129213383, "end": 129221173}, {"filename": "/Images/000b.c16", "start": 129221173, "end": 129267835}, {"filename": "/Images/i55a.c16", "start": 129267835, "end": 129283879}, {"filename": "/Images/shark.c16", "start": 129283879, "end": 129353967}, {"filename": "/Images/airlock_left.c16", "start": 129353967, "end": 129502073}, {"filename": "/Images/potions.s16", "start": 129502073, "end": 129507119}, {"filename": "/Images/a44a.c16", "start": 129507119, "end": 130484017}, {"filename": "/Images/e14a.c16", "start": 130484017, "end": 130504823}, {"filename": "/Images/i02a.c16", "start": 130504823, "end": 130513107}, {"filename": "/Images/m52a.c16", "start": 130513107, "end": 130528531}, {"filename": "/Images/fairy.c16", "start": 130528531, "end": 130646879}, {"filename": "/My Agents/Starter Parent 2-de.family", "start": 130646879, "end": 130709196}, {"filename": "/My Agents/Starter Parent 2-es.family", "start": 130709196, "end": 130770012}, {"filename": "/My Agents/Starter Parent 1-fr.family", "start": 130770012, "end": 130832963}, {"filename": "/My Agents/Starter Parent 2.family", "start": 130832963, "end": 130894437}, {"filename": "/My Agents/Starter Parent 2-it.family", "start": 130894437, "end": 130957261}, {"filename": "/My Agents/Creator-nl.agents", "start": 130957261, "end": 131010643}, {"filename": "/My Agents/BruinBengalCivetEggs.agents", "start": 131010643, "end": 131011833}, {"filename": "/My Agents/Creator-fr.agents", "start": 131011833, "end": 131065215}, {"filename": "/My Agents/Starter Parent 1-nl.family", "start": 131065215, "end": 131129790}, {"filename": "/My Agents/Creator-es.agents", "start": 131129790, "end": 131183172}, {"filename": "/My Agents/Creator-de.agents", "start": 131183172, "end": 131236554}, {"filename": "/My Agents/expressiveeggs.agents", "start": 131236554, "end": 131346450}, {"filename": "/My Agents/Creator-it.agents", "start": 131346450, "end": 131399832}, {"filename": "/My Agents/Starter Parent 1.family", "start": 131399832, "end": 131463000}, {"filename": "/My Agents/Starter Parent 2-nl.family", "start": 131463000, "end": 131519359}, {"filename": "/My Agents/Creator-ru.agents", "start": 131519359, "end": 131572741}, {"filename": "/My Agents/Starter Parent 2-fr.family", "start": 131572741, "end": 131634622}, {"filename": "/My Agents/Starter Parent 1-es.family", "start": 131634622, "end": 131697824}, {"filename": "/My Agents/Starter Parent 1-de.family", "start": 131697824, "end": 131755705}, {"filename": "/My Agents/Creator.agents", "start": 131755705, "end": 131809087}, {"filename": "/My Agents/Starter Parent 1-it.family", "start": 131809087, "end": 131869601}, {"filename": "/Sounds/mcls.wav", "start": 131869601, "end": 132048323, "audio": 1}, {"filename": "/Sounds/rdrl.wav", "start": 132048323, "end": 132312967, "audio": 1}, {"filename": "/Sounds/pus0.wav", "start": 132312967, "end": 132314435, "audio": 1}, {"filename": "/Sounds/beh1.wav", "start": 132314435, "end": 132317159, "audio": 1}, {"filename": "/Sounds/cam1.wav", "start": 132317159, "end": 132504007, "audio": 1}, {"filename": "/Sounds/alrm.wav", "start": 132504007, "end": 132592239, "audio": 1}, {"filename": "/Sounds/snor.wav", "start": 132592239, "end": 133101567, "audio": 1}, {"filename": "/Sounds/yaue.wav", "start": 133101567, "end": 133104894, "audio": 1}, {"filename": "/Sounds/lg_1.wav", "start": 133104894, "end": 133175082, "audio": 1}, {"filename": "/Sounds/drm1.wav", "start": 133175082, "end": 133180943, "audio": 1}, {"filename": "/Sounds/drnk.wav", "start": 133180943, "end": 133207995, "audio": 1}, {"filename": "/Sounds/ke_m.wav", "start": 133207995, "end": 133211183, "audio": 1}, {"filename": "/Sounds/bohm.wav", "start": 133211183, "end": 133213299, "audio": 1}, {"filename": "/Sounds/step.wav", "start": 133213299, "end": 133216287, "audio": 1}, {"filename": "/Sounds/foom.wav", "start": 133216287, "end": 133218902, "audio": 1}, {"filename": "/Sounds/st_1.wav", "start": 133218902, "end": 133436332, "audio": 1}, {"filename": "/Sounds/zyoe.wav", "start": 133436332, "end": 133440361, "audio": 1}, {"filename": "/Sounds/che2.wav", "start": 133440361, "end": 133501652, "audio": 1}, {"filename": "/Sounds/beh0.wav", "start": 133501652, "end": 133504426, "audio": 1}, {"filename": "/Sounds/nohm.wav", "start": 133504426, "end": 133508446, "audio": 1}, {"filename": "/Sounds/pus1.wav", "start": 133508446, "end": 133509894, "audio": 1}, {"filename": "/Sounds/seim.wav", "start": 133509894, "end": 133513070, "audio": 1}, {"filename": "/Sounds/cmc4.wav", "start": 133513070, "end": 133742674, "audio": 1}, {"filename": "/Sounds/gsnr.wav", "start": 133742674, "end": 133782974, "audio": 1}, {"filename": "/Sounds/cam2.wav", "start": 133782974, "end": 133813956, "audio": 1}, {"filename": "/Sounds/st_3.wav", "start": 133813956, "end": 133913898, "audio": 1}, {"filename": "/Sounds/zyo1.wav", "start": 133913898, "end": 133917872, "audio": 1}, {"filename": "/Sounds/yau0.wav", "start": 133917872, "end": 133921200, "audio": 1}, {"filename": "/Sounds/pop_.wav", "start": 133921200, "end": 133927534, "audio": 1}, {"filename": "/Sounds/mwrn.wav", "start": 133927534, "end": 133932861, "audio": 1}, {"filename": "/Sounds/drm2.wav", "start": 133932861, "end": 133939967, "audio": 1}, {"filename": "/Sounds/kahm.wav", "start": 133939967, "end": 133942875, "audio": 1}, {"filename": "/Sounds/nlnl.wav", "start": 133942875, "end": 133953339, "audio": 1}, {"filename": "/Sounds/cs_1.wav", "start": 133953339, "end": 134056053, "audio": 1}, {"filename": "/Sounds/yau1.wav", "start": 134056053, "end": 134059431, "audio": 1}, {"filename": "/Sounds/st_2.wav", "start": 134059431, "end": 134268459, "audio": 1}, {"filename": "/Sounds/gsb1.wav", "start": 134268459, "end": 134548565, "audio": 1}, {"filename": "/Sounds/zyo0.wav", "start": 134548565, "end": 134552595, "audio": 1}, {"filename": "/Sounds/spew.wav", "start": 134552595, "end": 134681157, "audio": 1}, {"filename": "/Sounds/behe.wav", "start": 134681157, "end": 134683931, "audio": 1}, {"filename": "/Sounds/che1.wav", "start": 134683931, "end": 134745222, "audio": 1}, {"filename": "/Sounds/move.wav", "start": 134745222, "end": 134768948, "audio": 1}, {"filename": "/Sounds/cmc5.wav", "start": 134768948, "end": 135786364, "audio": 1}, {"filename": "/Sounds/cmc1.wav", "start": 135786364, "end": 135921328, "audio": 1}, {"filename": "/Sounds/gr_1.wav", "start": 135921328, "end": 135972322, "audio": 1}, {"filename": "/Sounds/gr_p.wav", "start": 135972322, "end": 135999668, "audio": 1}, {"filename": "/Sounds/sgfr.wav", "start": 135999668, "end": 136063790, "audio": 1}, {"filename": "/Sounds/bee0.wav", "start": 136063790, "end": 136067940, "audio": 1}, {"filename": "/Sounds/koh0.wav", "start": 136067940, "end": 136070140, "audio": 1}, {"filename": "/Sounds/crak.wav", "start": 136070140, "end": 136153612, "audio": 1}, {"filename": "/Sounds/yoou.wav", "start": 136153612, "end": 136167092, "audio": 1}, {"filename": "/Sounds/koh1.wav", "start": 136167092, "end": 136169406, "audio": 1}, {"filename": "/Sounds/esb1.wav", "start": 136169406, "end": 136319562, "audio": 1}, {"filename": "/Sounds/bee1.wav", "start": 136319562, "end": 136323744, "audio": 1}, {"filename": "/Sounds/env2.wav", "start": 136323744, "end": 136588474, "audio": 1}, {"filename": "/Sounds/beep.wav", "start": 136588474, "end": 136606854, "audio": 1}, {"filename": "/Sounds/sirn.wav", "start": 136606854, "end": 136614295, "audio": 1}, {"filename": "/Sounds/ccls.wav", "start": 136614295, "end": 136616579, "audio": 1}, {"filename": "/Sounds/bep2.wav", "start": 136616579, "end": 136634959, "audio": 1}, {"filename": "/Sounds/cmc2.wav", "start": 136634959, "end": 137015331, "audio": 1}, {"filename": "/Sounds/but1.wav", "start": 137015331, "end": 137154307, "audio": 1}, {"filename": "/Sounds/gr_2.wav", "start": 137154307, "end": 137237307, "audio": 1}, {"filename": "/Sounds/pkup.wav", "start": 137237307, "end": 137449435, "audio": 1}, {"filename": "/Sounds/ghop.wav", "start": 137449435, "end": 137511561, "audio": 1}, {"filename": "/Sounds/beee.wav", "start": 137511561, "end": 137515710, "audio": 1}, {"filename": "/Sounds/grendel.mng", "start": 137515710, "end": 142582219}, {"filename": "/Sounds/bost.wav", "start": 142582219, "end": 142612242, "audio": 1}, {"filename": "/Sounds/tckl.wav", "start": 142612242, "end": 142623224, "audio": 1}, {"filename": "/Sounds/kohe.wav", "start": 142623224, "end": 142625524, "audio": 1}, {"filename": "/Sounds/ee_m.wav", "start": 142625524, "end": 142627126, "audio": 1}, {"filename": "/Sounds/engineering.mng", "start": 142627126, "end": 145291605}, {"filename": "/Sounds/env1.wav", "start": 145291605, "end": 145489177, "audio": 1}, {"filename": "/Sounds/garr.wav", "start": 145489177, "end": 145496917, "audio": 1}, {"filename": "/Sounds/know.wav", "start": 145496917, "end": 145720007, "audio": 1}, {"filename": "/Sounds/gr_e.wav", "start": 145720007, "end": 145879325, "audio": 1}, {"filename": "/Sounds/egg1.wav", "start": 145879325, "end": 145958613, "audio": 1}, {"filename": "/Sounds/buzz.wav", "start": 145958613, "end": 145979335, "audio": 1}, {"filename": "/Sounds/cmc3.wav", "start": 145979335, "end": 145998783, "audio": 1}, {"filename": "/Sounds/berm.wav", "start": 145998783, "end": 146000923, "audio": 1}, {"filename": "/Sounds/rahe.wav", "start": 146000923, "end": 146003861, "audio": 1}, {"filename": "/Sounds/ha_0.wav", "start": 146003861, "end": 146006527, "audio": 1}, {"filename": "/Sounds/wehm.wav", "start": 146006527, "end": 146009418, "audio": 1}, {"filename": "/Sounds/mahm.wav", "start": 146009418, "end": 146012726, "audio": 1}, {"filename": "/Sounds/snee.wav", "start": 146012726, "end": 146019256, "audio": 1}, {"filename": "/Sounds/dr_o.wav", "start": 146019256, "end": 146079814, "audio": 1}, {"filename": "/Sounds/sl_1.wav", "start": 146079814, "end": 146399124, "audio": 1}, {"filename": "/Sounds/eat1.wav", "start": 146399124, "end": 146435288, "audio": 1}, {"filename": "/Sounds/oogh.wav", "start": 146435288, "end": 146442070, "audio": 1}, {"filename": "/Sounds/gui1.wav", "start": 146442070, "end": 146530998, "audio": 1}, {"filename": "/Sounds/soo0.wav", "start": 146530998, "end": 146534514, "audio": 1}, {"filename": "/Sounds/mno0.wav", "start": 146534514, "end": 146539038, "audio": 1}, {"filename": "/Sounds/excl.wav", "start": 146539038, "end": 146569194, "audio": 1}, {"filename": "/Sounds/woh0.wav", "start": 146569194, "end": 146571974, "audio": 1}, {"filename": "/Sounds/gs_c.wav", "start": 146571974, "end": 146668156, "audio": 1}, {"filename": "/Sounds/woh1.wav", "start": 146668156, "end": 146670936, "audio": 1}, {"filename": "/Sounds/grun.wav", "start": 146670936, "end": 146677094, "audio": 1}, {"filename": "/Sounds/clak.wav", "start": 146677094, "end": 146683790, "audio": 1}, {"filename": "/Sounds/soo1.wav", "start": 146683790, "end": 146686860, "audio": 1}, {"filename": "/Sounds/shiv.wav", "start": 146686860, "end": 146720948, "audio": 1}, {"filename": "/Sounds/mno1.wav", "start": 146720948, "end": 146726054, "audio": 1}, {"filename": "/Sounds/eshv.wav", "start": 146726054, "end": 146760141, "audio": 1}, {"filename": "/Sounds/goww.wav", "start": 146760141, "end": 146770489, "audio": 1}, {"filename": "/Sounds/rad1.wav", "start": 146770489, "end": 146784683, "audio": 1}, {"filename": "/Sounds/rok1.wav", "start": 146784683, "end": 146805363, "audio": 1}, {"filename": "/Sounds/ha_1.wav", "start": 146805363, "end": 146807995, "audio": 1}, {"filename": "/Sounds/flap.wav", "start": 146807995, "end": 146888649, "audio": 1}, {"filename": "/Sounds/rah0.wav", "start": 146888649, "end": 146891589, "audio": 1}, {"filename": "/Sounds/radr.wav", "start": 146891589, "end": 146895167, "audio": 1}, {"filename": "/Sounds/argh.wav", "start": 146895167, "end": 146904273, "audio": 1}, {"filename": "/Sounds/ha_e.wav", "start": 146904273, "end": 146907377, "audio": 1}, {"filename": "/Sounds/pir2.wav", "start": 146907377, "end": 147749169, "audio": 1}, {"filename": "/Sounds/sqh3.wav", "start": 147749169, "end": 147872285, "audio": 1}, {"filename": "/Sounds/mnoe.wav", "start": 147872285, "end": 147877342, "audio": 1}, {"filename": "/Sounds/oarr.wav", "start": 147877342, "end": 147886650, "audio": 1}, {"filename": "/Sounds/pohm.wav", "start": 147886650, "end": 147889659, "audio": 1}, {"filename": "/Sounds/ct_4.wav", "start": 147889659, "end": 148157019, "audio": 1}, {"filename": "/Sounds/btle.wav", "start": 148157019, "end": 148167411, "audio": 1}, {"filename": "/Sounds/gui3.wav", "start": 148167411, "end": 148257983, "audio": 1}, {"filename": "/Sounds/rasm.wav", "start": 148257983, "end": 148260419, "audio": 1}, {"filename": "/Sounds/ragh.wav", "start": 148260419, "end": 148267715, "audio": 1}, {"filename": "/Sounds/rok2.wav", "start": 148267715, "end": 148412483, "audio": 1}, {"filename": "/Sounds/rah1.wav", "start": 148412483, "end": 148415437, "audio": 1}, {"filename": "/Sounds/burp.wav", "start": 148415437, "end": 148425760, "audio": 1}, {"filename": "/Sounds/gauw.wav", "start": 148425760, "end": 148434484, "audio": 1}, {"filename": "/Sounds/dah1.wav", "start": 148434484, "end": 148436944, "audio": 1}, {"filename": "/Sounds/pnt1.wav", "start": 148436944, "end": 148502210, "audio": 1}, {"filename": "/Sounds/beam.wav", "start": 148502210, "end": 148523034, "audio": 1}, {"filename": "/Sounds/chn1.wav", "start": 148523034, "end": 148525734, "audio": 1}, {"filename": "/Sounds/niy0.wav", "start": 148525734, "end": 148528112, "audio": 1}, {"filename": "/Sounds/pah0.wav", "start": 148528112, "end": 148530988, "audio": 1}, {"filename": "/Sounds/dr10.wav", "start": 148530988, "end": 148536492, "audio": 1}, {"filename": "/Sounds/asba.wav", "start": 148536492, "end": 148544000, "audio": 1}, {"filename": "/Sounds/crea.wav", "start": 148544000, "end": 148764478, "audio": 1}, {"filename": "/Sounds/pah1.wav", "start": 148764478, "end": 148767318, "audio": 1}, {"filename": "/Sounds/ct_1.wav", "start": 148767318, "end": 148882310, "audio": 1}, {"filename": "/Sounds/niy1.wav", "start": 148882310, "end": 148884682, "audio": 1}, {"filename": "/Sounds/chn0.wav", "start": 148884682, "end": 148887494, "audio": 1}, {"filename": "/Sounds/weem.wav", "start": 148887494, "end": 148889890, "audio": 1}, {"filename": "/Sounds/gate.wav", "start": 148889890, "end": 148919056, "audio": 1}, {"filename": "/Sounds/dah0.wav", "start": 148919056, "end": 148921280, "audio": 1}, {"filename": "/Sounds/rckl.wav", "start": 148921280, "end": 148934366, "audio": 1}, {"filename": "/Sounds/dor1.wav", "start": 148934366, "end": 149371498, "audio": 1}, {"filename": "/Sounds/ow!1.wav", "start": 149371498, "end": 149375074, "audio": 1}, {"filename": "/Sounds/dslg.wav", "start": 149375074, "end": 149727280, "audio": 1}, {"filename": "/Sounds/ow!3.wav", "start": 149727280, "end": 149733388, "audio": 1}, {"filename": "/Sounds/epng.wav", "start": 149733388, "end": 149820742, "audio": 1}, {"filename": "/Sounds/trap.wav", "start": 149820742, "end": 149829746, "audio": 1}, {"filename": "/Sounds/chw0.wav", "start": 149829746, "end": 149833806, "audio": 1}, {"filename": "/Sounds/cahm.wav", "start": 149833806, "end": 149836401, "audio": 1}, {"filename": "/Sounds/niye.wav", "start": 149836401, "end": 149838778, "audio": 1}, {"filename": "/Sounds/nudi.wav", "start": 149838778, "end": 149867708, "audio": 1}, {"filename": "/Sounds/ct_3.wav", "start": 149867708, "end": 149937754, "audio": 1}, {"filename": "/Sounds/pahe.wav", "start": 149937754, "end": 149940681, "audio": 1}, {"filename": "/Sounds/wahm.wav", "start": 149940681, "end": 149943757, "audio": 1}, {"filename": "/Sounds/yhan.wav", "start": 149943757, "end": 149953849, "audio": 1}, {"filename": "/Sounds/do_m.wav", "start": 149953849, "end": 149956393, "audio": 1}, {"filename": "/Sounds/ct_2.wav", "start": 149956393, "end": 150003339, "audio": 1}, {"filename": "/Sounds/wasp.wav", "start": 150003339, "end": 150177639, "audio": 1}, {"filename": "/Sounds/gror.wav", "start": 150177639, "end": 150184705, "audio": 1}, {"filename": "/Sounds/chne.wav", "start": 150184705, "end": 150187619, "audio": 1}, {"filename": "/Sounds/ndid.wav", "start": 150187619, "end": 150247101, "audio": 1}, {"filename": "/Sounds/dahe.wav", "start": 150247101, "end": 150249744, "audio": 1}, {"filename": "/Sounds/gshv.wav", "start": 150249744, "end": 150260652, "audio": 1}, {"filename": "/Sounds/chw1.wav", "start": 150260652, "end": 150264558, "audio": 1}, {"filename": "/Sounds/chwp.wav", "start": 150264558, "end": 150273994, "audio": 1}, {"filename": "/Sounds/dor2.wav", "start": 150273994, "end": 150708132, "audio": 1}, {"filename": "/Sounds/ow!2.wav", "start": 150708132, "end": 150714976, "audio": 1}, {"filename": "/Sounds/map4.wav", "start": 150714976, "end": 150902094, "audio": 1}, {"filename": "/Sounds/gdie.wav", "start": 150902094, "end": 150933562, "audio": 1}, {"filename": "/Sounds/ras0.wav", "start": 150933562, "end": 150935998, "audio": 1}, {"filename": "/Sounds/me_1.wav", "start": 150935998, "end": 150940348, "audio": 1}, {"filename": "/Sounds/doh1.wav", "start": 150940348, "end": 150942328, "audio": 1}, {"filename": "/Sounds/zzzz.wav", "start": 150942328, "end": 151060388, "audio": 1}, {"filename": "/Sounds/ecof.wav", "start": 151060388, "end": 151066063, "audio": 1}, {"filename": "/Sounds/warn.wav", "start": 151066063, "end": 151641507, "audio": 1}, {"filename": "/Sounds/cyc2.wav", "start": 151641507, "end": 151828987, "audio": 1}, {"filename": "/Sounds/pi_1.wav", "start": 151828987, "end": 151909205, "audio": 1}, {"filename": "/Sounds/grl2.wav", "start": 151909205, "end": 152020847, "audio": 1}, {"filename": "/Sounds/stm1.wav", "start": 152020847, "end": 152262249, "audio": 1}, {"filename": "/Sounds/toww.wav", "start": 152262249, "end": 152478825, "audio": 1}, {"filename": "/Sounds/poh0.wav", "start": 152478825, "end": 152481835, "audio": 1}, {"filename": "/Sounds/poh1.wav", "start": 152481835, "end": 152484737, "audio": 1}, {"filename": "/Sounds/guio.wav", "start": 152484737, "end": 152616953, "audio": 1}, {"filename": "/Sounds/doh0.wav", "start": 152616953, "end": 152619067, "audio": 1}, {"filename": "/Sounds/me_0.wav", "start": 152619067, "end": 152623709, "audio": 1}, {"filename": "/Sounds/wehe.wav", "start": 152623709, "end": 152626600, "audio": 1}, {"filename": "/Sounds/mahe.wav", "start": 152626600, "end": 152629908, "audio": 1}, {"filename": "/Sounds/ras1.wav", "start": 152629908, "end": 152632420, "audio": 1}, {"filename": "/Sounds/rahm.wav", "start": 152632420, "end": 152635359, "audio": 1}, {"filename": "/Sounds/alar.wav", "start": 152635359, "end": 152784815, "audio": 1}, {"filename": "/Sounds/events.mng", "start": 152784815, "end": 155064923}, {"filename": "/Sounds/mopn.wav", "start": 155064923, "end": 155243645, "audio": 1}, {"filename": "/Sounds/weh1.wav", "start": 155243645, "end": 155246425, "audio": 1}, {"filename": "/Sounds/mah1.wav", "start": 155246425, "end": 155249679, "audio": 1}, {"filename": "/Sounds/rase.wav", "start": 155249679, "end": 155253445, "audio": 1}, {"filename": "/Sounds/open.wav", "start": 155253445, "end": 155452575, "audio": 1}, {"filename": "/Sounds/ug_1.wav", "start": 155452575, "end": 155505215, "audio": 1}, {"filename": "/Sounds/cyc1.wav", "start": 155505215, "end": 155755831, "audio": 1}, {"filename": "/Sounds/grl1.wav", "start": 155755831, "end": 155859757, "audio": 1}, {"filename": "/Sounds/pohe.wav", "start": 155859757, "end": 155862766, "audio": 1}, {"filename": "/Sounds/inje.wav", "start": 155862766, "end": 155935312, "audio": 1}, {"filename": "/Sounds/pod1.wav", "start": 155935312, "end": 156132474, "audio": 1}, {"filename": "/Sounds/mnom.wav", "start": 156132474, "end": 156136998, "audio": 1}, {"filename": "/Sounds/cbz2.wav", "start": 156136998, "end": 156268454, "audio": 1}, {"filename": "/Sounds/grnn.wav", "start": 156268454, "end": 156279634, "audio": 1}, {"filename": "/Sounds/mah0.wav", "start": 156279634, "end": 156282942, "audio": 1}, {"filename": "/Sounds/weh0.wav", "start": 156282942, "end": 156285834, "audio": 1}, {"filename": "/Sounds/ha_m.wav", "start": 156285834, "end": 156288499, "audio": 1}, {"filename": "/Sounds/sgtn.wav", "start": 156288499, "end": 156320079, "audio": 1}, {"filename": "/Sounds/spup.wav", "start": 156320079, "end": 156384909, "audio": 1}, {"filename": "/Sounds/rain.wav", "start": 156384909, "end": 157026671, "audio": 1}, {"filename": "/Sounds/map2.wav", "start": 157026671, "end": 157044315, "audio": 1}, {"filename": "/Sounds/fish.wav", "start": 157044315, "end": 157164951, "audio": 1}, {"filename": "/Sounds/copn.wav", "start": 157164951, "end": 157167235, "audio": 1}, {"filename": "/Sounds/hit_.wav", "start": 157167235, "end": 157246705, "audio": 1}, {"filename": "/Sounds/cah1.wav", "start": 157246705, "end": 157249703, "audio": 1}, {"filename": "/Sounds/weee.wav", "start": 157249703, "end": 157252099, "audio": 1}, {"filename": "/Sounds/coil.wav", "start": 157252099, "end": 157341945, "audio": 1}, {"filename": "/Sounds/stup.wav", "start": 157341945, "end": 157384141, "audio": 1}, {"filename": "/Sounds/do_0.wav", "start": 157384141, "end": 157386685, "audio": 1}, {"filename": "/Sounds/wah0.wav", "start": 157386685, "end": 157389761, "audio": 1}, {"filename": "/Sounds/fp_1.wav", "start": 157389761, "end": 157440721, "audio": 1}, {"filename": "/Sounds/quen.wav", "start": 157440721, "end": 157583381, "audio": 1}, {"filename": "/Sounds/wah1.wav", "start": 157583381, "end": 157586629, "audio": 1}, {"filename": "/Sounds/do_1.wav", "start": 157586629, "end": 157589505, "audio": 1}, {"filename": "/Sounds/pop1.wav", "start": 157589505, "end": 157591789, "audio": 1}, {"filename": "/Sounds/music.mng", "start": 157591789, "end": 165939583}, {"filename": "/Sounds/text.wav", "start": 165939583, "end": 165946279, "audio": 1}, {"filename": "/Sounds/cah0.wav", "start": 165946279, "end": 165948875, "audio": 1}, {"filename": "/Sounds/brng.wav", "start": 165948875, "end": 165962899, "audio": 1}, {"filename": "/Sounds/map3.wav", "start": 165962899, "end": 166093851, "audio": 1}, {"filename": "/Sounds/map1.wav", "start": 166093851, "end": 166228391, "audio": 1}, {"filename": "/Sounds/roh0.wav", "start": 166228391, "end": 166232679, "audio": 1}, {"filename": "/Sounds/dahm.wav", "start": 166232679, "end": 166234902, "audio": 1}, {"filename": "/Sounds/punc.wav", "start": 166234902, "end": 166240954, "audio": 1}, {"filename": "/Sounds/wee0.wav", "start": 166240954, "end": 166243350, "audio": 1}, {"filename": "/Sounds/dr_c.wav", "start": 166243350, "end": 166310486, "audio": 1}, {"filename": "/Sounds/chnm.wav", "start": 166310486, "end": 166313297, "audio": 1}, {"filename": "/Sounds/edie.wav", "start": 166313297, "end": 166328921, "audio": 1}, {"filename": "/Sounds/foh1.wav", "start": 166328921, "end": 166331409, "audio": 1}, {"filename": "/Sounds/bridge.mng", "start": 166331409, "end": 168099255}, {"filename": "/Sounds/hart.wav", "start": 168099255, "end": 168112622, "audio": 1}, {"filename": "/Sounds/wahe.wav", "start": 168112622, "end": 168115938, "audio": 1}, {"filename": "/Sounds/do_e.wav", "start": 168115938, "end": 168118986, "audio": 1}, {"filename": "/Sounds/fp_2.wav", "start": 168118986, "end": 168326604, "audio": 1}, {"filename": "/Sounds/gs_o.wav", "start": 168326604, "end": 168422786, "audio": 1}, {"filename": "/Sounds/bzup.wav", "start": 168422786, "end": 168583916, "audio": 1}, {"filename": "/Sounds/aqua.wav", "start": 168583916, "end": 168609820, "audio": 1}, {"filename": "/Sounds/driv.wav", "start": 168609820, "end": 168722672, "audio": 1}, {"filename": "/Sounds/pahm.wav", "start": 168722672, "end": 168725547, "audio": 1}, {"filename": "/Sounds/foh0.wav", "start": 168725547, "end": 168727945, "audio": 1}, {"filename": "/Sounds/cbuz.wav", "start": 168727945, "end": 168850923, "audio": 1}, {"filename": "/Sounds/niym.wav", "start": 168850923, "end": 168853300, "audio": 1}, {"filename": "/Sounds/wee1.wav", "start": 168853300, "end": 168855676, "audio": 1}, {"filename": "/Sounds/spnk.wav", "start": 168855676, "end": 168859180, "audio": 1}, {"filename": "/Sounds/splt.wav", "start": 168859180, "end": 168887292, "audio": 1}, {"filename": "/Sounds/cahe.wav", "start": 168887292, "end": 168889887, "audio": 1}, {"filename": "/Sounds/roh1.wav", "start": 168889887, "end": 168894127, "audio": 1}, {"filename": "/Sounds/tele.wav", "start": 168894127, "end": 168940585, "audio": 1}, {"filename": "/Sounds/sei1.wav", "start": 168940585, "end": 168942593, "audio": 1}, {"filename": "/Sounds/cav2.wav", "start": 168942593, "end": 169152783, "audio": 1}, {"filename": "/Sounds/nohe.wav", "start": 169152783, "end": 169156803, "audio": 1}, {"filename": "/Sounds/coug.wav", "start": 169156803, "end": 169162479, "audio": 1}, {"filename": "/Sounds/snap.wav", "start": 169162479, "end": 169223195, "audio": 1}, {"filename": "/Sounds/gslp.wav", "start": 169223195, "end": 169232039, "audio": 1}, {"filename": "/Sounds/main.mng", "start": 169232039, "end": 177138816}, {"filename": "/Sounds/mb_4.wav", "start": 177138816, "end": 177749986, "audio": 1}, {"filename": "/Sounds/zyom.wav", "start": 177749986, "end": 177754015, "audio": 1}, {"filename": "/Sounds/bubf.wav", "start": 177754015, "end": 177809611, "audio": 1}, {"filename": "/Sounds/wav3.wav", "start": 177809611, "end": 177928353, "audio": 1}, {"filename": "/Sounds/dj_g.wav", "start": 177928353, "end": 180067839, "audio": 1}, {"filename": "/Sounds/fooe.wav", "start": 180067839, "end": 180071142, "audio": 1}, {"filename": "/Sounds/exp1.wav", "start": 180071142, "end": 180353808, "audio": 1}, {"filename": "/Sounds/kah0.wav", "start": 180353808, "end": 180356716, "audio": 1}, {"filename": "/Sounds/hat3.wav", "start": 180356716, "end": 180444968, "audio": 1}, {"filename": "/Sounds/atms.wav", "start": 180444968, "end": 180515738, "audio": 1}, {"filename": "/Sounds/ke_e.wav", "start": 180515738, "end": 180518926, "audio": 1}, {"filename": "/Sounds/clik.wav", "start": 180518926, "end": 180521314, "audio": 1}, {"filename": "/Sounds/bohe.wav", "start": 180521314, "end": 180523443, "audio": 1}, {"filename": "/Sounds/scd1.wav", "start": 180523443, "end": 180648887, "audio": 1}, {"filename": "/Sounds/hat2.wav", "start": 180648887, "end": 180933767, "audio": 1}, {"filename": "/Sounds/kah1.wav", "start": 180933767, "end": 180936635, "audio": 1}, {"filename": "/Sounds/gna1.wav", "start": 180936635, "end": 180999763, "audio": 1}, {"filename": "/Sounds/bp_1.wav", "start": 180999763, "end": 181050331, "audio": 1}, {"filename": "/Sounds/lg_o.wav", "start": 181050331, "end": 181074435, "audio": 1}, {"filename": "/Sounds/yaum.wav", "start": 181074435, "end": 181077762, "audio": 1}, {"filename": "/Sounds/wav2.wav", "start": 181077762, "end": 181176494, "audio": 1}, {"filename": "/Sounds/kis2.wav", "start": 181176494, "end": 181243738, "audio": 1}, {"filename": "/Sounds/spdn.wav", "start": 181243738, "end": 181308894, "audio": 1}, {"filename": "/Sounds/col2.wav", "start": 181308894, "end": 181398740, "audio": 1}, {"filename": "/Sounds/cav3.wav", "start": 181398740, "end": 181595902, "audio": 1}, {"filename": "/Sounds/sei0.wav", "start": 181595902, "end": 181599078, "audio": 1}, {"filename": "/Sounds/cav1.wav", "start": 181599078, "end": 181739920, "audio": 1}, {"filename": "/Sounds/noh0.wav", "start": 181739920, "end": 181743940, "audio": 1}, {"filename": "/Sounds/behm.wav", "start": 181743940, "end": 181746714, "audio": 1}, {"filename": "/Sounds/fly_.wav", "start": 181746714, "end": 181998454, "audio": 1}, {"filename": "/Sounds/brd5.wav", "start": 181998454, "end": 182074440, "audio": 1}, {"filename": "/Sounds/weak.wav", "start": 182074440, "end": 182094369, "audio": 1}, {"filename": "/Sounds/exp2.wav", "start": 182094369, "end": 182275477, "audio": 1}, {"filename": "/Sounds/foo0.wav", "start": 182275477, "end": 182278093, "audio": 1}, {"filename": "/Sounds/gna3.wav", "start": 182278093, "end": 182353463, "audio": 1}, {"filename": "/Sounds/kahe.wav", "start": 182353463, "end": 182356371, "audio": 1}, {"filename": "/Sounds/ungr.wav", "start": 182356371, "end": 182366331, "audio": 1}, {"filename": "/Sounds/boh0.wav", "start": 182366331, "end": 182368447, "audio": 1}, {"filename": "/Sounds/ke_0.wav", "start": 182368447, "end": 182371635, "audio": 1}, {"filename": "/Sounds/ke_1.wav", "start": 182371635, "end": 182374829, "audio": 1}, {"filename": "/Sounds/boh1.wav", "start": 182374829, "end": 182377557, "audio": 1}, {"filename": "/Sounds/hawk.wav", "start": 182377557, "end": 182798753, "audio": 1}, {"filename": "/Sounds/hat1.wav", "start": 182798753, "end": 183250649, "audio": 1}, {"filename": "/Sounds/gna2.wav", "start": 183250649, "end": 183383453, "audio": 1}, {"filename": "/Sounds/foo1.wav", "start": 183383453, "end": 183385859, "audio": 1}, {"filename": "/Sounds/foop.wav", "start": 183385859, "end": 183395813, "audio": 1}, {"filename": "/Sounds/recy.wav", "start": 183395813, "end": 183985971, "audio": 1}, {"filename": "/Sounds/glaf.wav", "start": 183985971, "end": 184001447, "audio": 1}, {"filename": "/Sounds/poyy.wav", "start": 184001447, "end": 184109757, "audio": 1}, {"filename": "/Sounds/wav1.wav", "start": 184109757, "end": 184258537, "audio": 1}, {"filename": "/Sounds/kis1.wav", "start": 184258537, "end": 184265797, "audio": 1}, {"filename": "/Sounds/brd4.wav", "start": 184265797, "end": 184320519, "audio": 1}, {"filename": "/Sounds/noh1.wav", "start": 184320519, "end": 184324359, "audio": 1}, {"filename": "/Sounds/seie.wav", "start": 184324359, "end": 184328375, "audio": 1}, {"filename": "/Sounds/ber0.wav", "start": 184328375, "end": 184330515, "audio": 1}, {"filename": "/Sounds/noht.wav", "start": 184330515, "end": 184337095, "audio": 1}, {"filename": "/Sounds/sc_2.wav", "start": 184337095, "end": 184370165, "audio": 1}, {"filename": "/Sounds/mb_2.wav", "start": 184370165, "end": 184464292, "audio": 1}, {"filename": "/Sounds/maan.wav", "start": 184464292, "end": 184470422, "audio": 1}, {"filename": "/Sounds/cd_1.wav", "start": 184470422, "end": 184710002, "audio": 1}, {"filename": "/Sounds/undl.wav", "start": 184710002, "end": 184720574, "audio": 1}, {"filename": "/Sounds/ee_0.wav", "start": 184720574, "end": 184722176, "audio": 1}, {"filename": "/Sounds/exit.wav", "start": 184722176, "end": 185913722, "audio": 1}, {"filename": "/Sounds/ee_1.wav", "start": 185913722, "end": 185915310, "audio": 1}, {"filename": "/Sounds/shut.wav", "start": 185915310, "end": 186044484, "audio": 1}, {"filename": "/Sounds/gig1.wav", "start": 186044484, "end": 186055442, "audio": 1}, {"filename": "/Sounds/pl_1.wav", "start": 186055442, "end": 186089572, "audio": 1}, {"filename": "/Sounds/lg_i.wav", "start": 186089572, "end": 186101648, "audio": 1}, {"filename": "/Sounds/brd1.wav", "start": 186101648, "end": 186160770, "audio": 1}, {"filename": "/Sounds/mb_3.wav", "start": 186160770, "end": 187033272, "audio": 1}, {"filename": "/Sounds/lung.wav", "start": 187033272, "end": 187104154, "audio": 1}, {"filename": "/Sounds/elaf.wav", "start": 187104154, "end": 187135033, "audio": 1}, {"filename": "/Sounds/ayee.wav", "start": 187135033, "end": 187145061, "audio": 1}, {"filename": "/Sounds/ber1.wav", "start": 187145061, "end": 187147181, "audio": 1}, {"filename": "/Sounds/bere.wav", "start": 187147181, "end": 187149332, "audio": 1}, {"filename": "/Sounds/dcld.wav", "start": 187149332, "end": 187463438, "audio": 1}, {"filename": "/Sounds/mb_1.wav", "start": 187463438, "end": 188056078, "audio": 1}, {"filename": "/Sounds/sc_1.wav", "start": 188056078, "end": 188082856, "audio": 1}, {"filename": "/Sounds/brd3.wav", "start": 188082856, "end": 188164918, "audio": 1}, {"filename": "/Sounds/ding.wav", "start": 188164918, "end": 188187138, "audio": 1}, {"filename": "/Sounds/potn.wav", "start": 188187138, "end": 188201174, "audio": 1}, {"filename": "/Sounds/desert.mng", "start": 188201174, "end": 193847618}, {"filename": "/Sounds/gig3.wav", "start": 193847618, "end": 193872586, "audio": 1}, {"filename": "/Sounds/boi2.wav", "start": 193872586, "end": 193886222, "audio": 1}, {"filename": "/Sounds/ee_e.wav", "start": 193886222, "end": 193887824, "audio": 1}, {"filename": "/Sounds/sce1.wav", "start": 193887824, "end": 193938620, "audio": 1}, {"filename": "/Sounds/dead.wav", "start": 193938620, "end": 193954244, "audio": 1}, {"filename": "/Sounds/kohm.wav", "start": 193954244, "end": 193956444, "audio": 1}, {"filename": "/Sounds/gig2.wav", "start": 193956444, "end": 193987324, "audio": 1}, {"filename": "/Sounds/pl_2.wav", "start": 193987324, "end": 194020422, "audio": 1}, {"filename": "/Sounds/brd2.wav", "start": 194020422, "end": 194120710, "audio": 1}, {"filename": "/Sounds/beem.wav", "start": 194120710, "end": 194124859, "audio": 1}, {"filename": "/Sounds/beez.wav", "start": 194124859, "end": 194337647, "audio": 1}, {"filename": "/Sounds/imem.wav", "start": 194337647, "end": 194345909, "audio": 1}, {"filename": "/Sounds/aiae.wav", "start": 194345909, "end": 194352287, "audio": 1}, {"filename": "/Backgrounds/crypt1.5.blk", "start": 194352287, "end": 195499457}, {"filename": "/Backgrounds/blank.blk", "start": 195499457, "end": 195892779}, {"filename": "/Backgrounds/gren3.4.blk", "start": 195892779, "end": 204545653}, {"filename": "/Backgrounds/learning_room1.8.blk", "start": 204545653, "end": 205692823}, {"filename": "/Backgrounds/pinball2.blk", "start": 205692823, "end": 206839993}, {"filename": "/Backgrounds/norn3.0.blk", "start": 206839993, "end": 218737691}, {"filename": "/Backgrounds/space.blk", "start": 218737691, "end": 219884861}, {"filename": "/Backgrounds/c3_splash.blk", "start": 219884861, "end": 221032031}, {"filename": "/Backgrounds/aqua2.6.blk", "start": 221032031, "end": 228570521}, {"filename": "/Backgrounds/ettin1.8.blk", "start": 228570521, "end": 236436771}, {"filename": "/Backgrounds/main3.0.blk", "start": 236436771, "end": 259445533}, {"filename": "/Overlay Data/over_p00a.c16", "start": 259445533, "end": 259449731}, {"filename": "/Overlay Data/over_h00a.c16", "start": 259449731, "end": 259453929}, {"filename": "/Overlay Data/over_d00a.c16", "start": 259453929, "end": 259458127}, {"filename": "/Overlay Data/over_f00a.c16", "start": 259458127, "end": 259462325}, {"filename": "/Overlay Data/over_j00a.c16", "start": 259462325, "end": 259466523}, {"filename": "/Overlay Data/over_n00a.c16", "start": 259466523, "end": 259470721}, {"filename": "/Overlay Data/over_b00a.c16", "start": 259470721, "end": 259487495}, {"filename": "/Overlay Data/over_l00a.c16", "start": 259487495, "end": 259491693}, {"filename": "/Overlay Data/over_i00a.c16", "start": 259491693, "end": 259495891}, {"filename": "/Overlay Data/over_e00a.c16", "start": 259495891, "end": 259500089}, {"filename": "/Overlay Data/over_q00a.c16", "start": 259500089, "end": 259504287}, {"filename": "/Overlay Data/over_g00a.c16", "start": 259504287, "end": 259508485}, {"filename": "/Overlay Data/over_k00a.c16", "start": 259508485, "end": 259512683}, {"filename": "/Overlay Data/over_o00a.c16", "start": 259512683, "end": 259516881}, {"filename": "/Overlay Data/over_c00a.c16", "start": 259516881, "end": 259521079}, {"filename": "/Overlay Data/over_a00a.c16", "start": 259521079, "end": 259546237}, {"filename": "/Overlay Data/over_m00a.c16", "start": 259546237, "end": 259550435}, {"filename": "/Genetics/norn.civet46.gen.brain.gno", "start": 259550435, "end": 259683568}, {"filename": "/Genetics/ettn.final46e.gen.brain.gen", "start": 259683568, "end": 259719569}, {"filename": "/Genetics/norn.bengal46.gen.brain.gen", "start": 259719569, "end": 259755570}, {"filename": "/Genetics/gren.final46g.gen.brain.gen", "start": 259755570, "end": 259791571}, {"filename": "/Genetics/norn.bruin46.gen.brain.gno", "start": 259791571, "end": 259924704}, {"filename": "/Genetics/norn.bruin46.gen.brain.gen", "start": 259924704, "end": 259960705}, {"filename": "/Genetics/gren.final46g.gen.brain.gno", "start": 259960705, "end": 260091947}, {"filename": "/Genetics/norn.bengal46.gen.brain.gno", "start": 260091947, "end": 260225080}, {"filename": "/Genetics/norn.civet46.gen.brain.gen", "start": 260225080, "end": 260261081}, {"filename": "/Genetics/ettn.final46e.gen.brain.gno", "start": 260261081, "end": 260393952}, {"filename": "/Catalogue/Materia Medica-fr.catalogue", "start": 260393952, "end": 260421244}, {"filename": "/Catalogue/Creature History-de.catalogue", "start": 260421244, "end": 260422783}, {"filename": "/Catalogue/Scrolls of Learning-ru.catalogue", "start": 260422783, "end": 260429080}, {"filename": "/Catalogue/Brain-ru.catalogue", "start": 260429080, "end": 260431215}, {"filename": "/Catalogue/Scrolls of Learning-fr.catalogue", "start": 260431215, "end": 260437751}, {"filename": "/Catalogue/Materia Medica-ru.catalogue", "start": 260437751, "end": 260459876}, {"filename": "/Catalogue/GUItext.catalogue", "start": 260459876, "end": 260460844}, {"filename": "/Catalogue/Brain-fr.catalogue", "start": 260460844, "end": 260463553}, {"filename": "/Catalogue/Norn-it.catalogue", "start": 260463553, "end": 260467072}, {"filename": "/Catalogue/Materia Medica-nl.catalogue", "start": 260467072, "end": 260493041}, {"filename": "/Catalogue/Materia Medica.catalogue", "start": 260493041, "end": 260517528}, {"filename": "/Catalogue/Scrolls of Learning-nl.catalogue", "start": 260517528, "end": 260523993}, {"filename": "/Catalogue/Brain-nl.catalogue", "start": 260523993, "end": 260526594}, {"filename": "/Catalogue/System-de.catalogue", "start": 260526594, "end": 260536384}, {"filename": "/Catalogue/Creatures 3-nl.catalogue", "start": 260536384, "end": 260542675}, {"filename": "/Catalogue/Progress-ru.catalogue", "start": 260542675, "end": 260543136}, {"filename": "/Catalogue/AgentHelp-it.catalogue", "start": 260543136, "end": 260626106}, {"filename": "/Catalogue/Progress-fr.catalogue", "start": 260626106, "end": 260626570}, {"filename": "/Catalogue/Brain.catalogue", "start": 260626570, "end": 260628471}, {"filename": "/Catalogue/World Switcher-it.catalogue", "start": 260628471, "end": 260630109}, {"filename": "/Catalogue/labels-it.catalogue", "start": 260630109, "end": 260631858}, {"filename": "/Catalogue/vocab constructs-it.catalogue", "start": 260631858, "end": 260632480}, {"filename": "/Catalogue/Creatures 3-fr.catalogue", "start": 260632480, "end": 260638944}, {"filename": "/Catalogue/GUItext-es.catalogue", "start": 260638944, "end": 260640176}, {"filename": "/Catalogue/Creatures 3-ru.catalogue", "start": 260640176, "end": 260646230}, {"filename": "/Catalogue/Progress-nl.catalogue", "start": 260646230, "end": 260646694}, {"filename": "/Catalogue/labels-fr.catalogue", "start": 260646694, "end": 260648591}, {"filename": "/Catalogue/System-es.catalogue", "start": 260648591, "end": 260657476}, {"filename": "/Catalogue/Creatures 3-it.catalogue", "start": 260657476, "end": 260663800}, {"filename": "/Catalogue/vocab constructs-fr.catalogue", "start": 260663800, "end": 260664422}, {"filename": "/Catalogue/World Switcher-fr.catalogue", "start": 260664422, "end": 260666175}, {"filename": "/Catalogue/labels-ru.catalogue", "start": 260666175, "end": 260667502}, {"filename": "/Catalogue/vocab constructs-ru.catalogue", "start": 260667502, "end": 260668132}, {"filename": "/Catalogue/AgentHelp-nl.catalogue", "start": 260668132, "end": 260750601}, {"filename": "/Catalogue/World Switcher-ru.catalogue", "start": 260750601, "end": 260751804}, {"filename": "/Catalogue/vocab constructs-nl.catalogue", "start": 260751804, "end": 260752426}, {"filename": "/Catalogue/labels-nl.catalogue", "start": 260752426, "end": 260754263}, {"filename": "/Catalogue/World Switcher-nl.catalogue", "start": 260754263, "end": 260755989}, {"filename": "/Catalogue/AgentHelp-ru.catalogue", "start": 260755989, "end": 260829830}, {"filename": "/Catalogue/Progress-it.catalogue", "start": 260829830, "end": 260830294}, {"filename": "/Catalogue/GUItext-de.catalogue", "start": 260830294, "end": 260831461}, {"filename": "/Catalogue/AgentHelp-fr.catalogue", "start": 260831461, "end": 260918378}, {"filename": "/Catalogue/Creature History-es.catalogue", "start": 260918378, "end": 260919946}, {"filename": "/Catalogue/AgentHelp.catalogue", "start": 260919946, "end": 260999602}, {"filename": "/Catalogue/Norn.catalogue", "start": 260999602, "end": 261002707}, {"filename": "/Catalogue/Norn-nl.catalogue", "start": 261002707, "end": 261006236}, {"filename": "/Catalogue/Norn-ru.catalogue", "start": 261006236, "end": 261009559}, {"filename": "/Catalogue/Patch.catalogue", "start": 261009559, "end": 261009647}, {"filename": "/Catalogue/Materia Medica-it.catalogue", "start": 261009647, "end": 261037403}, {"filename": "/Catalogue/Brain-it.catalogue", "start": 261037403, "end": 261040052}, {"filename": "/Catalogue/Norn-fr.catalogue", "start": 261040052, "end": 261043724}, {"filename": "/Catalogue/Creature History.catalogue", "start": 261043724, "end": 261044864}, {"filename": "/Catalogue/World Switcher.catalogue", "start": 261044864, "end": 261046120}, {"filename": "/Catalogue/Scrolls of Learning-it.catalogue", "start": 261046120, "end": 261052633}, {"filename": "/Catalogue/Progress-es.catalogue", "start": 261052633, "end": 261053097}, {"filename": "/Catalogue/GUItext-nl.catalogue", "start": 261053097, "end": 261054349}, {"filename": "/Catalogue/vocab constructs-de.catalogue", "start": 261054349, "end": 261054971}, {"filename": "/Catalogue/labels-de.catalogue", "start": 261054971, "end": 261056890}, {"filename": "/Catalogue/World Switcher-de.catalogue", "start": 261056890, "end": 261058699}, {"filename": "/Catalogue/AgentHelp-en-GB.catalogue", "start": 261058699, "end": 261138364}, {"filename": "/Catalogue/GUItext-fr.catalogue", "start": 261138364, "end": 261139599}, {"filename": "/Catalogue/AgentHelp-de.catalogue", "start": 261139599, "end": 261229433}, {"filename": "/Catalogue/System-it.catalogue", "start": 261229433, "end": 261237296}, {"filename": "/Catalogue/GUItext-ru.catalogue", "start": 261237296, "end": 261238257}, {"filename": "/Catalogue/Creatures 3-es.catalogue", "start": 261238257, "end": 261244728}, {"filename": "/Catalogue/Scrolls of Learning-es.catalogue", "start": 261244728, "end": 261251256}, {"filename": "/Catalogue/Brain-es.catalogue", "start": 261251256, "end": 261253895}, {"filename": "/Catalogue/Materia Medica-es.catalogue", "start": 261253895, "end": 261281520}, {"filename": "/Catalogue/Scrolls of Learning.catalogue", "start": 261281520, "end": 261287817}, {"filename": "/Catalogue/Norn-de.catalogue", "start": 261287817, "end": 261291367}, {"filename": "/Catalogue/vocab constructs.catalogue", "start": 261291367, "end": 261291919}, {"filename": "/Catalogue/Creature History-it.catalogue", "start": 261291919, "end": 261293460}, {"filename": "/Catalogue/Creature History-ru.catalogue", "start": 261293460, "end": 261294629}, {"filename": "/Catalogue/Scrolls of Learning-de.catalogue", "start": 261294629, "end": 261301122}, {"filename": "/Catalogue/labels.catalogue", "start": 261301122, "end": 261302429}, {"filename": "/Catalogue/Brain-de.catalogue", "start": 261302429, "end": 261305104}, {"filename": "/Catalogue/Materia Medica-de.catalogue", "start": 261305104, "end": 261332391}, {"filename": "/Catalogue/Creature History-fr.catalogue", "start": 261332391, "end": 261333886}, {"filename": "/Catalogue/pray_extensions.catalogue", "start": 261333886, "end": 261333976}, {"filename": "/Catalogue/Genome.catalogue", "start": 261333976, "end": 261334752}, {"filename": "/Catalogue/System.catalogue", "start": 261334752, "end": 261342964}, {"filename": "/Catalogue/Norn-es.catalogue", "start": 261342964, "end": 261346488}, {"filename": "/Catalogue/ChemicalNames.catalogue", "start": 261346488, "end": 261350578}, {"filename": "/Catalogue/Creature History-nl.catalogue", "start": 261350578, "end": 261352090}, {"filename": "/Catalogue/Creatures 3.catalogue", "start": 261352090, "end": 261358041}, {"filename": "/Catalogue/CAOS.catalogue", "start": 261358041, "end": 261363668}, {"filename": "/Catalogue/System-ru.catalogue", "start": 261363668, "end": 261370640}, {"filename": "/Catalogue/GUItext-it.catalogue", "start": 261370640, "end": 261371835}, {"filename": "/Catalogue/Progress-de.catalogue", "start": 261371835, "end": 261372299}, {"filename": "/Catalogue/labels-es.catalogue", "start": 261372299, "end": 261374308}, {"filename": "/Catalogue/System-fr.catalogue", "start": 261374308, "end": 261384391}, {"filename": "/Catalogue/vocab constructs-es.catalogue", "start": 261384391, "end": 261385013}, {"filename": "/Catalogue/World Switcher-es.catalogue", "start": 261385013, "end": 261386765}, {"filename": "/Catalogue/AgentHelp-es.catalogue", "start": 261386765, "end": 261476101}, {"filename": "/Catalogue/System-nl.catalogue", "start": 261476101, "end": 261483709}, {"filename": "/Catalogue/voices.catalogue", "start": 261483709, "end": 261486906}, {"filename": "/Catalogue/Creatures 3-de.catalogue", "start": 261486906, "end": 261493262}, {"filename": "/Catalogue/Progress.catalogue", "start": 261493262, "end": 261493723}], "remote_package_size": 261493723, "package_uuid": "064b66e0-4e2f-4248-8e46-45cae03ea2ea"});
   
   })();
   
@@ -1541,7 +1541,7 @@ function updateGlobalBufferAndViews(buf) {
 var TOTAL_STACK = 5242880;
 if (Module['TOTAL_STACK']) assert(TOTAL_STACK === Module['TOTAL_STACK'], 'the stack size can no longer be determined at runtime')
 
-var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 16777216;
+var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 536870912;
 if (!Object.getOwnPropertyDescriptor(Module, 'INITIAL_MEMORY')) {
   Object.defineProperty(Module, 'INITIAL_MEMORY', {
     configurable: true,
@@ -2084,50 +2084,13 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  281140: function() {Module.logReadFiles = 'true';},  
- 281174: function($0) {var str = UTF8ToString($0) + '\n\n' + 'Abort/Retry/Ignore/AlwaysIgnore? [ariA] :'; var reply = window.prompt(str, "i"); if (reply === null) { reply = "i"; } return allocate(intArrayFromString(reply), 'i8', ALLOC_NORMAL);},  
- 281399: function($0, $1, $2) {var w = $0; var h = $1; var pixels = $2; if (!Module['SDL2']) Module['SDL2'] = {}; var SDL2 = Module['SDL2']; if (SDL2.ctxCanvas !== Module['canvas']) { SDL2.ctx = Module['createContext'](Module['canvas'], false, true); SDL2.ctxCanvas = Module['canvas']; } if (SDL2.w !== w || SDL2.h !== h || SDL2.imageCtx !== SDL2.ctx) { SDL2.image = SDL2.ctx.createImageData(w, h); SDL2.w = w; SDL2.h = h; SDL2.imageCtx = SDL2.ctx; } var data = SDL2.image.data; var src = pixels >> 2; var dst = 0; var num; if (typeof CanvasPixelArray !== 'undefined' && data instanceof CanvasPixelArray) { num = data.length; while (dst < num) { var val = HEAP32[src]; data[dst ] = val & 0xff; data[dst+1] = (val >> 8) & 0xff; data[dst+2] = (val >> 16) & 0xff; data[dst+3] = 0xff; src++; dst += 4; } } else { if (SDL2.data32Data !== data) { SDL2.data32 = new Int32Array(data.buffer); SDL2.data8 = new Uint8Array(data.buffer); } var data32 = SDL2.data32; num = data32.length; data32.set(HEAP32.subarray(src, src + num)); var data8 = SDL2.data8; var i = 3; var j = i + 4*num; if (num % 8 == 0) { while (i < j) { data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; data8[i] = 0xff; i = i + 4 | 0; } } else { while (i < j) { data8[i] = 0xff; i = i + 4 | 0; } } } SDL2.ctx.putImageData(SDL2.image, 0, 0); return 0;},  
- 282854: function($0, $1, $2, $3, $4) {var w = $0; var h = $1; var hot_x = $2; var hot_y = $3; var pixels = $4; var canvas = document.createElement("canvas"); canvas.width = w; canvas.height = h; var ctx = canvas.getContext("2d"); var image = ctx.createImageData(w, h); var data = image.data; var src = pixels >> 2; var dst = 0; var num; if (typeof CanvasPixelArray !== 'undefined' && data instanceof CanvasPixelArray) { num = data.length; while (dst < num) { var val = HEAP32[src]; data[dst ] = val & 0xff; data[dst+1] = (val >> 8) & 0xff; data[dst+2] = (val >> 16) & 0xff; data[dst+3] = (val >> 24) & 0xff; src++; dst += 4; } } else { var data32 = new Int32Array(data.buffer); num = data32.length; data32.set(HEAP32.subarray(src, src + num)); } ctx.putImageData(image, 0, 0); var url = hot_x === 0 && hot_y === 0 ? "url(" + canvas.toDataURL() + "), auto" : "url(" + canvas.toDataURL() + ") " + hot_x + " " + hot_y + ", auto"; var urlBuf = _malloc(url.length + 1); stringToUTF8(url, urlBuf, url.length + 1); return urlBuf;},  
- 283843: function($0) {if (Module['canvas']) { Module['canvas'].style['cursor'] = UTF8ToString($0); } return 0;},  
- 283936: function() {if (Module['canvas']) { Module['canvas'].style['cursor'] = 'none'; }},  
- 284005: function() {return screen.width;},  
- 284030: function() {return screen.height;},  
- 284056: function() {return window.innerWidth;},  
- 284086: function() {return window.innerHeight;},  
- 284117: function($0) {if (typeof setWindowTitle !== 'undefined') { setWindowTitle(UTF8ToString($0)); } return 0;},  
- 284212: function() {if (typeof(AudioContext) !== 'undefined') { return 1; } else if (typeof(webkitAudioContext) !== 'undefined') { return 1; } return 0;},  
- 284349: function() {if ((typeof(navigator.mediaDevices) !== 'undefined') && (typeof(navigator.mediaDevices.getUserMedia) !== 'undefined')) { return 1; } else if (typeof(navigator.webkitGetUserMedia) !== 'undefined') { return 1; } return 0;},  
- 284573: function($0) {if(typeof(Module['SDL2']) === 'undefined') { Module['SDL2'] = {}; } var SDL2 = Module['SDL2']; if (!$0) { SDL2.audio = {}; } else { SDL2.capture = {}; } if (!SDL2.audioContext) { if (typeof(AudioContext) !== 'undefined') { SDL2.audioContext = new AudioContext(); } else if (typeof(webkitAudioContext) !== 'undefined') { SDL2.audioContext = new webkitAudioContext(); } if (SDL2.audioContext) { autoResumeAudioContext(SDL2.audioContext); } } return SDL2.audioContext === undefined ? -1 : 0;},  
- 285066: function() {var SDL2 = Module['SDL2']; return SDL2.audioContext.sampleRate;},  
- 285134: function($0, $1, $2, $3) {var SDL2 = Module['SDL2']; var have_microphone = function(stream) { if (SDL2.capture.silenceTimer !== undefined) { clearTimeout(SDL2.capture.silenceTimer); SDL2.capture.silenceTimer = undefined; } SDL2.capture.mediaStreamNode = SDL2.audioContext.createMediaStreamSource(stream); SDL2.capture.scriptProcessorNode = SDL2.audioContext.createScriptProcessor($1, $0, 1); SDL2.capture.scriptProcessorNode.onaudioprocess = function(audioProcessingEvent) { if ((SDL2 === undefined) || (SDL2.capture === undefined)) { return; } audioProcessingEvent.outputBuffer.getChannelData(0).fill(0.0); SDL2.capture.currentCaptureBuffer = audioProcessingEvent.inputBuffer; dynCall('vi', $2, [$3]); }; SDL2.capture.mediaStreamNode.connect(SDL2.capture.scriptProcessorNode); SDL2.capture.scriptProcessorNode.connect(SDL2.audioContext.destination); SDL2.capture.stream = stream; }; var no_microphone = function(error) { }; SDL2.capture.silenceBuffer = SDL2.audioContext.createBuffer($0, $1, SDL2.audioContext.sampleRate); SDL2.capture.silenceBuffer.getChannelData(0).fill(0.0); var silence_callback = function() { SDL2.capture.currentCaptureBuffer = SDL2.capture.silenceBuffer; dynCall('vi', $2, [$3]); }; SDL2.capture.silenceTimer = setTimeout(silence_callback, ($1 / SDL2.audioContext.sampleRate) * 1000); if ((navigator.mediaDevices !== undefined) && (navigator.mediaDevices.getUserMedia !== undefined)) { navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(have_microphone).catch(no_microphone); } else if (navigator.webkitGetUserMedia !== undefined) { navigator.webkitGetUserMedia({ audio: true, video: false }, have_microphone, no_microphone); }},  
- 286786: function($0, $1, $2, $3) {var SDL2 = Module['SDL2']; SDL2.audio.scriptProcessorNode = SDL2.audioContext['createScriptProcessor']($1, 0, $0); SDL2.audio.scriptProcessorNode['onaudioprocess'] = function (e) { if ((SDL2 === undefined) || (SDL2.audio === undefined)) { return; } SDL2.audio.currentOutputBuffer = e['outputBuffer']; dynCall('vi', $2, [$3]); }; SDL2.audio.scriptProcessorNode['connect'](SDL2.audioContext['destination']);},  
- 287196: function($0, $1) {var SDL2 = Module['SDL2']; var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels; for (var c = 0; c < numChannels; ++c) { var channelData = SDL2.capture.currentCaptureBuffer.getChannelData(c); if (channelData.length != $1) { throw 'Web Audio capture buffer length mismatch! Destination size: ' + channelData.length + ' samples vs expected ' + $1 + ' samples!'; } if (numChannels == 1) { for (var j = 0; j < $1; ++j) { setValue($0 + (j * 4), channelData[j], 'float'); } } else { for (var j = 0; j < $1; ++j) { setValue($0 + (((j * numChannels) + c) * 4), channelData[j], 'float'); } } }},  
- 287801: function($0, $1) {var SDL2 = Module['SDL2']; var numChannels = SDL2.audio.currentOutputBuffer['numberOfChannels']; for (var c = 0; c < numChannels; ++c) { var channelData = SDL2.audio.currentOutputBuffer['getChannelData'](c); if (channelData.length != $1) { throw 'Web Audio output buffer length mismatch! Destination size: ' + channelData.length + ' samples vs expected ' + $1 + ' samples!'; } for (var j = 0; j < $1; ++j) { channelData[j] = HEAPF32[$0 + ((j*numChannels + c) << 2) >> 2]; } }},  
- 288281: function($0) {var SDL2 = Module['SDL2']; if ($0) { if (SDL2.capture.silenceTimer !== undefined) { clearTimeout(SDL2.capture.silenceTimer); } if (SDL2.capture.stream !== undefined) { var tracks = SDL2.capture.stream.getAudioTracks(); for (var i = 0; i < tracks.length; i++) { SDL2.capture.stream.removeTrack(tracks[i]); } SDL2.capture.stream = undefined; } if (SDL2.capture.scriptProcessorNode !== undefined) { SDL2.capture.scriptProcessorNode.onaudioprocess = function(audioProcessingEvent) {}; SDL2.capture.scriptProcessorNode.disconnect(); SDL2.capture.scriptProcessorNode = undefined; } if (SDL2.capture.mediaStreamNode !== undefined) { SDL2.capture.mediaStreamNode.disconnect(); SDL2.capture.mediaStreamNode = undefined; } if (SDL2.capture.silenceBuffer !== undefined) { SDL2.capture.silenceBuffer = undefined } SDL2.capture = undefined; } else { if (SDL2.audio.scriptProcessorNode != undefined) { SDL2.audio.scriptProcessorNode.disconnect(); SDL2.audio.scriptProcessorNode = undefined; } SDL2.audio = undefined; } if ((SDL2.audioContext !== undefined) && (SDL2.audio === undefined) && (SDL2.capture === undefined)) { SDL2.audioContext.close(); SDL2.audioContext = undefined; }}
+  240428: function() {Module.logReadFiles = 'true';}
 };
 
 
 
 
 
-
-  function listenOnce(object, event, func) {
-      object.addEventListener(event, func, { 'once': true });
-    }
-  function autoResumeAudioContext(ctx, elements) {
-      if (!elements) {
-        elements = [document, document.getElementById('canvas')];
-      }
-      ['keydown', 'mousedown', 'touchstart'].forEach(function(event) {
-        elements.forEach(function(element) {
-          if (element) {
-            listenOnce(element, event, function() {
-              if (ctx.state === 'suspended') ctx.resume();
-            });
-          }
-        });
-      });
-    }
 
   function callRuntimeCallbacks(callbacks) {
       while (callbacks.length > 0) {
@@ -2162,28 +2125,6 @@ var ASM_CONSTS = {
           var y = demangle(x);
           return x === y ? x : (y + ' [' + x + ']');
         });
-    }
-
-  function dynCallLegacy(sig, ptr, args) {
-      assert(('dynCall_' + sig) in Module, 'bad function pointer type - no table for sig \'' + sig + '\'');
-      if (args && args.length) {
-        // j (64-bit integer) must be passed in as two numbers [low 32, high 32].
-        assert(args.length === sig.substring(1).replace(/j/g, '--').length);
-      } else {
-        assert(sig.length == 1);
-      }
-      var f = Module["dynCall_" + sig];
-      return args && args.length ? f.apply(null, [ptr].concat(args)) : f.call(null, ptr);
-    }
-  function dynCall(sig, ptr, args) {
-      // Without WASM_BIGINT support we cannot directly call function with i64 as
-      // part of thier signature, so we rely the dynCall functions generated by
-      // wasm-emscripten-finalize
-      if (sig.includes('j')) {
-        return dynCallLegacy(sig, ptr, args);
-      }
-      assert(wasmTable.get(ptr), 'missing table entry in dynCall: ' + ptr);
-      return wasmTable.get(ptr).apply(null, args)
     }
 
   function _emscripten_futex_wake(addr, count) {
@@ -3250,6 +3191,8 @@ var ASM_CONSTS = {
       },hashName:function(parentid, name) {
         var hash = 0;
   
+        name = name.toLowerCase();
+  
         for (var i = 0; i < name.length; i++) {
           hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
         }
@@ -3278,8 +3221,10 @@ var ASM_CONSTS = {
           throw new FS.ErrnoError(errCode, parent);
         }
         var hash = FS.hashName(parent.id, name);
+        name = name.toLowerCase();
         for (var node = FS.nameTable[hash]; node; node = node.name_next) {
           var nodeName = node.name;
+          nodeName = nodeName.toLowerCase();
           if (node.parent.id === parent.id && nodeName === name) {
             return node;
           }
@@ -6609,25 +6554,6 @@ var ASM_CONSTS = {
     
       var rwops = SDL.rwops[rwopsID];
   
-      if (rwops === undefined) {
-        var type = HEAP32[((rwopsID + 20)>>2)];
-  
-        if (type === 2/*SDL_RWOPS_STDFILE*/) {
-          var fp = HEAP32[((rwopsID + 28)>>2)];
-          var fd = Module['_fileno'](fp);
-          var stream = FS.getStream(fd);
-          if (stream) {
-            rwops = { filename: stream.path };
-          }
-        }
-        else if (type === 4/*SDL_RWOPS_MEMORY*/ || type === 5/*SDL_RWOPS_MEMORY_RO*/) {
-          var base = HEAP32[((rwopsID + 24)>>2)];
-          var stop = HEAP32[((rwopsID + 32)>>2)];
-  
-          rwops = { bytes: base, count: stop - base };
-        }
-      }
-  
       if (rwops === undefined)
         return 0;
   
@@ -6749,6 +6675,23 @@ var ASM_CONSTS = {
   
 
 
+  function listenOnce(object, event, func) {
+      object.addEventListener(event, func, { 'once': true });
+    }
+  function autoResumeAudioContext(ctx, elements) {
+      if (!elements) {
+        elements = [document, document.getElementById('canvas')];
+      }
+      ['keydown', 'mousedown', 'touchstart'].forEach(function(event) {
+        elements.forEach(function(element) {
+          if (element) {
+            listenOnce(element, event, function() {
+              if (ctx.state === 'suspended') ctx.resume();
+            });
+          }
+        });
+      });
+    }
   
   function _Mix_OpenAudio(frequency, format, channels, chunksize) {
     if (ENVIRONMENT_IS_PTHREAD)
@@ -6866,6 +6809,23 @@ var ASM_CONSTS = {
   }
   
 
+  
+  function _SDL_CreateRGBSurface(flags, width, height, depth, rmask, gmask, bmask, amask) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(15, 1, flags, width, height, depth, rmask, gmask, bmask, amask);
+    
+      return SDL.makeSurface(width, height, flags, false, 'CreateRGBSurface', rmask, gmask, bmask, amask);
+    
+  }
+  
+
+  function _SDL_Delay(delay) {
+      if (!ENVIRONMENT_IS_WORKER) abort('SDL_Delay called on the main thread! Potential infinite loop, quitting. (consider building with async support like ASYNCIFY)');
+      // horrible busy-wait, but in a worker it at least does not block rendering
+      var now = Date.now();
+      while (Date.now() - now < delay) {}
+    }
+
   function _SDL_EnableKeyRepeat(delay, interval) {
       // TODO
     }
@@ -6873,7 +6833,7 @@ var ASM_CONSTS = {
   
   function _SDL_EnableUNICODE(on) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(15, 1, on);
+      return _emscripten_proxy_to_main_thread_js(16, 1, on);
     
       var ret = SDL.unicode || 0;
       SDL.unicode = on;
@@ -6883,9 +6843,19 @@ var ASM_CONSTS = {
   
 
   
+  function _SDL_FreeSurface(surf) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(17, 1, surf);
+    
+      if (surf) SDL.freeSurface(surf);
+    
+  }
+  
+
+  
   function _SDL_GetAppState() {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(16, 1);
+      return _emscripten_proxy_to_main_thread_js(18, 1);
     
       var state = 0;
   
@@ -6903,9 +6873,37 @@ var ASM_CONSTS = {
   
 
   
+  function _SDL_GetError() {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(19, 1);
+    
+      if (!SDL.errorMessage) {
+        SDL.errorMessage = allocate(intArrayFromString("unknown SDL-emscripten error"), ALLOC_NORMAL);
+      }
+      return SDL.errorMessage;
+    
+  }
+  
+
+  /** @param {number=} numKeys */
+  
+  function _SDL_GetKeyboardState(numKeys) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(20, 1, numKeys);
+    
+      if (numKeys) {
+        HEAP32[((numKeys)>>2)] = 65536;
+      }
+      return SDL.keyboardState;
+    
+  }
+  
+
+
+  
   function _SDL_GetVideoInfo() {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(17, 1);
+      return _emscripten_proxy_to_main_thread_js(21, 1);
     
       // %struct.SDL_VideoInfo = type { i32, i32, %struct.SDL_PixelFormat*, i32, i32 } - 5 fields of quantum size
       var ret = _malloc(5 * 4);
@@ -6919,9 +6917,146 @@ var ASM_CONSTS = {
   }
   
 
+  /** @param{number=} initFlags */
+  
+  function _SDL_Init(initFlags) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(22, 1, initFlags);
+    
+      SDL.startTime = Date.now();
+      SDL.initFlags = initFlags;
+  
+      // capture all key events. we just keep down and up, but also capture press to prevent default actions
+      if (!Module['doNotCaptureKeyboard']) {
+        var keyboardListeningElement = Module['keyboardListeningElement'] || document;
+        keyboardListeningElement.addEventListener("keydown", SDL.receiveEvent);
+        keyboardListeningElement.addEventListener("keyup", SDL.receiveEvent);
+        keyboardListeningElement.addEventListener("keypress", SDL.receiveEvent);
+        window.addEventListener("focus", SDL.receiveEvent);
+        window.addEventListener("blur", SDL.receiveEvent);
+        document.addEventListener("visibilitychange", SDL.receiveEvent);
+      }
+  
+      window.addEventListener("unload", SDL.receiveEvent);
+      SDL.keyboardState = _malloc(0x10000); // Our SDL needs 512, but 64K is safe for older SDLs
+      zeroMemory(SDL.keyboardState, 0x10000);
+      // Initialize this structure carefully for closure
+      SDL.DOMEventToSDLEvent['keydown']    = 0x300  /* SDL_KEYDOWN */;
+      SDL.DOMEventToSDLEvent['keyup']      = 0x301  /* SDL_KEYUP */;
+      SDL.DOMEventToSDLEvent['keypress']   = 0x303  /* SDL_TEXTINPUT */;
+      SDL.DOMEventToSDLEvent['mousedown']  = 0x401  /* SDL_MOUSEBUTTONDOWN */;
+      SDL.DOMEventToSDLEvent['mouseup']    = 0x402  /* SDL_MOUSEBUTTONUP */;
+      SDL.DOMEventToSDLEvent['mousemove']  = 0x400  /* SDL_MOUSEMOTION */;
+      SDL.DOMEventToSDLEvent['wheel']      = 0x403  /* SDL_MOUSEWHEEL */;
+      SDL.DOMEventToSDLEvent['touchstart'] = 0x700  /* SDL_FINGERDOWN */;
+      SDL.DOMEventToSDLEvent['touchend']   = 0x701  /* SDL_FINGERUP */;
+      SDL.DOMEventToSDLEvent['touchmove']  = 0x702  /* SDL_FINGERMOTION */;
+      SDL.DOMEventToSDLEvent['unload']     = 0x100  /* SDL_QUIT */;
+      SDL.DOMEventToSDLEvent['resize']     = 0x7001 /* SDL_VIDEORESIZE/SDL_EVENT_COMPAT2 */;
+      SDL.DOMEventToSDLEvent['visibilitychange'] = 0x200 /* SDL_WINDOWEVENT */;
+      SDL.DOMEventToSDLEvent['focus']      = 0x200 /* SDL_WINDOWEVENT */;
+      SDL.DOMEventToSDLEvent['blur']       = 0x200 /* SDL_WINDOWEVENT */;
+  
+      // These are not technically DOM events; the HTML gamepad API is poll-based.
+      // However, we define them here, as the rest of the SDL code assumes that
+      // all SDL events originate as DOM events.
+      SDL.DOMEventToSDLEvent['joystick_axis_motion'] = 0x600 /* SDL_JOYAXISMOTION */;
+      SDL.DOMEventToSDLEvent['joystick_button_down'] = 0x603 /* SDL_JOYBUTTONDOWN */;
+      SDL.DOMEventToSDLEvent['joystick_button_up'] = 0x604 /* SDL_JOYBUTTONUP */;
+      return 0; // success
+    
+  }
+  
+
   function _SDL_ListModes(format, flags) {
       return -1; // -1 == all modes are ok. TODO
     }
+
+
+  
+  function _SDL_PollEvent(ptr) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(23, 1, ptr);
+    
+      return SDL.pollEvent(ptr);
+    
+  }
+  
+
+  
+  function _SDL_AudioQuit() {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(24, 1);
+    
+      for (var i = 0; i < SDL.numChannels; ++i) {
+        if (SDL.channels[i].audio) {
+          SDL.channels[i].audio.pause();
+          SDL.channels[i].audio = undefined;
+        }
+      }
+      if (SDL.music.audio) SDL.music.audio.pause();
+      SDL.music.audio = undefined;
+    
+  }
+  
+  function _SDL_Quit() {
+      _SDL_AudioQuit();
+      out('SDL_Quit called (and ignored)');
+    }
+
+  
+  function _SDL_RWFromConstMem(mem, size) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(25, 1, mem, size);
+    
+      var id = SDL.rwops.length; // TODO: recycle ids when they are null
+      SDL.rwops.push({ bytes: mem, count: size });
+      return id;
+    
+  }
+  
+  function _SDL_RWFromMem(a0,a1
+  ) {
+  return _SDL_RWFromConstMem(a0,a1);
+  }
+
+  function _SDL_SetColorKey(surf, flag, key) {
+      // SetColorKey assigns one color to be rendered as transparent. I don't
+      // think the canvas API allows for anything like this, and iterating through
+      // each pixel to replace that color seems prohibitively expensive.
+      warnOnce('SDL_SetColorKey is a no-op for performance reasons');
+      return 0;
+    }
+
+  
+  function _SDL_SetColors(surf, colors, firstColor, nColors) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(26, 1, surf, colors, firstColor, nColors);
+    
+      var surfData = SDL.surfaces[surf];
+  
+      // we should create colors array
+      // only once cause client code
+      // often wants to change portion
+      // of palette not all palette.
+      if (!surfData.colors) {
+        var buffer = new ArrayBuffer(256 * 4); // RGBA, A is unused, but faster this way
+        surfData.colors = new Uint8Array(buffer);
+        surfData.colors32 = new Uint32Array(buffer);
+      }
+  
+      for (var i = 0; i < nColors; ++i) {
+        var index = (firstColor + i) * 4;
+        surfData.colors[index] = HEAPU8[(((colors)+(i*4))>>0)];
+        surfData.colors[index + 1] = HEAPU8[(((colors)+(i*4 + 1))>>0)];
+        surfData.colors[index + 2] = HEAPU8[(((colors)+(i*4 + 2))>>0)];
+        surfData.colors[index + 3] = 255; // opaque
+      }
+  
+      return 1;
+    
+  }
+  
 
   function __webgl_enable_ANGLE_instanced_arrays(ctx) {
       // Extension available in WebGL 1 from Firefox 26 and Google Chrome 30 onwards. Core feature in WebGL 2.
@@ -7069,7 +7204,7 @@ var ASM_CONSTS = {
   
   function _SDL_SetVideoMode(width, height, depth, flags) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(18, 1, width, height, depth, flags);
+      return _emscripten_proxy_to_main_thread_js(27, 1, width, height, depth, flags);
     
       ['touchstart', 'touchend', 'touchmove', 'mousedown', 'mouseup', 'mousemove', 'DOMMouseScroll', 'mousewheel', 'wheel', 'mouseout'].forEach(function(event) {
         Module['canvas'].addEventListener(event, SDL.receiveEvent, true);
@@ -7115,16 +7250,166 @@ var ASM_CONSTS = {
   }
   
 
+  
+  function _SDL_ShowCursor(toggle) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(28, 1, toggle);
+    
+      switch (toggle) {
+        case 0: // SDL_DISABLE
+          if (Browser.isFullscreen) { // only try to lock the pointer when in full screen mode
+            Module['canvas'].requestPointerLock();
+            return 0;
+          } else { // else return SDL_ENABLE to indicate the failure
+            return 1;
+          }
+          break;
+        case 1: // SDL_ENABLE
+          Module['canvas'].exitPointerLock();
+          return 1;
+          break;
+        case -1: // SDL_QUERY
+          return !Browser.pointerLock;
+          break;
+        default:
+          out( "SDL_ShowCursor called with unknown toggle parameter value: " + toggle + "." );
+          break;
+      }
+    
+  }
+  
+
+  
+  function _SDL_UnlockSurface(surf) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(29, 1, surf);
+    
+      assert(!SDL.GL); // in GL mode we do not keep around 2D canvases and contexts
+  
+      var surfData = SDL.surfaces[surf];
+  
+      if (!surfData.locked || --surfData.locked > 0) {
+        return;
+      }
+  
+      // Copy pixel data to image
+      if (surfData.isFlagSet(0x00200000 /* SDL_HWPALETTE */)) {
+        SDL.copyIndexedColorData(surfData);
+      } else if (!surfData.colors) {
+        var data = surfData.image.data;
+        var buffer = surfData.buffer;
+        assert(buffer % 4 == 0, 'Invalid buffer offset: ' + buffer);
+        var src = buffer >> 2;
+        var dst = 0;
+        var isScreen = surf == SDL.screen;
+        var num;
+        if (typeof CanvasPixelArray !== 'undefined' && data instanceof CanvasPixelArray) {
+          // IE10/IE11: ImageData objects are backed by the deprecated CanvasPixelArray,
+          // not UInt8ClampedArray. These don't have buffers, so we need to revert
+          // to copying a byte at a time. We do the undefined check because modern
+          // browsers do not define CanvasPixelArray anymore.
+          num = data.length;
+          while (dst < num) {
+            var val = HEAP32[src]; // This is optimized. Instead, we could do HEAP32[(((buffer)+(dst))>>2)];
+            data[dst  ] = val & 0xff;
+            data[dst+1] = (val >> 8) & 0xff;
+            data[dst+2] = (val >> 16) & 0xff;
+            data[dst+3] = isScreen ? 0xff : ((val >> 24) & 0xff);
+            src++;
+            dst += 4;
+          }
+        } else {
+          var data32 = new Uint32Array(data.buffer);
+          if (isScreen && SDL.defaults.opaqueFrontBuffer) {
+            num = data32.length;
+            // logically we need to do
+            //      while (dst < num) {
+            //          data32[dst++] = HEAP32[src++] | 0xff000000
+            //      }
+            // the following code is faster though, because
+            // .set() is almost free - easily 10x faster due to
+            // native memcpy efficiencies, and the remaining loop
+            // just stores, not load + store, so it is faster
+            data32.set(HEAP32.subarray(src, src + num));
+            var data8 = new Uint8Array(data.buffer);
+            var i = 3;
+            var j = i + 4*num;
+            if (num % 8 == 0) {
+              // unrolling gives big speedups
+              while (i < j) {
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+              }
+             } else {
+              while (i < j) {
+                data8[i] = 0xff;
+                i = i + 4 | 0;
+              }
+            }
+          } else {
+            data32.set(HEAP32.subarray(src, src + data32.length));
+          }
+        }
+      } else {
+        var width = Module['canvas'].width;
+        var height = Module['canvas'].height;
+        var s = surfData.buffer;
+        var data = surfData.image.data;
+        var colors = surfData.colors; // TODO: optimize using colors32
+        for (var y = 0; y < height; y++) {
+          var base = y*width*4;
+          for (var x = 0; x < width; x++) {
+            // See comment above about signs
+            var val = HEAPU8[((s++)>>0)] * 4;
+            var start = base + x*4;
+            data[start]   = colors[val];
+            data[start+1] = colors[val+1];
+            data[start+2] = colors[val+2];
+          }
+          s += width*3;
+        }
+      }
+      // Copy to canvas
+      surfData.ctx.putImageData(surfData.image, 0, 0);
+      // Note that we save the image, so future writes are fast. But, memory is not yet released
+    
+  }
+  
+
   function _SDL_UpdateRect(surf, x, y, w, h) {
       // We actually do the whole screen in Unlock...
     }
+
+  
+  function _SDL_UpperBlit(src, srcrect, dst, dstrect) {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(30, 1, src, srcrect, dst, dstrect);
+    
+      return SDL.blitSurface(src, srcrect, dst, dstrect, false);
+    
+  }
+  
 
   function _SDL_WM_GrabInput() {}
 
   
   function _SDL_WM_SetCaption(title, icon) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(19, 1, title, icon);
+      return _emscripten_proxy_to_main_thread_js(31, 1, title, icon);
     
       if (title && typeof setWindowTitle !== 'undefined') {
         setWindowTitle(UTF8ToString(title));
@@ -7137,7 +7422,7 @@ var ASM_CONSTS = {
   
   function _SDL_WarpMouse(x, y) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(20, 1, x, y);
+      return _emscripten_proxy_to_main_thread_js(32, 1, x, y);
     
       return; // TODO: implement this in a non-buggy way. Need to keep relative mouse movements correct after calling this
       /*
@@ -7155,125 +7440,6 @@ var ASM_CONSTS = {
   function _SDL_mutexP() { return 0 }
 
   function _SDL_mutexV() { return 0 }
-
-  
-  function _tzset_impl() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(21, 1);
-    
-      var currentYear = new Date().getFullYear();
-      var winter = new Date(currentYear, 0, 1);
-      var summer = new Date(currentYear, 6, 1);
-      var winterOffset = winter.getTimezoneOffset();
-      var summerOffset = summer.getTimezoneOffset();
-  
-      // Local standard timezone offset. Local standard time is not adjusted for daylight savings.
-      // This code uses the fact that getTimezoneOffset returns a greater value during Standard Time versus Daylight Saving Time (DST).
-      // Thus it determines the expected output during Standard Time, and it compares whether the output of the given date the same (Standard) or less (DST).
-      var stdTimezoneOffset = Math.max(winterOffset, summerOffset);
-  
-      // timezone is specified as seconds west of UTC ("The external variable
-      // `timezone` shall be set to the difference, in seconds, between
-      // Coordinated Universal Time (UTC) and local standard time."), the same
-      // as returned by stdTimezoneOffset.
-      // See http://pubs.opengroup.org/onlinepubs/009695399/functions/tzset.html
-      HEAP32[((__get_timezone())>>2)] = stdTimezoneOffset * 60;
-  
-      HEAP32[((__get_daylight())>>2)] = Number(winterOffset != summerOffset);
-  
-      function extractZone(date) {
-        var match = date.toTimeString().match(/\(([A-Za-z ]+)\)$/);
-        return match ? match[1] : "GMT";
-      };
-      var winterName = extractZone(winter);
-      var summerName = extractZone(summer);
-      var winterNamePtr = allocateUTF8(winterName);
-      var summerNamePtr = allocateUTF8(summerName);
-      if (summerOffset < winterOffset) {
-        // Northern hemisphere
-        HEAP32[((__get_tzname())>>2)] = winterNamePtr;
-        HEAP32[(((__get_tzname())+(4))>>2)] = summerNamePtr;
-      } else {
-        HEAP32[((__get_tzname())>>2)] = summerNamePtr;
-        HEAP32[(((__get_tzname())+(4))>>2)] = winterNamePtr;
-      }
-    
-  }
-  
-  function _tzset() {
-      // TODO: Use (malleable) environment variables instead of system settings.
-      if (_tzset.called) return;
-      _tzset.called = true;
-      _tzset_impl();
-    }
-  function _mktime(tmPtr) {
-      _tzset();
-      var date = new Date(HEAP32[(((tmPtr)+(20))>>2)] + 1900,
-                          HEAP32[(((tmPtr)+(16))>>2)],
-                          HEAP32[(((tmPtr)+(12))>>2)],
-                          HEAP32[(((tmPtr)+(8))>>2)],
-                          HEAP32[(((tmPtr)+(4))>>2)],
-                          HEAP32[((tmPtr)>>2)],
-                          0);
-  
-      // There's an ambiguous hour when the time goes back; the tm_isdst field is
-      // used to disambiguate it.  Date() basically guesses, so we fix it up if it
-      // guessed wrong, or fill in tm_isdst with the guess if it's -1.
-      var dst = HEAP32[(((tmPtr)+(32))>>2)];
-      var guessedOffset = date.getTimezoneOffset();
-      var start = new Date(date.getFullYear(), 0, 1);
-      var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
-      var winterOffset = start.getTimezoneOffset();
-      var dstOffset = Math.min(winterOffset, summerOffset); // DST is in December in South
-      if (dst < 0) {
-        // Attention: some regions don't have DST at all.
-        HEAP32[(((tmPtr)+(32))>>2)] = Number(summerOffset != winterOffset && dstOffset == guessedOffset);
-      } else if ((dst > 0) != (dstOffset == guessedOffset)) {
-        var nonDstOffset = Math.max(winterOffset, summerOffset);
-        var trueOffset = dst > 0 ? dstOffset : nonDstOffset;
-        // Don't try setMinutes(date.getMinutes() + ...) -- it's messed up.
-        date.setTime(date.getTime() + (trueOffset - guessedOffset)*60000);
-      }
-  
-      HEAP32[(((tmPtr)+(24))>>2)] = date.getDay();
-      var yday = ((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))|0;
-      HEAP32[(((tmPtr)+(28))>>2)] = yday;
-      // To match expected behavior, update fields from date
-      HEAP32[((tmPtr)>>2)] = date.getSeconds();
-      HEAP32[(((tmPtr)+(4))>>2)] = date.getMinutes();
-      HEAP32[(((tmPtr)+(8))>>2)] = date.getHours();
-      HEAP32[(((tmPtr)+(12))>>2)] = date.getDate();
-      HEAP32[(((tmPtr)+(16))>>2)] = date.getMonth();
-  
-      return (date.getTime() / 1000)|0;
-    }
-  function ___asctime(tmPtr, buf) {
-      var date = {
-        tm_sec: HEAP32[((tmPtr)>>2)],
-        tm_min: HEAP32[(((tmPtr)+(4))>>2)],
-        tm_hour: HEAP32[(((tmPtr)+(8))>>2)],
-        tm_mday: HEAP32[(((tmPtr)+(12))>>2)],
-        tm_mon: HEAP32[(((tmPtr)+(16))>>2)],
-        tm_year: HEAP32[(((tmPtr)+(20))>>2)],
-        tm_wday: HEAP32[(((tmPtr)+(24))>>2)]
-      };
-      var days = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ];
-      var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-      var s = days[date.tm_wday] + ' ' + months[date.tm_mon] +
-          (date.tm_mday < 10 ? '  ' : ' ') + date.tm_mday +
-          (date.tm_hour < 10 ? ' 0' : ' ') + date.tm_hour +
-          (date.tm_min < 10 ? ':0' : ':') + date.tm_min +
-          (date.tm_sec < 10 ? ':0' : ':') + date.tm_sec +
-          ' ' + (1900 + date.tm_year) + "\n";
-  
-      // asctime_r is specced to behave in an undefined manner if the algorithm would attempt
-      // to write out more than 26 bytes (including the null terminator).
-      // See http://pubs.opengroup.org/onlinepubs/9699919799/functions/asctime.html
-      // Our undefined behavior is to truncate the write to at most 26 bytes, including null terminator.
-      stringToUTF8(s, buf, 26);
-      return buf;
-    }
 
   function ___assert_fail(condition, filename, line, func) {
       abort('Assertion failed: ' + UTF8ToString(condition) + ', at: ' + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
@@ -7317,7 +7483,7 @@ var ASM_CONSTS = {
   
   function _atexit(func, arg) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(22, 1, func, arg);
+      return _emscripten_proxy_to_main_thread_js(33, 1, func, arg);
     
     
   }
@@ -7463,6 +7629,12 @@ var ASM_CONSTS = {
       exceptionCaught.push(catchInfo);
       exception_addRef(info);
       return catchInfo.get_exception_ptr();
+    }
+
+  function ___cxa_call_unexpected(exception) {
+      err('Unexpected exception thrown, this is not properly supported - aborting');
+      ABORT = true;
+      throw exception;
     }
 
   var exceptionLast = 0;
@@ -7611,6 +7783,41 @@ var ASM_CONSTS = {
       setTempRet0(thrownType); return ((catchInfo.ptr)|0);
     }
 
+  function ___cxa_find_matching_catch_5() {
+      var thrown = exceptionLast;
+      if (!thrown) {
+        // just pass through the null ptr
+        setTempRet0(0); return ((0)|0);
+      }
+      var info = new ExceptionInfo(thrown);
+      var thrownType = info.get_type();
+      var catchInfo = new CatchInfo();
+      catchInfo.set_base_ptr(thrown);
+      catchInfo.set_adjusted_ptr(thrown);
+      if (!thrownType) {
+        // just pass through the thrown ptr
+        setTempRet0(0); return ((catchInfo.ptr)|0);
+      }
+      var typeArray = Array.prototype.slice.call(arguments);
+  
+      // can_catch receives a **, add indirection
+      // The different catch blocks are denoted by different types.
+      // Due to inheritance, those types may not precisely match the
+      // type of the thrown object. Find one which matches, and
+      // return the type of the catch block which should be called.
+      for (var i = 0; i < typeArray.length; i++) {
+        var caughtType = typeArray[i];
+        if (caughtType === 0 || caughtType === thrownType) {
+          // Catch all clause matched or exactly the same type is caught
+          break;
+        }
+        if (___cxa_can_catch(caughtType, thrownType, catchInfo.get_adjusted_ptr_addr())) {
+          setTempRet0(caughtType); return ((catchInfo.ptr)|0);
+        }
+      }
+      setTempRet0(thrownType); return ((catchInfo.ptr)|0);
+    }
+
 
   function ___cxa_rethrow() {
       var catchInfo = exceptionCaught.pop();
@@ -7630,10 +7837,6 @@ var ASM_CONSTS = {
       }
       exceptionLast = ptr;
       throw ptr;
-    }
-
-  function ___cxa_thread_atexit(routine, arg) {
-      PThread.threadExitHandlers.push(function() { wasmTable.get(routine)(arg) });
     }
 
   function ___cxa_throw(ptr, type, destructor) {
@@ -7659,6 +7862,56 @@ var ASM_CONSTS = {
       PThread.threadInit();
     }
 
+  
+  function _tzset_impl() {
+    if (ENVIRONMENT_IS_PTHREAD)
+      return _emscripten_proxy_to_main_thread_js(34, 1);
+    
+      var currentYear = new Date().getFullYear();
+      var winter = new Date(currentYear, 0, 1);
+      var summer = new Date(currentYear, 6, 1);
+      var winterOffset = winter.getTimezoneOffset();
+      var summerOffset = summer.getTimezoneOffset();
+  
+      // Local standard timezone offset. Local standard time is not adjusted for daylight savings.
+      // This code uses the fact that getTimezoneOffset returns a greater value during Standard Time versus Daylight Saving Time (DST).
+      // Thus it determines the expected output during Standard Time, and it compares whether the output of the given date the same (Standard) or less (DST).
+      var stdTimezoneOffset = Math.max(winterOffset, summerOffset);
+  
+      // timezone is specified as seconds west of UTC ("The external variable
+      // `timezone` shall be set to the difference, in seconds, between
+      // Coordinated Universal Time (UTC) and local standard time."), the same
+      // as returned by stdTimezoneOffset.
+      // See http://pubs.opengroup.org/onlinepubs/009695399/functions/tzset.html
+      HEAP32[((__get_timezone())>>2)] = stdTimezoneOffset * 60;
+  
+      HEAP32[((__get_daylight())>>2)] = Number(winterOffset != summerOffset);
+  
+      function extractZone(date) {
+        var match = date.toTimeString().match(/\(([A-Za-z ]+)\)$/);
+        return match ? match[1] : "GMT";
+      };
+      var winterName = extractZone(winter);
+      var summerName = extractZone(summer);
+      var winterNamePtr = allocateUTF8(winterName);
+      var summerNamePtr = allocateUTF8(summerName);
+      if (summerOffset < winterOffset) {
+        // Northern hemisphere
+        HEAP32[((__get_tzname())>>2)] = winterNamePtr;
+        HEAP32[(((__get_tzname())+(4))>>2)] = summerNamePtr;
+      } else {
+        HEAP32[((__get_tzname())>>2)] = summerNamePtr;
+        HEAP32[(((__get_tzname())+(4))>>2)] = winterNamePtr;
+      }
+    
+  }
+  
+  function _tzset() {
+      // TODO: Use (malleable) environment variables instead of system settings.
+      if (_tzset.called) return;
+      _tzset.called = true;
+      _tzset_impl();
+    }
   function _localtime_r(time, tmPtr) {
       _tzset();
       var date = new Date(HEAP32[((time)>>2)]*1000);
@@ -7851,178 +8104,6 @@ var ASM_CONSTS = {
       }
     }
 
-  function _emscripten_futex_wait(addr, val, timeout) {
-      if (addr <= 0 || addr > HEAP8.length || addr&3 != 0) return -28;
-      // We can do a normal blocking wait anywhere but on the main browser thread.
-      if (!ENVIRONMENT_IS_WEB) {
-        var ret = Atomics.wait(HEAP32, addr >> 2, val, timeout);
-        if (ret === 'timed-out') return -73;
-        if (ret === 'not-equal') return -6;
-        if (ret === 'ok') return 0;
-        throw 'Atomics.wait returned an unexpected value ' + ret;
-      } else {
-        // First, check if the value is correct for us to wait on.
-        if (Atomics.load(HEAP32, addr >> 2) != val) {
-          return -6;
-        }
-  
-        // Atomics.wait is not available in the main browser thread, so simulate it via busy spinning.
-        var tNow = performance.now();
-        var tEnd = tNow + timeout;
-  
-        // Register globally which address the main thread is simulating to be
-        // waiting on. When zero, the main thread is not waiting on anything, and on
-        // nonzero, the contents of the address pointed by __emscripten_main_thread_futex
-        // tell which address the main thread is simulating its wait on.
-        // We need to be careful of recursion here: If we wait on a futex, and
-        // then call _emscripten_main_thread_process_queued_calls() below, that
-        // will call code that takes the proxying mutex - which can once more
-        // reach this code in a nested call. To avoid interference between the
-        // two (there is just a single __emscripten_main_thread_futex at a time), unmark
-        // ourselves before calling the potentially-recursive call. See below for
-        // how we handle the case of our futex being notified during the time in
-        // between when we are not set as the value of __emscripten_main_thread_futex.
-        assert(__emscripten_main_thread_futex > 0);
-        var lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
-        // We must not have already been waiting.
-        assert(lastAddr == 0);
-  
-        while (1) {
-          // Check for a timeout.
-          tNow = performance.now();
-          if (tNow > tEnd) {
-            // We timed out, so stop marking ourselves as waiting.
-            lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
-            // The current value must have been our address which we set, or
-            // in a race it was set to 0 which means another thread just allowed
-            // us to run, but (tragically) that happened just a bit too late.
-            assert(lastAddr == addr || lastAddr == 0);
-            return -73;
-          }
-          // We are performing a blocking loop here, so we must handle proxied
-          // events from pthreads, to avoid deadlocks.
-          // Note that we have to do so carefully, as we may take a lock while
-          // doing so, which can recurse into this function; stop marking
-          // ourselves as waiting while we do so.
-          lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
-          assert(lastAddr == addr || lastAddr == 0);
-          if (lastAddr == 0) {
-            // We were told to stop waiting, so stop.
-            break;
-          }
-          _emscripten_main_thread_process_queued_calls();
-  
-          // Check the value, as if we were starting the futex all over again.
-          // This handles the following case:
-          //
-          //  * wait on futex A
-          //  * recurse into emscripten_main_thread_process_queued_calls(),
-          //    which waits on futex B. that sets the __emscripten_main_thread_futex address to
-          //    futex B, and there is no longer any mention of futex A.
-          //  * a worker is done with futex A. it checks __emscripten_main_thread_futex but does
-          //    not see A, so it does nothing special for the main thread.
-          //  * a worker is done with futex B. it flips mainThreadMutex from B
-          //    to 0, ending the wait on futex B.
-          //  * we return to the wait on futex A. __emscripten_main_thread_futex is 0, but that
-          //    is because of futex B being done - we can't tell from
-          //    __emscripten_main_thread_futex whether A is done or not. therefore, check the
-          //    memory value of the futex.
-          //
-          // That case motivates the design here. Given that, checking the memory
-          // address is also necessary for other reasons: we unset and re-set our
-          // address in __emscripten_main_thread_futex around calls to
-          // emscripten_main_thread_process_queued_calls(), and a worker could
-          // attempt to wake us up right before/after such times.
-          //
-          // Note that checking the memory value of the futex is valid to do: we
-          // could easily have been delayed (relative to the worker holding on
-          // to futex A), which means we could be starting all of our work at the
-          // later time when there is no need to block. The only "odd" thing is
-          // that we may have caused side effects in that "delay" time. But the
-          // only side effects we can have are to call
-          // emscripten_main_thread_process_queued_calls(). That is always ok to
-          // do on the main thread (it's why it is ok for us to call it in the
-          // middle of this function, and elsewhere). So if we check the value
-          // here and return, it's the same is if what happened on the main thread
-          // was the same as calling emscripten_main_thread_process_queued_calls()
-          // a few times times before calling emscripten_futex_wait().
-          if (Atomics.load(HEAP32, addr >> 2) != val) {
-            return -6;
-          }
-  
-          // Mark us as waiting once more, and continue the loop.
-          lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
-          assert(lastAddr == 0);
-        }
-        return 0;
-      }
-    }
-  
-  function _emscripten_check_blocking_allowed() {
-      if (ENVIRONMENT_IS_NODE) return;
-  
-      if (ENVIRONMENT_IS_WORKER) return; // Blocking in a worker/pthread is fine.
-  
-      warnOnce('Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread');
-  
-    }
-  function __emscripten_do_pthread_join(thread, status, block) {
-      if (!thread) {
-        err('pthread_join attempted on a null thread pointer!');
-        return 71;
-      }
-      if (ENVIRONMENT_IS_PTHREAD && _pthread_self() == thread) {
-        err('PThread ' + thread + ' is attempting to join to itself!');
-        return 16;
-      }
-      else if (!ENVIRONMENT_IS_PTHREAD && _emscripten_main_browser_thread_id() == thread) {
-        err('Main thread ' + thread + ' is attempting to join to itself!');
-        return 16;
-      }
-      var self = HEAP32[(((thread)+(8))>>2)];
-      if (self !== thread) {
-        err('pthread_join attempted on thread ' + thread + ', which does not point to a valid thread, or does not exist anymore!');
-        return 71;
-      }
-  
-      var detached = Atomics.load(HEAPU32, (thread + 60 ) >> 2);
-      if (detached) {
-        err('Attempted to join thread ' + thread + ', which was already detached!');
-        return 28; // The thread is already detached, can no longer join it!
-      }
-  
-      if (block) {
-        _emscripten_check_blocking_allowed();
-      }
-  
-      for (;;) {
-        var threadStatus = Atomics.load(HEAPU32, (thread + 0 ) >> 2);
-        if (threadStatus == 1) { // Exited?
-          if (status) {
-            var result = Atomics.load(HEAPU32, (thread + 88 ) >> 2);
-            HEAP32[((status)>>2)] = result;
-          }
-          // Mark the thread as detached.
-          Atomics.store(HEAPU32, (thread + 60 ) >> 2, 1);
-          if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread);
-          else postMessage({ 'cmd': 'cleanupThread', 'thread': thread });
-          return 0;
-        }
-        if (!block) {
-          return 10;
-        }
-        _pthread_testcancel();
-        // In main runtime thread (the thread that initialized the Emscripten C
-        // runtime and launched main()), assist pthreads in performing operations
-        // that they need to access the Emscripten main runtime for.
-        if (!ENVIRONMENT_IS_PTHREAD) _emscripten_main_thread_process_queued_calls();
-        _emscripten_futex_wait(thread + 0, threadStatus, ENVIRONMENT_IS_PTHREAD ? 100 : 1);
-      }
-    }
-  function ___pthread_join_js(thread, status) {
-      return __emscripten_do_pthread_join(thread, status, true);
-    }
-
 
   var SYSCALLS = {mappings:{},DEFAULT_POLLMASK:5,umask:511,calculateAt:function(dirfd, path, allowEmpty) {
         if (path[0] === '/') {
@@ -8173,7 +8254,7 @@ var ASM_CONSTS = {
   
   function ___sys_chdir(path) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(23, 1, path);
+      return _emscripten_proxy_to_main_thread_js(35, 1, path);
     try {
   
       path = SYSCALLS.getStr(path);
@@ -8190,7 +8271,7 @@ var ASM_CONSTS = {
   
   function ___sys_fcntl64(fd, cmd, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(24, 1, fd, cmd, varargs);
+      return _emscripten_proxy_to_main_thread_js(36, 1, fd, cmd, varargs);
     SYSCALLS.varargs = varargs;
   try {
   
@@ -8253,7 +8334,7 @@ var ASM_CONSTS = {
   
   function ___sys_fstat64(fd, buf) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(25, 1, fd, buf);
+      return _emscripten_proxy_to_main_thread_js(37, 1, fd, buf);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -8269,7 +8350,7 @@ var ASM_CONSTS = {
   
   function ___sys_ftruncate64(fd, zero, low, high) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(26, 1, fd, zero, low, high);
+      return _emscripten_proxy_to_main_thread_js(38, 1, fd, zero, low, high);
     try {
   
       var length = SYSCALLS.get64(low, high);
@@ -8286,7 +8367,7 @@ var ASM_CONSTS = {
   
   function ___sys_getcwd(buf, size) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(27, 1, buf, size);
+      return _emscripten_proxy_to_main_thread_js(39, 1, buf, size);
     try {
   
       if (size === 0) return -28;
@@ -8306,7 +8387,7 @@ var ASM_CONSTS = {
   
   function ___sys_getdents64(fd, dirp, count) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(28, 1, fd, dirp, count);
+      return _emscripten_proxy_to_main_thread_js(40, 1, fd, dirp, count);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd)
@@ -8360,7 +8441,7 @@ var ASM_CONSTS = {
   
   function ___sys_ioctl(fd, op, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(29, 1, fd, op, varargs);
+      return _emscripten_proxy_to_main_thread_js(41, 1, fd, op, varargs);
     SYSCALLS.varargs = varargs;
   try {
   
@@ -8420,7 +8501,7 @@ var ASM_CONSTS = {
   
   function ___sys_mkdir(path, mode) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(30, 1, path, mode);
+      return _emscripten_proxy_to_main_thread_js(42, 1, path, mode);
     try {
   
       path = SYSCALLS.getStr(path);
@@ -8463,7 +8544,7 @@ var ASM_CONSTS = {
   
   function ___sys_mmap2(addr, len, prot, flags, fd, off) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(31, 1, addr, len, prot, flags, fd, off);
+      return _emscripten_proxy_to_main_thread_js(43, 1, addr, len, prot, flags, fd, off);
     try {
   
       return syscallMmap2(addr, len, prot, flags, fd, off);
@@ -8499,7 +8580,7 @@ var ASM_CONSTS = {
   
   function ___sys_munmap(addr, len) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(32, 1, addr, len);
+      return _emscripten_proxy_to_main_thread_js(44, 1, addr, len);
     try {
   
       return syscallMunmap(addr, len);
@@ -8514,7 +8595,7 @@ var ASM_CONSTS = {
   
   function ___sys_open(path, flags, varargs) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(33, 1, path, flags, varargs);
+      return _emscripten_proxy_to_main_thread_js(45, 1, path, flags, varargs);
     SYSCALLS.varargs = varargs;
   try {
   
@@ -9286,7 +9367,7 @@ var ASM_CONSTS = {
   
   function ___sys_recvfrom(fd, buf, len, flags, addr, addrlen) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(34, 1, fd, buf, len, flags, addr, addrlen);
+      return _emscripten_proxy_to_main_thread_js(46, 1, fd, buf, len, flags, addr, addrlen);
     try {
   
       var sock = getSocketFromFD(fd);
@@ -9309,7 +9390,7 @@ var ASM_CONSTS = {
   
   function ___sys_rename(old_path, new_path) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(35, 1, old_path, new_path);
+      return _emscripten_proxy_to_main_thread_js(47, 1, old_path, new_path);
     try {
   
       old_path = SYSCALLS.getStr(old_path);
@@ -9327,7 +9408,7 @@ var ASM_CONSTS = {
   
   function ___sys_rmdir(path) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(36, 1, path);
+      return _emscripten_proxy_to_main_thread_js(48, 1, path);
     try {
   
       path = SYSCALLS.getStr(path);
@@ -9483,7 +9564,7 @@ var ASM_CONSTS = {
   
   function ___sys_sendto(fd, message, length, flags, addr, addr_len) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(37, 1, fd, message, length, flags, addr, addr_len);
+      return _emscripten_proxy_to_main_thread_js(49, 1, fd, message, length, flags, addr, addr_len);
     try {
   
       var sock = getSocketFromFD(fd);
@@ -9520,7 +9601,7 @@ var ASM_CONSTS = {
   
   function ___sys_stat64(path, buf) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(38, 1, path, buf);
+      return _emscripten_proxy_to_main_thread_js(50, 1, path, buf);
     try {
   
       path = SYSCALLS.getStr(path);
@@ -9556,7 +9637,7 @@ var ASM_CONSTS = {
   
   function ___sys_unlink(path) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(39, 1, path);
+      return _emscripten_proxy_to_main_thread_js(51, 1, path);
     try {
   
       path = SYSCALLS.getStr(path);
@@ -9599,534 +9680,6 @@ var ASM_CONSTS = {
       abort('native code called abort()');
     }
 
-
-  var EGL = {errorCode:12288,defaultDisplayInitialized:false,currentContext:0,currentReadSurface:0,currentDrawSurface:0,contextAttributes:{alpha:false,depth:false,stencil:false,antialias:false},stringCache:{},setErrorCode:function(code) {
-        EGL.errorCode = code;
-      },chooseConfig:function(display, attribList, config, config_size, numConfigs) {
-        if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-          EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-          return 0;
-        }
-  
-        if (attribList) {
-          // read attribList if it is non-null
-          for (;;) {
-            var param = HEAP32[((attribList)>>2)];
-            if (param == 0x3021 /*EGL_ALPHA_SIZE*/) {
-              var alphaSize = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.alpha = (alphaSize > 0);
-            } else if (param == 0x3025 /*EGL_DEPTH_SIZE*/) {
-              var depthSize = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.depth = (depthSize > 0);
-            } else if (param == 0x3026 /*EGL_STENCIL_SIZE*/) {
-              var stencilSize = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.stencil = (stencilSize > 0);
-            } else if (param == 0x3031 /*EGL_SAMPLES*/) {
-              var samples = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.antialias = (samples > 0);
-            } else if (param == 0x3032 /*EGL_SAMPLE_BUFFERS*/) {
-              var samples = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.antialias = (samples == 1);
-            } else if (param == 0x3100 /*EGL_CONTEXT_PRIORITY_LEVEL_IMG*/) {
-              var requestedPriority = HEAP32[(((attribList)+(4))>>2)];
-              EGL.contextAttributes.lowLatency = (requestedPriority != 0x3103 /*EGL_CONTEXT_PRIORITY_LOW_IMG*/);
-            } else if (param == 0x3038 /*EGL_NONE*/) {
-                break;
-            }
-            attribList += 8;
-          }
-        }
-  
-        if ((!config || !config_size) && !numConfigs) {
-          EGL.setErrorCode(0x300C /* EGL_BAD_PARAMETER */);
-          return 0;
-        }
-        if (numConfigs) {
-          HEAP32[((numConfigs)>>2)] = 1; // Total number of supported configs: 1.
-        }
-        if (config && config_size > 0) {
-          HEAP32[((config)>>2)] = 62002;
-        }
-  
-        EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-        return 1;
-      }};
-  
-  function _eglBindAPI(api) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(40, 1, api);
-    
-      if (api == 0x30A0 /* EGL_OPENGL_ES_API */) {
-        EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-        return 1;
-      } else { // if (api == 0x30A1 /* EGL_OPENVG_API */ || api == 0x30A2 /* EGL_OPENGL_API */) {
-        EGL.setErrorCode(0x300C /* EGL_BAD_PARAMETER */);
-        return 0;
-      }
-    
-  }
-  
-
-  
-  function _eglChooseConfig(display, attrib_list, configs, config_size, numConfigs) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(41, 1, display, attrib_list, configs, config_size, numConfigs);
-    
-      return EGL.chooseConfig(display, attrib_list, configs, config_size, numConfigs);
-    
-  }
-  
-
-  
-  function _eglCreateContext(display, config, hmm, contextAttribs) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(42, 1, display, config, hmm, contextAttribs);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-  
-      // EGL 1.4 spec says default EGL_CONTEXT_CLIENT_VERSION is GLES1, but this is not supported by Emscripten.
-      // So user must pass EGL_CONTEXT_CLIENT_VERSION == 2 to initialize EGL.
-      var glesContextVersion = 1;
-      for (;;) {
-        var param = HEAP32[((contextAttribs)>>2)];
-        if (param == 0x3098 /*EGL_CONTEXT_CLIENT_VERSION*/) {
-          glesContextVersion = HEAP32[(((contextAttribs)+(4))>>2)];
-        } else if (param == 0x3038 /*EGL_NONE*/) {
-          break;
-        } else {
-          /* EGL1.4 specifies only EGL_CONTEXT_CLIENT_VERSION as supported attribute */
-          EGL.setErrorCode(0x3004 /*EGL_BAD_ATTRIBUTE*/);
-          return 0;
-        }
-        contextAttribs += 8;
-      }
-      if (glesContextVersion != 2) {
-        EGL.setErrorCode(0x3005 /* EGL_BAD_CONFIG */);
-        return 0; /* EGL_NO_CONTEXT */
-      }
-  
-      EGL.contextAttributes.majorVersion = glesContextVersion - 1; // WebGL 1 is GLES 2, WebGL2 is GLES3
-      EGL.contextAttributes.minorVersion = 0;
-  
-      EGL.context = GL.createContext(Module['canvas'], EGL.contextAttributes);
-  
-      if (EGL.context != 0) {
-        EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-  
-        // Run callbacks so that GL emulation works
-        GL.makeContextCurrent(EGL.context);
-        Module.useWebGL = true;
-        Browser.moduleContextCreatedCallbacks.forEach(function(callback) { callback() });
-  
-        // Note: This function only creates a context, but it shall not make it active.
-        GL.makeContextCurrent(null);
-        return 62004; // Magic ID for Emscripten EGLContext
-      } else {
-        EGL.setErrorCode(0x3009 /* EGL_BAD_MATCH */); // By the EGL 1.4 spec, an implementation that does not support GLES2 (WebGL in this case), this error code is set.
-        return 0; /* EGL_NO_CONTEXT */
-      }
-    
-  }
-  
-
-  
-  function _eglCreateWindowSurface(display, config, win, attrib_list) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(43, 1, display, config, win, attrib_list);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      if (config != 62002 /* Magic ID for the only EGLConfig supported by Emscripten */) {
-        EGL.setErrorCode(0x3005 /* EGL_BAD_CONFIG */);
-        return 0;
-      }
-      // TODO: Examine attrib_list! Parameters that can be present there are:
-      // - EGL_RENDER_BUFFER (must be EGL_BACK_BUFFER)
-      // - EGL_VG_COLORSPACE (can't be set)
-      // - EGL_VG_ALPHA_FORMAT (can't be set)
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 62006; /* Magic ID for Emscripten 'default surface' */
-    
-  }
-  
-
-  
-  function _eglDestroyContext(display, context) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(44, 1, display, context);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      if (context != 62004 /* Magic ID for Emscripten EGLContext */) {
-        EGL.setErrorCode(0x3006 /* EGL_BAD_CONTEXT */);
-        return 0;
-      }
-  
-      GL.deleteContext(EGL.context);
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      if (EGL.currentContext == context) {
-        EGL.currentContext = 0;
-      }
-      return 1 /* EGL_TRUE */;
-    
-  }
-  
-
-  
-  function _eglDestroySurface(display, surface) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(45, 1, display, surface);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      if (surface != 62006 /* Magic ID for the only EGLSurface supported by Emscripten */) {
-        EGL.setErrorCode(0x300D /* EGL_BAD_SURFACE */);
-        return 1;
-      }
-      if (EGL.currentReadSurface == surface) {
-        EGL.currentReadSurface = 0;
-      }
-      if (EGL.currentDrawSurface == surface) {
-        EGL.currentDrawSurface = 0;
-      }
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1; /* Magic ID for Emscripten 'default surface' */
-    
-  }
-  
-
-  
-  function _eglGetConfigAttrib(display, config, attribute, value) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(46, 1, display, config, attribute, value);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      if (config != 62002 /* Magic ID for the only EGLConfig supported by Emscripten */) {
-        EGL.setErrorCode(0x3005 /* EGL_BAD_CONFIG */);
-        return 0;
-      }
-      if (!value) {
-        EGL.setErrorCode(0x300C /* EGL_BAD_PARAMETER */);
-        return 0;
-      }
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      switch (attribute) {
-      case 0x3020: // EGL_BUFFER_SIZE
-        HEAP32[((value)>>2)] = EGL.contextAttributes.alpha ? 32 : 24;
-        return 1;
-      case 0x3021: // EGL_ALPHA_SIZE
-        HEAP32[((value)>>2)] = EGL.contextAttributes.alpha ? 8 : 0;
-        return 1;
-      case 0x3022: // EGL_BLUE_SIZE
-        HEAP32[((value)>>2)] = 8;
-        return 1;
-      case 0x3023: // EGL_GREEN_SIZE
-        HEAP32[((value)>>2)] = 8;
-        return 1;
-      case 0x3024: // EGL_RED_SIZE
-        HEAP32[((value)>>2)] = 8;
-        return 1;
-      case 0x3025: // EGL_DEPTH_SIZE
-        HEAP32[((value)>>2)] = EGL.contextAttributes.depth ? 24 : 0;
-        return 1;
-      case 0x3026: // EGL_STENCIL_SIZE
-        HEAP32[((value)>>2)] = EGL.contextAttributes.stencil ? 8 : 0;
-        return 1;
-      case 0x3027: // EGL_CONFIG_CAVEAT
-        // We can return here one of EGL_NONE (0x3038), EGL_SLOW_CONFIG (0x3050) or EGL_NON_CONFORMANT_CONFIG (0x3051).
-        HEAP32[((value)>>2)] = 0x3038;
-        return 1;
-      case 0x3028: // EGL_CONFIG_ID
-        HEAP32[((value)>>2)] = 62002;
-        return 1;
-      case 0x3029: // EGL_LEVEL
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x302A: // EGL_MAX_PBUFFER_HEIGHT
-        HEAP32[((value)>>2)] = 4096;
-        return 1;
-      case 0x302B: // EGL_MAX_PBUFFER_PIXELS
-        HEAP32[((value)>>2)] = 16777216;
-        return 1;
-      case 0x302C: // EGL_MAX_PBUFFER_WIDTH
-        HEAP32[((value)>>2)] = 4096;
-        return 1;
-      case 0x302D: // EGL_NATIVE_RENDERABLE
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x302E: // EGL_NATIVE_VISUAL_ID
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x302F: // EGL_NATIVE_VISUAL_TYPE
-        HEAP32[((value)>>2)] = 0x3038;
-        return 1;
-      case 0x3031: // EGL_SAMPLES
-        HEAP32[((value)>>2)] = EGL.contextAttributes.antialias ? 4 : 0;
-        return 1;
-      case 0x3032: // EGL_SAMPLE_BUFFERS
-        HEAP32[((value)>>2)] = EGL.contextAttributes.antialias ? 1 : 0;
-        return 1;
-      case 0x3033: // EGL_SURFACE_TYPE
-        HEAP32[((value)>>2)] = 0x4;
-        return 1;
-      case 0x3034: // EGL_TRANSPARENT_TYPE
-        // If this returns EGL_TRANSPARENT_RGB (0x3052), transparency is used through color-keying. No such thing applies to Emscripten canvas.
-        HEAP32[((value)>>2)] = 0x3038;
-        return 1;
-      case 0x3035: // EGL_TRANSPARENT_BLUE_VALUE
-      case 0x3036: // EGL_TRANSPARENT_GREEN_VALUE
-      case 0x3037: // EGL_TRANSPARENT_RED_VALUE
-        // "If EGL_TRANSPARENT_TYPE is EGL_NONE, then the values for EGL_TRANSPARENT_RED_VALUE, EGL_TRANSPARENT_GREEN_VALUE, and EGL_TRANSPARENT_BLUE_VALUE are undefined."
-        HEAP32[((value)>>2)] = -1;
-        return 1;
-      case 0x3039: // EGL_BIND_TO_TEXTURE_RGB
-      case 0x303A: // EGL_BIND_TO_TEXTURE_RGBA
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x303B: // EGL_MIN_SWAP_INTERVAL
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x303C: // EGL_MAX_SWAP_INTERVAL
-        HEAP32[((value)>>2)] = 1;
-        return 1;
-      case 0x303D: // EGL_LUMINANCE_SIZE
-      case 0x303E: // EGL_ALPHA_MASK_SIZE
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      case 0x303F: // EGL_COLOR_BUFFER_TYPE
-        // EGL has two types of buffers: EGL_RGB_BUFFER and EGL_LUMINANCE_BUFFER.
-        HEAP32[((value)>>2)] = 0x308E;
-        return 1;
-      case 0x3040: // EGL_RENDERABLE_TYPE
-        // A bit combination of EGL_OPENGL_ES_BIT,EGL_OPENVG_BIT,EGL_OPENGL_ES2_BIT and EGL_OPENGL_BIT.
-        HEAP32[((value)>>2)] = 0x4;
-        return 1;
-      case 0x3042: // EGL_CONFORMANT
-        // "EGL_CONFORMANT is a mask indicating if a client API context created with respect to the corresponding EGLConfig will pass the required conformance tests for that API."
-        HEAP32[((value)>>2)] = 0;
-        return 1;
-      default:
-        EGL.setErrorCode(0x3004 /* EGL_BAD_ATTRIBUTE */);
-        return 0;
-      }
-    
-  }
-  
-
-  
-  function _eglGetDisplay(nativeDisplayType) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(47, 1, nativeDisplayType);
-    
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      // Note: As a 'conformant' implementation of EGL, we would prefer to init here only if the user
-      //       calls this function with EGL_DEFAULT_DISPLAY. Other display IDs would be preferred to be unsupported
-      //       and EGL_NO_DISPLAY returned. Uncomment the following code lines to do this.
-      // Instead, an alternative route has been preferred, namely that the Emscripten EGL implementation
-      // "emulates" X11, and eglGetDisplay is expected to accept/receive a pointer to an X11 Display object.
-      // Therefore, be lax and allow anything to be passed in, and return the magic handle to our default EGLDisplay object.
-  
-  //    if (nativeDisplayType == 0 /* EGL_DEFAULT_DISPLAY */) {
-          return 62000; // Magic ID for Emscripten 'default display'
-  //    }
-  //    else
-  //      return 0; // EGL_NO_DISPLAY
-    
-  }
-  
-
-  
-  function _eglGetError() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(48, 1);
-    
-      return EGL.errorCode;
-    
-  }
-  
-
-  
-  function _eglInitialize(display, majorVersion, minorVersion) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(49, 1, display, majorVersion, minorVersion);
-    
-      if (display == 62000 /* Magic ID for Emscripten 'default display' */) {
-        if (majorVersion) {
-          HEAP32[((majorVersion)>>2)] = 1; // Advertise EGL Major version: '1'
-        }
-        if (minorVersion) {
-          HEAP32[((minorVersion)>>2)] = 4; // Advertise EGL Minor version: '4'
-        }
-        EGL.defaultDisplayInitialized = true;
-        EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-        return 1;
-      }
-      else {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-    
-  }
-  
-
-  
-  function _eglMakeCurrent(display, draw, read, context) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(50, 1, display, draw, read, context);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0 /* EGL_FALSE */;
-      }
-      //\todo An EGL_NOT_INITIALIZED error is generated if EGL is not initialized for dpy.
-      if (context != 0 && context != 62004 /* Magic ID for Emscripten EGLContext */) {
-        EGL.setErrorCode(0x3006 /* EGL_BAD_CONTEXT */);
-        return 0;
-      }
-      if ((read != 0 && read != 62006) || (draw != 0 && draw != 62006 /* Magic ID for Emscripten 'default surface' */)) {
-        EGL.setErrorCode(0x300D /* EGL_BAD_SURFACE */);
-        return 0;
-      }
-  
-      GL.makeContextCurrent(context ? EGL.context : null);
-  
-      EGL.currentContext = context;
-      EGL.currentDrawSurface = draw;
-      EGL.currentReadSurface = read;
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1 /* EGL_TRUE */;
-    
-  }
-  
-
-  
-  function _eglQueryString(display, name) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(51, 1, display, name);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      //\todo An EGL_NOT_INITIALIZED error is generated if EGL is not initialized for dpy.
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      if (EGL.stringCache[name]) return EGL.stringCache[name];
-      var ret;
-      switch (name) {
-        case 0x3053 /* EGL_VENDOR */: ret = allocateUTF8("Emscripten"); break;
-        case 0x3054 /* EGL_VERSION */: ret = allocateUTF8("1.4 Emscripten EGL"); break;
-        case 0x3055 /* EGL_EXTENSIONS */:  ret = allocateUTF8(""); break; // Currently not supporting any EGL extensions.
-        case 0x308D /* EGL_CLIENT_APIS */: ret = allocateUTF8("OpenGL_ES"); break;
-        default:
-          EGL.setErrorCode(0x300C /* EGL_BAD_PARAMETER */);
-          return 0;
-      }
-      EGL.stringCache[name] = ret;
-      return ret;
-    
-  }
-  
-
-  
-  function _eglSwapBuffers() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(52, 1);
-    
-  
-      if (!EGL.defaultDisplayInitialized) {
-        EGL.setErrorCode(0x3001 /* EGL_NOT_INITIALIZED */);
-      } else if (!Module.ctx) {
-        EGL.setErrorCode(0x3002 /* EGL_BAD_ACCESS */);
-      } else if (Module.ctx.isContextLost()) {
-        EGL.setErrorCode(0x300E /* EGL_CONTEXT_LOST */);
-      } else {
-        // According to documentation this does an implicit flush.
-        // Due to discussion at https://github.com/emscripten-core/emscripten/pull/1871
-        // the flush was removed since this _may_ result in slowing code down.
-        //_glFlush();
-        EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-        return 1 /* EGL_TRUE */;
-      }
-      return 0 /* EGL_FALSE */;
-    
-  }
-  
-
-  
-  function _eglSwapInterval(display, interval) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(53, 1, display, interval);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      if (interval == 0) _emscripten_set_main_loop_timing(0/*EM_TIMING_SETTIMEOUT*/, 0);
-      else _emscripten_set_main_loop_timing(1/*EM_TIMING_RAF*/, interval);
-  
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1;
-    
-  }
-  
-
-  
-  function _eglTerminate(display) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(54, 1, display);
-    
-      if (display != 62000 /* Magic ID for Emscripten 'default display' */) {
-        EGL.setErrorCode(0x3008 /* EGL_BAD_DISPLAY */);
-        return 0;
-      }
-      EGL.currentContext = 0;
-      EGL.currentReadSurface = 0;
-      EGL.currentDrawSurface = 0;
-      EGL.defaultDisplayInitialized = false;
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1;
-    
-  }
-  
-
-  
-  function _eglWaitClient() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(55, 1);
-    
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1;
-    
-  }
-  
-  function _eglWaitGL(
-  ) {
-  return _eglWaitClient();
-  }
-
-  
-  function _eglWaitNative(nativeEngineId) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(56, 1, nativeEngineId);
-    
-      EGL.setErrorCode(0x3000 /* EGL_SUCCESS */);
-      return 1;
-    
-  }
-  
-
   var readAsmConstArgsArray = [];
   function readAsmConstArgs(sigPtr, buf) {
       // Nobody should have mutated _readAsmConstArgsArray underneath us to be something else than an array.
@@ -10160,10 +9713,184 @@ var ASM_CONSTS = {
       Browser.mainLoop.func = null;
     }
 
+  function _emscripten_check_blocking_allowed() {
+      if (ENVIRONMENT_IS_NODE) return;
+  
+      if (ENVIRONMENT_IS_WORKER) return; // Blocking in a worker/pthread is fine.
+  
+      warnOnce('Blocking on the main thread is very dangerous, see https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread');
+  
+    }
 
   function _emscripten_conditional_set_current_thread_status_js(expectedStatus, newStatus) {
     }
   function _emscripten_conditional_set_current_thread_status(expectedStatus, newStatus) {
+    }
+
+  function _emscripten_futex_wait(addr, val, timeout) {
+      if (addr <= 0 || addr > HEAP8.length || addr&3 != 0) return -28;
+      // We can do a normal blocking wait anywhere but on the main browser thread.
+      if (!ENVIRONMENT_IS_WEB) {
+        var ret = Atomics.wait(HEAP32, addr >> 2, val, timeout);
+        if (ret === 'timed-out') return -73;
+        if (ret === 'not-equal') return -6;
+        if (ret === 'ok') return 0;
+        throw 'Atomics.wait returned an unexpected value ' + ret;
+      } else {
+        // First, check if the value is correct for us to wait on.
+        if (Atomics.load(HEAP32, addr >> 2) != val) {
+          return -6;
+        }
+  
+        // Atomics.wait is not available in the main browser thread, so simulate it via busy spinning.
+        var tNow = performance.now();
+        var tEnd = tNow + timeout;
+  
+        // Register globally which address the main thread is simulating to be
+        // waiting on. When zero, the main thread is not waiting on anything, and on
+        // nonzero, the contents of the address pointed by __emscripten_main_thread_futex
+        // tell which address the main thread is simulating its wait on.
+        // We need to be careful of recursion here: If we wait on a futex, and
+        // then call _emscripten_main_thread_process_queued_calls() below, that
+        // will call code that takes the proxying mutex - which can once more
+        // reach this code in a nested call. To avoid interference between the
+        // two (there is just a single __emscripten_main_thread_futex at a time), unmark
+        // ourselves before calling the potentially-recursive call. See below for
+        // how we handle the case of our futex being notified during the time in
+        // between when we are not set as the value of __emscripten_main_thread_futex.
+        assert(__emscripten_main_thread_futex > 0);
+        var lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
+        // We must not have already been waiting.
+        assert(lastAddr == 0);
+  
+        while (1) {
+          // Check for a timeout.
+          tNow = performance.now();
+          if (tNow > tEnd) {
+            // We timed out, so stop marking ourselves as waiting.
+            lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
+            // The current value must have been our address which we set, or
+            // in a race it was set to 0 which means another thread just allowed
+            // us to run, but (tragically) that happened just a bit too late.
+            assert(lastAddr == addr || lastAddr == 0);
+            return -73;
+          }
+          // We are performing a blocking loop here, so we must handle proxied
+          // events from pthreads, to avoid deadlocks.
+          // Note that we have to do so carefully, as we may take a lock while
+          // doing so, which can recurse into this function; stop marking
+          // ourselves as waiting while we do so.
+          lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, 0);
+          assert(lastAddr == addr || lastAddr == 0);
+          if (lastAddr == 0) {
+            // We were told to stop waiting, so stop.
+            break;
+          }
+          _emscripten_main_thread_process_queued_calls();
+  
+          // Check the value, as if we were starting the futex all over again.
+          // This handles the following case:
+          //
+          //  * wait on futex A
+          //  * recurse into emscripten_main_thread_process_queued_calls(),
+          //    which waits on futex B. that sets the __emscripten_main_thread_futex address to
+          //    futex B, and there is no longer any mention of futex A.
+          //  * a worker is done with futex A. it checks __emscripten_main_thread_futex but does
+          //    not see A, so it does nothing special for the main thread.
+          //  * a worker is done with futex B. it flips mainThreadMutex from B
+          //    to 0, ending the wait on futex B.
+          //  * we return to the wait on futex A. __emscripten_main_thread_futex is 0, but that
+          //    is because of futex B being done - we can't tell from
+          //    __emscripten_main_thread_futex whether A is done or not. therefore, check the
+          //    memory value of the futex.
+          //
+          // That case motivates the design here. Given that, checking the memory
+          // address is also necessary for other reasons: we unset and re-set our
+          // address in __emscripten_main_thread_futex around calls to
+          // emscripten_main_thread_process_queued_calls(), and a worker could
+          // attempt to wake us up right before/after such times.
+          //
+          // Note that checking the memory value of the futex is valid to do: we
+          // could easily have been delayed (relative to the worker holding on
+          // to futex A), which means we could be starting all of our work at the
+          // later time when there is no need to block. The only "odd" thing is
+          // that we may have caused side effects in that "delay" time. But the
+          // only side effects we can have are to call
+          // emscripten_main_thread_process_queued_calls(). That is always ok to
+          // do on the main thread (it's why it is ok for us to call it in the
+          // middle of this function, and elsewhere). So if we check the value
+          // here and return, it's the same is if what happened on the main thread
+          // was the same as calling emscripten_main_thread_process_queued_calls()
+          // a few times times before calling emscripten_futex_wait().
+          if (Atomics.load(HEAP32, addr >> 2) != val) {
+            return -6;
+          }
+  
+          // Mark us as waiting once more, and continue the loop.
+          lastAddr = Atomics.exchange(HEAP32, __emscripten_main_thread_futex >> 2, addr);
+          assert(lastAddr == 0);
+        }
+        return 0;
+      }
+    }
+
+
+
+  function _emscripten_memcpy_big(dest, src, num) {
+      HEAPU8.copyWithin(dest, src, src + num);
+    }
+
+  /** @type{function(number, (number|boolean), ...(number|boolean))} */
+  function _emscripten_proxy_to_main_thread_js(index, sync) {
+      // Additional arguments are passed after those two, which are the actual
+      // function arguments.
+      // The serialization buffer contains the number of call params, and then
+      // all the args here.
+      // We also pass 'sync' to C separately, since C needs to look at it.
+      var numCallArgs = arguments.length - 2;
+      if (numCallArgs > 20-1) throw 'emscripten_proxy_to_main_thread_js: Too many arguments ' + numCallArgs + ' to proxied function idx=' + index + ', maximum supported is ' + (20-1) + '!';
+      // Allocate a buffer, which will be copied by the C code.
+      var stack = stackSave();
+      // First passed parameter specifies the number of arguments to the function.
+      // When BigInt support is enabled, we must handle types in a more complex
+      // way, detecting at runtime if a value is a BigInt or not (as we have no
+      // type info here). To do that, add a "prefix" before each value that
+      // indicates if it is a BigInt, which effectively doubles the number of
+      // values we serialize for proxying. TODO: pack this?
+      var serializedNumCallArgs = numCallArgs ;
+      var args = stackAlloc(serializedNumCallArgs * 8);
+      var b = args >> 3;
+      for (var i = 0; i < numCallArgs; i++) {
+        var arg = arguments[2 + i];
+        HEAPF64[b + i] = arg;
+      }
+      var ret = _emscripten_run_in_main_runtime_thread_js(index, serializedNumCallArgs, args, sync);
+      stackRestore(stack);
+      return ret;
+    }
+  
+  var _emscripten_receive_on_main_thread_js_callArgs = [];
+  function _emscripten_receive_on_main_thread_js(index, numCallArgs, args) {
+      _emscripten_receive_on_main_thread_js_callArgs.length = numCallArgs;
+      var b = args >> 3;
+      for (var i = 0; i < numCallArgs; i++) {
+        _emscripten_receive_on_main_thread_js_callArgs[i] = HEAPF64[b + i];
+      }
+      // Proxied JS library funcs are encoded as positive values, and
+      // EM_ASMs as negative values (see include_asm_consts)
+      var isEmAsmConst = index < 0;
+      var func = !isEmAsmConst ? proxiedFunctionTable[index] : ASM_CONSTS[-index - 1];
+      assert(func.length == numCallArgs, 'Call args mismatch in emscripten_receive_on_main_thread_js');
+      return func.apply(null, _emscripten_receive_on_main_thread_js_callArgs);
+    }
+
+  function abortOnCannotGrowMemory(requestedSize) {
+      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s INITIAL_MEMORY=X  with X higher than the current value ' + HEAP8.length + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
+    }
+  function _emscripten_resize_heap(requestedSize) {
+      var oldSize = HEAPU8.length;
+      requestedSize = requestedSize >>> 0;
+      abortOnCannotGrowMemory(requestedSize);
     }
 
   var JSEvents = {inEventHandler:0,removeAllEventListeners:function() {
@@ -10285,75 +10012,6 @@ var ASM_CONSTS = {
          ;
       }};
   
-  var currentFullscreenStrategy = {};
-  
-  function maybeCStringToJsString(cString) {
-      // "cString > 2" checks if the input is a number, and isn't of the special
-      // values we accept here, EMSCRIPTEN_EVENT_TARGET_* (which map to 0, 1, 2).
-      // In other words, if cString > 2 then it's a pointer to a valid place in
-      // memory, and points to a C string.
-      return cString > 2 ? UTF8ToString(cString) : cString;
-    }
-  
-  var specialHTMLTargets = [0, typeof document !== 'undefined' ? document : 0, typeof window !== 'undefined' ? window : 0];
-  function findEventTarget(target) {
-      target = maybeCStringToJsString(target);
-      var domElement = specialHTMLTargets[target] || (typeof document !== 'undefined' ? document.querySelector(target) : undefined);
-      return domElement;
-    }
-  function findCanvasEventTarget(target) { return findEventTarget(target); }
-  function _emscripten_get_canvas_element_size_calling_thread(target, width, height) {
-      var canvas = findCanvasEventTarget(target);
-      if (!canvas) return -4;
-  
-      if (canvas.canvasSharedPtr) {
-        // N.B. Reading the size of the Canvas takes priority from our shared state structure, which is not the actual size.
-        // However if is possible that there is a canvas size set event pending on an OffscreenCanvas owned by another thread,
-        // so that the real sizes of the canvas have not updated yet. Therefore reading the real values would be racy.
-        var w = HEAP32[((canvas.canvasSharedPtr)>>2)];
-        var h = HEAP32[(((canvas.canvasSharedPtr)+(4))>>2)];
-        HEAP32[((width)>>2)] = w;
-        HEAP32[((height)>>2)] = h;
-      } else if (canvas.offscreenCanvas) {
-        HEAP32[((width)>>2)] = canvas.offscreenCanvas.width;
-        HEAP32[((height)>>2)] = canvas.offscreenCanvas.height;
-      } else if (!canvas.controlTransferredOffscreen) {
-        HEAP32[((width)>>2)] = canvas.width;
-        HEAP32[((height)>>2)] = canvas.height;
-      } else {
-        return -4;
-      }
-      return 0;
-    }
-  
-  
-  function _emscripten_get_canvas_element_size_main_thread(target, width, height) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(58, 1, target, width, height);
-     return _emscripten_get_canvas_element_size_calling_thread(target, width, height); 
-  }
-  
-  function _emscripten_get_canvas_element_size(target, width, height) {
-      var canvas = findCanvasEventTarget(target);
-      if (canvas) {
-        return _emscripten_get_canvas_element_size_calling_thread(target, width, height);
-      } else {
-        return _emscripten_get_canvas_element_size_main_thread(target, width, height);
-      }
-    }
-  function getCanvasElementSize(target) {
-      var stackTop = stackSave();
-      var w = stackAlloc(8);
-      var h = w + 4;
-  
-      var targetInt = stackAlloc(target.id.length+1);
-      stringToUTF8(target.id, targetInt, target.id.length+1);
-      var ret = _emscripten_get_canvas_element_size(targetInt, w, h);
-      var size = [HEAP32[((w)>>2)], HEAP32[((h)>>2)]];
-      stackRestore(stackTop);
-      return size;
-    }
-  
   function stringToNewUTF8(jsString) {
       var length = lengthBytesUTF8(jsString)+1;
       var cString = _malloc(length);
@@ -10381,6 +10039,22 @@ var ASM_CONSTS = {
       targetCanvas = targetCanvas ? UTF8ToString(targetCanvas) : '';
       _emscripten_set_offscreencanvas_size_on_target_thread_js(targetThread, targetCanvas, width, height);
     }
+  
+  function maybeCStringToJsString(cString) {
+      // "cString > 2" checks if the input is a number, and isn't of the special
+      // values we accept here, EMSCRIPTEN_EVENT_TARGET_* (which map to 0, 1, 2).
+      // In other words, if cString > 2 then it's a pointer to a valid place in
+      // memory, and points to a C string.
+      return cString > 2 ? UTF8ToString(cString) : cString;
+    }
+  
+  var specialHTMLTargets = [0, typeof document !== 'undefined' ? document : 0, typeof window !== 'undefined' ? window : 0];
+  function findEventTarget(target) {
+      target = maybeCStringToJsString(target);
+      var domElement = specialHTMLTargets[target] || (typeof document !== 'undefined' ? document.querySelector(target) : undefined);
+      return domElement;
+    }
+  function findCanvasEventTarget(target) { return findEventTarget(target); }
   function _emscripten_set_canvas_element_size_calling_thread(target, width, height) {
       var canvas = findCanvasEventTarget(target);
       if (!canvas) return -4;
@@ -10423,7 +10097,7 @@ var ASM_CONSTS = {
   
   function _emscripten_set_canvas_element_size_main_thread(target, width, height) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(59, 1, target, width, height);
+      return _emscripten_proxy_to_main_thread_js(52, 1, target, width, height);
      return _emscripten_set_canvas_element_size_calling_thread(target, width, height); 
   }
   
@@ -10435,2471 +10109,16 @@ var ASM_CONSTS = {
         return _emscripten_set_canvas_element_size_main_thread(target, width, height);
       }
     }
-  function setCanvasElementSize(target, width, height) {
-      if (!target.controlTransferredOffscreen) {
-        target.width = width;
-        target.height = height;
-      } else {
-        // This function is being called from high-level JavaScript code instead of asm.js/Wasm,
-        // and it needs to synchronously proxy over to another thread, so marshal the string onto the heap to do the call.
-        var stackTop = stackSave();
-        var targetInt = stackAlloc(target.id.length+1);
-        stringToUTF8(target.id, targetInt, target.id.length+1);
-        _emscripten_set_canvas_element_size(targetInt, width, height);
-        stackRestore(stackTop);
-      }
-    }
-  function registerRestoreOldStyle(canvas) {
-      var canvasSize = getCanvasElementSize(canvas);
-      var oldWidth = canvasSize[0];
-      var oldHeight = canvasSize[1];
-      var oldCssWidth = canvas.style.width;
-      var oldCssHeight = canvas.style.height;
-      var oldBackgroundColor = canvas.style.backgroundColor; // Chrome reads color from here.
-      var oldDocumentBackgroundColor = document.body.style.backgroundColor; // IE11 reads color from here.
-      // Firefox always has black background color.
-      var oldPaddingLeft = canvas.style.paddingLeft; // Chrome, FF, Safari
-      var oldPaddingRight = canvas.style.paddingRight;
-      var oldPaddingTop = canvas.style.paddingTop;
-      var oldPaddingBottom = canvas.style.paddingBottom;
-      var oldMarginLeft = canvas.style.marginLeft; // IE11
-      var oldMarginRight = canvas.style.marginRight;
-      var oldMarginTop = canvas.style.marginTop;
-      var oldMarginBottom = canvas.style.marginBottom;
-      var oldDocumentBodyMargin = document.body.style.margin;
-      var oldDocumentOverflow = document.documentElement.style.overflow; // Chrome, Firefox
-      var oldDocumentScroll = document.body.scroll; // IE
-      var oldImageRendering = canvas.style.imageRendering;
-  
-      function restoreOldStyle() {
-        var fullscreenElement = document.fullscreenElement
-          || document.webkitFullscreenElement
-          || document.msFullscreenElement
-          ;
-        if (!fullscreenElement) {
-          document.removeEventListener('fullscreenchange', restoreOldStyle);
-  
-          // Unprefixed Fullscreen API shipped in Chromium 71 (https://bugs.chromium.org/p/chromium/issues/detail?id=383813)
-          // As of Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitfullscreenchange. TODO: revisit this check once Safari ships unprefixed version.
-          document.removeEventListener('webkitfullscreenchange', restoreOldStyle);
-  
-          setCanvasElementSize(canvas, oldWidth, oldHeight);
-  
-          canvas.style.width = oldCssWidth;
-          canvas.style.height = oldCssHeight;
-          canvas.style.backgroundColor = oldBackgroundColor; // Chrome
-          // IE11 hack: assigning 'undefined' or an empty string to document.body.style.backgroundColor has no effect, so first assign back the default color
-          // before setting the undefined value. Setting undefined value is also important, or otherwise we would later treat that as something that the user
-          // had explicitly set so subsequent fullscreen transitions would not set background color properly.
-          if (!oldDocumentBackgroundColor) document.body.style.backgroundColor = 'white';
-          document.body.style.backgroundColor = oldDocumentBackgroundColor; // IE11
-          canvas.style.paddingLeft = oldPaddingLeft; // Chrome, FF, Safari
-          canvas.style.paddingRight = oldPaddingRight;
-          canvas.style.paddingTop = oldPaddingTop;
-          canvas.style.paddingBottom = oldPaddingBottom;
-          canvas.style.marginLeft = oldMarginLeft; // IE11
-          canvas.style.marginRight = oldMarginRight;
-          canvas.style.marginTop = oldMarginTop;
-          canvas.style.marginBottom = oldMarginBottom;
-          document.body.style.margin = oldDocumentBodyMargin;
-          document.documentElement.style.overflow = oldDocumentOverflow; // Chrome, Firefox
-          document.body.scroll = oldDocumentScroll; // IE
-          canvas.style.imageRendering = oldImageRendering;
-          if (canvas.GLctxObject) canvas.GLctxObject.GLctx.viewport(0, 0, oldWidth, oldHeight);
-  
-          if (currentFullscreenStrategy.canvasResizedCallback) {
-            if (currentFullscreenStrategy.canvasResizedCallbackTargetThread) JSEvents.queueEventHandlerOnThread_iiii(currentFullscreenStrategy.canvasResizedCallbackTargetThread, currentFullscreenStrategy.canvasResizedCallback, 37, 0, currentFullscreenStrategy.canvasResizedCallbackUserData);
-            else
-            wasmTable.get(currentFullscreenStrategy.canvasResizedCallback)(37, 0, currentFullscreenStrategy.canvasResizedCallbackUserData);
-          }
-        }
-      }
-      document.addEventListener('fullscreenchange', restoreOldStyle);
-      // Unprefixed Fullscreen API shipped in Chromium 71 (https://bugs.chromium.org/p/chromium/issues/detail?id=383813)
-      // As of Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitfullscreenchange. TODO: revisit this check once Safari ships unprefixed version.
-      document.addEventListener('webkitfullscreenchange', restoreOldStyle);
-      return restoreOldStyle;
-    }
-  
-  function setLetterbox(element, topBottom, leftRight) {
-        // Cannot use margin to specify letterboxes in FF or Chrome, since those ignore margins in fullscreen mode.
-        element.style.paddingLeft = element.style.paddingRight = leftRight + 'px';
-        element.style.paddingTop = element.style.paddingBottom = topBottom + 'px';
-    }
-  
-  function getBoundingClientRect(e) {
-      return specialHTMLTargets.indexOf(e) < 0 ? e.getBoundingClientRect() : {'left':0,'top':0};
-    }
-  function _JSEvents_resizeCanvasForFullscreen(target, strategy) {
-      var restoreOldStyle = registerRestoreOldStyle(target);
-      var cssWidth = strategy.softFullscreen ? innerWidth : screen.width;
-      var cssHeight = strategy.softFullscreen ? innerHeight : screen.height;
-      var rect = getBoundingClientRect(target);
-      var windowedCssWidth = rect.width;
-      var windowedCssHeight = rect.height;
-      var canvasSize = getCanvasElementSize(target);
-      var windowedRttWidth = canvasSize[0];
-      var windowedRttHeight = canvasSize[1];
-  
-      if (strategy.scaleMode == 3) {
-        setLetterbox(target, (cssHeight - windowedCssHeight) / 2, (cssWidth - windowedCssWidth) / 2);
-        cssWidth = windowedCssWidth;
-        cssHeight = windowedCssHeight;
-      } else if (strategy.scaleMode == 2) {
-        if (cssWidth*windowedRttHeight < windowedRttWidth*cssHeight) {
-          var desiredCssHeight = windowedRttHeight * cssWidth / windowedRttWidth;
-          setLetterbox(target, (cssHeight - desiredCssHeight) / 2, 0);
-          cssHeight = desiredCssHeight;
-        } else {
-          var desiredCssWidth = windowedRttWidth * cssHeight / windowedRttHeight;
-          setLetterbox(target, 0, (cssWidth - desiredCssWidth) / 2);
-          cssWidth = desiredCssWidth;
-        }
-      }
-  
-      // If we are adding padding, must choose a background color or otherwise Chrome will give the
-      // padding a default white color. Do it only if user has not customized their own background color.
-      if (!target.style.backgroundColor) target.style.backgroundColor = 'black';
-      // IE11 does the same, but requires the color to be set in the document body.
-      if (!document.body.style.backgroundColor) document.body.style.backgroundColor = 'black'; // IE11
-      // Firefox always shows black letterboxes independent of style color.
-  
-      target.style.width = cssWidth + 'px';
-      target.style.height = cssHeight + 'px';
-  
-      if (strategy.filteringMode == 1) {
-        target.style.imageRendering = 'optimizeSpeed';
-        target.style.imageRendering = '-moz-crisp-edges';
-        target.style.imageRendering = '-o-crisp-edges';
-        target.style.imageRendering = '-webkit-optimize-contrast';
-        target.style.imageRendering = 'optimize-contrast';
-        target.style.imageRendering = 'crisp-edges';
-        target.style.imageRendering = 'pixelated';
-      }
-  
-      var dpiScale = (strategy.canvasResolutionScaleMode == 2) ? devicePixelRatio : 1;
-      if (strategy.canvasResolutionScaleMode != 0) {
-        var newWidth = (cssWidth * dpiScale)|0;
-        var newHeight = (cssHeight * dpiScale)|0;
-        setCanvasElementSize(target, newWidth, newHeight);
-        if (target.GLctxObject) target.GLctxObject.GLctx.viewport(0, 0, newWidth, newHeight);
-      }
-      return restoreOldStyle;
-    }
-  function _JSEvents_requestFullscreen(target, strategy) {
-      // EMSCRIPTEN_FULLSCREEN_SCALE_DEFAULT + EMSCRIPTEN_FULLSCREEN_CANVAS_SCALE_NONE is a mode where no extra logic is performed to the DOM elements.
-      if (strategy.scaleMode != 0 || strategy.canvasResolutionScaleMode != 0) {
-        _JSEvents_resizeCanvasForFullscreen(target, strategy);
-      }
-  
-      if (target.requestFullscreen) {
-        target.requestFullscreen();
-      } else if (target.webkitRequestFullscreen) {
-        target.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-      } else {
-        return JSEvents.fullscreenEnabled() ? -3 : -1;
-      }
-  
-      currentFullscreenStrategy = strategy;
-  
-      if (strategy.canvasResizedCallback) {
-        if (strategy.canvasResizedCallbackTargetThread) JSEvents.queueEventHandlerOnThread_iiii(strategy.canvasResizedCallbackTargetThread, strategy.canvasResizedCallback, 37, 0, strategy.canvasResizedCallbackUserData);
-        else
-        wasmTable.get(strategy.canvasResizedCallback)(37, 0, strategy.canvasResizedCallbackUserData);
-      }
-  
-      return 0;
-    }
-  
-  function _emscripten_exit_fullscreen() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(57, 1);
-    
-      if (!JSEvents.fullscreenEnabled()) return -1;
-      // Make sure no queued up calls will fire after this.
-      JSEvents.removeDeferredCalls(_JSEvents_requestFullscreen);
-  
-      var d = specialHTMLTargets[1];
-      if (d.exitFullscreen) {
-        d.fullscreenElement && d.exitFullscreen();
-      } else if (d.webkitExitFullscreen) {
-        d.webkitFullscreenElement && d.webkitExitFullscreen();
-      } else {
-        return -1;
-      }
-  
-      return 0;
-    
-  }
-  
-
-  function requestPointerLock(target) {
-      if (target.requestPointerLock) {
-        target.requestPointerLock();
-      } else if (target.msRequestPointerLock) {
-        target.msRequestPointerLock();
-      } else {
-        // document.body is known to accept pointer lock, so use that to differentiate if the user passed a bad element,
-        // or if the whole browser just doesn't support the feature.
-        if (document.body.requestPointerLock
-          || document.body.msRequestPointerLock
-          ) {
-          return -3;
-        } else {
-          return -1;
-        }
-      }
-      return 0;
-    }
-  
-  function _emscripten_exit_pointerlock() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(60, 1);
-    
-      // Make sure no queued up calls will fire after this.
-      JSEvents.removeDeferredCalls(requestPointerLock);
-  
-      if (document.exitPointerLock) {
-        document.exitPointerLock();
-      } else if (document.msExitPointerLock) {
-        document.msExitPointerLock();
-      } else {
-        return -1;
-      }
-      return 0;
-    
-  }
-  
-
-
-
-  
-  function _emscripten_get_device_pixel_ratio() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(61, 1);
-    
-      return (typeof devicePixelRatio === 'number' && devicePixelRatio) || 1.0;
-    
-  }
-  
-
-  
-  function _emscripten_get_element_css_size(target, width, height) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(62, 1, target, width, height);
-    
-      target = findEventTarget(target);
-      if (!target) return -4;
-  
-      var rect = getBoundingClientRect(target);
-      HEAPF64[((width)>>3)] = rect.width;
-      HEAPF64[((height)>>3)] = rect.height;
-  
-      return 0;
-    
-  }
-  
-
-  function fillGamepadEventData(eventStruct, e) {
-      HEAPF64[((eventStruct)>>3)] = e.timestamp;
-      for (var i = 0; i < e.axes.length; ++i) {
-        HEAPF64[(((eventStruct+i*8)+(16))>>3)] = e.axes[i];
-      }
-      for (var i = 0; i < e.buttons.length; ++i) {
-        if (typeof(e.buttons[i]) === 'object') {
-          HEAPF64[(((eventStruct+i*8)+(528))>>3)] = e.buttons[i].value;
-        } else {
-          HEAPF64[(((eventStruct+i*8)+(528))>>3)] = e.buttons[i];
-        }
-      }
-      for (var i = 0; i < e.buttons.length; ++i) {
-        if (typeof(e.buttons[i]) === 'object') {
-          HEAP32[(((eventStruct+i*4)+(1040))>>2)] = e.buttons[i].pressed;
-        } else {
-          // Assigning a boolean to HEAP32, that's ok, but Closure would like to warn about it:
-          /** @suppress {checkTypes} */
-          HEAP32[(((eventStruct+i*4)+(1040))>>2)] = e.buttons[i] == 1;
-        }
-      }
-      HEAP32[(((eventStruct)+(1296))>>2)] = e.connected;
-      HEAP32[(((eventStruct)+(1300))>>2)] = e.index;
-      HEAP32[(((eventStruct)+(8))>>2)] = e.axes.length;
-      HEAP32[(((eventStruct)+(12))>>2)] = e.buttons.length;
-      stringToUTF8(e.id, eventStruct + 1304, 64);
-      stringToUTF8(e.mapping, eventStruct + 1368, 64);
-    }
-  
-  function _emscripten_get_gamepad_status(index, gamepadState) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(63, 1, index, gamepadState);
-    
-      if (!JSEvents.lastGamepadState) throw 'emscripten_get_gamepad_status() can only be called after having first called emscripten_sample_gamepad_data() and that function has returned EMSCRIPTEN_RESULT_SUCCESS!';
-  
-      // INVALID_PARAM is returned on a Gamepad index that never was there.
-      if (index < 0 || index >= JSEvents.lastGamepadState.length) return -5;
-  
-      // NO_DATA is returned on a Gamepad index that was removed.
-      // For previously disconnected gamepads there should be an empty slot (null/undefined/false) at the index.
-      // This is because gamepads must keep their original position in the array.
-      // For example, removing the first of two gamepads produces [null/undefined/false, gamepad].
-      if (!JSEvents.lastGamepadState[index]) return -7;
-  
-      fillGamepadEventData(gamepadState, JSEvents.lastGamepadState[index]);
-      return 0;
-    
-  }
-  
-
-
-  
-  function _emscripten_get_num_gamepads() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(64, 1);
-    
-      if (!JSEvents.lastGamepadState) throw 'emscripten_get_num_gamepads() can only be called after having first called emscripten_sample_gamepad_data() and that function has returned EMSCRIPTEN_RESULT_SUCCESS!';
-      // N.B. Do not call emscripten_get_num_gamepads() unless having first called emscripten_sample_gamepad_data(), and that has returned EMSCRIPTEN_RESULT_SUCCESS.
-      // Otherwise the following line will throw an exception.
-      return JSEvents.lastGamepadState.length;
-    
-  }
-  
-
-  function _emscripten_glActiveTexture(x0) { GLctx['activeTexture'](x0) }
-
-  function _emscripten_glAttachShader(program, shader) {
-      GLctx.attachShader(GL.programs[program], GL.shaders[shader]);
-    }
-
-  function _emscripten_glBeginQueryEXT(target, id) {
-      GLctx.disjointTimerQueryExt['beginQueryEXT'](target, GL.queries[id]);
-    }
-
-  function _emscripten_glBindAttribLocation(program, index, name) {
-      GLctx.bindAttribLocation(GL.programs[program], index, UTF8ToString(name));
-    }
-
-  function _emscripten_glBindBuffer(target, buffer) {
-  
-      GLctx.bindBuffer(target, GL.buffers[buffer]);
-    }
-
-  function _emscripten_glBindFramebuffer(target, framebuffer) {
-  
-      GLctx.bindFramebuffer(target, GL.framebuffers[framebuffer]);
-  
-    }
-
-  function _emscripten_glBindRenderbuffer(target, renderbuffer) {
-      GLctx.bindRenderbuffer(target, GL.renderbuffers[renderbuffer]);
-    }
-
-  function _emscripten_glBindTexture(target, texture) {
-      GLctx.bindTexture(target, GL.textures[texture]);
-    }
-
-  function _emscripten_glBindVertexArrayOES(vao) {
-      GLctx['bindVertexArray'](GL.vaos[vao]);
-    }
-
-  function _emscripten_glBlendColor(x0, x1, x2, x3) { GLctx['blendColor'](x0, x1, x2, x3) }
-
-  function _emscripten_glBlendEquation(x0) { GLctx['blendEquation'](x0) }
-
-  function _emscripten_glBlendEquationSeparate(x0, x1) { GLctx['blendEquationSeparate'](x0, x1) }
-
-  function _emscripten_glBlendFunc(x0, x1) { GLctx['blendFunc'](x0, x1) }
-
-  function _emscripten_glBlendFuncSeparate(x0, x1, x2, x3) { GLctx['blendFuncSeparate'](x0, x1, x2, x3) }
-
-  function _emscripten_glBufferData(target, size, data, usage) {
-  
-        // N.b. here first form specifies a heap subarray, second form an integer size, so the ?: code here is polymorphic. It is advised to avoid
-        // randomly mixing both uses in calling code, to avoid any potential JS engine JIT issues.
-        GLctx.bufferData(target, data ? HEAPU8.subarray(data, data+size) : size, usage);
-    }
-
-  function _emscripten_glBufferSubData(target, offset, size, data) {
-      GLctx.bufferSubData(target, offset, HEAPU8.subarray(data, data+size));
-    }
-
-  function _emscripten_glCheckFramebufferStatus(x0) { return GLctx['checkFramebufferStatus'](x0) }
-
-  function _emscripten_glClear(x0) { GLctx['clear'](x0) }
-
-  function _emscripten_glClearColor(x0, x1, x2, x3) { GLctx['clearColor'](x0, x1, x2, x3) }
-
-  function _emscripten_glClearDepthf(x0) { GLctx['clearDepth'](x0) }
-
-  function _emscripten_glClearStencil(x0) { GLctx['clearStencil'](x0) }
-
-  function _emscripten_glColorMask(red, green, blue, alpha) {
-      GLctx.colorMask(!!red, !!green, !!blue, !!alpha);
-    }
-
-  function _emscripten_glCompileShader(shader) {
-      GLctx.compileShader(GL.shaders[shader]);
-    }
-
-  function _emscripten_glCompressedTexImage2D(target, level, internalFormat, width, height, border, imageSize, data) {
-      GLctx['compressedTexImage2D'](target, level, internalFormat, width, height, border, data ? HEAPU8.subarray((data), (data+imageSize)) : null);
-    }
-
-  function _emscripten_glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data) {
-      GLctx['compressedTexSubImage2D'](target, level, xoffset, yoffset, width, height, format, data ? HEAPU8.subarray((data), (data+imageSize)) : null);
-    }
-
-  function _emscripten_glCopyTexImage2D(x0, x1, x2, x3, x4, x5, x6, x7) { GLctx['copyTexImage2D'](x0, x1, x2, x3, x4, x5, x6, x7) }
-
-  function _emscripten_glCopyTexSubImage2D(x0, x1, x2, x3, x4, x5, x6, x7) { GLctx['copyTexSubImage2D'](x0, x1, x2, x3, x4, x5, x6, x7) }
-
-  function _emscripten_glCreateProgram() {
-      var id = GL.getNewId(GL.programs);
-      var program = GLctx.createProgram();
-      // Store additional information needed for each shader program:
-      program.name = id;
-      // Lazy cache results of glGetProgramiv(GL_ACTIVE_UNIFORM_MAX_LENGTH/GL_ACTIVE_ATTRIBUTE_MAX_LENGTH/GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH)
-      program.maxUniformLength = program.maxAttributeLength = program.maxUniformBlockNameLength = 0;
-      program.uniformIdCounter = 1;
-      GL.programs[id] = program;
-      return id;
-    }
-
-  function _emscripten_glCreateShader(shaderType) {
-      var id = GL.getNewId(GL.shaders);
-      GL.shaders[id] = GLctx.createShader(shaderType);
-  
-      return id;
-    }
-
-  function _emscripten_glCullFace(x0) { GLctx['cullFace'](x0) }
-
-  function _emscripten_glDeleteBuffers(n, buffers) {
-      for (var i = 0; i < n; i++) {
-        var id = HEAP32[(((buffers)+(i*4))>>2)];
-        var buffer = GL.buffers[id];
-  
-        // From spec: "glDeleteBuffers silently ignores 0's and names that do not
-        // correspond to existing buffer objects."
-        if (!buffer) continue;
-  
-        GLctx.deleteBuffer(buffer);
-        buffer.name = 0;
-        GL.buffers[id] = null;
-  
-      }
-    }
-
-  function _emscripten_glDeleteFramebuffers(n, framebuffers) {
-      for (var i = 0; i < n; ++i) {
-        var id = HEAP32[(((framebuffers)+(i*4))>>2)];
-        var framebuffer = GL.framebuffers[id];
-        if (!framebuffer) continue; // GL spec: "glDeleteFramebuffers silently ignores 0s and names that do not correspond to existing framebuffer objects".
-        GLctx.deleteFramebuffer(framebuffer);
-        framebuffer.name = 0;
-        GL.framebuffers[id] = null;
-      }
-    }
-
-  function _emscripten_glDeleteProgram(id) {
-      if (!id) return;
-      var program = GL.programs[id];
-      if (!program) { // glDeleteProgram actually signals an error when deleting a nonexisting object, unlike some other GL delete functions.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      GLctx.deleteProgram(program);
-      program.name = 0;
-      GL.programs[id] = null;
-    }
-
-  function _emscripten_glDeleteQueriesEXT(n, ids) {
-      for (var i = 0; i < n; i++) {
-        var id = HEAP32[(((ids)+(i*4))>>2)];
-        var query = GL.queries[id];
-        if (!query) continue; // GL spec: "unused names in ids are ignored, as is the name zero."
-        GLctx.disjointTimerQueryExt['deleteQueryEXT'](query);
-        GL.queries[id] = null;
-      }
-    }
-
-  function _emscripten_glDeleteRenderbuffers(n, renderbuffers) {
-      for (var i = 0; i < n; i++) {
-        var id = HEAP32[(((renderbuffers)+(i*4))>>2)];
-        var renderbuffer = GL.renderbuffers[id];
-        if (!renderbuffer) continue; // GL spec: "glDeleteRenderbuffers silently ignores 0s and names that do not correspond to existing renderbuffer objects".
-        GLctx.deleteRenderbuffer(renderbuffer);
-        renderbuffer.name = 0;
-        GL.renderbuffers[id] = null;
-      }
-    }
-
-  function _emscripten_glDeleteShader(id) {
-      if (!id) return;
-      var shader = GL.shaders[id];
-      if (!shader) { // glDeleteShader actually signals an error when deleting a nonexisting object, unlike some other GL delete functions.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      GLctx.deleteShader(shader);
-      GL.shaders[id] = null;
-    }
-
-  function _emscripten_glDeleteTextures(n, textures) {
-      for (var i = 0; i < n; i++) {
-        var id = HEAP32[(((textures)+(i*4))>>2)];
-        var texture = GL.textures[id];
-        if (!texture) continue; // GL spec: "glDeleteTextures silently ignores 0s and names that do not correspond to existing textures".
-        GLctx.deleteTexture(texture);
-        texture.name = 0;
-        GL.textures[id] = null;
-      }
-    }
-
-  function _emscripten_glDeleteVertexArraysOES(n, vaos) {
-      for (var i = 0; i < n; i++) {
-        var id = HEAP32[(((vaos)+(i*4))>>2)];
-        GLctx['deleteVertexArray'](GL.vaos[id]);
-        GL.vaos[id] = null;
-      }
-    }
-
-  function _emscripten_glDepthFunc(x0) { GLctx['depthFunc'](x0) }
-
-  function _emscripten_glDepthMask(flag) {
-      GLctx.depthMask(!!flag);
-    }
-
-  function _emscripten_glDepthRangef(x0, x1) { GLctx['depthRange'](x0, x1) }
-
-  function _emscripten_glDetachShader(program, shader) {
-      GLctx.detachShader(GL.programs[program], GL.shaders[shader]);
-    }
-
-  function _emscripten_glDisable(x0) { GLctx['disable'](x0) }
-
-  function _emscripten_glDisableVertexAttribArray(index) {
-      GLctx.disableVertexAttribArray(index);
-    }
-
-  function _emscripten_glDrawArrays(mode, first, count) {
-  
-      GLctx.drawArrays(mode, first, count);
-  
-    }
-
-  function _emscripten_glDrawArraysInstancedANGLE(mode, first, count, primcount) {
-      GLctx['drawArraysInstanced'](mode, first, count, primcount);
-    }
-
-  var tempFixedLengthArray = [];
-  function _emscripten_glDrawBuffersWEBGL(n, bufs) {
-  
-      var bufArray = tempFixedLengthArray[n];
-      for (var i = 0; i < n; i++) {
-        bufArray[i] = HEAP32[(((bufs)+(i*4))>>2)];
-      }
-  
-      GLctx['drawBuffers'](bufArray);
-    }
-
-  function _emscripten_glDrawElements(mode, count, type, indices) {
-  
-      GLctx.drawElements(mode, count, type, indices);
-  
-    }
-
-  function _emscripten_glDrawElementsInstancedANGLE(mode, count, type, indices, primcount) {
-      GLctx['drawElementsInstanced'](mode, count, type, indices, primcount);
-    }
-
-  function _emscripten_glEnable(x0) { GLctx['enable'](x0) }
-
-  function _emscripten_glEnableVertexAttribArray(index) {
-      GLctx.enableVertexAttribArray(index);
-    }
-
-  function _emscripten_glEndQueryEXT(target) {
-      GLctx.disjointTimerQueryExt['endQueryEXT'](target);
-    }
-
-  function _emscripten_glFinish() { GLctx['finish']() }
-
-  function _emscripten_glFlush() { GLctx['flush']() }
-
-  function _emscripten_glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer) {
-      GLctx.framebufferRenderbuffer(target, attachment, renderbuffertarget,
-                                         GL.renderbuffers[renderbuffer]);
-    }
-
-  function _emscripten_glFramebufferTexture2D(target, attachment, textarget, texture, level) {
-      GLctx.framebufferTexture2D(target, attachment, textarget,
-                                      GL.textures[texture], level);
-    }
-
-  function _emscripten_glFrontFace(x0) { GLctx['frontFace'](x0) }
-
-  function __glGenObject(n, buffers, createFunction, objectTable
-      ) {
-      for (var i = 0; i < n; i++) {
-        var buffer = GLctx[createFunction]();
-        var id = buffer && GL.getNewId(objectTable);
-        if (buffer) {
-          buffer.name = id;
-          objectTable[id] = buffer;
-        } else {
-          GL.recordError(0x502 /* GL_INVALID_OPERATION */);
-        }
-        HEAP32[(((buffers)+(i*4))>>2)] = id;
-      }
-    }
-  function _emscripten_glGenBuffers(n, buffers) {
-      __glGenObject(n, buffers, 'createBuffer', GL.buffers
-        );
-    }
-
-  function _emscripten_glGenFramebuffers(n, ids) {
-      __glGenObject(n, ids, 'createFramebuffer', GL.framebuffers
-        );
-    }
-
-  function _emscripten_glGenQueriesEXT(n, ids) {
-      for (var i = 0; i < n; i++) {
-        var query = GLctx.disjointTimerQueryExt['createQueryEXT']();
-        if (!query) {
-          GL.recordError(0x502 /* GL_INVALID_OPERATION */);
-          while (i < n) HEAP32[(((ids)+(i++*4))>>2)] = 0;
-          return;
-        }
-        var id = GL.getNewId(GL.queries);
-        query.name = id;
-        GL.queries[id] = query;
-        HEAP32[(((ids)+(i*4))>>2)] = id;
-      }
-    }
-
-  function _emscripten_glGenRenderbuffers(n, renderbuffers) {
-      __glGenObject(n, renderbuffers, 'createRenderbuffer', GL.renderbuffers
-        );
-    }
-
-  function _emscripten_glGenTextures(n, textures) {
-      __glGenObject(n, textures, 'createTexture', GL.textures
-        );
-    }
-
-  function _emscripten_glGenVertexArraysOES(n, arrays) {
-      __glGenObject(n, arrays, 'createVertexArray', GL.vaos
-        );
-    }
-
-  function _emscripten_glGenerateMipmap(x0) { GLctx['generateMipmap'](x0) }
-
-  function __glGetActiveAttribOrUniform(funcName, program, index, bufSize, length, size, type, name) {
-      program = GL.programs[program];
-      var info = GLctx[funcName](program, index);
-      if (info) { // If an error occurs, nothing will be written to length, size and type and name.
-        var numBytesWrittenExclNull = name && stringToUTF8(info.name, name, bufSize);
-        if (length) HEAP32[((length)>>2)] = numBytesWrittenExclNull;
-        if (size) HEAP32[((size)>>2)] = info.size;
-        if (type) HEAP32[((type)>>2)] = info.type;
-      }
-    }
-  function _emscripten_glGetActiveAttrib(program, index, bufSize, length, size, type, name) {
-      __glGetActiveAttribOrUniform('getActiveAttrib', program, index, bufSize, length, size, type, name);
-    }
-
-  function _emscripten_glGetActiveUniform(program, index, bufSize, length, size, type, name) {
-      __glGetActiveAttribOrUniform('getActiveUniform', program, index, bufSize, length, size, type, name);
-    }
-
-  function _emscripten_glGetAttachedShaders(program, maxCount, count, shaders) {
-      var result = GLctx.getAttachedShaders(GL.programs[program]);
-      var len = result.length;
-      if (len > maxCount) {
-        len = maxCount;
-      }
-      HEAP32[((count)>>2)] = len;
-      for (var i = 0; i < len; ++i) {
-        var id = GL.shaders.indexOf(result[i]);
-        HEAP32[(((shaders)+(i*4))>>2)] = id;
-      }
-    }
-
-  function _emscripten_glGetAttribLocation(program, name) {
-      return GLctx.getAttribLocation(GL.programs[program], UTF8ToString(name));
-    }
-
-  function readI53FromI64(ptr) {
-      return HEAPU32[ptr>>2] + HEAP32[ptr+4>>2] * 4294967296;
-    }
-  
-  function readI53FromU64(ptr) {
-      return HEAPU32[ptr>>2] + HEAPU32[ptr+4>>2] * 4294967296;
-    }
-  function writeI53ToI64(ptr, num) {
-      HEAPU32[ptr>>2] = num;
-      HEAPU32[ptr+4>>2] = (num - HEAPU32[ptr>>2])/4294967296;
-      var deserialized = (num >= 0) ? readI53FromU64(ptr) : readI53FromI64(ptr);
-      if (deserialized != num) warnOnce('writeI53ToI64() out of range: serialized JS Number ' + num + ' to Wasm heap as bytes lo=0x' + HEAPU32[ptr>>2].toString(16) + ', hi=0x' + HEAPU32[ptr+4>>2].toString(16) + ', which deserializes back to ' + deserialized + ' instead!');
-    }
-  function emscriptenWebGLGet(name_, p, type) {
-      // Guard against user passing a null pointer.
-      // Note that GLES2 spec does not say anything about how passing a null pointer should be treated.
-      // Testing on desktop core GL 3, the application crashes on glGetIntegerv to a null pointer, but
-      // better to report an error instead of doing anything random.
-      if (!p) {
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var ret = undefined;
-      switch (name_) { // Handle a few trivial GLES values
-        case 0x8DFA: // GL_SHADER_COMPILER
-          ret = 1;
-          break;
-        case 0x8DF8: // GL_SHADER_BINARY_FORMATS
-          if (type != 0 && type != 1) {
-            GL.recordError(0x500); // GL_INVALID_ENUM
-          }
-          return; // Do not write anything to the out pointer, since no binary formats are supported.
-        case 0x8DF9: // GL_NUM_SHADER_BINARY_FORMATS
-          ret = 0;
-          break;
-        case 0x86A2: // GL_NUM_COMPRESSED_TEXTURE_FORMATS
-          // WebGL doesn't have GL_NUM_COMPRESSED_TEXTURE_FORMATS (it's obsolete since GL_COMPRESSED_TEXTURE_FORMATS returns a JS array that can be queried for length),
-          // so implement it ourselves to allow C++ GLES2 code get the length.
-          var formats = GLctx.getParameter(0x86A3 /*GL_COMPRESSED_TEXTURE_FORMATS*/);
-          ret = formats ? formats.length : 0;
-          break;
-  
-      }
-  
-      if (ret === undefined) {
-        var result = GLctx.getParameter(name_);
-        switch (typeof(result)) {
-          case "number":
-            ret = result;
-            break;
-          case "boolean":
-            ret = result ? 1 : 0;
-            break;
-          case "string":
-            GL.recordError(0x500); // GL_INVALID_ENUM
-            return;
-          case "object":
-            if (result === null) {
-              // null is a valid result for some (e.g., which buffer is bound - perhaps nothing is bound), but otherwise
-              // can mean an invalid name_, which we need to report as an error
-              switch (name_) {
-                case 0x8894: // ARRAY_BUFFER_BINDING
-                case 0x8B8D: // CURRENT_PROGRAM
-                case 0x8895: // ELEMENT_ARRAY_BUFFER_BINDING
-                case 0x8CA6: // FRAMEBUFFER_BINDING or DRAW_FRAMEBUFFER_BINDING
-                case 0x8CA7: // RENDERBUFFER_BINDING
-                case 0x8069: // TEXTURE_BINDING_2D
-                case 0x85B5: // WebGL 2 GL_VERTEX_ARRAY_BINDING, or WebGL 1 extension OES_vertex_array_object GL_VERTEX_ARRAY_BINDING_OES
-                case 0x8514: { // TEXTURE_BINDING_CUBE_MAP
-                  ret = 0;
-                  break;
-                }
-                default: {
-                  GL.recordError(0x500); // GL_INVALID_ENUM
-                  return;
-                }
-              }
-            } else if (result instanceof Float32Array ||
-                       result instanceof Uint32Array ||
-                       result instanceof Int32Array ||
-                       result instanceof Array) {
-              for (var i = 0; i < result.length; ++i) {
-                switch (type) {
-                  case 0: HEAP32[(((p)+(i*4))>>2)] = result[i]; break;
-                  case 2: HEAPF32[(((p)+(i*4))>>2)] = result[i]; break;
-                  case 4: HEAP8[(((p)+(i))>>0)] = result[i] ? 1 : 0; break;
-                }
-              }
-              return;
-            } else {
-              try {
-                ret = result.name | 0;
-              } catch(e) {
-                GL.recordError(0x500); // GL_INVALID_ENUM
-                err('GL_INVALID_ENUM in glGet' + type + 'v: Unknown object returned from WebGL getParameter(' + name_ + ')! (error: ' + e + ')');
-                return;
-              }
-            }
-            break;
-          default:
-            GL.recordError(0x500); // GL_INVALID_ENUM
-            err('GL_INVALID_ENUM in glGet' + type + 'v: Native code calling glGet' + type + 'v(' + name_ + ') and it returns ' + result + ' of type ' + typeof(result) + '!');
-            return;
-        }
-      }
-  
-      switch (type) {
-        case 1: writeI53ToI64(p, ret); break;
-        case 0: HEAP32[((p)>>2)] = ret; break;
-        case 2:   HEAPF32[((p)>>2)] = ret; break;
-        case 4: HEAP8[((p)>>0)] = ret ? 1 : 0; break;
-      }
-    }
-  function _emscripten_glGetBooleanv(name_, p) {
-      emscriptenWebGLGet(name_, p, 4);
-    }
-
-  function _emscripten_glGetBufferParameteriv(target, value, data) {
-      if (!data) {
-        // GLES2 specification does not specify how to behave if data is a null pointer. Since calling this function does not make sense
-        // if data == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAP32[((data)>>2)] = GLctx.getBufferParameter(target, value);
-    }
-
-  function _emscripten_glGetError() {
-      var error = GLctx.getError() || GL.lastError;
-      GL.lastError = 0/*GL_NO_ERROR*/;
-      return error;
-    }
-
-  function _emscripten_glGetFloatv(name_, p) {
-      emscriptenWebGLGet(name_, p, 2);
-    }
-
-  function _emscripten_glGetFramebufferAttachmentParameteriv(target, attachment, pname, params) {
-      var result = GLctx.getFramebufferAttachmentParameter(target, attachment, pname);
-      if (result instanceof WebGLRenderbuffer ||
-          result instanceof WebGLTexture) {
-        result = result.name | 0;
-      }
-      HEAP32[((params)>>2)] = result;
-    }
-
-  function _emscripten_glGetIntegerv(name_, p) {
-      emscriptenWebGLGet(name_, p, 0);
-    }
-
-  function _emscripten_glGetProgramInfoLog(program, maxLength, length, infoLog) {
-      var log = GLctx.getProgramInfoLog(GL.programs[program]);
-      if (log === null) log = '(unknown error)';
-      var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
-      if (length) HEAP32[((length)>>2)] = numBytesWrittenExclNull;
-    }
-
-  function _emscripten_glGetProgramiv(program, pname, p) {
-      if (!p) {
-        // GLES2 specification does not specify how to behave if p is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-  
-      if (program >= GL.counter) {
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-  
-      program = GL.programs[program];
-  
-      if (pname == 0x8B84) { // GL_INFO_LOG_LENGTH
-        var log = GLctx.getProgramInfoLog(program);
-        if (log === null) log = '(unknown error)';
-        HEAP32[((p)>>2)] = log.length + 1;
-      } else if (pname == 0x8B87 /* GL_ACTIVE_UNIFORM_MAX_LENGTH */) {
-        if (!program.maxUniformLength) {
-          for (var i = 0; i < GLctx.getProgramParameter(program, 0x8B86/*GL_ACTIVE_UNIFORMS*/); ++i) {
-            program.maxUniformLength = Math.max(program.maxUniformLength, GLctx.getActiveUniform(program, i).name.length+1);
-          }
-        }
-        HEAP32[((p)>>2)] = program.maxUniformLength;
-      } else if (pname == 0x8B8A /* GL_ACTIVE_ATTRIBUTE_MAX_LENGTH */) {
-        if (!program.maxAttributeLength) {
-          for (var i = 0; i < GLctx.getProgramParameter(program, 0x8B89/*GL_ACTIVE_ATTRIBUTES*/); ++i) {
-            program.maxAttributeLength = Math.max(program.maxAttributeLength, GLctx.getActiveAttrib(program, i).name.length+1);
-          }
-        }
-        HEAP32[((p)>>2)] = program.maxAttributeLength;
-      } else if (pname == 0x8A35 /* GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH */) {
-        if (!program.maxUniformBlockNameLength) {
-          for (var i = 0; i < GLctx.getProgramParameter(program, 0x8A36/*GL_ACTIVE_UNIFORM_BLOCKS*/); ++i) {
-            program.maxUniformBlockNameLength = Math.max(program.maxUniformBlockNameLength, GLctx.getActiveUniformBlockName(program, i).length+1);
-          }
-        }
-        HEAP32[((p)>>2)] = program.maxUniformBlockNameLength;
-      } else {
-        HEAP32[((p)>>2)] = GLctx.getProgramParameter(program, pname);
-      }
-    }
-
-  function _emscripten_glGetQueryObjecti64vEXT(id, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var query = GL.queries[id];
-      var param;
-      {
-        param = GLctx.disjointTimerQueryExt['getQueryObjectEXT'](query, pname);
-      }
-      var ret;
-      if (typeof param == 'boolean') {
-        ret = param ? 1 : 0;
-      } else {
-        ret = param;
-      }
-      writeI53ToI64(params, ret);
-    }
-
-  function _emscripten_glGetQueryObjectivEXT(id, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var query = GL.queries[id];
-      var param = GLctx.disjointTimerQueryExt['getQueryObjectEXT'](query, pname);
-      var ret;
-      if (typeof param == 'boolean') {
-        ret = param ? 1 : 0;
-      } else {
-        ret = param;
-      }
-      HEAP32[((params)>>2)] = ret;
-    }
-
-  function _emscripten_glGetQueryObjectui64vEXT(id, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var query = GL.queries[id];
-      var param;
-      {
-        param = GLctx.disjointTimerQueryExt['getQueryObjectEXT'](query, pname);
-      }
-      var ret;
-      if (typeof param == 'boolean') {
-        ret = param ? 1 : 0;
-      } else {
-        ret = param;
-      }
-      writeI53ToI64(params, ret);
-    }
-
-  function _emscripten_glGetQueryObjectuivEXT(id, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var query = GL.queries[id];
-      var param = GLctx.disjointTimerQueryExt['getQueryObjectEXT'](query, pname);
-      var ret;
-      if (typeof param == 'boolean') {
-        ret = param ? 1 : 0;
-      } else {
-        ret = param;
-      }
-      HEAP32[((params)>>2)] = ret;
-    }
-
-  function _emscripten_glGetQueryivEXT(target, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAP32[((params)>>2)] = GLctx.disjointTimerQueryExt['getQueryEXT'](target, pname);
-    }
-
-  function _emscripten_glGetRenderbufferParameteriv(target, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if params == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAP32[((params)>>2)] = GLctx.getRenderbufferParameter(target, pname);
-    }
-
-  function _emscripten_glGetShaderInfoLog(shader, maxLength, length, infoLog) {
-      var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
-      if (log === null) log = '(unknown error)';
-      var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
-      if (length) HEAP32[((length)>>2)] = numBytesWrittenExclNull;
-    }
-
-  function _emscripten_glGetShaderPrecisionFormat(shaderType, precisionType, range, precision) {
-      var result = GLctx.getShaderPrecisionFormat(shaderType, precisionType);
-      HEAP32[((range)>>2)] = result.rangeMin;
-      HEAP32[(((range)+(4))>>2)] = result.rangeMax;
-      HEAP32[((precision)>>2)] = result.precision;
-    }
-
-  function _emscripten_glGetShaderSource(shader, bufSize, length, source) {
-      var result = GLctx.getShaderSource(GL.shaders[shader]);
-      if (!result) return; // If an error occurs, nothing will be written to length or source.
-      var numBytesWrittenExclNull = (bufSize > 0 && source) ? stringToUTF8(result, source, bufSize) : 0;
-      if (length) HEAP32[((length)>>2)] = numBytesWrittenExclNull;
-    }
-
-  function _emscripten_glGetShaderiv(shader, pname, p) {
-      if (!p) {
-        // GLES2 specification does not specify how to behave if p is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      if (pname == 0x8B84) { // GL_INFO_LOG_LENGTH
-        var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
-        if (log === null) log = '(unknown error)';
-        // The GLES2 specification says that if the shader has an empty info log,
-        // a value of 0 is returned. Otherwise the log has a null char appended.
-        // (An empty string is falsey, so we can just check that instead of
-        // looking at log.length.)
-        var logLength = log ? log.length + 1 : 0;
-        HEAP32[((p)>>2)] = logLength;
-      } else if (pname == 0x8B88) { // GL_SHADER_SOURCE_LENGTH
-        var source = GLctx.getShaderSource(GL.shaders[shader]);
-        // source may be a null, or the empty string, both of which are falsey
-        // values that we report a 0 length for.
-        var sourceLength = source ? source.length + 1 : 0;
-        HEAP32[((p)>>2)] = sourceLength;
-      } else {
-        HEAP32[((p)>>2)] = GLctx.getShaderParameter(GL.shaders[shader], pname);
-      }
-    }
-
-  function _emscripten_glGetString(name_) {
-      var ret = GL.stringCache[name_];
-      if (!ret) {
-        switch (name_) {
-          case 0x1F03 /* GL_EXTENSIONS */:
-            var exts = GLctx.getSupportedExtensions() || []; // .getSupportedExtensions() can return null if context is lost, so coerce to empty array.
-            exts = exts.concat(exts.map(function(e) { return "GL_" + e; }));
-            ret = stringToNewUTF8(exts.join(' '));
-            break;
-          case 0x1F00 /* GL_VENDOR */:
-          case 0x1F01 /* GL_RENDERER */:
-          case 0x9245 /* UNMASKED_VENDOR_WEBGL */:
-          case 0x9246 /* UNMASKED_RENDERER_WEBGL */:
-            var s = GLctx.getParameter(name_);
-            if (!s) {
-              GL.recordError(0x500/*GL_INVALID_ENUM*/);
-            }
-            ret = s && stringToNewUTF8(s);
-            break;
-  
-          case 0x1F02 /* GL_VERSION */:
-            var glVersion = GLctx.getParameter(0x1F02 /*GL_VERSION*/);
-            // return GLES version string corresponding to the version of the WebGL context
-            {
-              glVersion = 'OpenGL ES 2.0 (' + glVersion + ')';
-            }
-            ret = stringToNewUTF8(glVersion);
-            break;
-          case 0x8B8C /* GL_SHADING_LANGUAGE_VERSION */:
-            var glslVersion = GLctx.getParameter(0x8B8C /*GL_SHADING_LANGUAGE_VERSION*/);
-            // extract the version number 'N.M' from the string 'WebGL GLSL ES N.M ...'
-            var ver_re = /^WebGL GLSL ES ([0-9]\.[0-9][0-9]?)(?:$| .*)/;
-            var ver_num = glslVersion.match(ver_re);
-            if (ver_num !== null) {
-              if (ver_num[1].length == 3) ver_num[1] = ver_num[1] + '0'; // ensure minor version has 2 digits
-              glslVersion = 'OpenGL ES GLSL ES ' + ver_num[1] + ' (' + glslVersion + ')';
-            }
-            ret = stringToNewUTF8(glslVersion);
-            break;
-          default:
-            GL.recordError(0x500/*GL_INVALID_ENUM*/);
-            // fall through
-        }
-        GL.stringCache[name_] = ret;
-      }
-      return ret;
-    }
-
-  function _emscripten_glGetTexParameterfv(target, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAPF32[((params)>>2)] = GLctx.getTexParameter(target, pname);
-    }
-
-  function _emscripten_glGetTexParameteriv(target, pname, params) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if p == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAP32[((params)>>2)] = GLctx.getTexParameter(target, pname);
-    }
-
-  /** @noinline */
-  function webglGetLeftBracePos(name) {
-      return name.slice(-1) == ']' && name.lastIndexOf('[');
-    }
-  function webglPrepareUniformLocationsBeforeFirstUse(program) {
-      var uniformLocsById = program.uniformLocsById, // Maps GLuint -> WebGLUniformLocation
-        uniformSizeAndIdsByName = program.uniformSizeAndIdsByName, // Maps name -> [uniform array length, GLuint]
-        i, j;
-  
-      // On the first time invocation of glGetUniformLocation on this shader program:
-      // initialize cache data structures and discover which uniforms are arrays.
-      if (!uniformLocsById) {
-        // maps GLint integer locations to WebGLUniformLocations
-        program.uniformLocsById = uniformLocsById = {};
-        // maps integer locations back to uniform name strings, so that we can lazily fetch uniform array locations
-        program.uniformArrayNamesById = {};
-  
-        for (i = 0; i < GLctx.getProgramParameter(program, 0x8B86/*GL_ACTIVE_UNIFORMS*/); ++i) {
-          var u = GLctx.getActiveUniform(program, i);
-          var nm = u.name;
-          var sz = u.size;
-          var lb = webglGetLeftBracePos(nm);
-          var arrayName = lb > 0 ? nm.slice(0, lb) : nm;
-  
-          // Assign a new location.
-          var id = program.uniformIdCounter;
-          program.uniformIdCounter += sz;
-          // Eagerly get the location of the uniformArray[0] base element.
-          // The remaining indices >0 will be left for lazy evaluation to
-          // improve performance. Those may never be needed to fetch, if the
-          // application fills arrays always in full starting from the first
-          // element of the array.
-          uniformSizeAndIdsByName[arrayName] = [sz, id];
-  
-          // Store placeholder integers in place that highlight that these
-          // >0 index locations are array indices pending population.
-          for(j = 0; j < sz; ++j) {
-            uniformLocsById[id] = j;
-            program.uniformArrayNamesById[id++] = arrayName;
-          }
-        }
-      }
-    }
-  function _emscripten_glGetUniformLocation(program, name) {
-  
-      name = UTF8ToString(name);
-  
-      if (program = GL.programs[program]) {
-        webglPrepareUniformLocationsBeforeFirstUse(program);
-        var uniformLocsById = program.uniformLocsById; // Maps GLuint -> WebGLUniformLocation
-        var arrayIndex = 0;
-        var uniformBaseName = name;
-  
-        // Invariant: when populating integer IDs for uniform locations, we must maintain the precondition that
-        // arrays reside in contiguous addresses, i.e. for a 'vec4 colors[10];', colors[4] must be at location colors[0]+4.
-        // However, user might call glGetUniformLocation(program, "colors") for an array, so we cannot discover based on the user
-        // input arguments whether the uniform we are dealing with is an array. The only way to discover which uniforms are arrays
-        // is to enumerate over all the active uniforms in the program.
-        var leftBrace = webglGetLeftBracePos(name);
-  
-        // If user passed an array accessor "[index]", parse the array index off the accessor.
-        if (leftBrace > 0) {
-          arrayIndex = jstoi_q(name.slice(leftBrace + 1)) >>> 0; // "index]", coerce parseInt(']') with >>>0 to treat "foo[]" as "foo[0]" and foo[-1] as unsigned out-of-bounds.
-          uniformBaseName = name.slice(0, leftBrace);
-        }
-  
-        // Have we cached the location of this uniform before?
-        var sizeAndId = program.uniformSizeAndIdsByName[uniformBaseName]; // A pair [array length, GLint of the uniform location]
-  
-        // If an uniform with this name exists, and if its index is within the array limits (if it's even an array),
-        // query the WebGLlocation, or return an existing cached location.
-        if (sizeAndId && arrayIndex < sizeAndId[0]) {
-          arrayIndex += sizeAndId[1]; // Add the base location of the uniform to the array index offset.
-          if ((uniformLocsById[arrayIndex] = uniformLocsById[arrayIndex] || GLctx.getUniformLocation(program, name))) {
-            return arrayIndex;
-          }
-        }
-      }
-      else {
-        // N.b. we are currently unable to distinguish between GL program IDs that never existed vs GL program IDs that have been deleted,
-        // so report GL_INVALID_VALUE in both cases.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-      }
-      return -1;
-    }
-
-  function webglGetUniformLocation(location) {
-      var p = GLctx.currentProgram;
-  
-      if (p) {
-        var webglLoc = p.uniformLocsById[location];
-        // p.uniformLocsById[location] stores either an integer, or a WebGLUniformLocation.
-  
-        // If an integer, we have not yet bound the location, so do it now. The integer value specifies the array index
-        // we should bind to.
-        if (typeof webglLoc === 'number') {
-          p.uniformLocsById[location] = webglLoc = GLctx.getUniformLocation(p, p.uniformArrayNamesById[location] + (webglLoc > 0 ? '[' + webglLoc + ']' : ''));
-        }
-        // Else an already cached WebGLUniformLocation, return it.
-        return webglLoc;
-      } else {
-        GL.recordError(0x502/*GL_INVALID_OPERATION*/);
-      }
-    }
-  /** @suppress{checkTypes} */
-  function emscriptenWebGLGetUniform(program, location, params, type) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if params == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      program = GL.programs[program];
-      webglPrepareUniformLocationsBeforeFirstUse(program);
-      var data = GLctx.getUniform(program, webglGetUniformLocation(location));
-      if (typeof data == 'number' || typeof data == 'boolean') {
-        switch (type) {
-          case 0: HEAP32[((params)>>2)] = data; break;
-          case 2: HEAPF32[((params)>>2)] = data; break;
-        }
-      } else {
-        for (var i = 0; i < data.length; i++) {
-          switch (type) {
-            case 0: HEAP32[(((params)+(i*4))>>2)] = data[i]; break;
-            case 2: HEAPF32[(((params)+(i*4))>>2)] = data[i]; break;
-          }
-        }
-      }
-    }
-  function _emscripten_glGetUniformfv(program, location, params) {
-      emscriptenWebGLGetUniform(program, location, params, 2);
-    }
-
-  function _emscripten_glGetUniformiv(program, location, params) {
-      emscriptenWebGLGetUniform(program, location, params, 0);
-    }
-
-  function _emscripten_glGetVertexAttribPointerv(index, pname, pointer) {
-      if (!pointer) {
-        // GLES2 specification does not specify how to behave if pointer is a null pointer. Since calling this function does not make sense
-        // if pointer == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      HEAP32[((pointer)>>2)] = GLctx.getVertexAttribOffset(index, pname);
-    }
-
-  /** @suppress{checkTypes} */
-  function emscriptenWebGLGetVertexAttrib(index, pname, params, type) {
-      if (!params) {
-        // GLES2 specification does not specify how to behave if params is a null pointer. Since calling this function does not make sense
-        // if params == null, issue a GL error to notify user about it.
-        GL.recordError(0x501 /* GL_INVALID_VALUE */);
-        return;
-      }
-      var data = GLctx.getVertexAttrib(index, pname);
-      if (pname == 0x889F/*VERTEX_ATTRIB_ARRAY_BUFFER_BINDING*/) {
-        HEAP32[((params)>>2)] = data && data["name"];
-      } else if (typeof data == 'number' || typeof data == 'boolean') {
-        switch (type) {
-          case 0: HEAP32[((params)>>2)] = data; break;
-          case 2: HEAPF32[((params)>>2)] = data; break;
-          case 5: HEAP32[((params)>>2)] = Math.fround(data); break;
-        }
-      } else {
-        for (var i = 0; i < data.length; i++) {
-          switch (type) {
-            case 0: HEAP32[(((params)+(i*4))>>2)] = data[i]; break;
-            case 2: HEAPF32[(((params)+(i*4))>>2)] = data[i]; break;
-            case 5: HEAP32[(((params)+(i*4))>>2)] = Math.fround(data[i]); break;
-          }
-        }
-      }
-    }
-  function _emscripten_glGetVertexAttribfv(index, pname, params) {
-      // N.B. This function may only be called if the vertex attribute was specified using the function glVertexAttrib*f(),
-      // otherwise the results are undefined. (GLES3 spec 6.1.12)
-      emscriptenWebGLGetVertexAttrib(index, pname, params, 2);
-    }
-
-  function _emscripten_glGetVertexAttribiv(index, pname, params) {
-      // N.B. This function may only be called if the vertex attribute was specified using the function glVertexAttrib*f(),
-      // otherwise the results are undefined. (GLES3 spec 6.1.12)
-      emscriptenWebGLGetVertexAttrib(index, pname, params, 5);
-    }
-
-  function _emscripten_glHint(x0, x1) { GLctx['hint'](x0, x1) }
-
-  function _emscripten_glIsBuffer(buffer) {
-      var b = GL.buffers[buffer];
-      if (!b) return 0;
-      return GLctx.isBuffer(b);
-    }
-
-  function _emscripten_glIsEnabled(x0) { return GLctx['isEnabled'](x0) }
-
-  function _emscripten_glIsFramebuffer(framebuffer) {
-      var fb = GL.framebuffers[framebuffer];
-      if (!fb) return 0;
-      return GLctx.isFramebuffer(fb);
-    }
-
-  function _emscripten_glIsProgram(program) {
-      program = GL.programs[program];
-      if (!program) return 0;
-      return GLctx.isProgram(program);
-    }
-
-  function _emscripten_glIsQueryEXT(id) {
-      var query = GL.queries[id];
-      if (!query) return 0;
-      return GLctx.disjointTimerQueryExt['isQueryEXT'](query);
-    }
-
-  function _emscripten_glIsRenderbuffer(renderbuffer) {
-      var rb = GL.renderbuffers[renderbuffer];
-      if (!rb) return 0;
-      return GLctx.isRenderbuffer(rb);
-    }
-
-  function _emscripten_glIsShader(shader) {
-      var s = GL.shaders[shader];
-      if (!s) return 0;
-      return GLctx.isShader(s);
-    }
-
-  function _emscripten_glIsTexture(id) {
-      var texture = GL.textures[id];
-      if (!texture) return 0;
-      return GLctx.isTexture(texture);
-    }
-
-  function _emscripten_glIsVertexArrayOES(array) {
-  
-      var vao = GL.vaos[array];
-      if (!vao) return 0;
-      return GLctx['isVertexArray'](vao);
-    }
-
-  function _emscripten_glLineWidth(x0) { GLctx['lineWidth'](x0) }
-
-  function _emscripten_glLinkProgram(program) {
-      program = GL.programs[program];
-      GLctx.linkProgram(program);
-      // Invalidate earlier computed uniform->ID mappings, those have now become stale
-      program.uniformLocsById = 0; // Mark as null-like so that glGetUniformLocation() knows to populate this again.
-      program.uniformSizeAndIdsByName = {};
-  
-    }
-
-  function _emscripten_glPixelStorei(pname, param) {
-      if (pname == 0xCF5 /* GL_UNPACK_ALIGNMENT */) {
-        GL.unpackAlignment = param;
-      }
-      GLctx.pixelStorei(pname, param);
-    }
-
-  function _emscripten_glPolygonOffset(x0, x1) { GLctx['polygonOffset'](x0, x1) }
-
-  function _emscripten_glQueryCounterEXT(id, target) {
-      GLctx.disjointTimerQueryExt['queryCounterEXT'](GL.queries[id], target);
-    }
-
-  function computeUnpackAlignedImageSize(width, height, sizePerPixel, alignment) {
-      function roundedToNextMultipleOf(x, y) {
-        return (x + y - 1) & -y;
-      }
-      var plainRowSize = width * sizePerPixel;
-      var alignedRowSize = roundedToNextMultipleOf(plainRowSize, alignment);
-      return height * alignedRowSize;
-    }
-  
-  function __colorChannelsInGlTextureFormat(format) {
-      // Micro-optimizations for size: map format to size by subtracting smallest enum value (0x1902) from all values first.
-      // Also omit the most common size value (1) from the list, which is assumed by formats not on the list.
-      var colorChannels = {
-        // 0x1902 /* GL_DEPTH_COMPONENT */ - 0x1902: 1,
-        // 0x1906 /* GL_ALPHA */ - 0x1902: 1,
-        5: 3,
-        6: 4,
-        // 0x1909 /* GL_LUMINANCE */ - 0x1902: 1,
-        8: 2,
-        29502: 3,
-        29504: 4,
-      };
-      return colorChannels[format - 0x1902]||1;
-    }
-  
-  function heapObjectForWebGLType(type) {
-      // Micro-optimization for size: Subtract lowest GL enum number (0x1400/* GL_BYTE */) from type to compare
-      // smaller values for the heap, for shorter generated code size.
-      // Also the type HEAPU16 is not tested for explicitly, but any unrecognized type will return out HEAPU16.
-      // (since most types are HEAPU16)
-      type -= 0x1400;
-  
-      if (type == 1) return HEAPU8;
-  
-      if (type == 4) return HEAP32;
-  
-      if (type == 6) return HEAPF32;
-  
-      if (type == 5
-        || type == 28922
-        )
-        return HEAPU32;
-  
-      return HEAPU16;
-    }
-  
-  function heapAccessShiftForWebGLHeap(heap) {
-      return 31 - Math.clz32(heap.BYTES_PER_ELEMENT);
-    }
-  function emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) {
-      var heap = heapObjectForWebGLType(type);
-      var shift = heapAccessShiftForWebGLHeap(heap);
-      var byteSize = 1<<shift;
-      var sizePerPixel = __colorChannelsInGlTextureFormat(format) * byteSize;
-      var bytes = computeUnpackAlignedImageSize(width, height, sizePerPixel, GL.unpackAlignment);
-      return heap.subarray(pixels >> shift, pixels + bytes >> shift);
-    }
-  function _emscripten_glReadPixels(x, y, width, height, format, type, pixels) {
-      var pixelData = emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, format);
-      if (!pixelData) {
-        GL.recordError(0x500/*GL_INVALID_ENUM*/);
-        return;
-      }
-      GLctx.readPixels(x, y, width, height, format, type, pixelData);
-    }
-
-  function _emscripten_glReleaseShaderCompiler() {
-      // NOP (as allowed by GLES 2.0 spec)
-    }
-
-  function _emscripten_glRenderbufferStorage(x0, x1, x2, x3) { GLctx['renderbufferStorage'](x0, x1, x2, x3) }
-
-  function _emscripten_glSampleCoverage(value, invert) {
-      GLctx.sampleCoverage(value, !!invert);
-    }
-
-  function _emscripten_glScissor(x0, x1, x2, x3) { GLctx['scissor'](x0, x1, x2, x3) }
-
-  function _emscripten_glShaderBinary() {
-      GL.recordError(0x500/*GL_INVALID_ENUM*/);
-    }
-
-  function _emscripten_glShaderSource(shader, count, string, length) {
-      var source = GL.getSource(shader, count, string, length);
-  
-      GLctx.shaderSource(GL.shaders[shader], source);
-    }
-
-  function _emscripten_glStencilFunc(x0, x1, x2) { GLctx['stencilFunc'](x0, x1, x2) }
-
-  function _emscripten_glStencilFuncSeparate(x0, x1, x2, x3) { GLctx['stencilFuncSeparate'](x0, x1, x2, x3) }
-
-  function _emscripten_glStencilMask(x0) { GLctx['stencilMask'](x0) }
-
-  function _emscripten_glStencilMaskSeparate(x0, x1) { GLctx['stencilMaskSeparate'](x0, x1) }
-
-  function _emscripten_glStencilOp(x0, x1, x2) { GLctx['stencilOp'](x0, x1, x2) }
-
-  function _emscripten_glStencilOpSeparate(x0, x1, x2, x3) { GLctx['stencilOpSeparate'](x0, x1, x2, x3) }
-
-  function _emscripten_glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels) {
-      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels ? emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) : null);
-    }
-
-  function _emscripten_glTexParameterf(x0, x1, x2) { GLctx['texParameterf'](x0, x1, x2) }
-
-  function _emscripten_glTexParameterfv(target, pname, params) {
-      var param = HEAPF32[((params)>>2)];
-      GLctx.texParameterf(target, pname, param);
-    }
-
-  function _emscripten_glTexParameteri(x0, x1, x2) { GLctx['texParameteri'](x0, x1, x2) }
-
-  function _emscripten_glTexParameteriv(target, pname, params) {
-      var param = HEAP32[((params)>>2)];
-      GLctx.texParameteri(target, pname, param);
-    }
-
-  function _emscripten_glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels) {
-      var pixelData = null;
-      if (pixels) pixelData = emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, 0);
-      GLctx.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixelData);
-    }
-
-  function _emscripten_glUniform1f(location, v0) {
-      GLctx.uniform1f(webglGetUniformLocation(location), v0);
-    }
-
-  var miniTempWebGLFloatBuffers = [];
-  function _emscripten_glUniform1fv(location, count, value) {
-  
-      if (count <= 288) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[count-1];
-        for (var i = 0; i < count; ++i) {
-          view[i] = HEAPF32[(((value)+(4*i))>>2)];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*4)>>2);
-      }
-      GLctx.uniform1fv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform1i(location, v0) {
-      GLctx.uniform1i(webglGetUniformLocation(location), v0);
-    }
-
-  var __miniTempWebGLIntBuffers = [];
-  function _emscripten_glUniform1iv(location, count, value) {
-  
-      if (count <= 288) {
-        // avoid allocation when uploading few enough uniforms
-        var view = __miniTempWebGLIntBuffers[count-1];
-        for (var i = 0; i < count; ++i) {
-          view[i] = HEAP32[(((value)+(4*i))>>2)];
-        }
-      } else
-      {
-        var view = HEAP32.subarray((value)>>2, (value+count*4)>>2);
-      }
-      GLctx.uniform1iv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform2f(location, v0, v1) {
-      GLctx.uniform2f(webglGetUniformLocation(location), v0, v1);
-    }
-
-  function _emscripten_glUniform2fv(location, count, value) {
-  
-      if (count <= 144) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[2*count-1];
-        for (var i = 0; i < 2*count; i += 2) {
-          view[i] = HEAPF32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAPF32[(((value)+(4*i+4))>>2)];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*8)>>2);
-      }
-      GLctx.uniform2fv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform2i(location, v0, v1) {
-      GLctx.uniform2i(webglGetUniformLocation(location), v0, v1);
-    }
-
-  function _emscripten_glUniform2iv(location, count, value) {
-  
-      if (count <= 144) {
-        // avoid allocation when uploading few enough uniforms
-        var view = __miniTempWebGLIntBuffers[2*count-1];
-        for (var i = 0; i < 2*count; i += 2) {
-          view[i] = HEAP32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAP32[(((value)+(4*i+4))>>2)];
-        }
-      } else
-      {
-        var view = HEAP32.subarray((value)>>2, (value+count*8)>>2);
-      }
-      GLctx.uniform2iv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform3f(location, v0, v1, v2) {
-      GLctx.uniform3f(webglGetUniformLocation(location), v0, v1, v2);
-    }
-
-  function _emscripten_glUniform3fv(location, count, value) {
-  
-      if (count <= 96) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[3*count-1];
-        for (var i = 0; i < 3*count; i += 3) {
-          view[i] = HEAPF32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAPF32[(((value)+(4*i+4))>>2)];
-          view[i+2] = HEAPF32[(((value)+(4*i+8))>>2)];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*12)>>2);
-      }
-      GLctx.uniform3fv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform3i(location, v0, v1, v2) {
-      GLctx.uniform3i(webglGetUniformLocation(location), v0, v1, v2);
-    }
-
-  function _emscripten_glUniform3iv(location, count, value) {
-  
-      if (count <= 96) {
-        // avoid allocation when uploading few enough uniforms
-        var view = __miniTempWebGLIntBuffers[3*count-1];
-        for (var i = 0; i < 3*count; i += 3) {
-          view[i] = HEAP32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAP32[(((value)+(4*i+4))>>2)];
-          view[i+2] = HEAP32[(((value)+(4*i+8))>>2)];
-        }
-      } else
-      {
-        var view = HEAP32.subarray((value)>>2, (value+count*12)>>2);
-      }
-      GLctx.uniform3iv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform4f(location, v0, v1, v2, v3) {
-      GLctx.uniform4f(webglGetUniformLocation(location), v0, v1, v2, v3);
-    }
-
-  function _emscripten_glUniform4fv(location, count, value) {
-  
-      if (count <= 72) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[4*count-1];
-        // hoist the heap out of the loop for size and for pthreads+growth.
-        var heap = HEAPF32;
-        value >>= 2;
-        for (var i = 0; i < 4 * count; i += 4) {
-          var dst = value + i;
-          view[i] = heap[dst];
-          view[i + 1] = heap[dst + 1];
-          view[i + 2] = heap[dst + 2];
-          view[i + 3] = heap[dst + 3];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*16)>>2);
-      }
-      GLctx.uniform4fv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniform4i(location, v0, v1, v2, v3) {
-      GLctx.uniform4i(webglGetUniformLocation(location), v0, v1, v2, v3);
-    }
-
-  function _emscripten_glUniform4iv(location, count, value) {
-  
-      if (count <= 72) {
-        // avoid allocation when uploading few enough uniforms
-        var view = __miniTempWebGLIntBuffers[4*count-1];
-        for (var i = 0; i < 4*count; i += 4) {
-          view[i] = HEAP32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAP32[(((value)+(4*i+4))>>2)];
-          view[i+2] = HEAP32[(((value)+(4*i+8))>>2)];
-          view[i+3] = HEAP32[(((value)+(4*i+12))>>2)];
-        }
-      } else
-      {
-        var view = HEAP32.subarray((value)>>2, (value+count*16)>>2);
-      }
-      GLctx.uniform4iv(webglGetUniformLocation(location), view);
-    }
-
-  function _emscripten_glUniformMatrix2fv(location, count, transpose, value) {
-  
-      if (count <= 72) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[4*count-1];
-        for (var i = 0; i < 4*count; i += 4) {
-          view[i] = HEAPF32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAPF32[(((value)+(4*i+4))>>2)];
-          view[i+2] = HEAPF32[(((value)+(4*i+8))>>2)];
-          view[i+3] = HEAPF32[(((value)+(4*i+12))>>2)];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*16)>>2);
-      }
-      GLctx.uniformMatrix2fv(webglGetUniformLocation(location), !!transpose, view);
-    }
-
-  function _emscripten_glUniformMatrix3fv(location, count, transpose, value) {
-  
-      if (count <= 32) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[9*count-1];
-        for (var i = 0; i < 9*count; i += 9) {
-          view[i] = HEAPF32[(((value)+(4*i))>>2)];
-          view[i+1] = HEAPF32[(((value)+(4*i+4))>>2)];
-          view[i+2] = HEAPF32[(((value)+(4*i+8))>>2)];
-          view[i+3] = HEAPF32[(((value)+(4*i+12))>>2)];
-          view[i+4] = HEAPF32[(((value)+(4*i+16))>>2)];
-          view[i+5] = HEAPF32[(((value)+(4*i+20))>>2)];
-          view[i+6] = HEAPF32[(((value)+(4*i+24))>>2)];
-          view[i+7] = HEAPF32[(((value)+(4*i+28))>>2)];
-          view[i+8] = HEAPF32[(((value)+(4*i+32))>>2)];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*36)>>2);
-      }
-      GLctx.uniformMatrix3fv(webglGetUniformLocation(location), !!transpose, view);
-    }
-
-  function _emscripten_glUniformMatrix4fv(location, count, transpose, value) {
-  
-      if (count <= 18) {
-        // avoid allocation when uploading few enough uniforms
-        var view = miniTempWebGLFloatBuffers[16*count-1];
-        // hoist the heap out of the loop for size and for pthreads+growth.
-        var heap = HEAPF32;
-        value >>= 2;
-        for (var i = 0; i < 16 * count; i += 16) {
-          var dst = value + i;
-          view[i] = heap[dst];
-          view[i + 1] = heap[dst + 1];
-          view[i + 2] = heap[dst + 2];
-          view[i + 3] = heap[dst + 3];
-          view[i + 4] = heap[dst + 4];
-          view[i + 5] = heap[dst + 5];
-          view[i + 6] = heap[dst + 6];
-          view[i + 7] = heap[dst + 7];
-          view[i + 8] = heap[dst + 8];
-          view[i + 9] = heap[dst + 9];
-          view[i + 10] = heap[dst + 10];
-          view[i + 11] = heap[dst + 11];
-          view[i + 12] = heap[dst + 12];
-          view[i + 13] = heap[dst + 13];
-          view[i + 14] = heap[dst + 14];
-          view[i + 15] = heap[dst + 15];
-        }
-      } else
-      {
-        var view = HEAPF32.subarray((value)>>2, (value+count*64)>>2);
-      }
-      GLctx.uniformMatrix4fv(webglGetUniformLocation(location), !!transpose, view);
-    }
-
-  function _emscripten_glUseProgram(program) {
-      program = GL.programs[program];
-      GLctx.useProgram(program);
-      // Record the currently active program so that we can access the uniform
-      // mapping table of that program.
-      GLctx.currentProgram = program;
-    }
-
-  function _emscripten_glValidateProgram(program) {
-      GLctx.validateProgram(GL.programs[program]);
-    }
-
-  function _emscripten_glVertexAttrib1f(x0, x1) { GLctx['vertexAttrib1f'](x0, x1) }
-
-  function _emscripten_glVertexAttrib1fv(index, v) {
-  
-      GLctx.vertexAttrib1f(index, HEAPF32[v>>2]);
-    }
-
-  function _emscripten_glVertexAttrib2f(x0, x1, x2) { GLctx['vertexAttrib2f'](x0, x1, x2) }
-
-  function _emscripten_glVertexAttrib2fv(index, v) {
-  
-      GLctx.vertexAttrib2f(index, HEAPF32[v>>2], HEAPF32[v+4>>2]);
-    }
-
-  function _emscripten_glVertexAttrib3f(x0, x1, x2, x3) { GLctx['vertexAttrib3f'](x0, x1, x2, x3) }
-
-  function _emscripten_glVertexAttrib3fv(index, v) {
-  
-      GLctx.vertexAttrib3f(index, HEAPF32[v>>2], HEAPF32[v+4>>2], HEAPF32[v+8>>2]);
-    }
-
-  function _emscripten_glVertexAttrib4f(x0, x1, x2, x3, x4) { GLctx['vertexAttrib4f'](x0, x1, x2, x3, x4) }
-
-  function _emscripten_glVertexAttrib4fv(index, v) {
-  
-      GLctx.vertexAttrib4f(index, HEAPF32[v>>2], HEAPF32[v+4>>2], HEAPF32[v+8>>2], HEAPF32[v+12>>2]);
-    }
-
-  function _emscripten_glVertexAttribDivisorANGLE(index, divisor) {
-      GLctx['vertexAttribDivisor'](index, divisor);
-    }
-
-  function _emscripten_glVertexAttribPointer(index, size, type, normalized, stride, ptr) {
-      GLctx.vertexAttribPointer(index, size, type, !!normalized, stride, ptr);
-    }
-
-  function _emscripten_glViewport(x0, x1, x2, x3) { GLctx['viewport'](x0, x1, x2, x3) }
-
-  function _emscripten_has_asyncify() {
-      return 0;
-    }
-
-  function _emscripten_memcpy_big(dest, src, num) {
-      HEAPU8.copyWithin(dest, src, src + num);
-    }
-
-  /** @type{function(number, (number|boolean), ...(number|boolean))} */
-  function _emscripten_proxy_to_main_thread_js(index, sync) {
-      // Additional arguments are passed after those two, which are the actual
-      // function arguments.
-      // The serialization buffer contains the number of call params, and then
-      // all the args here.
-      // We also pass 'sync' to C separately, since C needs to look at it.
-      var numCallArgs = arguments.length - 2;
-      if (numCallArgs > 20-1) throw 'emscripten_proxy_to_main_thread_js: Too many arguments ' + numCallArgs + ' to proxied function idx=' + index + ', maximum supported is ' + (20-1) + '!';
-      // Allocate a buffer, which will be copied by the C code.
-      var stack = stackSave();
-      // First passed parameter specifies the number of arguments to the function.
-      // When BigInt support is enabled, we must handle types in a more complex
-      // way, detecting at runtime if a value is a BigInt or not (as we have no
-      // type info here). To do that, add a "prefix" before each value that
-      // indicates if it is a BigInt, which effectively doubles the number of
-      // values we serialize for proxying. TODO: pack this?
-      var serializedNumCallArgs = numCallArgs ;
-      var args = stackAlloc(serializedNumCallArgs * 8);
-      var b = args >> 3;
-      for (var i = 0; i < numCallArgs; i++) {
-        var arg = arguments[2 + i];
-        HEAPF64[b + i] = arg;
-      }
-      var ret = _emscripten_run_in_main_runtime_thread_js(index, serializedNumCallArgs, args, sync);
-      stackRestore(stack);
-      return ret;
-    }
-  
-  var _emscripten_receive_on_main_thread_js_callArgs = [];
-  function _emscripten_receive_on_main_thread_js(index, numCallArgs, args) {
-      _emscripten_receive_on_main_thread_js_callArgs.length = numCallArgs;
-      var b = args >> 3;
-      for (var i = 0; i < numCallArgs; i++) {
-        _emscripten_receive_on_main_thread_js_callArgs[i] = HEAPF64[b + i];
-      }
-      // Proxied JS library funcs are encoded as positive values, and
-      // EM_ASMs as negative values (see include_asm_consts)
-      var isEmAsmConst = index < 0;
-      var func = !isEmAsmConst ? proxiedFunctionTable[index] : ASM_CONSTS[-index - 1];
-      assert(func.length == numCallArgs, 'Call args mismatch in emscripten_receive_on_main_thread_js');
-      return func.apply(null, _emscripten_receive_on_main_thread_js_callArgs);
-    }
-
-  function doRequestFullscreen(target, strategy) {
-      if (!JSEvents.fullscreenEnabled()) return -1;
-      target = findEventTarget(target);
-      if (!target) return -4;
-  
-      if (!target.requestFullscreen
-        && !target.webkitRequestFullscreen
-        ) {
-        return -3;
-      }
-  
-      var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
-  
-      // Queue this function call if we're not currently in an event handler and the user saw it appropriate to do so.
-      if (!canPerformRequests) {
-        if (strategy.deferUntilInEventHandler) {
-          JSEvents.deferCall(_JSEvents_requestFullscreen, 1 /* priority over pointer lock */, [target, strategy]);
-          return 1;
-        } else {
-          return -2;
-        }
-      }
-  
-      return _JSEvents_requestFullscreen(target, strategy);
-    }
-  
-  function _emscripten_request_fullscreen_strategy(target, deferUntilInEventHandler, fullscreenStrategy) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(65, 1, target, deferUntilInEventHandler, fullscreenStrategy);
-    
-      var strategy = {
-        scaleMode: HEAP32[((fullscreenStrategy)>>2)],
-        canvasResolutionScaleMode: HEAP32[(((fullscreenStrategy)+(4))>>2)],
-        filteringMode: HEAP32[(((fullscreenStrategy)+(8))>>2)],
-        deferUntilInEventHandler: deferUntilInEventHandler,
-        canvasResizedCallbackTargetThread: HEAP32[(((fullscreenStrategy)+(20))>>2)],
-        canvasResizedCallback: HEAP32[(((fullscreenStrategy)+(12))>>2)],
-        canvasResizedCallbackUserData: HEAP32[(((fullscreenStrategy)+(16))>>2)]
-      };
-  
-      return doRequestFullscreen(target, strategy);
-    
-  }
-  
-
-  
-  function _emscripten_request_pointerlock(target, deferUntilInEventHandler) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(66, 1, target, deferUntilInEventHandler);
-    
-      target = findEventTarget(target);
-      if (!target) return -4;
-      if (!target.requestPointerLock
-        && !target.msRequestPointerLock
-        ) {
-        return -1;
-      }
-  
-      var canPerformRequests = JSEvents.canPerformEventHandlerRequests();
-  
-      // Queue this function call if we're not currently in an event handler and the user saw it appropriate to do so.
-      if (!canPerformRequests) {
-        if (deferUntilInEventHandler) {
-          JSEvents.deferCall(requestPointerLock, 2 /* priority below fullscreen */, [target]);
-          return 1;
-        } else {
-          return -2;
-        }
-      }
-  
-      return requestPointerLock(target);
-    
-  }
-  
-
-  function abortOnCannotGrowMemory(requestedSize) {
-      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s INITIAL_MEMORY=X  with X higher than the current value ' + HEAP8.length + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
-    }
-  function _emscripten_resize_heap(requestedSize) {
-      var oldSize = HEAPU8.length;
-      requestedSize = requestedSize >>> 0;
-      abortOnCannotGrowMemory(requestedSize);
-    }
-
-  
-  function _emscripten_sample_gamepad_data() {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(67, 1);
-    
-      return (JSEvents.lastGamepadState = (navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : null)))
-        ? 0 : -1;
-    
-  }
-  
-
-  function registerBeforeUnloadEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString) {
-      var beforeUnloadEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        // Note: This is always called on the main browser thread, since it needs synchronously return a value!
-        var confirmationMessage = wasmTable.get(callbackfunc)(eventTypeId, 0, userData);
-        
-        if (confirmationMessage) {
-          confirmationMessage = UTF8ToString(confirmationMessage);
-        }
-        if (confirmationMessage) {
-          e.preventDefault();
-          e.returnValue = confirmationMessage;
-          return confirmationMessage;
-        }
-      };
-  
-      var eventHandler = {
-        target: findEventTarget(target),
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: beforeUnloadEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_beforeunload_callback_on_thread(userData, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(68, 1, userData, callbackfunc, targetThread);
-    
-      if (typeof onbeforeunload === 'undefined') return -1;
-      // beforeunload callback can only be registered on the main browser thread, because the page will go away immediately after returning from the handler,
-      // and there is no time to start proxying it anywhere.
-      if (targetThread !== 1) return -5;
-      registerBeforeUnloadEventCallback(2, userData, true, callbackfunc, 28, "beforeunload");
-      return 0;
-    
-  }
-  
-
-  function registerFocusEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.focusEvent) JSEvents.focusEvent = _malloc( 256 );
-  
-      var focusEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        var nodeName = JSEvents.getNodeNameForTarget(e.target);
-        var id = e.target.id ? e.target.id : '';
-  
-        var focusEvent = targetThread ? _malloc( 256 ) : JSEvents.focusEvent;
-        stringToUTF8(nodeName, focusEvent + 0, 128);
-        stringToUTF8(id, focusEvent + 128, 128);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, focusEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, focusEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: findEventTarget(target),
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: focusEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_blur_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(69, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerFocusEventCallback(target, userData, useCapture, callbackfunc, 12, "blur", targetThread);
-      return 0;
-    
-  }
-  
-
 
   function _emscripten_set_current_thread_status_js(newStatus) {
     }
   function _emscripten_set_current_thread_status(newStatus) {
     }
 
-  
-  function _emscripten_set_element_css_size(target, width, height) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(70, 1, target, width, height);
-    
-      target = findEventTarget(target);
-      if (!target) return -4;
-  
-      target.style.width = width + "px";
-      target.style.height = height + "px";
-  
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_focus_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(71, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerFocusEventCallback(target, userData, useCapture, callbackfunc, 13, "focus", targetThread);
-      return 0;
-    
-  }
-  
-
-  function fillFullscreenChangeEventData(eventStruct) {
-      var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-      var isFullscreen = !!fullscreenElement;
-      /** @suppress{checkTypes} */
-      HEAP32[((eventStruct)>>2)] = isFullscreen;
-      HEAP32[(((eventStruct)+(4))>>2)] = JSEvents.fullscreenEnabled();
-      // If transitioning to fullscreen, report info about the element that is now fullscreen.
-      // If transitioning to windowed mode, report info about the element that just was fullscreen.
-      var reportedElement = isFullscreen ? fullscreenElement : JSEvents.previousFullscreenElement;
-      var nodeName = JSEvents.getNodeNameForTarget(reportedElement);
-      var id = (reportedElement && reportedElement.id) ? reportedElement.id : '';
-      stringToUTF8(nodeName, eventStruct + 8, 128);
-      stringToUTF8(id, eventStruct + 136, 128);
-      HEAP32[(((eventStruct)+(264))>>2)] = reportedElement ? reportedElement.clientWidth : 0;
-      HEAP32[(((eventStruct)+(268))>>2)] = reportedElement ? reportedElement.clientHeight : 0;
-      HEAP32[(((eventStruct)+(272))>>2)] = screen.width;
-      HEAP32[(((eventStruct)+(276))>>2)] = screen.height;
-      if (isFullscreen) {
-        JSEvents.previousFullscreenElement = fullscreenElement;
-      }
-    }
-  function registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.fullscreenChangeEvent) JSEvents.fullscreenChangeEvent = _malloc( 280 );
-  
-      var fullscreenChangeEventhandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        var fullscreenChangeEvent = targetThread ? _malloc( 280 ) : JSEvents.fullscreenChangeEvent;
-  
-        fillFullscreenChangeEventData(fullscreenChangeEvent);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, fullscreenChangeEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, fullscreenChangeEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: fullscreenChangeEventhandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_fullscreenchange_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(72, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      if (!JSEvents.fullscreenEnabled()) return -1;
-      target = findEventTarget(target);
-      if (!target) return -4;
-      registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "fullscreenchange", targetThread);
-  
-      // Unprefixed Fullscreen API shipped in Chromium 71 (https://bugs.chromium.org/p/chromium/issues/detail?id=383813)
-      // As of Safari 13.0.3 on macOS Catalina 10.15.1 still ships with prefixed webkitfullscreenchange. TODO: revisit this check once Safari ships unprefixed version.
-      registerFullscreenChangeEventCallback(target, userData, useCapture, callbackfunc, 19, "webkitfullscreenchange", targetThread);
-  
-      return 0;
-    
-  }
-  
-
-  function registerGamepadEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.gamepadEvent) JSEvents.gamepadEvent = _malloc( 1432 );
-  
-      var gamepadEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        var gamepadEvent = targetThread ? _malloc( 1432 ) : JSEvents.gamepadEvent;
-        fillGamepadEventData(gamepadEvent, e["gamepad"]);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, gamepadEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, gamepadEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: findEventTarget(target),
-        allowsDeferredCalls: true,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: gamepadEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_gamepadconnected_callback_on_thread(userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(73, 1, userData, useCapture, callbackfunc, targetThread);
-    
-      if (!navigator.getGamepads && !navigator.webkitGetGamepads) return -1;
-      registerGamepadEventCallback(2, userData, useCapture, callbackfunc, 26, "gamepadconnected", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_gamepaddisconnected_callback_on_thread(userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(74, 1, userData, useCapture, callbackfunc, targetThread);
-    
-      if (!navigator.getGamepads && !navigator.webkitGetGamepads) return -1;
-      registerGamepadEventCallback(2, userData, useCapture, callbackfunc, 27, "gamepaddisconnected", targetThread);
-      return 0;
-    
-  }
-  
-
-  function registerKeyEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.keyEvent) JSEvents.keyEvent = _malloc( 176 );
-  
-      var keyEventHandlerFunc = function(e) {
-        assert(e);
-  
-        var keyEventData = targetThread ? _malloc( 176 ) : JSEvents.keyEvent; // This allocated block is passed as satellite data to the proxied function call, so the call frees up the data block when done.
-        HEAPF64[((keyEventData)>>3)] = e.timeStamp;
-  
-        var idx = keyEventData >> 2;
-  
-        HEAP32[idx + 2] = e.location;
-        HEAP32[idx + 3] = e.ctrlKey;
-        HEAP32[idx + 4] = e.shiftKey;
-        HEAP32[idx + 5] = e.altKey;
-        HEAP32[idx + 6] = e.metaKey;
-        HEAP32[idx + 7] = e.repeat;
-        HEAP32[idx + 8] = e.charCode;
-        HEAP32[idx + 9] = e.keyCode;
-        HEAP32[idx + 10] = e.which;
-        stringToUTF8(e.key || '', keyEventData + 44, 32);
-        stringToUTF8(e.code || '', keyEventData + 76, 32);
-        stringToUTF8(e.char || '', keyEventData + 108, 32);
-        stringToUTF8(e.locale || '', keyEventData + 140, 32);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, keyEventData, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, keyEventData, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: findEventTarget(target),
-        allowsDeferredCalls: true,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: keyEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_keydown_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(75, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerKeyEventCallback(target, userData, useCapture, callbackfunc, 2, "keydown", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_keypress_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(76, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerKeyEventCallback(target, userData, useCapture, callbackfunc, 1, "keypress", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_keyup_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(77, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerKeyEventCallback(target, userData, useCapture, callbackfunc, 3, "keyup", targetThread);
-      return 0;
-    
-  }
-  
-
   function _emscripten_set_main_loop(func, fps, simulateInfiniteLoop) {
       var browserIterationFunc = wasmTable.get(func);
       setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop);
     }
-
-  function fillMouseEventData(eventStruct, e, target) {
-      assert(eventStruct % 4 == 0);
-      HEAPF64[((eventStruct)>>3)] = e.timeStamp;
-      var idx = eventStruct >> 2;
-      HEAP32[idx + 2] = e.screenX;
-      HEAP32[idx + 3] = e.screenY;
-      HEAP32[idx + 4] = e.clientX;
-      HEAP32[idx + 5] = e.clientY;
-      HEAP32[idx + 6] = e.ctrlKey;
-      HEAP32[idx + 7] = e.shiftKey;
-      HEAP32[idx + 8] = e.altKey;
-      HEAP32[idx + 9] = e.metaKey;
-      HEAP16[idx*2 + 20] = e.button;
-      HEAP16[idx*2 + 21] = e.buttons;
-  
-      HEAP32[idx + 11] = e["movementX"]
-        ;
-  
-      HEAP32[idx + 12] = e["movementY"]
-        ;
-  
-      var rect = getBoundingClientRect(target);
-      HEAP32[idx + 13] = e.clientX - rect.left;
-      HEAP32[idx + 14] = e.clientY - rect.top;
-  
-    }
-  function registerMouseEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.mouseEvent) JSEvents.mouseEvent = _malloc( 72 );
-      target = findEventTarget(target);
-  
-      var mouseEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        // TODO: Make this access thread safe, or this could update live while app is reading it.
-        fillMouseEventData(JSEvents.mouseEvent, e, target);
-  
-        if (targetThread) {
-          var mouseEventData = _malloc( 72 ); // This allocated block is passed as satellite data to the proxied function call, so the call frees up the data block when done.
-          fillMouseEventData(mouseEventData, e, target);
-          JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, mouseEventData, userData);
-        } else
-        if (wasmTable.get(callbackfunc)(eventTypeId, JSEvents.mouseEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        allowsDeferredCalls: eventTypeString != 'mousemove' && eventTypeString != 'mouseenter' && eventTypeString != 'mouseleave', // Mouse move events do not allow fullscreen/pointer lock requests to be handled in them!
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: mouseEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_mousedown_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(78, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerMouseEventCallback(target, userData, useCapture, callbackfunc, 5, "mousedown", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_mouseenter_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(79, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerMouseEventCallback(target, userData, useCapture, callbackfunc, 33, "mouseenter", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_mouseleave_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(80, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerMouseEventCallback(target, userData, useCapture, callbackfunc, 34, "mouseleave", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_mousemove_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(81, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerMouseEventCallback(target, userData, useCapture, callbackfunc, 8, "mousemove", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_mouseup_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(82, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerMouseEventCallback(target, userData, useCapture, callbackfunc, 6, "mouseup", targetThread);
-      return 0;
-    
-  }
-  
-
-  function fillPointerlockChangeEventData(eventStruct) {
-      var pointerLockElement = document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement || document.msPointerLockElement;
-      var isPointerlocked = !!pointerLockElement;
-      /** @suppress {checkTypes} */
-      HEAP32[((eventStruct)>>2)] = isPointerlocked;
-      var nodeName = JSEvents.getNodeNameForTarget(pointerLockElement);
-      var id = (pointerLockElement && pointerLockElement.id) ? pointerLockElement.id : '';
-      stringToUTF8(nodeName, eventStruct + 4, 128);
-      stringToUTF8(id, eventStruct + 132, 128);
-    }
-  function registerPointerlockChangeEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.pointerlockChangeEvent) JSEvents.pointerlockChangeEvent = _malloc( 260 );
-  
-      var pointerlockChangeEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        var pointerlockChangeEvent = targetThread ? _malloc( 260 ) : JSEvents.pointerlockChangeEvent;
-        fillPointerlockChangeEventData(pointerlockChangeEvent);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, pointerlockChangeEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, pointerlockChangeEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: pointerlockChangeEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  /** @suppress {missingProperties} */
-  
-  function _emscripten_set_pointerlockchange_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(83, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      // TODO: Currently not supported in pthreads or in --proxy-to-worker mode. (In pthreads mode, document object is not defined)
-      if (!document || !document.body || (!document.body.requestPointerLock && !document.body.mozRequestPointerLock && !document.body.webkitRequestPointerLock && !document.body.msRequestPointerLock)) {
-        return -1;
-      }
-  
-      target = findEventTarget(target);
-      if (!target) return -4;
-      registerPointerlockChangeEventCallback(target, userData, useCapture, callbackfunc, 20, "pointerlockchange", targetThread);
-      registerPointerlockChangeEventCallback(target, userData, useCapture, callbackfunc, 20, "mozpointerlockchange", targetThread);
-      registerPointerlockChangeEventCallback(target, userData, useCapture, callbackfunc, 20, "webkitpointerlockchange", targetThread);
-      registerPointerlockChangeEventCallback(target, userData, useCapture, callbackfunc, 20, "mspointerlockchange", targetThread);
-      return 0;
-    
-  }
-  
-
-  function registerUiEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.uiEvent) JSEvents.uiEvent = _malloc( 36 );
-  
-      target = findEventTarget(target);
-  
-      var uiEventHandlerFunc = function(ev) {
-        var e = ev || event;
-        if (e.target != target) {
-          // Never take ui events such as scroll via a 'bubbled' route, but always from the direct element that
-          // was targeted. Otherwise e.g. if app logs a message in response to a page scroll, the Emscripten log
-          // message box could cause to scroll, generating a new (bubbled) scroll message, causing a new log print,
-          // causing a new scroll, etc..
-          return;
-        }
-        var b = document.body; // Take document.body to a variable, Closure compiler does not outline access to it on its own.
-        if (!b) {
-          // During a page unload 'body' can be null, with "Cannot read property 'clientWidth' of null" being thrown
-          return;
-        }
-        var uiEvent = targetThread ? _malloc( 36 ) : JSEvents.uiEvent;
-        HEAP32[((uiEvent)>>2)] = e.detail;
-        HEAP32[(((uiEvent)+(4))>>2)] = b.clientWidth;
-        HEAP32[(((uiEvent)+(8))>>2)] = b.clientHeight;
-        HEAP32[(((uiEvent)+(12))>>2)] = innerWidth;
-        HEAP32[(((uiEvent)+(16))>>2)] = innerHeight;
-        HEAP32[(((uiEvent)+(20))>>2)] = outerWidth;
-        HEAP32[(((uiEvent)+(24))>>2)] = outerHeight;
-        HEAP32[(((uiEvent)+(28))>>2)] = pageXOffset;
-        HEAP32[(((uiEvent)+(32))>>2)] = pageYOffset;
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, uiEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, uiEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: uiEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_resize_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(84, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerUiEventCallback(target, userData, useCapture, callbackfunc, 10, "resize", targetThread);
-      return 0;
-    
-  }
-  
 
   function _emscripten_set_timeout(cb, msecs, userData) {
       runtimeKeepalivePush();
@@ -12909,224 +10128,6 @@ var ASM_CONSTS = {
           wasmTable.get(cb)(userData);
         });
       }, msecs);
-    }
-
-  function registerTouchEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.touchEvent) JSEvents.touchEvent = _malloc( 1696 );
-  
-      target = findEventTarget(target);
-  
-      var touchEventHandlerFunc = function(e) {
-        assert(e);
-        var t, touches = {}, et = e.touches;
-        // To ease marshalling different kinds of touches that browser reports (all touches are listed in e.touches, 
-        // only changed touches in e.changedTouches, and touches on target at a.targetTouches), mark a boolean in
-        // each Touch object so that we can later loop only once over all touches we see to marshall over to Wasm.
-  
-        for (var i = 0; i < et.length; ++i) {
-          t = et[i];
-          // Browser might recycle the generated Touch objects between each frame (Firefox on Android), so reset any
-          // changed/target states we may have set from previous frame.
-          t.isChanged = t.onTarget = 0;
-          touches[t.identifier] = t;
-        }
-        // Mark which touches are part of the changedTouches list.
-        for (var i = 0; i < e.changedTouches.length; ++i) {
-          t = e.changedTouches[i];
-          t.isChanged = 1;
-          touches[t.identifier] = t;
-        }
-        // Mark which touches are part of the targetTouches list.
-        for (var i = 0; i < e.targetTouches.length; ++i) {
-          touches[e.targetTouches[i].identifier].onTarget = 1;
-        }
-  
-        var touchEvent = targetThread ? _malloc( 1696 ) : JSEvents.touchEvent;
-        HEAPF64[((touchEvent)>>3)] = e.timeStamp;
-        var idx = touchEvent>>2; // Pre-shift the ptr to index to HEAP32 to save code size
-        HEAP32[idx + 3] = e.ctrlKey;
-        HEAP32[idx + 4] = e.shiftKey;
-        HEAP32[idx + 5] = e.altKey;
-        HEAP32[idx + 6] = e.metaKey;
-        idx += 7; // Advance to the start of the touch array.
-        var targetRect = getBoundingClientRect(target);
-        var numTouches = 0;
-        for (var i in touches) {
-          var t = touches[i];
-          HEAP32[idx + 0] = t.identifier;
-          HEAP32[idx + 1] = t.screenX;
-          HEAP32[idx + 2] = t.screenY;
-          HEAP32[idx + 3] = t.clientX;
-          HEAP32[idx + 4] = t.clientY;
-          HEAP32[idx + 5] = t.pageX;
-          HEAP32[idx + 6] = t.pageY;
-          HEAP32[idx + 7] = t.isChanged;
-          HEAP32[idx + 8] = t.onTarget;
-          HEAP32[idx + 9] = t.clientX - targetRect.left;
-          HEAP32[idx + 10] = t.clientY - targetRect.top;
-  
-          idx += 13;
-  
-          if (++numTouches > 31) {
-            break;
-          }
-        }
-        HEAP32[(((touchEvent)+(8))>>2)] = numTouches;
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, touchEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, touchEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        allowsDeferredCalls: eventTypeString == 'touchstart' || eventTypeString == 'touchend',
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: touchEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_touchcancel_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(85, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerTouchEventCallback(target, userData, useCapture, callbackfunc, 25, "touchcancel", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_touchend_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(86, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerTouchEventCallback(target, userData, useCapture, callbackfunc, 23, "touchend", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_touchmove_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(87, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerTouchEventCallback(target, userData, useCapture, callbackfunc, 24, "touchmove", targetThread);
-      return 0;
-    
-  }
-  
-
-  
-  function _emscripten_set_touchstart_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(88, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      registerTouchEventCallback(target, userData, useCapture, callbackfunc, 22, "touchstart", targetThread);
-      return 0;
-    
-  }
-  
-
-  function fillVisibilityChangeEventData(eventStruct) {
-      var visibilityStates = [ "hidden", "visible", "prerender", "unloaded" ];
-      var visibilityState = visibilityStates.indexOf(document.visibilityState);
-  
-      // Assigning a boolean to HEAP32 with expected type coercion.
-      /** @suppress {checkTypes} */
-      HEAP32[((eventStruct)>>2)] = document.hidden;
-      HEAP32[(((eventStruct)+(4))>>2)] = visibilityState;
-    }
-  function registerVisibilityChangeEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.visibilityChangeEvent) JSEvents.visibilityChangeEvent = _malloc( 8 );
-  
-      var visibilityChangeEventHandlerFunc = function(ev) {
-        var e = ev || event;
-  
-        var visibilityChangeEvent = targetThread ? _malloc( 8 ) : JSEvents.visibilityChangeEvent;
-  
-        fillVisibilityChangeEventData(visibilityChangeEvent);
-  
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, visibilityChangeEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, visibilityChangeEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: visibilityChangeEventHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_visibilitychange_callback_on_thread(userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(89, 1, userData, useCapture, callbackfunc, targetThread);
-    
-    if (!specialHTMLTargets[1]) {
-      return -4;
-    }
-      registerVisibilityChangeEventCallback(specialHTMLTargets[1], userData, useCapture, callbackfunc, 21, "visibilitychange", targetThread);
-      return 0;
-    
-  }
-  
-
-  function registerWheelEventCallback(target, userData, useCapture, callbackfunc, eventTypeId, eventTypeString, targetThread) {
-      targetThread = JSEvents.getTargetThreadForEventCallback(targetThread);
-      if (!JSEvents.wheelEvent) JSEvents.wheelEvent = _malloc( 104 );
-  
-      // The DOM Level 3 events spec event 'wheel'
-      var wheelHandlerFunc = function(ev) {
-        var e = ev || event;
-        var wheelEvent = targetThread ? _malloc( 104 ) : JSEvents.wheelEvent; // This allocated block is passed as satellite data to the proxied function call, so the call frees up the data block when done.
-        fillMouseEventData(wheelEvent, e, target);
-        HEAPF64[(((wheelEvent)+(72))>>3)] = e["deltaX"];
-        HEAPF64[(((wheelEvent)+(80))>>3)] = e["deltaY"];
-        HEAPF64[(((wheelEvent)+(88))>>3)] = e["deltaZ"];
-        HEAP32[(((wheelEvent)+(96))>>2)] = e["deltaMode"];
-        if (targetThread) JSEvents.queueEventHandlerOnThread_iiii(targetThread, callbackfunc, eventTypeId, wheelEvent, userData);
-        else
-        if (wasmTable.get(callbackfunc)(eventTypeId, wheelEvent, userData)) e.preventDefault();
-      };
-  
-      var eventHandler = {
-        target: target,
-        allowsDeferredCalls: true,
-        eventTypeString: eventTypeString,
-        callbackfunc: callbackfunc,
-        handlerFunc: wheelHandlerFunc,
-        useCapture: useCapture
-      };
-      JSEvents.registerOrRemoveHandler(eventHandler);
-    }
-  
-  function _emscripten_set_wheel_callback_on_thread(target, userData, useCapture, callbackfunc, targetThread) {
-    if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(90, 1, target, userData, useCapture, callbackfunc, targetThread);
-    
-      target = findEventTarget(target);
-      if (typeof target.onwheel !== 'undefined') {
-        registerWheelEventCallback(target, userData, useCapture, callbackfunc, 9, "wheel", targetThread);
-        return 0;
-      } else {
-        return -1;
-      }
-    
-  }
-  
-
-  function _emscripten_sleep() {
-      throw 'Please compile your program with async support in order to use asynchronous operations like emscripten_sleep';
     }
 
   function _emscripten_unwind_to_js_event_loop() {
@@ -13212,7 +10213,7 @@ var ASM_CONSTS = {
   
   function _environ_get(__environ, environ_buf) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(91, 1, __environ, environ_buf);
+      return _emscripten_proxy_to_main_thread_js(53, 1, __environ, environ_buf);
     
       var bufSize = 0;
       getEnvStrings().forEach(function(string, i) {
@@ -13229,7 +10230,7 @@ var ASM_CONSTS = {
   
   function _environ_sizes_get(penviron_count, penviron_buf_size) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(92, 1, penviron_count, penviron_buf_size);
+      return _emscripten_proxy_to_main_thread_js(54, 1, penviron_count, penviron_buf_size);
     
       var strings = getEnvStrings();
       HEAP32[((penviron_count)>>2)] = strings.length;
@@ -13247,7 +10248,7 @@ var ASM_CONSTS = {
   
   function _fd_close(fd) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(93, 1, fd);
+      return _emscripten_proxy_to_main_thread_js(55, 1, fd);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -13264,7 +10265,7 @@ var ASM_CONSTS = {
   
   function _fd_fdstat_get(fd, pbuf) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(94, 1, fd, pbuf);
+      return _emscripten_proxy_to_main_thread_js(56, 1, fd, pbuf);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -13290,7 +10291,7 @@ var ASM_CONSTS = {
   
   function _fd_read(fd, iov, iovcnt, pnum) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(95, 1, fd, iov, iovcnt, pnum);
+      return _emscripten_proxy_to_main_thread_js(57, 1, fd, iov, iovcnt, pnum);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -13308,7 +10309,7 @@ var ASM_CONSTS = {
   
   function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(96, 1, fd, offset_low, offset_high, whence, newOffset);
+      return _emscripten_proxy_to_main_thread_js(58, 1, fd, offset_low, offset_high, whence, newOffset);
     try {
   
       
@@ -13338,7 +10339,7 @@ var ASM_CONSTS = {
   
   function _fd_write(fd, iov, iovcnt, pnum) {
     if (ENVIRONMENT_IS_PTHREAD)
-      return _emscripten_proxy_to_main_thread_js(97, 1, fd, iov, iovcnt, pnum);
+      return _emscripten_proxy_to_main_thread_js(59, 1, fd, iov, iovcnt, pnum);
     try {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
@@ -13923,21 +10924,10 @@ Module["requestFullscreen"] = function Module_requestFullscreen(lockPointer, res
   Module["getUserMedia"] = function Module_getUserMedia() { Browser.getUserMedia() }
   Module["createContext"] = function Module_createContext(canvas, useWebGL, setInModule, webGLContextAttributes) { return Browser.createContext(canvas, useWebGL, setInModule, webGLContextAttributes) };
 var GLctx;;
-for (var i = 0; i < 32; ++i) tempFixedLengthArray.push(new Array(i));;
-var miniTempWebGLFloatBuffersStorage = new Float32Array(288);
-  for (/**@suppress{duplicate}*/var i = 0; i < 288; ++i) {
-  miniTempWebGLFloatBuffers[i] = miniTempWebGLFloatBuffersStorage.subarray(0, i+1);
-  }
-  ;
-var __miniTempWebGLIntBuffersStorage = new Int32Array(288);
-  for (/**@suppress{duplicate}*/var i = 0; i < 288; ++i) {
-  __miniTempWebGLIntBuffers[i] = __miniTempWebGLIntBuffersStorage.subarray(0, i+1);
-  }
-  ;
 
  // proxiedFunctionTable specifies the list of functions that can be called either synchronously or asynchronously from other threads in postMessage()d or internally queued events. This way a pthread in a Worker can synchronously access e.g. the DOM on the main thread.
 
-var proxiedFunctionTable = [null,exitOnMainThread,_Mix_AllocateChannels,_SDL_GetTicks,_SDL_LockSurface,_Mix_FreeChunk,_Mix_HaltChannel,_Mix_LoadWAV,_Mix_LoadWAV_RW,_SDL_RWFromFile,_SDL_FreeRW,_Mix_OpenAudio,_Mix_PlayChannel,_Mix_Playing,_Mix_Volume,_SDL_EnableUNICODE,_SDL_GetAppState,_SDL_GetVideoInfo,_SDL_SetVideoMode,_SDL_WM_SetCaption,_SDL_WarpMouse,_tzset_impl,_atexit,___sys_chdir,___sys_fcntl64,___sys_fstat64,___sys_ftruncate64,___sys_getcwd,___sys_getdents64,___sys_ioctl,___sys_mkdir,___sys_mmap2,___sys_munmap,___sys_open,___sys_recvfrom,___sys_rename,___sys_rmdir,___sys_sendto,___sys_stat64,___sys_unlink,_eglBindAPI,_eglChooseConfig,_eglCreateContext,_eglCreateWindowSurface,_eglDestroyContext,_eglDestroySurface,_eglGetConfigAttrib,_eglGetDisplay,_eglGetError,_eglInitialize,_eglMakeCurrent,_eglQueryString,_eglSwapBuffers,_eglSwapInterval,_eglTerminate,_eglWaitClient,_eglWaitNative,_emscripten_exit_fullscreen,_emscripten_get_canvas_element_size_main_thread,_emscripten_set_canvas_element_size_main_thread,_emscripten_exit_pointerlock,_emscripten_get_device_pixel_ratio,_emscripten_get_element_css_size,_emscripten_get_gamepad_status,_emscripten_get_num_gamepads,_emscripten_request_fullscreen_strategy,_emscripten_request_pointerlock,_emscripten_sample_gamepad_data,_emscripten_set_beforeunload_callback_on_thread,_emscripten_set_blur_callback_on_thread,_emscripten_set_element_css_size,_emscripten_set_focus_callback_on_thread,_emscripten_set_fullscreenchange_callback_on_thread,_emscripten_set_gamepadconnected_callback_on_thread,_emscripten_set_gamepaddisconnected_callback_on_thread,_emscripten_set_keydown_callback_on_thread,_emscripten_set_keypress_callback_on_thread,_emscripten_set_keyup_callback_on_thread,_emscripten_set_mousedown_callback_on_thread,_emscripten_set_mouseenter_callback_on_thread,_emscripten_set_mouseleave_callback_on_thread,_emscripten_set_mousemove_callback_on_thread,_emscripten_set_mouseup_callback_on_thread,_emscripten_set_pointerlockchange_callback_on_thread,_emscripten_set_resize_callback_on_thread,_emscripten_set_touchcancel_callback_on_thread,_emscripten_set_touchend_callback_on_thread,_emscripten_set_touchmove_callback_on_thread,_emscripten_set_touchstart_callback_on_thread,_emscripten_set_visibilitychange_callback_on_thread,_emscripten_set_wheel_callback_on_thread,_environ_get,_environ_sizes_get,_fd_close,_fd_fdstat_get,_fd_read,_fd_seek,_fd_write];
+var proxiedFunctionTable = [null,exitOnMainThread,_Mix_AllocateChannels,_SDL_GetTicks,_SDL_LockSurface,_Mix_FreeChunk,_Mix_HaltChannel,_Mix_LoadWAV,_Mix_LoadWAV_RW,_SDL_RWFromFile,_SDL_FreeRW,_Mix_OpenAudio,_Mix_PlayChannel,_Mix_Playing,_Mix_Volume,_SDL_CreateRGBSurface,_SDL_EnableUNICODE,_SDL_FreeSurface,_SDL_GetAppState,_SDL_GetError,_SDL_GetKeyboardState,_SDL_GetVideoInfo,_SDL_Init,_SDL_PollEvent,_SDL_AudioQuit,_SDL_RWFromConstMem,_SDL_SetColors,_SDL_SetVideoMode,_SDL_ShowCursor,_SDL_UnlockSurface,_SDL_UpperBlit,_SDL_WM_SetCaption,_SDL_WarpMouse,_atexit,_tzset_impl,___sys_chdir,___sys_fcntl64,___sys_fstat64,___sys_ftruncate64,___sys_getcwd,___sys_getdents64,___sys_ioctl,___sys_mkdir,___sys_mmap2,___sys_munmap,___sys_open,___sys_recvfrom,___sys_rename,___sys_rmdir,___sys_sendto,___sys_stat64,___sys_unlink,_emscripten_set_canvas_element_size_main_thread,_environ_get,_environ_sizes_get,_fd_close,_fd_fdstat_get,_fd_read,_fd_seek,_fd_write];
 
 var ASSERTIONS = true;
 
@@ -14050,32 +11040,48 @@ var asmLibraryArg = {
   "Mix_PlayChannelTimed": _Mix_PlayChannelTimed,
   "Mix_Playing": _Mix_Playing,
   "Mix_Volume": _Mix_Volume,
+  "SDL_CreateRGBSurface": _SDL_CreateRGBSurface,
+  "SDL_Delay": _SDL_Delay,
   "SDL_EnableKeyRepeat": _SDL_EnableKeyRepeat,
   "SDL_EnableUNICODE": _SDL_EnableUNICODE,
+  "SDL_FreeSurface": _SDL_FreeSurface,
   "SDL_GetAppState": _SDL_GetAppState,
+  "SDL_GetError": _SDL_GetError,
+  "SDL_GetKeyboardState": _SDL_GetKeyboardState,
+  "SDL_GetTicks": _SDL_GetTicks,
   "SDL_GetVideoInfo": _SDL_GetVideoInfo,
+  "SDL_Init": _SDL_Init,
   "SDL_ListModes": _SDL_ListModes,
+  "SDL_LockSurface": _SDL_LockSurface,
+  "SDL_PollEvent": _SDL_PollEvent,
+  "SDL_Quit": _SDL_Quit,
+  "SDL_RWFromMem": _SDL_RWFromMem,
+  "SDL_SetColorKey": _SDL_SetColorKey,
+  "SDL_SetColors": _SDL_SetColors,
   "SDL_SetVideoMode": _SDL_SetVideoMode,
+  "SDL_ShowCursor": _SDL_ShowCursor,
+  "SDL_UnlockSurface": _SDL_UnlockSurface,
   "SDL_UpdateRect": _SDL_UpdateRect,
+  "SDL_UpperBlit": _SDL_UpperBlit,
   "SDL_WM_GrabInput": _SDL_WM_GrabInput,
   "SDL_WM_SetCaption": _SDL_WM_SetCaption,
   "SDL_WarpMouse": _SDL_WarpMouse,
   "SDL_mutexP": _SDL_mutexP,
   "SDL_mutexV": _SDL_mutexV,
-  "__asctime": ___asctime,
   "__assert_fail": ___assert_fail,
   "__call_sighandler": ___call_sighandler,
   "__clock_gettime": ___clock_gettime,
   "__cxa_allocate_exception": ___cxa_allocate_exception,
   "__cxa_atexit": ___cxa_atexit,
   "__cxa_begin_catch": ___cxa_begin_catch,
+  "__cxa_call_unexpected": ___cxa_call_unexpected,
   "__cxa_end_catch": ___cxa_end_catch,
   "__cxa_find_matching_catch_2": ___cxa_find_matching_catch_2,
   "__cxa_find_matching_catch_3": ___cxa_find_matching_catch_3,
   "__cxa_find_matching_catch_4": ___cxa_find_matching_catch_4,
+  "__cxa_find_matching_catch_5": ___cxa_find_matching_catch_5,
   "__cxa_free_exception": ___cxa_free_exception,
   "__cxa_rethrow": ___cxa_rethrow,
-  "__cxa_thread_atexit": ___cxa_thread_atexit,
   "__cxa_throw": ___cxa_throw,
   "__cxa_uncaught_exceptions": ___cxa_uncaught_exceptions,
   "__emscripten_init_main_thread_js": ___emscripten_init_main_thread_js,
@@ -14083,7 +11089,6 @@ var asmLibraryArg = {
   "__pthread_create_js": ___pthread_create_js,
   "__pthread_detached_exit": ___pthread_detached_exit,
   "__pthread_exit_run_handlers": ___pthread_exit_run_handlers,
-  "__pthread_join_js": ___pthread_join_js,
   "__resumeException": ___resumeException,
   "__sys_chdir": ___sys_chdir,
   "__sys_fcntl64": ___sys_fcntl64,
@@ -14109,233 +11114,20 @@ var asmLibraryArg = {
   "_dlsym_js": __dlsym_js,
   "_emscripten_notify_thread_queue": __emscripten_notify_thread_queue,
   "abort": _abort,
-  "clock_gettime": _clock_gettime,
-  "eglBindAPI": _eglBindAPI,
-  "eglChooseConfig": _eglChooseConfig,
-  "eglCreateContext": _eglCreateContext,
-  "eglCreateWindowSurface": _eglCreateWindowSurface,
-  "eglDestroyContext": _eglDestroyContext,
-  "eglDestroySurface": _eglDestroySurface,
-  "eglGetConfigAttrib": _eglGetConfigAttrib,
-  "eglGetDisplay": _eglGetDisplay,
-  "eglGetError": _eglGetError,
-  "eglInitialize": _eglInitialize,
-  "eglMakeCurrent": _eglMakeCurrent,
-  "eglQueryString": _eglQueryString,
-  "eglSwapBuffers": _eglSwapBuffers,
-  "eglSwapInterval": _eglSwapInterval,
-  "eglTerminate": _eglTerminate,
-  "eglWaitGL": _eglWaitGL,
-  "eglWaitNative": _eglWaitNative,
   "emscripten_asm_const_int": _emscripten_asm_const_int,
   "emscripten_cancel_main_loop": _emscripten_cancel_main_loop,
   "emscripten_check_blocking_allowed": _emscripten_check_blocking_allowed,
   "emscripten_conditional_set_current_thread_status": _emscripten_conditional_set_current_thread_status,
-  "emscripten_exit_fullscreen": _emscripten_exit_fullscreen,
-  "emscripten_exit_pointerlock": _emscripten_exit_pointerlock,
   "emscripten_futex_wait": _emscripten_futex_wait,
   "emscripten_futex_wake": _emscripten_futex_wake,
-  "emscripten_get_device_pixel_ratio": _emscripten_get_device_pixel_ratio,
-  "emscripten_get_element_css_size": _emscripten_get_element_css_size,
-  "emscripten_get_gamepad_status": _emscripten_get_gamepad_status,
   "emscripten_get_now": _emscripten_get_now,
-  "emscripten_get_num_gamepads": _emscripten_get_num_gamepads,
-  "emscripten_glActiveTexture": _emscripten_glActiveTexture,
-  "emscripten_glAttachShader": _emscripten_glAttachShader,
-  "emscripten_glBeginQueryEXT": _emscripten_glBeginQueryEXT,
-  "emscripten_glBindAttribLocation": _emscripten_glBindAttribLocation,
-  "emscripten_glBindBuffer": _emscripten_glBindBuffer,
-  "emscripten_glBindFramebuffer": _emscripten_glBindFramebuffer,
-  "emscripten_glBindRenderbuffer": _emscripten_glBindRenderbuffer,
-  "emscripten_glBindTexture": _emscripten_glBindTexture,
-  "emscripten_glBindVertexArrayOES": _emscripten_glBindVertexArrayOES,
-  "emscripten_glBlendColor": _emscripten_glBlendColor,
-  "emscripten_glBlendEquation": _emscripten_glBlendEquation,
-  "emscripten_glBlendEquationSeparate": _emscripten_glBlendEquationSeparate,
-  "emscripten_glBlendFunc": _emscripten_glBlendFunc,
-  "emscripten_glBlendFuncSeparate": _emscripten_glBlendFuncSeparate,
-  "emscripten_glBufferData": _emscripten_glBufferData,
-  "emscripten_glBufferSubData": _emscripten_glBufferSubData,
-  "emscripten_glCheckFramebufferStatus": _emscripten_glCheckFramebufferStatus,
-  "emscripten_glClear": _emscripten_glClear,
-  "emscripten_glClearColor": _emscripten_glClearColor,
-  "emscripten_glClearDepthf": _emscripten_glClearDepthf,
-  "emscripten_glClearStencil": _emscripten_glClearStencil,
-  "emscripten_glColorMask": _emscripten_glColorMask,
-  "emscripten_glCompileShader": _emscripten_glCompileShader,
-  "emscripten_glCompressedTexImage2D": _emscripten_glCompressedTexImage2D,
-  "emscripten_glCompressedTexSubImage2D": _emscripten_glCompressedTexSubImage2D,
-  "emscripten_glCopyTexImage2D": _emscripten_glCopyTexImage2D,
-  "emscripten_glCopyTexSubImage2D": _emscripten_glCopyTexSubImage2D,
-  "emscripten_glCreateProgram": _emscripten_glCreateProgram,
-  "emscripten_glCreateShader": _emscripten_glCreateShader,
-  "emscripten_glCullFace": _emscripten_glCullFace,
-  "emscripten_glDeleteBuffers": _emscripten_glDeleteBuffers,
-  "emscripten_glDeleteFramebuffers": _emscripten_glDeleteFramebuffers,
-  "emscripten_glDeleteProgram": _emscripten_glDeleteProgram,
-  "emscripten_glDeleteQueriesEXT": _emscripten_glDeleteQueriesEXT,
-  "emscripten_glDeleteRenderbuffers": _emscripten_glDeleteRenderbuffers,
-  "emscripten_glDeleteShader": _emscripten_glDeleteShader,
-  "emscripten_glDeleteTextures": _emscripten_glDeleteTextures,
-  "emscripten_glDeleteVertexArraysOES": _emscripten_glDeleteVertexArraysOES,
-  "emscripten_glDepthFunc": _emscripten_glDepthFunc,
-  "emscripten_glDepthMask": _emscripten_glDepthMask,
-  "emscripten_glDepthRangef": _emscripten_glDepthRangef,
-  "emscripten_glDetachShader": _emscripten_glDetachShader,
-  "emscripten_glDisable": _emscripten_glDisable,
-  "emscripten_glDisableVertexAttribArray": _emscripten_glDisableVertexAttribArray,
-  "emscripten_glDrawArrays": _emscripten_glDrawArrays,
-  "emscripten_glDrawArraysInstancedANGLE": _emscripten_glDrawArraysInstancedANGLE,
-  "emscripten_glDrawBuffersWEBGL": _emscripten_glDrawBuffersWEBGL,
-  "emscripten_glDrawElements": _emscripten_glDrawElements,
-  "emscripten_glDrawElementsInstancedANGLE": _emscripten_glDrawElementsInstancedANGLE,
-  "emscripten_glEnable": _emscripten_glEnable,
-  "emscripten_glEnableVertexAttribArray": _emscripten_glEnableVertexAttribArray,
-  "emscripten_glEndQueryEXT": _emscripten_glEndQueryEXT,
-  "emscripten_glFinish": _emscripten_glFinish,
-  "emscripten_glFlush": _emscripten_glFlush,
-  "emscripten_glFramebufferRenderbuffer": _emscripten_glFramebufferRenderbuffer,
-  "emscripten_glFramebufferTexture2D": _emscripten_glFramebufferTexture2D,
-  "emscripten_glFrontFace": _emscripten_glFrontFace,
-  "emscripten_glGenBuffers": _emscripten_glGenBuffers,
-  "emscripten_glGenFramebuffers": _emscripten_glGenFramebuffers,
-  "emscripten_glGenQueriesEXT": _emscripten_glGenQueriesEXT,
-  "emscripten_glGenRenderbuffers": _emscripten_glGenRenderbuffers,
-  "emscripten_glGenTextures": _emscripten_glGenTextures,
-  "emscripten_glGenVertexArraysOES": _emscripten_glGenVertexArraysOES,
-  "emscripten_glGenerateMipmap": _emscripten_glGenerateMipmap,
-  "emscripten_glGetActiveAttrib": _emscripten_glGetActiveAttrib,
-  "emscripten_glGetActiveUniform": _emscripten_glGetActiveUniform,
-  "emscripten_glGetAttachedShaders": _emscripten_glGetAttachedShaders,
-  "emscripten_glGetAttribLocation": _emscripten_glGetAttribLocation,
-  "emscripten_glGetBooleanv": _emscripten_glGetBooleanv,
-  "emscripten_glGetBufferParameteriv": _emscripten_glGetBufferParameteriv,
-  "emscripten_glGetError": _emscripten_glGetError,
-  "emscripten_glGetFloatv": _emscripten_glGetFloatv,
-  "emscripten_glGetFramebufferAttachmentParameteriv": _emscripten_glGetFramebufferAttachmentParameteriv,
-  "emscripten_glGetIntegerv": _emscripten_glGetIntegerv,
-  "emscripten_glGetProgramInfoLog": _emscripten_glGetProgramInfoLog,
-  "emscripten_glGetProgramiv": _emscripten_glGetProgramiv,
-  "emscripten_glGetQueryObjecti64vEXT": _emscripten_glGetQueryObjecti64vEXT,
-  "emscripten_glGetQueryObjectivEXT": _emscripten_glGetQueryObjectivEXT,
-  "emscripten_glGetQueryObjectui64vEXT": _emscripten_glGetQueryObjectui64vEXT,
-  "emscripten_glGetQueryObjectuivEXT": _emscripten_glGetQueryObjectuivEXT,
-  "emscripten_glGetQueryivEXT": _emscripten_glGetQueryivEXT,
-  "emscripten_glGetRenderbufferParameteriv": _emscripten_glGetRenderbufferParameteriv,
-  "emscripten_glGetShaderInfoLog": _emscripten_glGetShaderInfoLog,
-  "emscripten_glGetShaderPrecisionFormat": _emscripten_glGetShaderPrecisionFormat,
-  "emscripten_glGetShaderSource": _emscripten_glGetShaderSource,
-  "emscripten_glGetShaderiv": _emscripten_glGetShaderiv,
-  "emscripten_glGetString": _emscripten_glGetString,
-  "emscripten_glGetTexParameterfv": _emscripten_glGetTexParameterfv,
-  "emscripten_glGetTexParameteriv": _emscripten_glGetTexParameteriv,
-  "emscripten_glGetUniformLocation": _emscripten_glGetUniformLocation,
-  "emscripten_glGetUniformfv": _emscripten_glGetUniformfv,
-  "emscripten_glGetUniformiv": _emscripten_glGetUniformiv,
-  "emscripten_glGetVertexAttribPointerv": _emscripten_glGetVertexAttribPointerv,
-  "emscripten_glGetVertexAttribfv": _emscripten_glGetVertexAttribfv,
-  "emscripten_glGetVertexAttribiv": _emscripten_glGetVertexAttribiv,
-  "emscripten_glHint": _emscripten_glHint,
-  "emscripten_glIsBuffer": _emscripten_glIsBuffer,
-  "emscripten_glIsEnabled": _emscripten_glIsEnabled,
-  "emscripten_glIsFramebuffer": _emscripten_glIsFramebuffer,
-  "emscripten_glIsProgram": _emscripten_glIsProgram,
-  "emscripten_glIsQueryEXT": _emscripten_glIsQueryEXT,
-  "emscripten_glIsRenderbuffer": _emscripten_glIsRenderbuffer,
-  "emscripten_glIsShader": _emscripten_glIsShader,
-  "emscripten_glIsTexture": _emscripten_glIsTexture,
-  "emscripten_glIsVertexArrayOES": _emscripten_glIsVertexArrayOES,
-  "emscripten_glLineWidth": _emscripten_glLineWidth,
-  "emscripten_glLinkProgram": _emscripten_glLinkProgram,
-  "emscripten_glPixelStorei": _emscripten_glPixelStorei,
-  "emscripten_glPolygonOffset": _emscripten_glPolygonOffset,
-  "emscripten_glQueryCounterEXT": _emscripten_glQueryCounterEXT,
-  "emscripten_glReadPixels": _emscripten_glReadPixels,
-  "emscripten_glReleaseShaderCompiler": _emscripten_glReleaseShaderCompiler,
-  "emscripten_glRenderbufferStorage": _emscripten_glRenderbufferStorage,
-  "emscripten_glSampleCoverage": _emscripten_glSampleCoverage,
-  "emscripten_glScissor": _emscripten_glScissor,
-  "emscripten_glShaderBinary": _emscripten_glShaderBinary,
-  "emscripten_glShaderSource": _emscripten_glShaderSource,
-  "emscripten_glStencilFunc": _emscripten_glStencilFunc,
-  "emscripten_glStencilFuncSeparate": _emscripten_glStencilFuncSeparate,
-  "emscripten_glStencilMask": _emscripten_glStencilMask,
-  "emscripten_glStencilMaskSeparate": _emscripten_glStencilMaskSeparate,
-  "emscripten_glStencilOp": _emscripten_glStencilOp,
-  "emscripten_glStencilOpSeparate": _emscripten_glStencilOpSeparate,
-  "emscripten_glTexImage2D": _emscripten_glTexImage2D,
-  "emscripten_glTexParameterf": _emscripten_glTexParameterf,
-  "emscripten_glTexParameterfv": _emscripten_glTexParameterfv,
-  "emscripten_glTexParameteri": _emscripten_glTexParameteri,
-  "emscripten_glTexParameteriv": _emscripten_glTexParameteriv,
-  "emscripten_glTexSubImage2D": _emscripten_glTexSubImage2D,
-  "emscripten_glUniform1f": _emscripten_glUniform1f,
-  "emscripten_glUniform1fv": _emscripten_glUniform1fv,
-  "emscripten_glUniform1i": _emscripten_glUniform1i,
-  "emscripten_glUniform1iv": _emscripten_glUniform1iv,
-  "emscripten_glUniform2f": _emscripten_glUniform2f,
-  "emscripten_glUniform2fv": _emscripten_glUniform2fv,
-  "emscripten_glUniform2i": _emscripten_glUniform2i,
-  "emscripten_glUniform2iv": _emscripten_glUniform2iv,
-  "emscripten_glUniform3f": _emscripten_glUniform3f,
-  "emscripten_glUniform3fv": _emscripten_glUniform3fv,
-  "emscripten_glUniform3i": _emscripten_glUniform3i,
-  "emscripten_glUniform3iv": _emscripten_glUniform3iv,
-  "emscripten_glUniform4f": _emscripten_glUniform4f,
-  "emscripten_glUniform4fv": _emscripten_glUniform4fv,
-  "emscripten_glUniform4i": _emscripten_glUniform4i,
-  "emscripten_glUniform4iv": _emscripten_glUniform4iv,
-  "emscripten_glUniformMatrix2fv": _emscripten_glUniformMatrix2fv,
-  "emscripten_glUniformMatrix3fv": _emscripten_glUniformMatrix3fv,
-  "emscripten_glUniformMatrix4fv": _emscripten_glUniformMatrix4fv,
-  "emscripten_glUseProgram": _emscripten_glUseProgram,
-  "emscripten_glValidateProgram": _emscripten_glValidateProgram,
-  "emscripten_glVertexAttrib1f": _emscripten_glVertexAttrib1f,
-  "emscripten_glVertexAttrib1fv": _emscripten_glVertexAttrib1fv,
-  "emscripten_glVertexAttrib2f": _emscripten_glVertexAttrib2f,
-  "emscripten_glVertexAttrib2fv": _emscripten_glVertexAttrib2fv,
-  "emscripten_glVertexAttrib3f": _emscripten_glVertexAttrib3f,
-  "emscripten_glVertexAttrib3fv": _emscripten_glVertexAttrib3fv,
-  "emscripten_glVertexAttrib4f": _emscripten_glVertexAttrib4f,
-  "emscripten_glVertexAttrib4fv": _emscripten_glVertexAttrib4fv,
-  "emscripten_glVertexAttribDivisorANGLE": _emscripten_glVertexAttribDivisorANGLE,
-  "emscripten_glVertexAttribPointer": _emscripten_glVertexAttribPointer,
-  "emscripten_glViewport": _emscripten_glViewport,
-  "emscripten_has_asyncify": _emscripten_has_asyncify,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "emscripten_receive_on_main_thread_js": _emscripten_receive_on_main_thread_js,
-  "emscripten_request_fullscreen_strategy": _emscripten_request_fullscreen_strategy,
-  "emscripten_request_pointerlock": _emscripten_request_pointerlock,
   "emscripten_resize_heap": _emscripten_resize_heap,
-  "emscripten_sample_gamepad_data": _emscripten_sample_gamepad_data,
-  "emscripten_set_beforeunload_callback_on_thread": _emscripten_set_beforeunload_callback_on_thread,
-  "emscripten_set_blur_callback_on_thread": _emscripten_set_blur_callback_on_thread,
   "emscripten_set_canvas_element_size": _emscripten_set_canvas_element_size,
   "emscripten_set_current_thread_status": _emscripten_set_current_thread_status,
-  "emscripten_set_element_css_size": _emscripten_set_element_css_size,
-  "emscripten_set_focus_callback_on_thread": _emscripten_set_focus_callback_on_thread,
-  "emscripten_set_fullscreenchange_callback_on_thread": _emscripten_set_fullscreenchange_callback_on_thread,
-  "emscripten_set_gamepadconnected_callback_on_thread": _emscripten_set_gamepadconnected_callback_on_thread,
-  "emscripten_set_gamepaddisconnected_callback_on_thread": _emscripten_set_gamepaddisconnected_callback_on_thread,
-  "emscripten_set_keydown_callback_on_thread": _emscripten_set_keydown_callback_on_thread,
-  "emscripten_set_keypress_callback_on_thread": _emscripten_set_keypress_callback_on_thread,
-  "emscripten_set_keyup_callback_on_thread": _emscripten_set_keyup_callback_on_thread,
   "emscripten_set_main_loop": _emscripten_set_main_loop,
-  "emscripten_set_mousedown_callback_on_thread": _emscripten_set_mousedown_callback_on_thread,
-  "emscripten_set_mouseenter_callback_on_thread": _emscripten_set_mouseenter_callback_on_thread,
-  "emscripten_set_mouseleave_callback_on_thread": _emscripten_set_mouseleave_callback_on_thread,
-  "emscripten_set_mousemove_callback_on_thread": _emscripten_set_mousemove_callback_on_thread,
-  "emscripten_set_mouseup_callback_on_thread": _emscripten_set_mouseup_callback_on_thread,
-  "emscripten_set_pointerlockchange_callback_on_thread": _emscripten_set_pointerlockchange_callback_on_thread,
-  "emscripten_set_resize_callback_on_thread": _emscripten_set_resize_callback_on_thread,
   "emscripten_set_timeout": _emscripten_set_timeout,
-  "emscripten_set_touchcancel_callback_on_thread": _emscripten_set_touchcancel_callback_on_thread,
-  "emscripten_set_touchend_callback_on_thread": _emscripten_set_touchend_callback_on_thread,
-  "emscripten_set_touchmove_callback_on_thread": _emscripten_set_touchmove_callback_on_thread,
-  "emscripten_set_touchstart_callback_on_thread": _emscripten_set_touchstart_callback_on_thread,
-  "emscripten_set_visibilitychange_callback_on_thread": _emscripten_set_visibilitychange_callback_on_thread,
-  "emscripten_set_wheel_callback_on_thread": _emscripten_set_wheel_callback_on_thread,
-  "emscripten_sleep": _emscripten_sleep,
   "emscripten_unwind_to_js_event_loop": _emscripten_unwind_to_js_event_loop,
   "emscripten_webgl_create_context": _emscripten_webgl_create_context,
   "environ_get": _environ_get,
@@ -14348,13 +11140,26 @@ var asmLibraryArg = {
   "fd_write": _fd_write,
   "getTempRet0": _getTempRet0,
   "gettimeofday": _gettimeofday,
+  "invoke_di": invoke_di,
   "invoke_diii": invoke_diii,
+  "invoke_f": invoke_f,
   "invoke_fi": invoke_fi,
+  "invoke_fii": invoke_fii,
   "invoke_fiii": invoke_fiii,
+  "invoke_fiiii": invoke_fiiii,
   "invoke_i": invoke_i,
   "invoke_ii": invoke_ii,
+  "invoke_iif": invoke_iif,
+  "invoke_iiff": invoke_iiff,
+  "invoke_iiffi": invoke_iiffi,
   "invoke_iii": invoke_iii,
+  "invoke_iiif": invoke_iiif,
+  "invoke_iiiff": invoke_iiiff,
+  "invoke_iiiffiiiiiiiiii": invoke_iiiffiiiiiiiiii,
   "invoke_iiii": invoke_iiii,
+  "invoke_iiiifi": invoke_iiiifi,
+  "invoke_iiiifii": invoke_iiiifii,
+  "invoke_iiiifiiiiiiiiii": invoke_iiiifiiiiiiiiii,
   "invoke_iiiii": invoke_iiiii,
   "invoke_iiiiid": invoke_iiiiid,
   "invoke_iiiiii": invoke_iiiiii,
@@ -14365,21 +11170,33 @@ var asmLibraryArg = {
   "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii,
   "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii,
   "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii,
+  "invoke_iiiiiiiiiiiiii": invoke_iiiiiiiiiiiiii,
+  "invoke_iiiiiiiiiiiiiii": invoke_iiiiiiiiiiiiiii,
+  "invoke_iiiiiiiiiiiiiiiii": invoke_iiiiiiiiiiiiiiiii,
   "invoke_j": invoke_j,
   "invoke_jiiii": invoke_jiiii,
   "invoke_v": invoke_v,
   "invoke_vi": invoke_vi,
   "invoke_vif": invoke_vif,
   "invoke_viff": invoke_viff,
+  "invoke_viffiffffffffiiiiii": invoke_viffiffffffffiiiiii,
   "invoke_vii": invoke_vii,
+  "invoke_viif": invoke_viif,
+  "invoke_viiff": invoke_viiff,
+  "invoke_viifii": invoke_viifii,
   "invoke_viii": invoke_viii,
+  "invoke_viiif": invoke_viiif,
+  "invoke_viiiffffffiiii": invoke_viiiffffffiiii,
   "invoke_viiii": invoke_viiii,
+  "invoke_viiiiffffiiiiiiiii": invoke_viiiiffffiiiiiiiii,
   "invoke_viiiifi": invoke_viiiifi,
   "invoke_viiiii": invoke_viiiii,
   "invoke_viiiiii": invoke_viiiiii,
   "invoke_viiiiiii": invoke_viiiiiii,
+  "invoke_viiiiiiii": invoke_viiiiiiii,
   "invoke_viiiiiiiii": invoke_viiiiiiiii,
   "invoke_viiiiiiiiii": invoke_viiiiiiiiii,
+  "invoke_viiiiiiiiiii": invoke_viiiiiiiiiii,
   "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii,
   "invoke_viijii": invoke_viijii,
   "llvm_eh_typeid_for": _llvm_eh_typeid_for,
@@ -14412,9 +11229,6 @@ var _malloc = Module["_malloc"] = createExportWrapper("malloc");
 var _free = Module["_free"] = createExportWrapper("free");
 
 /** @type {function(...*):?} */
-var _pthread_self = Module["_pthread_self"] = createExportWrapper("pthread_self");
-
-/** @type {function(...*):?} */
 var _emscripten_tls_init = Module["_emscripten_tls_init"] = createExportWrapper("emscripten_tls_init");
 
 /** @type {function(...*):?} */
@@ -14445,10 +11259,10 @@ var ___emscripten_init_main_thread = Module["___emscripten_init_main_thread"] = 
 var __emscripten_thread_exit = Module["__emscripten_thread_exit"] = createExportWrapper("_emscripten_thread_exit");
 
 /** @type {function(...*):?} */
-var __emscripten_thread_init = Module["__emscripten_thread_init"] = createExportWrapper("_emscripten_thread_init");
+var _pthread_testcancel = Module["_pthread_testcancel"] = createExportWrapper("pthread_testcancel");
 
 /** @type {function(...*):?} */
-var _pthread_testcancel = Module["_pthread_testcancel"] = createExportWrapper("pthread_testcancel");
+var __emscripten_thread_init = Module["__emscripten_thread_init"] = createExportWrapper("_emscripten_thread_init");
 
 /** @type {function(...*):?} */
 var _ntohs = Module["_ntohs"] = createExportWrapper("ntohs");
@@ -14461,6 +11275,9 @@ var _fflush = Module["_fflush"] = createExportWrapper("fflush");
 
 /** @type {function(...*):?} */
 var _fileno = Module["_fileno"] = createExportWrapper("fileno");
+
+/** @type {function(...*):?} */
+var _pthread_self = Module["_pthread_self"] = createExportWrapper("pthread_self");
 
 /** @type {function(...*):?} */
 var ___dl_seterr = Module["___dl_seterr"] = createExportWrapper("__dl_seterr");
@@ -14522,9 +11339,6 @@ var dynCall_j = Module["dynCall_j"] = createExportWrapper("dynCall_j");
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
 /** @type {function(...*):?} */
-var dynCall_ji = Module["dynCall_ji"] = createExportWrapper("dynCall_ji");
-
-/** @type {function(...*):?} */
 var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
 
 /** @type {function(...*):?} */
@@ -14539,8 +11353,19 @@ var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = createExportWrapper("dynCall_i
 /** @type {function(...*):?} */
 var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall_iiiiiijj");
 
-var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 280668;
-var __emscripten_main_thread_futex = Module['__emscripten_main_thread_futex'] = 411416;
+var __emscripten_allow_main_runtime_queued_calls = Module['__emscripten_allow_main_runtime_queued_calls'] = 240120;
+var __emscripten_main_thread_futex = Module['__emscripten_main_thread_futex'] = 358004;
+function invoke_iiii(index,a1,a2,a3) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
 function invoke_iii(index,a1,a2) {
   var sp = stackSave();
   try {
@@ -14552,65 +11377,10 @@ function invoke_iii(index,a1,a2) {
   }
 }
 
-function invoke_iiiiiii(index,a1,a2,a3,a4,a5,a6) {
+function invoke_iiiii(index,a1,a2,a3,a4) {
   var sp = stackSave();
   try {
-    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_ii(index,a1) {
-  var sp = stackSave();
-  try {
-    return wasmTable.get(index)(a1);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_iiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
-  var sp = stackSave();
-  try {
-    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_iiiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_viiiiii(index,a1,a2,a3,a4,a5,a6) {
-  var sp = stackSave();
-  try {
-    wasmTable.get(index)(a1,a2,a3,a4,a5,a6);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_vi(index,a1) {
-  var sp = stackSave();
-  try {
-    wasmTable.get(index)(a1);
+    return wasmTable.get(index)(a1,a2,a3,a4);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14640,10 +11410,10 @@ function invoke_vii(index,a1,a2) {
   }
 }
 
-function invoke_iiii(index,a1,a2,a3) {
+function invoke_ii(index,a1) {
   var sp = stackSave();
   try {
-    return wasmTable.get(index)(a1,a2,a3);
+    return wasmTable.get(index)(a1);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14651,10 +11421,43 @@ function invoke_iiii(index,a1,a2,a3) {
   }
 }
 
-function invoke_viiii(index,a1,a2,a3,a4) {
+function invoke_iiiiii(index,a1,a2,a3,a4,a5) {
   var sp = stackSave();
   try {
-    wasmTable.get(index)(a1,a2,a3,a4);
+    return wasmTable.get(index)(a1,a2,a3,a4,a5);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiiii(index,a1,a2,a3,a4,a5) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiiiii(index,a1,a2,a3,a4,a5,a6) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_vi(index,a1) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14684,10 +11487,21 @@ function invoke_i(index) {
   }
 }
 
-function invoke_iiiiii(index,a1,a2,a3,a4,a5) {
+function invoke_viiii(index,a1,a2,a3,a4) {
   var sp = stackSave();
   try {
-    return wasmTable.get(index)(a1,a2,a3,a4,a5);
+    wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14728,10 +11542,10 @@ function invoke_iiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9) {
   }
 }
 
-function invoke_viiiii(index,a1,a2,a3,a4,a5) {
+function invoke_iiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
   var sp = stackSave();
   try {
-    wasmTable.get(index)(a1,a2,a3,a4,a5);
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14750,10 +11564,10 @@ function invoke_viiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9) {
   }
 }
 
-function invoke_iiiii(index,a1,a2,a3,a4) {
+function invoke_viiiiii(index,a1,a2,a3,a4,a5,a6) {
   var sp = stackSave();
   try {
-    return wasmTable.get(index)(a1,a2,a3,a4);
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14805,10 +11619,296 @@ function invoke_fi(index,a1) {
   }
 }
 
+function invoke_viiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiif(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viif(index,a1,a2,a3) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_fii(index,a1,a2) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_fiiii(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_f(index) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)();
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viifii(index,a1,a2,a3,a4,a5) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_di(index,a1) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiiffffffiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiiiffffiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiifii(index,a1,a2,a3,a4,a5,a6) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viffiffffffffiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
 function invoke_iiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12) {
   var sp = stackSave();
   try {
     return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iif(index,a1,a2) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiffi(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiif(index,a1,a2,a3) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiffiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiifiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiifi(index,a1,a2,a3,a4,a5) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_viiff(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiff(index,a1,a2,a3,a4) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiff(index,a1,a2,a3) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3);
+  } catch(e) {
+    stackRestore(sp);
+    if (e !== e+0 && e !== 'longjmp') throw e;
+    _setThrew(1, 0);
+  }
+}
+
+function invoke_iiiiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16) {
+  var sp = stackSave();
+  try {
+    return wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;
@@ -14831,17 +11931,6 @@ function invoke_diii(index,a1,a2,a3) {
   var sp = stackSave();
   try {
     return wasmTable.get(index)(a1,a2,a3);
-  } catch(e) {
-    stackRestore(sp);
-    if (e !== e+0 && e !== 'longjmp') throw e;
-    _setThrew(1, 0);
-  }
-}
-
-function invoke_viiiiiii(index,a1,a2,a3,a4,a5,a6,a7) {
-  var sp = stackSave();
-  try {
-    wasmTable.get(index)(a1,a2,a3,a4,a5,a6,a7);
   } catch(e) {
     stackRestore(sp);
     if (e !== e+0 && e !== 'longjmp') throw e;

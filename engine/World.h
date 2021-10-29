@@ -5,10 +5,11 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "Agents/MessageQueue.h"
+
 #include "Caos/Scriptorium.h"
-#include "Creature/History/HistoryStore.h"
 #include "Map/Map.h"
+#include "Agents/MessageQueue.h"
+#include "Creature/History/HistoryStore.h"
 
 
 #include "Display/TintManager.h"

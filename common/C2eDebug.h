@@ -29,7 +29,7 @@ void OutputFormattedDebugString(const char* fmt, ... );
 	#endif
 	#define DEBUGMESSAGE(d) MessageBox(NULL, d, "Debug Message", MB_ICONINFORMATION);
 #else
-	#include <assert.h>
+	#include <cassert>
 	#define ASSERT(X) assert((X))
 	#define _ASSERT(X) assert((X))
 	void OutputDebugString( const char* lpOutputString );

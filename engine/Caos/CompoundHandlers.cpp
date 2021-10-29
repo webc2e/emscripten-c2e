@@ -12,7 +12,7 @@
 
 // disable annoying warning in VC when using stl (debug symbols > 255 chars)
 #ifdef _MSC_VER
-#pragma warning( disable : 4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #include <string>
@@ -29,743 +29,678 @@
 #include "../Camera/MainCamera.h"
 #include "../Maths.h"
 
+void CompoundHandlers::Command_PAT(CAOSMachine &vm) {
+  const int pat_subcount = 8;
+  int subcmd;
+  static CommandHandler HandlerTable[pat_subcount] = {
+      SubCommand_PAT_DULL, SubCommand_PAT_BUTT, SubCommand_PAT_TEXT,
+      SubCommand_PAT_FIXD, SubCommand_PAT_CMRA, SubCommand_PAT_GRPH,
+      SubCommand_PAT_KILL, SubCommand_PAT_MOVE,
+  };
 
-void CompoundHandlers::Command_PAT( CAOSMachine& vm )
-{
-	const int pat_subcount=8;
-	int subcmd;
-	static CommandHandler HandlerTable[ pat_subcount ] =
-	{
-		SubCommand_PAT_DULL,
-		SubCommand_PAT_BUTT,
-		SubCommand_PAT_TEXT,
-		SubCommand_PAT_FIXD,
-		SubCommand_PAT_CMRA,
-		SubCommand_PAT_GRPH,
-		SubCommand_PAT_KILL,
-		SubCommand_PAT_MOVE,
-	};
-
-	subcmd = vm.FetchOp();
-	(HandlerTable[ subcmd ])( vm );
+  subcmd = vm.FetchOp();
+  (HandlerTable[subcmd])(vm);
 }
 
+void CompoundHandlers::Command_PTXT(CAOSMachine &vm) {
+  std::string text;
 
-void CompoundHandlers::Command_PTXT( CAOSMachine& vm )
-{
-	std::string text;
+  vm.FetchStringRV(text);
 
-	vm.FetchStringRV( text );
+  vm.ValidateTarg();
 
-	vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partText))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextPart);
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partText) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
-
-	((UITextPart*)part)->SetText( text );
+  ((UITextPart *)part)->SetText(text);
 }
 
-int CompoundHandlers::IntegerRV_NPGS( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
+int CompoundHandlers::IntegerRV_NPGS(CAOSMachine &vm) {
+  vm.ValidateTarg();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partText) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partText))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextPart);
 
-	return ((UITextPart*)part)->GetPageCount();
+  return ((UITextPart *)part)->GetPageCount();
 }
 
-int CompoundHandlers::IntegerRV_PAGE( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
+int CompoundHandlers::IntegerRV_PAGE(CAOSMachine &vm) {
+  vm.ValidateTarg();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partText) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partText))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextPart);
 
-	return ((UITextPart*)part)->GetCurrentPage();
+  return ((UITextPart *)part)->GetCurrentPage();
 }
 
-void CompoundHandlers::Command_PAGE( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
+void CompoundHandlers::Command_PAGE(CAOSMachine &vm) {
+  vm.ValidateTarg();
 
-	int page = vm.FetchIntegerRV();
+  int page = vm.FetchIntegerRV();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partText) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partText))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextPart);
 
-	((UITextPart*)part)->SetCurrentPage( page );
+  ((UITextPart *)part)->SetCurrentPage(page);
 }
 
-void CompoundHandlers::Command_FRMT( CAOSMachine& vm )
-{
-	std::string text;
+void CompoundHandlers::Command_FRMT(CAOSMachine &vm) {
+  std::string text;
 
-	vm.ValidateTarg();
+  vm.ValidateTarg();
 
-	int left, top, right, bottom, lineSpacing, characterSpacing, justification;
-	left = vm.FetchIntegerRV();
-	top = vm.FetchIntegerRV();
-	right = vm.FetchIntegerRV();
-	bottom = vm.FetchIntegerRV();
-	lineSpacing = vm.FetchIntegerRV();
-	characterSpacing = vm.FetchIntegerRV();
-	justification = vm.FetchIntegerRV();
+  int left, top, right, bottom, lineSpacing, characterSpacing, justification;
+  left = vm.FetchIntegerRV();
+  top = vm.FetchIntegerRV();
+  right = vm.FetchIntegerRV();
+  bottom = vm.FetchIntegerRV();
+  lineSpacing = vm.FetchIntegerRV();
+  characterSpacing = vm.FetchIntegerRV();
+  justification = vm.FetchIntegerRV();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partText) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextPart );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partText))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextPart);
 
-	((UITextPart*)part)->SetAttributes( TextAttributes( left, top, right, bottom, lineSpacing, characterSpacing, justification) );
+  ((UITextPart *)part)
+      ->SetAttributes(TextAttributes(left, top, right, bottom, lineSpacing,
+                                     characterSpacing, justification));
 }
 
-void CompoundHandlers::Command_GRPL( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
-	int red = vm.FetchIntegerRV();
-	int green = vm.FetchIntegerRV();
-	int blue = vm.FetchIntegerRV();
-	float minY = vm.FetchFloatRV();
-	float maxY = vm.FetchFloatRV();
+void CompoundHandlers::Command_GRPL(CAOSMachine &vm) {
+  vm.ValidateTarg();
+  int red = vm.FetchIntegerRV();
+  int green = vm.FetchIntegerRV();
+  int blue = vm.FetchIntegerRV();
+  float minY = vm.FetchFloatRV();
+  float maxY = vm.FetchFloatRV();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partGraph) )
-		vm.ThrowRunError( CAOSMachine::sidNotUIGraph );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partGraph))
+    vm.ThrowRunError(CAOSMachine::sidNotUIGraph);
 
-	((UIGraph*)part)->AddLine( red, green, blue, minY, maxY );
+  ((UIGraph *)part)->AddLine(red, green, blue, minY, maxY);
 }
 
-void CompoundHandlers::Command_GRPV( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
-	int index = vm.FetchIntegerRV();
-	float value = vm.FetchFloatRV();
+void CompoundHandlers::Command_GRPV(CAOSMachine &vm) {
+  vm.ValidateTarg();
+  int index = vm.FetchIntegerRV();
+  float value = vm.FetchFloatRV();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partGraph) )
-		vm.ThrowRunError( CAOSMachine::sidNotUIGraph );
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partGraph))
+    vm.ThrowRunError(CAOSMachine::sidNotUIGraph);
 
-	((UIGraph *)(part))->AddValue( index, value );
+  ((UIGraph *)(part))->AddValue(index, value);
 }
 
-void CompoundHandlers::Command_FCUS( CAOSMachine& vm )
-{
-	if (vm.GetTarg().IsInvalid())
-	{
-		theApp.GetInputManager().SetTranslatedCharTarget(NULL);
-		return;
-	}
+void CompoundHandlers::Command_FCUS(CAOSMachine &vm) {
+  if (vm.GetTarg().IsInvalid()) {
+    theApp.GetInputManager().SetTranslatedCharTarget(NULL);
+    return;
+  }
 
-	vm.ValidateTarg();
+  vm.ValidateTarg();
 
-	if ( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
-	
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	CompoundPart *part = agent.GetPart( vm.GetPart() );
-	if( !(part->GetType() & CompoundPart::partEdit) )
-		vm.ThrowRunError( CAOSMachine::sidNotUITextEntryPart );
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
 
-	theApp.GetInputManager().SetTranslatedCharTarget((UIText*)part);
+  CompoundPart *part = agent.GetPart(vm.GetPart());
+  if (!(part->GetType() & CompoundPart::partEdit))
+    vm.ThrowRunError(CAOSMachine::sidNotUITextEntryPart);
+
+  theApp.GetInputManager().SetTranslatedCharTarget((UIText *)part);
 }
 
-void CompoundHandlers::Command_SCAM( CAOSMachine& vm )
-{
-	AgentHandle agent = vm.FetchAgentRV();
+void CompoundHandlers::Command_SCAM(CAOSMachine &vm) {
+  AgentHandle agent = vm.FetchAgentRV();
 
-	int part = vm.FetchIntegerRV();
+  int part = vm.FetchIntegerRV();
 
-	if(agent.IsCompoundAgent())
-	{
-		
-	//	if( vm.GetTarg().IsCompoundAgent() )
-	//	{
-			CompoundAgent& compoundagent = vm.GetTarg().GetCompoundAgentReference();
-			if (!compoundagent.ValidatePart( part))
-				vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
+  if (agent.IsCompoundAgent()) {
 
-			if( compoundagent.GetPart(part)->GetType() & CompoundPart::partCamera)
-			{
-				Camera* temp = (Camera*)(((CameraPart *)(compoundagent.GetPart( part )))->GetCamera());
-				vm.SetCamera(temp);
-			}
-			else
-			{
-				vm.SetCamera(NULL);
-			}
-	//	}
-	}
-	else
-	{
-		vm.SetCamera(NULL);
-	}
+    //	if( vm.GetTarg().IsCompoundAgent() )
+    //	{
+    CompoundAgent &compoundagent = vm.GetTarg().GetCompoundAgentReference();
+    if (!compoundagent.ValidatePart(part))
+      vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
+
+    if (compoundagent.GetPart(part)->GetType() & CompoundPart::partCamera) {
+      Camera *temp = (Camera *)(((CameraPart *)(compoundagent.GetPart(part)))
+                                    ->GetCamera());
+      vm.SetCamera(temp);
+    } else {
+      vm.SetCamera(NULL);
+    }
+    //	}
+  } else {
+    vm.SetCamera(NULL);
+  }
 }
 
-void CompoundHandlers::StringRV_PTXT( CAOSMachine& vm, std::string& str )
-{
-	vm.ValidateTarg();
+void CompoundHandlers::StringRV_PTXT(CAOSMachine &vm, std::string &str) {
+  vm.ValidateTarg();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
 
-	if (!agent.ValidatePart( vm.GetPart() ))
-		vm.ThrowRunError( CAOSMachine::sidInvalidPart, vm.GetPart() );
-	if( agent.GetPart(vm.GetPart())->GetType() & CompoundPart::partText )
-		str = ((UITextPart*)(agent.GetPart( vm.GetPart() )))->GetText();
-	else
-		str = "";
+  if (!agent.ValidatePart(vm.GetPart()))
+    vm.ThrowRunError(CAOSMachine::sidInvalidPart, vm.GetPart());
+  if (agent.GetPart(vm.GetPart())->GetType() & CompoundPart::partText)
+    str = ((UITextPart *)(agent.GetPart(vm.GetPart())))->GetText();
+  else
+    str = "";
 }
 
 #ifdef C2D_DIRECT_DISPLAY_LIB
-void CompoundHandlers::SubCommand_PAT_DULL( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	std::string gallery;
-	std::string filename;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_DULL(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  std::string gallery;
+  std::string filename;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
 
-	int numImages = vm.FetchIntegerRV();
+  int numImages = vm.FetchIntegerRV();
 
-		FilePath path = theAgentManager.MakeGalleryPath(gallery);
-	part = new CompoundPart( path,
-		baseimage, position, relplane,numImages );
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  part = new CompoundPart(path, baseimage, position, relplane, numImages);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 #else
-void CompoundHandlers::SubCommand_PAT_DULL( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	std::string gallery;
-	std::string filename;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_DULL(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  std::string gallery;
+  std::string filename;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
 
-	// should check for used partid here!
+  // should check for used partid here!
 
-	// we now need the number of images for the pupt and puhl macros
-	// parts should just send 1 image since the pupt and puhl work only for
-	// the main part
-	int numImages = 0;
-		FilePath path = theAgentManager.MakeGalleryPath(gallery);
-	part = new CompoundPart( path,
-		baseimage, position, relplane,numImages );
+  // we now need the number of images for the pupt and puhl macros
+  // parts should just send 1 image since the pupt and puhl work only for
+  // the main part
+  int numImages = 0;
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  part = new CompoundPart(path, baseimage, position, relplane, numImages);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 #endif
 
-void CompoundHandlers::SubCommand_PAT_BUTT( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int messageID, option;
-	int count;
-	std::string gallery;
-	std::string filename;
-	AgentHandle agent;
-	CompoundPart* part;
-	const unsigned char *p;
-	int baseImage, numImages;
+void CompoundHandlers::SubCommand_PAT_BUTT(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int messageID, option;
+  int count;
+  std::string gallery;
+  std::string filename;
+  AgentHandle agent;
+  CompoundPart *part;
+  const unsigned char *p;
+  int baseImage, numImages;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseImage = vm.FetchIntegerRV();
-	numImages = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseImage = vm.FetchIntegerRV();
+  numImages = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
 
-	count = vm.FetchInteger();
-	p = (const unsigned char*)vm.FetchRawData( count, 1 );
-	std::vector<unsigned char> hoverAnim( p, p + count );
+  count = vm.FetchInteger();
+  p = (const unsigned char *)vm.FetchRawData(count, 1);
+  std::vector<unsigned char> hoverAnim(p, p + count);
 
-	messageID = vm.FetchIntegerRV();
-	option = vm.FetchIntegerRV();
+  messageID = vm.FetchIntegerRV();
+  option = vm.FetchIntegerRV();
 
-	// should check for used partid here!
+  // should check for used partid here!
 
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	// it does use numImages now
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // EntityImage Constructor doesn't use numimages (should tidy up param lists).
+  // it does use numImages now
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new UIButton( path,
-		baseImage, numImages, position, relplane,
-		hoverAnim, messageID, option);
+  part = new UIButton(path, baseImage, numImages, position, relplane, hoverAnim,
+                      messageID, option);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
 #ifdef C2D_DIRECT_DISPLAY_LIB
 
-void CompoundHandlers::SubCommand_PAT_TEXT( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	int messageID;
-	std::string gallery;
-	std::string fontSprite;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_TEXT(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  int messageID;
+  std::string gallery;
+  std::string fontSprite;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	int fontWidth;
-	int fontHeight;
-	int red;
-	int blue;
-	int green;
-	bool bold;
+  int fontWidth;
+  int fontHeight;
+  int red;
+  int blue;
+  int green;
+  bool bold;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
-	messageID = vm.FetchIntegerRV();
-	vm.FetchStringRV( fontSprite );
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
+  messageID = vm.FetchIntegerRV();
+  vm.FetchStringRV(fontSprite);
 
-	fontWidth= vm.FetchIntegerRV();
-	fontHeight= vm.FetchIntegerRV();
-	red = vm.FetchIntegerRV();
-	green = vm.FetchIntegerRV();
-	 blue = vm.FetchIntegerRV();
-	bold = vm.FetchIntegerRV() == 0 ? false : true;
+  fontWidth = vm.FetchIntegerRV();
+  fontHeight = vm.FetchIntegerRV();
+  red = vm.FetchIntegerRV();
+  green = vm.FetchIntegerRV();
+  blue = vm.FetchIntegerRV();
+  bold = vm.FetchIntegerRV() == 0 ? false : true;
 
-	// should check for used partid here!
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // should check for used partid here!
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new UIText(path,
-						baseimage, 
-						0, 
-						position, 
-						relplane,
-						messageID,
-						fontSprite,
-						fontWidth,
-						fontHeight,
-						red,
-						green,
-						blue,
-						bold);
+  part = new UIText(path, baseimage, 0, position, relplane, messageID,
+                    fontSprite, fontWidth, fontHeight, red, green, blue, bold);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
-void CompoundHandlers::SubCommand_PAT_FIXD( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	std::string gallery;
-	std::string fontSprite;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_FIXD(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  std::string gallery;
+  std::string fontSprite;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	int fontWidth;
-	int fontHeight;
-	int red;
-	int blue;
-	int green;
-	bool bold;
+  int fontWidth;
+  int fontHeight;
+  int red;
+  int blue;
+  int green;
+  bool bold;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
-	vm.FetchStringRV( fontSprite );
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
+  vm.FetchStringRV(fontSprite);
 
-	
-	fontWidth= vm.FetchIntegerRV();
-	fontHeight= vm.FetchIntegerRV();
-	red = vm.FetchIntegerRV();
-	green = vm.FetchIntegerRV();
-	blue = vm.FetchIntegerRV();
-	bold = vm.FetchIntegerRV() == 0 ? false : true;
+  fontWidth = vm.FetchIntegerRV();
+  fontHeight = vm.FetchIntegerRV();
+  red = vm.FetchIntegerRV();
+  green = vm.FetchIntegerRV();
+  blue = vm.FetchIntegerRV();
+  bold = vm.FetchIntegerRV() == 0 ? false : true;
 
-	// should check for used partid here!
+  // should check for used partid here!
 
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // EntityImage Constructor doesn't use numimages (should tidy up param lists).
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new UIFixedText( path,
-		baseimage, 0, position, relplane, fontSprite,	fontWidth,
-						fontHeight,
-						red,
-						green,
-						blue,
-						bold );
+  part = new UIFixedText(path, baseimage, 0, position, relplane, fontSprite,
+                         fontWidth, fontHeight, red, green, blue, bold);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
 #else
 
-void CompoundHandlers::SubCommand_PAT_TEXT( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	int messageID;
-	std::string gallery;
-	std::string fontSprite;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_TEXT(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  int messageID;
+  std::string gallery;
+  std::string fontSprite;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
-	messageID = vm.FetchIntegerRV();
-	vm.FetchStringRV( fontSprite );
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
+  messageID = vm.FetchIntegerRV();
+  vm.FetchStringRV(fontSprite);
 
-	// should check for used partid here!
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // should check for used partid here!
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new UIText(path,
-		baseimage, 0, position, relplane, messageID, fontSprite );
+  part =
+      new UIText(path, baseimage, 0, position, relplane, messageID, fontSprite);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
-void CompoundHandlers::SubCommand_PAT_FIXD( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	std::string gallery;
-	std::string fontSprite;
-	AgentHandle agent;
-	CompoundPart* part;
+void CompoundHandlers::SubCommand_PAT_FIXD(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  std::string gallery;
+  std::string fontSprite;
+  AgentHandle agent;
+  CompoundPart *part;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
-	vm.FetchStringRV( fontSprite );
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
+  vm.FetchStringRV(fontSprite);
 
-	// should check for used partid here!
+  // should check for used partid here!
 
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // EntityImage Constructor doesn't use numimages (should tidy up param lists).
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new UIFixedText( path,
-		baseimage, 0, position, relplane, fontSprite );
+  part = new UIFixedText(path, baseimage, 0, position, relplane, fontSprite);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
 #endif
 
+void CompoundHandlers::SubCommand_PAT_GRPH(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int baseimage;
+  int numValues;
+  std::string gallery;
+  AgentHandle agent;
+  CompoundPart *part;
 
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
+  agent = vm.GetTarg();
 
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseimage = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  relplane = vm.FetchIntegerRV();
+  numValues = vm.FetchIntegerRV();
 
-void CompoundHandlers::SubCommand_PAT_GRPH( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int baseimage;
-	int numValues;
-	std::string gallery;
-	AgentHandle agent;
-	CompoundPart* part;
+  // should check for used partid here!
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  // EntityImage Constructor doesn't use numimages (should tidy up param lists).
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	agent = vm.GetTarg();
+  part = new UIGraph(path, baseimage, 0, position, relplane, numValues);
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseimage = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	relplane = vm.FetchIntegerRV();
-	numValues = vm.FetchIntegerRV();
-
-	// should check for used partid here!
-
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
-	
-	part = new UIGraph( path,
-		baseimage, 0, position, relplane, numValues );
-
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
 }
 
-void CompoundHandlers::SubCommand_PAT_CMRA( CAOSMachine& vm )
-{
-	int partid;
-	int relplane;
-	int cameraWidth, cameraHeight, viewWidth, viewHeight;
-	std::string gallery;
-	std::string filename;
-	AgentHandle agent;
-	CompoundPart* part;
-	int baseImage, numImages =0;
+void CompoundHandlers::SubCommand_PAT_CMRA(CAOSMachine &vm) {
+  int partid;
+  int relplane;
+  int cameraWidth, cameraHeight, viewWidth, viewHeight;
+  std::string gallery;
+  std::string filename;
+  AgentHandle agent;
+  CompoundPart *part;
+  int baseImage, numImages = 0;
 
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	agent = vm.GetTarg();
+  agent = vm.GetTarg();
 
-	partid = vm.FetchIntegerRV();
-	vm.FetchStringRV( gallery );
-	baseImage = vm.FetchIntegerRV();
+  partid = vm.FetchIntegerRV();
+  vm.FetchStringRV(gallery);
+  baseImage = vm.FetchIntegerRV();
 
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
 
-	relplane = vm.FetchIntegerRV();
+  relplane = vm.FetchIntegerRV();
 
-	viewWidth = vm.FetchIntegerRV();
-	viewHeight = vm.FetchIntegerRV();
+  viewWidth = vm.FetchIntegerRV();
+  viewHeight = vm.FetchIntegerRV();
 
-	cameraWidth = vm.FetchIntegerRV();
-	cameraHeight = vm.FetchIntegerRV();
+  cameraWidth = vm.FetchIntegerRV();
+  cameraHeight = vm.FetchIntegerRV();
 
-	if(cameraWidth > viewWidth)
-	{
-		cameraWidth = viewWidth;
-	}
+  if (cameraWidth > viewWidth) {
+    cameraWidth = viewWidth;
+  }
 
-	if(cameraHeight > viewHeight)
-	{
-		cameraHeight = viewHeight;
-	}
+  if (cameraHeight > viewHeight) {
+    cameraHeight = viewHeight;
+  }
 
-	// should check for used partid here!
+  // should check for used partid here!
 
-	// EntityImage Constructor doesn't use numimages (should tidy up param lists).
-	FilePath path = theAgentManager.MakeGalleryPath(gallery);
+  // EntityImage Constructor doesn't use numimages (should tidy up param lists).
+  FilePath path = theAgentManager.MakeGalleryPath(gallery);
 
-	part = new CameraPart( path,
-		baseImage, numImages, position, relplane,
-		viewWidth, viewHeight, cameraWidth, cameraHeight);
+  part = new CameraPart(path, baseImage, numImages, position, relplane,
+                        viewWidth, viewHeight, cameraWidth, cameraHeight);
 
-	if (!agent.GetCompoundAgentReference().AddPart( partid, part ))
-	{
-		delete part;
-		vm.ThrowRunError( CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo, partid );
-	}
-	theMainView.MakeTheEntityHandlerResetBoundsProperly();
+  if (!agent.GetCompoundAgentReference().AddPart(partid, part)) {
+    delete part;
+    vm.ThrowRunError(CAOSMachine::sidCompoundPartAlreadyExistsExtraInfo,
+                     partid);
+  }
+  theMainView.MakeTheEntityHandlerResetBoundsProperly();
 }
 
-void CompoundHandlers::SubCommand_PAT_KILL( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+void CompoundHandlers::SubCommand_PAT_KILL(CAOSMachine &vm) {
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	int partid = vm.FetchIntegerRV();
-	vm.GetTarg().GetCompoundAgentReference().DestroyPart( partid );
+  int partid = vm.FetchIntegerRV();
+  vm.GetTarg().GetCompoundAgentReference().DestroyPart(partid);
 }
 
-int CompoundHandlers::IntegerRV_PART( CAOSMachine& vm )
-{
-	int part_id = vm.FetchIntegerRV();
-	
-		vm.ValidateTarg();
+int CompoundHandlers::IntegerRV_PART(CAOSMachine &vm) {
+  int part_id = vm.FetchIntegerRV();
 
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+  vm.ValidateTarg();
 
-	CompoundAgent& agent = vm.GetTarg().GetCompoundAgentReference();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	if (agent.ValidatePart( part_id ))
-		return true;
-	else
-		return false;
+  CompoundAgent &agent = vm.GetTarg().GetCompoundAgentReference();
+
+  if (agent.ValidatePart(part_id))
+    return true;
+  else
+    return false;
 }
 
-void CompoundHandlers::SubCommand_PAT_MOVE( CAOSMachine& vm )
-{
-	vm.ValidateTarg();
-	if( !vm.GetTarg().IsCompoundAgent() )
-		vm.ThrowRunError( CAOSMachine::sidNotCompoundAgent );
+void CompoundHandlers::SubCommand_PAT_MOVE(CAOSMachine &vm) {
+  vm.ValidateTarg();
+  if (!vm.GetTarg().IsCompoundAgent())
+    vm.ThrowRunError(CAOSMachine::sidNotCompoundAgent);
 
-	int partid = vm.FetchIntegerRV();
-	Vector2D position;
-	position.x = vm.FetchFloatRV();
-	position.y = vm.FetchFloatRV();
-	vm.GetTarg().GetCompoundAgentReference().MovePart( partid, position );
+  int partid = vm.FetchIntegerRV();
+  Vector2D position;
+  position.x = vm.FetchFloatRV();
+  position.y = vm.FetchFloatRV();
+  vm.GetTarg().GetCompoundAgentReference().MovePart(partid, position);
 }
-

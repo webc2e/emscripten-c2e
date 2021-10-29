@@ -40,19 +40,19 @@
 #error need to handle byte ordering issues (serialisation is little-endian)
 #endif
 
-#include "../common/BasicException.h"
 #include "../common/C2eTypes.h"
-#include "../modules/ModuleAPI.h"
+#include "../common/BasicException.h"
 #include "Display/ErrorMessageHandler.h"
+#include "../modules/ModuleAPI.h"
 
 #include "TimeFuncs.h"
 #include <zlib.h>
 
-#include <deque>
-#include <list>
-#include <map>
-#include <set>
 #include <vector>
+#include <map>
+#include <list>
+#include <set>
+#include <deque>
 
 class PersistentObject;
 

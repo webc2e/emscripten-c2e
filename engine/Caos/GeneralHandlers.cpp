@@ -21,35 +21,35 @@
 
 #include <math.h> // for trig functions
 
-#include "../AgentManager.h"
-#include "../Agents/Agent.h"
 #include "../App.h"
 #include "../Camera/MainCamera.h"
+#include "CAOSMachine.h"
+#include "GeneralHandlers.h"
+#include "DebugInfo.h"
+#include "../World.h"
+#include "../Agents/Agent.h"
+#include "../AgentManager.h"
 #include "../Display/ErrorMessageHandler.h"
 #include "../Display/Window.h"
-#include "../World.h"
-#include "CAOSMachine.h"
-#include "DebugInfo.h"
-#include "GeneralHandlers.h"
 
-#include "../Creature/Genome.h"
-#include "../build.h"
 #include "MacroScript.h"
 #include "Orderiser.h"
+#include "../Creature/Genome.h"
+#include "../build.h"
 
+#include "../General.h"
+#include "../C2eServices.h"
+#include <time.h>
 #include "../../common/FileFuncs.h"
 #include "../../common/StringFuncs.h"
-#include "../C2eServices.h"
 #include "../DirectoryManager.h"
-#include "../General.h"
-#include <time.h>
 
 #ifdef _WIN32
-#include "../../common/FileScanner.h"
-#include "shellapi.h"
+	#include "../../common/FileScanner.h"
+	#include "shellapi.h"
 #else
-// #include "../../common/launchurl/launchurl.h"
-#include <glob.h>
+	#include "../../common/launchurl/launchurl.h"
+	#include <glob.h>
 #endif
 
 #include "../CosInstaller.h"
@@ -275,6 +275,7 @@ void GeneralHandlers::Command_SETV(CAOSMachine &vm) {
 }
 
 void GeneralHandlers::Command_DOIF(CAOSMachine &vm) {
+  // EM_ASM({ console.log("WorldName: " + $0); }, theApp.GetWorldName().c_str());
   int endip;
   endip = vm.FetchInteger();
   if (!vm.Evaluate())
@@ -1013,7 +1014,7 @@ int GeneralHandlers::IntegerRV_WNTI(CAOSMachine &vm) {
     if (!theApp.GetWorld().WorldName(i, wname))
       throw BasicException(
           ErrorMessageHandler::Format("archive_error", 9,
-                                      "GeneralHandlers::StringRV_WRLD")
+                                      "GeneralHandlers::StringRV_WNTI")
               .c_str());
     if (wname == str) {
       return i;
@@ -1028,6 +1029,9 @@ int GeneralHandlers::IntegerRV_NWLD(CAOSMachine &vm) {
 
 void GeneralHandlers::StringRV_WRLD(CAOSMachine &vm, std::string &str) {
   int index = vm.FetchIntegerRV();
+
+  int a = strcmp(theApp.GetWorld().OldWorldName(), "TheWorldAndEverythingInIt");
+
   if (!theApp.GetWorld().WorldName(index, str))
     throw BasicException(
         ErrorMessageHandler::Format("archive_error", 9,
@@ -1038,7 +1042,7 @@ void GeneralHandlers::StringRV_WRLD(CAOSMachine &vm, std::string &str) {
 void GeneralHandlers::Command_WRLD(CAOSMachine &vm) {
   std::string worldName;
   vm.FetchStringRV(worldName);
-  theApp.CreateNewWorld(worldName);
+  assert(theApp.CreateNewWorld(worldName));
 }
 
 void GeneralHandlers::StringRV_PSWD(CAOSMachine &vm, std::string &str) {
@@ -1059,12 +1063,17 @@ void GeneralHandlers::Command_DELW(CAOSMachine &vm) {
 
 void GeneralHandlers::Command_QUIT(CAOSMachine &vm) {
   std::ostringstream ss;
+
   if (vm.GetOwner().IsInvalid())
     ss << "CAOS Command Quit has activated from install script" << std::endl;
   else {
+    // for (int i = 0; i < vm.GetScript()->mySize; i++)
+    //   std::cout << vm.GetScript()->myCode[i];
+    // std::cout << std::endl;
     Agent &owner = vm.GetOwner().GetAgentReference();
     Classifier running;
     vm.GetScript()->GetClassifier(running);
+
     ss << "CAOS Command Quit has activated from... "
        << owner.GetClassifier().Family() << " " << owner.GetClassifier().Genus()
        << " " << owner.GetClassifier().Species()

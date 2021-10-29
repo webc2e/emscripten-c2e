@@ -17,13 +17,13 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
-#include "CAOSDescription.h" // to get special opcodes for logical
 #include "Lexer.h"
-// and comparison operators.
+#include "CAOSDescription.h"	// to get special opcodes for logical
+								// and comparison operators.
 
 #ifndef _MSC_VER
 #include <string.h>

@@ -5,34 +5,33 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
+#include "App.h"
+#include "Message.h"
 #include "World.h"
-#include "AgentManager.h"
+#include "CreaturesArchive.h"
 #include "Agents/Agent.h"
 #include "Agents/PointerAgent.h"
-#include "App.h"
-#include "Camera/MainCamera.h"
 #include "Creature/Creature.h"
-#include "CreaturesArchive.h"
+#include "Camera/MainCamera.h"
+#include "AgentManager.h"
 #include "Map/Map.h"
-#include "Message.h"
-
 #ifdef _WIN32
 #include "RegistryHandler.h"
 #endif
 #include "CosInstaller.h"
-#include "Display/ErrorMessageHandler.h"
 #include "Display/SharedGallery.h"
+#include "Display/ErrorMessageHandler.h"
 
 #include "Sound/MusicManager.h"
 
 #include "../common/FileFuncs.h"
-#include "DirectoryManager.h"
 #include "ModuleImporter.h"
+#include "DirectoryManager.h"
 
 #include "UniqueIdentifier.h"
 
-#include <algorithm>
 #include <fstream>
+#include <algorithm>
 
 AgentHandle thePointer;
 

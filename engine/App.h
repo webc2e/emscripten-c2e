@@ -26,10 +26,10 @@
 
 #include "../common/C2eTypes.h"
 #ifndef C2E_SDL
-#include "Display/Window.h"
+	#include "Display/Window.h"
 #endif
-#include "InputManager.h"
 #include "TimeFuncs.h"
+#include "InputManager.h"
 
 #include "../common/Configurator.h"
 #include "../modules/ModuleAPI.h"

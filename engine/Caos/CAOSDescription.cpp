@@ -17,17 +17,16 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "CAOSDescription.h"
-#include "../../common/StringFuncs.h"
 #include "../C2eServices.h"
+#include "CAOSDescription.h"
 #include "../CreaturesArchive.h"
-#include "../FilePath.h"
-#include "AutoDocumentationTable.h"
-#include "CAOSConstants.h"
-#include <algorithm>
 #include <fstream>
 #include <sstream>
-
+#include <algorithm>
+#include "CAOSConstants.h"
+#include "AutoDocumentationTable.h"
+#include "../FilePath.h"
+#include "../../common/StringFuncs.h"
 // The one and only description of the CAOS langauge
 // Maybe should be moved elsewhere...
 CAOSDescription theCAOSDescription;

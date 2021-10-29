@@ -85,5 +85,6 @@
     "stop_token": "cpp",
     "cinttypes": "cpp",
     "filesystem": "cpp"
-  }
+  },
+  "C_Cpp.clang_format_sortIncludes": false
 }

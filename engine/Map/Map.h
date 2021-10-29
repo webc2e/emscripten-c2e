@@ -19,14 +19,14 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "../Agents/AgentHandle.h"
+#include <set>
+#include <algorithm>
+#include <list>
+#include <string>
+#include <float.h>
 #include "../PersistentObject.h"
 #include "CARates.h"
-#include <algorithm>
-#include <float.h>
-#include <list>
-#include <set>
-#include <string>
+#include "../Agents/AgentHandle.h"
 
 //
 // Public constants

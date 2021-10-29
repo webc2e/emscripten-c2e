@@ -28,13 +28,13 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "Background.h"
-#include "Bitmap.h"
-#include "DisplayEngine.h"
-#include "ErrorMessageHandler.h"
-#include "Gallery.h"
-#include "Position.h"
-#include "SharedGallery.h"
+#include	"Background.h"
+#include	"Gallery.h"
+#include	"Bitmap.h"
+#include	"DisplayEngine.h"
+#include	"SharedGallery.h"
+#include	"Position.h"
+#include	"ErrorMessageHandler.h"
 
 Background::Background()
     : myWidth(0), myHeight(0), myGallery(NULL), myPixelWidth(0),

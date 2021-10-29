@@ -7,32 +7,30 @@
 #endif
 
 #include "SDL_Main.h"
-#include "../../App.h"
-#include "../../Camera/MainCamera.h"
 #include "../../InputManager.h"
-#include "../../World.h"
-#include "../../unix/KeyScan.h"
-#include "../DisplayEngine.h"
 #include "../ErrorMessageHandler.h"
+#include "../DisplayEngine.h"
+#include "../../Camera/MainCamera.h"
+#include "../../World.h"
+#include "../../App.h"
 #include <exception>
-
+#include "../../unix/KeyScan.h"
 #ifdef _WIN32
-#include "../../../common/CStyleException.h"
-#include "../../Caos/Win32Server.h"
-#include "../../RegistryHandler.h"
+	#include "../../../common/CStyleException.h"
+	#include "../../RegistryHandler.h"
+	#include "../../Caos/Win32Server.h"
 
-#include <SDL/SDL_syswm.h>
+	#include <SDL/SDL_syswm.h>
 #else
-#include "../../../common/UnixSignals.h"
-#include "../../Caos/SockServer.h"
-
-// #include "scrap.h"
+	#include "../../../common/UnixSignals.h"
+	#include "../../Caos/SockServer.h"
+	#include "scrap.h"
 #endif
 
 #include <time.h>
 
 #ifdef C2E_USING_GTK
-#include <gtk/gtk.h>
+	#include <gtk/gtk.h>
 #endif
 
 #ifdef __EMSCRIPTEN__
@@ -63,9 +61,11 @@ static SockServer *ourSockServer = NULL;
 #endif
 
 SDL_Event event;
+int ticksSinceStart;
 
 extern "C" int main(int argc, char *argv[]) {
   EM_ASM({ Module.logReadFiles = 'true'; });
+  ticksSinceStart = 0;
 
   try {
     ourRunning = true;
@@ -137,12 +137,12 @@ extern "C" int main(int argc, char *argv[]) {
       // existing tools and the message loop.  For other platforms we
       // use TCP/IP sockets.
 #ifndef _WIN32
-      int sockServerPort = 20001;
-      theApp.UserSettings().Get("Port", sockServerPort);
-      int sockServerSecurity = 1;
-      theApp.UserSettings().Get("PortSecurity", sockServerSecurity);
-      SockServer sockServer(sockServerPort, sockServerSecurity != 0);
-      ourSockServer = &sockServer;
+      // int sockServerPort = 20001;
+      // theApp.UserSettings().Get("Port", sockServerPort);
+      // int sockServerSecurity = 1;
+      // theApp.UserSettings().Get("PortSecurity", sockServerSecurity);
+      // SockServer sockServer(sockServerPort, sockServerSecurity != 0);
+      // ourSockServer = &sockServer;
 #endif
 
 #ifndef _WIN32
@@ -158,7 +158,7 @@ extern "C" int main(int argc, char *argv[]) {
       //         sockServer.ProcessRequests();
       // #endif
       //       }
-
+      // EM_ASM({console.log('only once')});
       emscripten_set_main_loop(mainloop, 0, 1);
       // }
     }
@@ -181,31 +181,41 @@ extern "C" int main(int argc, char *argv[]) {
 }
 
 void mainloop() {
-  int tick = (int)SDL_GetTicks();
-  if (ourQuit) {
-    emscripten_cancel_main_loop();
-  }
+  try {
+    ticksSinceStart += 1;
+    int tick = (int)SDL_GetTicks();
+    if (ourQuit) {
+      std::cout << "quitting!" << std::endl;
+      emscripten_cancel_main_loop();
+    }
 
-  int tickDelta = App::GetWorldTickInterval() - ((int)SDL_GetTicks() - tick);
-  // if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
-  // SDL_Delay(tickDelta);
-  tick = (int)SDL_GetTicks();
+    int tickDelta = App::GetWorldTickInterval() - ((int)SDL_GetTicks() - tick);
+    // if ((tickDelta > 0) && (!theApp.GetFastestTicks()))
+    // SDL_Delay(tickDelta);
+    tick = (int)SDL_GetTicks();
 
-  while (SDL_PollEvent(&event) == 1) {
-    HandleEvent(event);
-  }
+    while (SDL_PollEvent(&event) == 1) {
+      HandleEvent(event);
+    }
 
-  if (theApp.myToggleFullScreenNextTick) {
-    theApp.ToggleFullScreenMode();
-    theApp.myToggleFullScreenNextTick = false;
-  }
+    // if (theApp.myToggleFullScreenNextTick) {
+    //   theApp.ToggleFullScreenMode();
+    //   theApp.myToggleFullScreenNextTick = false;
+    // }
 
-  if (ourCurrentlyTicking || ourSingleTick) {
-    ourSingleTick = false;
-    // Tell the app to update;
-    theApp.UpdateApp();
-    // App has finished with this set of events now.
-    theApp.GetInputManager().SysFlushEventBuffer();
+    if (ourCurrentlyTicking || ourSingleTick) {
+      ourSingleTick = false;
+      // Tell the app to update;
+      theApp.UpdateApp();
+      // App has finished with this set of events now.
+      theApp.GetInputManager().SysFlushEventBuffer();
+    }
+  } catch (std::exception &e) {
+    std::cout << "An error happened: " << e.what() << std::endl;
+    std::cout << "ticksSinceStart: " << ticksSinceStart << std::endl;
+  } catch (...) {
+    std::cout << "An error happened" << std::endl;
+    std::cout << "ticksSinceStart: " << ticksSinceStart << std::endl;
   }
 }
 

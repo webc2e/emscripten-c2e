@@ -119,7 +119,7 @@ public:
 
   //	bool Check16BitFormat(uint32 storedDisplayType,
   //						std::vector<std::string>&
-  //foldersToConvert);
+  // foldersToConvert);
 
   //	void DoConversion(std::string& imagepath);
 
@@ -228,7 +228,8 @@ public:
 
   //	void ResizeWindow(RECT& rect,UINT flags  = SWP_SHOWWINDOW);
   //	static HRESULT CALLBACK EnumModesCallback(  LPDDSURFACEDESC2
-  //lpDDSurfaceDesc, 												LPVOID lpContext);
+  // lpDDSurfaceDesc,
+  // LPVOID lpContext);
 
   SDL_Rect ConvertRect(RECT &rect);
   bool BlitToFrontBuffer(RECT &destination, SDL_Surface *image, RECT &source,

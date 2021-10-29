@@ -15,22 +15,21 @@
 // gtb!temp!
 class Presence;
 
-#include "../../common/C2eTypes.h"
-#include "../Classifier.h"
 #include "../Creature/voice.h"
-#include "../Maths.h"
-#include "../PersistentObject.h"
-#include "../Sound/Soundlib.h"
+#include "../../common/C2eTypes.h"
 #include "PortBundle.h"
 #include <map>
-
+#include "../Sound/Soundlib.h"
+#include "../Maths.h"
+#include "../Classifier.h"
+#include "../PersistentObject.h"
 
 #include "../../common/BasicException.h"
 #include "../Caos/VelocityVariable.h"
-#include "../Creature/AgentFacultyInterface.h"
 #include "../Creature/GenomeStore.h"
-#include "../mfchack.h"
 #include "AgentConstants.h"
+#include "../mfchack.h"
+#include "../Creature/AgentFacultyInterface.h"
 
 const int GLOBAL_VARIABLE_COUNT = 100;
 const Vector2D INVALID_POSITION(-1.0f, -1.0f);

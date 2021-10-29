@@ -1,40 +1,39 @@
 // Sockets based external interface, used for communication
 // by external apps on non-Win32 versions.
 
+#include <SDL/SDL.h>
 #include "SockServer.h"
 #include "../../common/BasicException.h"
 #include "../../common/FileFuncs.h"
 #include "../CosInstaller.h"
 #include "../DirectoryManager.h"
-#include <SDL/SDL.h>
 
 #include <iostream>
 #include <string.h>
 #include <sys/types.h>
 #ifdef _WIN32
-#include <winsock2.h>
-#define ENOTSOCK WSAENOTSOCK
-#define ENOTCONN WSAENOTCONN
-#define EADDRINUSE WSAEADDRINUSE
+	#include <winsock2.h>
+	#define ENOTSOCK WSAENOTSOCK
+	#define ENOTCONN WSAENOTCONN
+	#define EADDRINUSE WSAEADDRINUSE
 
-#define close closesocket
-#define bzero ZeroMemory
-#define SETSOCKOPTCAST const char *
-#define socklen_t int
+	#define close closesocket
+	#define bzero ZeroMemory
+	#define SETSOCKOPTCAST const char *
+	#define socklen_t int
 #else
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-
-// #include <tcpd.h>
-#include <unistd.h>
-#define SETSOCKOPTCAST void *
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	// #include <tcpd.h>
+	#include <unistd.h>
+	#define SETSOCKOPTCAST void *
 #endif
-#include <errno.h>
-#include <fstream>
-#include <sstream>
 #include <string>
+#include <errno.h>
+#include <sstream>
 #include <strstream>
+#include <fstream>
 
 SockServer::SockServer(int port, bool secure) {
   myPort = port;

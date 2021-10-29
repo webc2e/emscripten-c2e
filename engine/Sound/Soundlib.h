@@ -1,34 +1,40 @@
 // a stub version of soundlib is available: "stub/stub_Soundlib.h"
 
 #ifdef C2E_SDL
-	//#include "stub/stub_Soundlib.h"
-	#include "../PersistentObject.h"	// ugly hack for Makefile dependencies...
-	#include "SDL/SDL_Soundlib.h"
+//#include "stub/stub_Soundlib.h"
+#include "../PersistentObject.h" // ugly hack for Makefile dependencies...
+#include "SDL/SDL_Soundlib.h"
 #else
-	#ifdef _MSC_VER
-	#pragma warning(disable:4786 4503)
+#ifdef _MSC_VER
+#pragma warning(disable : 4786 4503)
 #endif
 
 #ifndef SOUNDLIB_H
 #define SOUNDLIB_H
 
-
 #ifdef C2E_SDL
-	#include <SDL/SDL.h>
+#include <SDL/SDL.h>
 #else
-	#include <mmreg.h>
-	#include <dsound.h>
+#include <dsound.h>
+#include <mmreg.h>
+
 #endif
 
-#include <set>
 #include "../PersistentObject.h"
+#include <set>
 
-#define MAX_ACTIVE_SOUNDS	32
+#define MAX_ACTIVE_SOUNDS 32
 
-typedef enum {NO_SOUND_ERROR=0, SOUNDCACHE_UNINITIALIESED,
-			  SOUNDCACHE_TOO_SMALL,  SOUND_NOT_FOUND,
-			  SOUND_HANDLE_UNDEFINED, SOUND_CHANNELS_FULL,
-			  SOUND_MIXER_SUSPENDED, SOUND_MIXER_CANT_OPEN} SOUNDERROR;
+typedef enum {
+  NO_SOUND_ERROR = 0,
+  SOUNDCACHE_UNINITIALIESED,
+  SOUNDCACHE_TOO_SMALL,
+  SOUND_NOT_FOUND,
+  SOUND_HANDLE_UNDEFINED,
+  SOUND_CHANNELS_FULL,
+  SOUND_MIXER_SUSPENDED,
+  SOUND_MIXER_CANT_OPEN
+} SOUNDERROR;
 
 typedef int SOUNDHANDLE;
 
@@ -38,37 +44,35 @@ const int SoundMinVolume = -5000;
 const int SoundAbsoluteMinVolume = -10000;
 
 // CachedSound - Data structure storing members of sound cache
-class CachedSound : public PersistentObject
-{
-	CREATURES_DECLARE_SERIAL( CachedSound )
+class CachedSound : public PersistentObject {
+  CREATURES_DECLARE_SERIAL(CachedSound)
 public:
-	DWORD name;						// Four letter name tag
-	int used;						// Number indicating recent use
-	DWORD size;						// Size of sample in bytes
-	int copies;						// Number of active copies
-	IDirectSoundBuffer *buffer;		// Store of sound data
+  DWORD name;                 // Four letter name tag
+  int used;                   // Number indicating recent use
+  DWORD size;                 // Size of sample in bytes
+  int copies;                 // Number of active copies
+  IDirectSoundBuffer *buffer; // Store of sound data
 
-	// ----------------------------------------------------------------------
-	// Method:		Write
-	// Arguments:	archive - archive being written to
-	// Returns:		true if successful
-	// Description:	Overridable function - writes details to archive,
-	//				taking serialisation into account
-	// ----------------------------------------------------------------------
-	virtual bool Write(CreaturesArchive &archive) const;
+  // ----------------------------------------------------------------------
+  // Method:		Write
+  // Arguments:	archive - archive being written to
+  // Returns:		true if successful
+  // Description:	Overridable function - writes details to archive,
+  //				taking serialisation into account
+  // ----------------------------------------------------------------------
+  virtual bool Write(CreaturesArchive &archive) const;
 
+  // ----------------------------------------------------------------------
+  // Method:		Read
+  // Arguments:	archive - archive being read from
+  // Returns:		true if successful
+  // Description:	Overridable function - reads detail of class from
+  // archive
+  // ----------------------------------------------------------------------
+  virtual bool Read(CreaturesArchive &archive);
 
-	// ----------------------------------------------------------------------
-	// Method:		Read
-	// Arguments:	archive - archive being read from
-	// Returns:		true if successful
-	// Description:	Overridable function - reads detail of class from archive
-	// ----------------------------------------------------------------------
-	virtual bool Read(CreaturesArchive &archive);
-
-	CachedSound();
-	~CachedSound();
-
+  CachedSound();
+  ~CachedSound();
 };
 
 // Active Sample - Data structure storing samples currently
@@ -79,34 +83,31 @@ public:
 // ActiveSamples can be faded using 'fade_rate.'  They will
 // automatically be deleted once silent
 
-class ActiveSample
-{
+class ActiveSample {
 public:
-	IDirectSoundBuffer	*pSample;	//	pointer to direct sound buffer
-	DWORD				wID;		//	id of sample
-	BOOL				locked;		//  Do not delete when finished
-	long				fade_rate;	//	amount added to volume each tick
-	CachedSound			*cloned;	//	pointer to cache entry
-									//	that this has been copied from
-									//	NULL = original buffer
-	long				volume;		//  volume sound should play at before
-									//  overall manager volume is applied
+  IDirectSoundBuffer *pSample; //	pointer to direct sound buffer
+  DWORD wID;                   //	id of sample
+  BOOL locked;                 //  Do not delete when finished
+  long fade_rate;              //	amount added to volume each tick
+  CachedSound *cloned;         //	pointer to cache entry
+                               //	that this has been copied from
+                               //	NULL = original buffer
+  long volume;                 //  volume sound should play at before
+                               //  overall manager volume is applied
 
-	ActiveSample();
+  ActiveSample();
 };
-
 
 // A SoundQueue is maintained to allow a delay before a sound
 // is played.  This enables compound sounds to be created from
 // several separate components.
-class SoundQueueItem : public PersistentObject
-{
-		CREATURES_DECLARE_SERIAL( SoundQueueItem )
+class SoundQueueItem : public PersistentObject {
+  CREATURES_DECLARE_SERIAL(SoundQueueItem)
 public:
-	DWORD		wave;			// Name of sound to be played
-	int			ticks;			// Number of ticks remaining
-	long		volume;
-	long		pan;
+  DWORD wave; // Name of sound to be played
+  int ticks;  // Number of ticks remaining
+  long volume;
+  long pan;
 };
 
 // SoundManager - front end class for all sound routines
@@ -130,202 +131,201 @@ public:
 // to play midi sounds
 class MidiModule;
 
-
-class SoundManager :  public PersistentObject
-{
-	CREATURES_DECLARE_SERIAL( SoundManager )
+class SoundManager : public PersistentObject {
+  CREATURES_DECLARE_SERIAL(SoundManager)
 public:
-	//////////////////////////////////////////////////////////////////////////
-	// Exceptions
-	//////////////////////////////////////////////////////////////////////////
-	class SoundException: public BasicException
-	{
-	public:
-		SoundException(std::string what, uint16 line):
-		BasicException(what.c_str()),
-		lineNumber(line){;}
+  //////////////////////////////////////////////////////////////////////////
+  // Exceptions
+  //////////////////////////////////////////////////////////////////////////
+  class SoundException : public BasicException {
+  public:
+    SoundException(std::string what, uint16 line)
+        : BasicException(what.c_str()), lineNumber(line) {
+      ;
+    }
 
-		uint16 LineNumber(){return lineNumber;}
-	private:
-		uint16 lineNumber;
-	};
+    uint16 LineNumber() { return lineNumber; }
 
-	enum SIDText
-	{
-		sidFileNotFound=0,
-		sidNotAllFilesCouldBeMunged,
-		sidUnknown,
-		sidResourcesAlreadyInUse,
-		sidWaveFormatNotSupported,
-		sidInvalidParameter,
-		sidNoAggregation,
-		sidNotEnoughMemory,
-		sidFailedToCreateDirectSoundObject,
-		sidFailedToSetCooperativeLevel,
-		sidPrimaryBufferNotCreated,
-		sidPrimaryBufferCouldNotBeSetToNewFormat,
-		sidFriendlyFailedToCreateDirectSoundObject,
-	};
+  private:
+    uint16 lineNumber;
+  };
 
+  enum SIDText {
+    sidFileNotFound = 0,
+    sidNotAllFilesCouldBeMunged,
+    sidUnknown,
+    sidResourcesAlreadyInUse,
+    sidWaveFormatNotSupported,
+    sidInvalidParameter,
+    sidNoAggregation,
+    sidNotEnoughMemory,
+    sidFailedToCreateDirectSoundObject,
+    sidFailedToSetCooperativeLevel,
+    sidPrimaryBufferNotCreated,
+    sidPrimaryBufferCouldNotBeSetToNewFormat,
+    sidFriendlyFailedToCreateDirectSoundObject,
+  };
 
-
-// functions
+  // functions
 public:
-	SoundManager();
-	~SoundManager();
+  SoundManager();
+  ~SoundManager();
 
-	void RestoreSoundManager();
-	void ReleaseDirectSoundObject();
+  void RestoreSoundManager();
+  void ReleaseDirectSoundObject();
 
-	void StopAllSounds();
-	void Update();					// Called by on timer
+  void StopAllSounds();
+  void Update(); // Called by on timer
 
-	BOOL SoundEnabled();					//  Is mixer running?
+  BOOL SoundEnabled(); //  Is mixer running?
 
-	SOUNDERROR InitializeCache(int size);	//	Set size (K) of cache in bytes
-											//  Flushes the existing cache
+  SOUNDERROR InitializeCache(int size); //	Set size (K) of cache in bytes
+                                        //  Flushes the existing cache
 
-	SOUNDERROR FlushCache();				//  Clears all stored sounds from
-											//  The sound cache
+  SOUNDERROR FlushCache(); //  Clears all stored sounds from
+                           //  The sound cache
 
-	SOUNDERROR SetVolume(long volume);		//  Sets the overall sound volume
-	long GetVolume();
+  SOUNDERROR SetVolume(long volume); //  Sets the overall sound volume
+  long GetVolume();
 
-	SOUNDERROR FadeOut();					//  Begin to fade all sounds (but
-											//  leaves them "playing silently"
-	
-	SOUNDERROR FadeIn();					//  Fade all sounds back in
+  SOUNDERROR FadeOut(); //  Begin to fade all sounds (but
+                        //  leaves them "playing silently"
 
-	SOUNDERROR SuspendMixer();				//  Stop the mixer playing
-											//  (Use on KillFocus)
+  SOUNDERROR FadeIn(); //  Fade all sounds back in
 
-	SOUNDERROR RestoreMixer();				//  Restart the mixer
-											//  After it has been suspended
+  SOUNDERROR SuspendMixer(); //  Stop the mixer playing
+                             //  (Use on KillFocus)
 
-	SOUNDERROR PreLoadSound(DWORD wave);	//  Ensures a sound is loaded into the
-											//  cache
+  SOUNDERROR RestoreMixer(); //  Restart the mixer
+                             //  After it has been suspended
 
-	SOUNDERROR PlaySoundEffect(DWORD wave, int ticks=0, long volume=0, long pan=0);
-											//  Load and Play sound immediately or
-											//  preload sound and queue it to be played
-											//  after 'ticks' has elapsed
+  SOUNDERROR PreLoadSound(DWORD wave); //  Ensures a sound is loaded into the
+                                       //  cache
 
-	SOUNDERROR StartControlledSound(DWORD wave, SOUNDHANDLE &handle, long volume=0, long pan=0, BOOL looped=FALSE);
-											//  Begins a controlled sound and returns its handle
+  SOUNDERROR PlaySoundEffect(DWORD wave, int ticks = 0, long volume = 0,
+                             long pan = 0);
+  //  Load and Play sound immediately or
+  //  preload sound and queue it to be played
+  //  after 'ticks' has elapsed
 
-	SOUNDERROR UpdateControlledSound(SOUNDHANDLE handle, long volume, long pan);
-	
-	SOUNDERROR StopControlledSound(SOUNDHANDLE handle, BOOL fade=FALSE);
-											//  Stops the specified sound (handle is
-											//  then no longer valid) Sound can be
-											//  optionally faded out
+  SOUNDERROR StartControlledSound(DWORD wave, SOUNDHANDLE &handle,
+                                  long volume = 0, long pan = 0,
+                                  BOOL looped = FALSE);
+  //  Begins a controlled sound and returns its handle
 
-	BOOL FinishedControlledSound(SOUNDHANDLE handle);
-											//  Has the selected sound finished playing?
+  SOUNDERROR UpdateControlledSound(SOUNDHANDLE handle, long volume, long pan);
 
-	bool PlayMidiFile(std::string& fileName);
+  SOUNDERROR StopControlledSound(SOUNDHANDLE handle, BOOL fade = FALSE);
+  //  Stops the specified sound (handle is
+  //  then no longer valid) Sound can be
+  //  optionally faded out
 
-	void StopMidiPlayer();
+  BOOL FinishedControlledSound(SOUNDHANDLE handle);
+  //  Has the selected sound finished playing?
 
-	void SetVolumeOnMidiPlayer(int32 volume);
-	int GetVolumeOnMidiPlayer();
+  bool PlayMidiFile(std::string &fileName);
 
-	void MuteMidiPlayer(bool mute);
+  void StopMidiPlayer();
 
-	void SetMNGFile(const std::string& mng);
+  void SetVolumeOnMidiPlayer(int32 volume);
+  int GetVolumeOnMidiPlayer();
 
-	bool IsMixerFaded() { return faded; }
+  void MuteMidiPlayer(bool mute);
 
-	void ReleaseAccessTotheSoundCard();
+  void SetMNGFile(const std::string &mng);
 
-	void RestoreAccessTotheSoundCard();
+  bool IsMixerFaded() { return faded; }
+
+  void ReleaseAccessTotheSoundCard();
+
+  void RestoreAccessTotheSoundCard();
 
 private:
-	SOUNDHANDLE PlayCachedSound(CachedSound *wave, int volume=0,
-							int pan=0, BOOL loop=FALSE);
-	// returns channel
-	CachedSound *OpenSound(DWORD wave);			// Loads sound data and creates a buffer
+  SOUNDHANDLE PlayCachedSound(CachedSound *wave, int volume = 0, int pan = 0,
+                              BOOL loop = FALSE);
+  // returns channel
+  CachedSound *OpenSound(DWORD wave); // Loads sound data and creates a buffer
 
-	void CloseSound(CachedSound *wave);			// Deselects buffer and deletes
-	
-	void StopSound(SOUNDHANDLE handle);			// Release sound from DSObject if necessary
+  void CloseSound(CachedSound *wave); // Deselects buffer and deletes
 
-	std::string mungeFile;
+  void
+  StopSound(SOUNDHANDLE handle); // Release sound from DSObject if necessary
 
-	int GetWaveSize(DWORD wave);
+  std::string mungeFile;
 
-	CachedSound*	EnsureInCache(DWORD wave);		//  Places wave in cache and returns
-												//	a pointer to it (if present)
+  int GetWaveSize(DWORD wave);
 
-	SOUNDERROR MakeRoomInCache(int size);		//	Ensure that 'size' bytes are free
+  CachedSound *EnsureInCache(DWORD wave); //  Places wave in cache and returns
+                                          //	a pointer to it (if present)
 
-	SOUNDERROR RemoveFromCache(CachedSound* index);		//  Remove Wave at 'index' from array
+  SOUNDERROR
+  MakeRoomInCache(int size); //	Ensure that 'size' bytes are free
 
-	void FlushSoundQueue();						//	Remove all sounds from sound queue
+  SOUNDERROR
+  RemoveFromCache(CachedSound *index); //  Remove Wave at 'index' from array
 
-	void UpdateSoundQueue();					//  Called every tick to advance sounds
-												//  up the queue and delete 'used' entries
-	SOUNDERROR SetTargetVolume(long volume);	//  Sets the manager to fade towards the
-												//  given volume
+  void FlushSoundQueue(); //	Remove all sounds from sound queue
 
-	// ----------------------------------------------------------------------
-	// Method:		Write
-	// Arguments:	archive - archive being written to
-	// Returns:		true if successful
-	// Description:	Overridable function - writes details to archive,
-	//				taking serialisation into account
-	// ----------------------------------------------------------------------
-	virtual bool Write(CreaturesArchive &archive) const;
+  void UpdateSoundQueue(); //  Called every tick to advance sounds
+                           //  up the queue and delete 'used' entries
+  SOUNDERROR SetTargetVolume(long volume); //  Sets the manager to fade towards
+                                           //  the given volume
 
+  // ----------------------------------------------------------------------
+  // Method:		Write
+  // Arguments:	archive - archive being written to
+  // Returns:		true if successful
+  // Description:	Overridable function - writes details to archive,
+  //				taking serialisation into account
+  // ----------------------------------------------------------------------
+  virtual bool Write(CreaturesArchive &archive) const;
 
-	// ----------------------------------------------------------------------
-	// Method:		Read
-	// Arguments:	archive - archive being read from
-	// Returns:		true if successful
-	// Description:	Overridable function - reads detail of class from archive
-	// ----------------------------------------------------------------------
-	virtual bool Read(CreaturesArchive &archive);
+  // ----------------------------------------------------------------------
+  // Method:		Read
+  // Arguments:	archive - archive being read from
+  // Returns:		true if successful
+  // Description:	Overridable function - reads detail of class from
+  // archive
+  // ----------------------------------------------------------------------
+  virtual bool Read(CreaturesArchive &archive);
 
-	// members
-			
-	BOOL	mixer_suspended;					//  Mixer currently out of operation
+  // members
 
-	int 	maximum_size;						//  Size of cache in bytes
-	int		current_size;						//  Current size of cache used
+  BOOL mixer_suspended; //  Mixer currently out of operation
 
-	int		last_used;
+  int maximum_size; //  Size of cache in bytes
+  int current_size; //  Current size of cache used
 
-	std::set<CachedSound *>	sounds;		//  Flexible array of sounds in cache
+  int last_used;
 
-	// Share the DirectSound object and primary buffers between different sound managers
-	static int					references;
-	static LPDIRECTSOUND		pDSObject;
-	static IDirectSoundBuffer	*pPrimary;	//  pointer to primary buffer
+  std::set<CachedSound *> sounds; //  Flexible array of sounds in cache
 
-	MidiModule* myMidiModule;
+  // Share the DirectSound object and primary buffers between different sound
+  // managers
+  static int references;
+  static LPDIRECTSOUND pDSObject;
+  static IDirectSoundBuffer *pPrimary; //  pointer to primary buffer
 
-	long				sounds_playing;
-	ActiveSample		active_sounds[MAX_ACTIVE_SOUNDS];
-	DWORD				sound_index;
+  MidiModule *myMidiModule;
 
-	BOOL				sound_initialised;
+  long sounds_playing;
+  ActiveSample active_sounds[MAX_ACTIVE_SOUNDS];
+  DWORD sound_index;
 
-	std::vector<SoundQueueItem *>			sound_queue;
+  BOOL sound_initialised;
 
-	long				overall_volume;			//  Overall (unfaded) volume
+  std::vector<SoundQueueItem *> sound_queue;
 
-	long				target_volume;			//  Volume being aimed for
+  long overall_volume; //  Overall (unfaded) volume
 
-	long				current_volume;			//  Volume currently playing
+  long target_volume; //  Volume being aimed for
 
-	bool				faded;					//  Flags if the system is
-												//  not audible (or fading out)
+  long current_volume; //  Volume currently playing
 
+  bool faded; //  Flags if the system is
+              //  not audible (or fading out)
 };
 
-#endif	// SOUNDLIB_H
+#endif // SOUNDLIB_H
 
 #endif // stub guard
-
- 
-

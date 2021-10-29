@@ -30,10 +30,10 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "../../common/BasicException.h"
-#include "../PersistentObject.h"
-#include "MemoryMappedFile.h"
-#include <string>
+#include	"MemoryMappedFile.h"
+#include	<string>
+#include	"../PersistentObject.h"
+#include	"../../common/BasicException.h"
 
 const int SpriteFileHeaderSize = 8;
 ////////////////////////////////////////////////////////////////////////////

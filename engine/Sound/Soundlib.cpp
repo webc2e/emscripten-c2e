@@ -4,7 +4,7 @@
 
 #include "../../common/C2eTypes.h"
 #include "MidiModule.h"
-#include "soundlib.h"
+#include "Soundlib.h"
 #include "../general.h"
 #include "../App.h"
 #include "../C2eServices.h"

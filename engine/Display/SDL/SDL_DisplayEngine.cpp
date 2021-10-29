@@ -113,8 +113,8 @@ void DisplayEngine::ClearBuffers(void) {
 // Method:      Start
 // Arguments:   window - handle of a window to associate the engine with
 //				fullScreen - true if this engine should run full
-// screen 								false if it should run
-// in a window.
+// screen 								false if
+// it should run in a window.
 //
 // Returns:     true if the engine has started up OK false otherwise
 //
@@ -244,6 +244,7 @@ bool DisplayEngine::SetMode(int modenum) {
   int w = myFullScreenModes[modenum].w;
   int h = myFullScreenModes[modenum].h;
   int bitdepth = (myPixelFormat == RGB_555) ? 15 : 16;
+  bitdepth = 16;
 
   myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_FULLSCREEN);
   if (!myBackBuffer) {
@@ -599,8 +600,7 @@ void DisplayEngine::Stop(void) {
 //				entityHandler - list of drawable objects
 //				monitor - not used yet
 //				completeRedraw - wether we are drawing the whole
-// scene 									or
-// just dirty rects
+// scene or just dirty rects
 //
 // Returns:     None
 //
@@ -715,10 +715,10 @@ void DisplayEngine::DrawToFrontBuffer() {
   // The pretty flashing rectangle in the corner
   // which shows you that SDL is working when
   // things look bad
-  SDL_Rect r;
-  r.x = r.y = 0;
-  r.w = r.h = 10;
-  SDL_FillRect(myBackBuffer, &r, rand());
+  // SDL_Rect r;
+  // r.x = r.y = 0;
+  // r.w = r.h = 10;
+  // SDL_FillRect(myBackBuffer, &r, rand());
 
   // BEGIN ROUND WORLD EASTER EGG
   if (myIsTheWorldRoundFlag || myDesiredWorldRoundness) {
@@ -1258,8 +1258,8 @@ void DisplayEngine::DrawSpriteToBitmap(Bitmap *destination, Position position,
 // Arguments:   bitmap - bitmap to write to
 //				x and y coordinates of start point and end point
 // of
-// the 				line 				r,g,b colour values
-// for the line
+// the 				line 				r,g,b colour
+// values for the line
 //
 // Returns:     none
 //
@@ -1436,15 +1436,17 @@ bool DisplayEngine::RenderBitmapToFrontBuffer(Bitmap *bitmap) {
   // a temp SDL surface
   // TODO: allow for other pixelformats?
 
+  int bitdepth = 16;
+
   SDL_Surface *surface;
   if (myPixelFormat == RGB_555) {
-    surface = SDL_CreateRGBSurface(SDL_SWSURFACE, bitmap->GetWidth(),
-                                   bitmap->GetHeight(), 15, 0x7C00, 0x03E0,
+    surface = SDL_CreateRGBSurface(SDL_HWSURFACE, bitmap->GetWidth(),
+                                   bitmap->GetHeight(), bitdepth, 0x7C00, 0x03E0,
                                    0x001F, 0);
   } else // 565
   {
-    surface = SDL_CreateRGBSurface(SDL_SWSURFACE, bitmap->GetWidth(),
-                                   bitmap->GetHeight(), 16, 0xF800, 0x07E0,
+    surface = SDL_CreateRGBSurface(SDL_HWSURFACE, bitmap->GetWidth(),
+                                   bitmap->GetHeight(), bitdepth, 0xF800, 0x07E0,
                                    0x001F, 0);
   }
 
@@ -1814,8 +1816,8 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 // 	mov ebx,dword ptr [bitmapHeight]
 
 // topOfLineLoop:
-// 	lodsw									;Get
-// tag and increment ptr lodsb 	and eax,0ffffh			;0ffh 	test
+// 	lodsw ;Get tag and increment ptr lodsb 	and eax,0ffffh
+// ;0ffh 	test
 // eax,eax je lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax
 // shr ecx,1 	rep movsw ;dword ptr [edi],dword ptr [esi] 	jmp
 // topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp topOfLineLoop
@@ -2553,12 +2555,14 @@ SDL_Surface *DisplayEngine::CreateSurface(int32 width, int32 height,
                                           bool tryVideoFirst /*=false*/) {
   SDL_Surface *image;
 
+  int bitdepth = 16;
+
   if (myPixelFormat == RGB_555) {
-    image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 15, 0x7C00,
+    image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0x7C00,
                                  0x03E0, 0x001F, 0);
   } else // 565
   {
-    image = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 16, 0xF800,
+    image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0xF800,
                                  0x07E0, 0x001F, 0);
   }
 
@@ -2674,13 +2678,13 @@ void DisplayEngine::DrawGuttering(int width, int height) {
     r.y = 0;
     r.w = mySurfaceArea.right - width;
     r.h = mySurfaceArea.bottom;
-    SDL_FillRect(myBackBuffer, &r, 0);
+    // SDL_FillRect(myBackBuffer, &r, 0);
   }
   if (height < mySurfaceArea.bottom) {
     r.x = 0;
     r.y = height;
     r.w = mySurfaceArea.right;
     r.h = mySurfaceArea.bottom - height;
-    SDL_FillRect(myBackBuffer, &r, 0);
+    // SDL_FillRect(myBackBuffer, &r, 0);
   }
 }

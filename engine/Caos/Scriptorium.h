@@ -22,12 +22,11 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include <set>
 #include <vector>
+#include <set>
 
-
-#include "../Classifier.h"
 #include "../PersistentObject.h"
+#include "../Classifier.h"
 
 
 // Forward Declaration

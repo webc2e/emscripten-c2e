@@ -20,12 +20,9 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
-#include "C2eServices.h" // to get around circular dependency problem
-
+#include "C2eServices.h"	// to get around circular dependency problem
 #include "FlightRecorder.h"
-
 #include "Display/ErrorMessageHandler.h"
-
 #include "../common/FileFuncs.h"
 
 FlightRecorder::FlightRecorder() {

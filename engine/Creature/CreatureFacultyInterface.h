@@ -8,7 +8,6 @@
 #include "../../common/Vector2D.h"
 #include "../Agents/AgentHandle.h"
 
-
 class Brain;
 class Biochemistry;
 class LifeFaculty;

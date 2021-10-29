@@ -1,196 +1,199 @@
 // --------------------------------------------------------------------------
 // Filename:	DrawingSurface.h
 // Class:		DrawingSurface
-// Purpose:		This class provides a drawing surface that can be passed to the 
+// Purpose:		This class provides a drawing surface that can be passed
+// to the
 //				display engine.
-//				
-//				
 //
-// Description:   
-//				
-//				
-//			
-//				
+//
+//
+// Description:
+//
+//
+//
+//
 
 //
 // History:
-// -------  
+// -------
 // 2Mar00	Alima			Created.
 // --------------------------------------------------------------------------
-#ifndef		CAMERA_SPRITE_H
-#define		CAMERA_SPRITE_H
+#ifndef CAMERA_SPRITE_H
+#define CAMERA_SPRITE_H
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #include "../Display/Background.h"
 #include "../Display/DrawableObject.h"
 #ifdef C2E_SDL
-	#include <SDL/SDL.h>
+#include <SDL/SDL.h>
 #else
-	#include <ddraw.h>
+#include <ddraw.h>
 #endif
 #include "../Display/DrawableObjectHandler.h"
 #include "../FilePath.h"
 
-class CameraSprite: public DrawableObject
-{
+class CameraSprite : public DrawableObject {
 public:
-CameraSprite();
-virtual ~CameraSprite();
+  CameraSprite();
+  virtual ~CameraSprite();
 
-bool Create(std::string defaultBackground,
-			int32 topLeftXofBackground, // top left world co-ordinates 
-			int32 topLeftYofBackground,
-			Position worldPosition);
+  bool Create(std::string defaultBackground,
+              int32 topLeftXofBackground, // top left world co-ordinates
+              int32 topLeftYofBackground, Position worldPosition);
 
-bool Create(std::string gallery_name,
-						RECT& bounds,
-							Position displayPosition);
+  bool Create(std::string gallery_name, RECT &bounds, Position displayPosition);
 
+  bool Create(uint8 i, Position pos, std::string &gallery_name,
+              Position topLeft, uint32 width, uint32 height);
 
-bool Create(uint8 i,
-			Position pos,
-				std::string & gallery_name,
-				Position topLeft,
-				uint32 width,
-				uint32 height);
+  /////////////////////////////////////////////////////////////
+  // Background access
+  /////////////////////////////////////////////////////////////
+  Position GetDisplayPosition(uint8 i) const {
+    return myBackgrounds[i]->GetDisplayPosition();
+  }
 
-/////////////////////////////////////////////////////////////
-// Background access
-/////////////////////////////////////////////////////////////
-	Position GetDisplayPosition(uint8 i) const
-	{
-		return myBackgrounds[i]->GetDisplayPosition();
-	}
+  int32 GetPixelWidth(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetPixelWidth();
+  }
+  int32 GetPixelHeight(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetPixelHeight();
+  }
 
+  void SetDisplayPosition(Position &position) {
+    myBackgrounds[0]->SetDisplayPosition(position);
+  }
 
-	int32 GetPixelWidth(uint8 i)const {_ASSERT(i <= 1);
-								return myBackgrounds[i]->GetPixelWidth();}
-	int32 GetPixelHeight(uint8 i) const {_ASSERT(i <= 1);
-								return myBackgrounds[i]->GetPixelHeight();}
+  void GetConsideredDisplayArea(uint8 i, int32 &displayWidth,
+                                int32 &displayHeight) {
+    _ASSERT(i <= 1);
+    myBackgrounds[i]->GetConsideredDisplayArea(displayWidth, displayHeight);
+  }
 
-	void SetDisplayPosition(Position& position)
-	{myBackgrounds[0]->SetDisplayPosition(position);}
+  int32 GetTop(uint8 i) {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetTop();
+  }
+  int32 GetLeft(uint8 i) {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetLeft();
+  }
 
-	void GetConsideredDisplayArea(uint8 i,int32& displayWidth,
-								int32& displayHeight)
-	{
-		_ASSERT(i <= 1);
-		myBackgrounds[i]->GetConsideredDisplayArea(displayWidth,
-								displayHeight);
-	}
+  Position GetBackgroundTopLeft(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetTopLeft();
+  }
 
-	int32 GetTop(uint8 i){_ASSERT(i <= 1);
-							return myBackgrounds[i]->GetTop();}
-	int32 GetLeft(uint8 i){_ASSERT(i <= 1);
-							return myBackgrounds[i]->GetLeft();}
+  std::string GetBackgroundName(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetBackgroundName();
+  }
 
-	Position GetBackgroundTopLeft(uint8 i) const
-	{_ASSERT(i <= 1);
-			return myBackgrounds[i]->GetTopLeft();}
+  std::string GetBackgroundPath(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetBackgroundPath();
+  }
 
-	std::string GetBackgroundName(uint8 i) const
-	{_ASSERT(i <= 1);
-			return myBackgrounds[i]->GetBackgroundName();}
+  uint32 GetWidth(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetWidth();
+  }
 
-	std::string GetBackgroundPath(uint8 i) const
-	{_ASSERT(i <= 1);
-			return myBackgrounds[i]->GetBackgroundPath();}
+  uint32 GetHeight(uint8 i) const {
+    _ASSERT(i <= 1);
+    return myBackgrounds[i]->GetHeight();
+  }
 
-	uint32 GetWidth(uint8 i)const 
-	{_ASSERT(i <= 1);
-			return myBackgrounds[i]->GetWidth();}
+  void SwapBackgrounds();
 
-	uint32 GetHeight(uint8 i)const {_ASSERT(i <= 1);
-							return myBackgrounds[i]->GetHeight();}
+  void Update(Position displayPosition, bool completeRedraw,
+              bool justBackBuffer);
 
-	void SwapBackgrounds();
+  void SetInterestLevel(bool flag) { myEntityHandler.SetInterestLevel(flag); }
 
-	void Update(Position displayPosition,
-						  bool completeRedraw,
-						  bool justBackBuffer);
+  bool IsRectOnScreen(RECT &rect) {
+    return myEntityHandler.IsRectOnScreen(rect, myViewArea);
+  }
+  void SetViewArea(RECT &area);
 
-	void SetInterestLevel(bool flag){myEntityHandler.SetInterestLevel(flag);}
+  void GetViewArea(RECT &rect);
 
-	bool IsRectOnScreen(RECT& rect){return myEntityHandler.IsRectOnScreen(rect,myViewArea);}
-	void SetViewArea(RECT& area);
+  Position GetWorldPosition(void) { return myEntityHandler.GetWorldPosition(); }
 
-	void GetViewArea(RECT& rect);
+  void SetWorldPosition(Position pos) { myEntityHandler.SetWorldPosition(pos); }
 
-	Position GetWorldPosition(void){return myEntityHandler.GetWorldPosition();}
+  bool Visible(RECT &test);
 
-	void SetWorldPosition(Position pos){ myEntityHandler.SetWorldPosition(pos);}
+  bool SaveAsSpriteFile(std::string const &filename) const;
 
-	bool Visible( RECT& test);
+  virtual void SetCurrentBound(RECT *rect = NULL);
 
-	bool SaveAsSpriteFile( std::string const &filename ) const;
+  void SetScreenBound(RECT *rect = NULL);
 
-	virtual void SetCurrentBound(RECT* rect = NULL);
+  RECT GetCurrentBound() { return myCurrentBound; }
 
-	void SetScreenBound(RECT* rect = NULL);
+  RECT GetScreenBound() const { return myScreenBound; }
 
-	RECT GetCurrentBound(){return myCurrentBound;}
+  // and a screen position
+  virtual void SetScreenPosition(Position pos);
 
-	RECT GetScreenBound()const {return myScreenBound;}
+  virtual void Draw();
+  virtual void DrawMirrored() { Draw(); }
 
-	// and a screen position
-	virtual void SetScreenPosition(Position pos);
+  void SetViewToPhysicalWidthAndHeightRatio(
+      float myOriginalViewToPhysicalHeightRatio,
+      float myOriginalViewToPhysicalWidthRatio);
 
-	virtual void Draw();
-	virtual void DrawMirrored(){Draw();}
+  bool SetUpDrawingSurface(float myOriginalViewToPhysicalHeightRatio,
+                           float myOriginalViewToPhysicalWidthRatio);
 
-	void SetViewToPhysicalWidthAndHeightRatio(	
-				float myOriginalViewToPhysicalHeightRatio,
-				float myOriginalViewToPhysicalWidthRatio);
+  bool Remove(DrawableObject *const chop) {
+    return myEntityHandler.Remove(chop);
+  }
+  bool Add(DrawableObject *const newThing) {
+    return myEntityHandler.Add(newThing);
+  }
 
-	bool SetUpDrawingSurface(	
-		float myOriginalViewToPhysicalHeightRatio,
-		float myOriginalViewToPhysicalWidthRatio);
+  void MakeSetCurrentBoundsGetCalled() {
+    myEntityHandler.MakeSetCurrentBoundsGetCalled();
+  }
 
-	bool Remove(DrawableObject* const chop){return myEntityHandler.Remove(chop);}
-	bool Add(DrawableObject* const newThing){return myEntityHandler.Add(newThing);}
+  void SetRemoteCameraFlag(bool flag) { myAmRemoteCameraFlag = flag; }
 
-	void MakeSetCurrentBoundsGetCalled(){myEntityHandler.MakeSetCurrentBoundsGetCalled();}
+  void NotifyCameraIsShuttingDown() { myEntityHandler.ShutDown(); }
 
-	void SetRemoteCameraFlag(bool flag){myAmRemoteCameraFlag = flag;}
-
-	void NotifyCameraIsShuttingDown(){myEntityHandler.ShutDown();}
-
-	void AssertSurface()
-	{
-		ASSERT(mySurface);
-	}
+  void AssertSurface() { ASSERT(mySurface); }
 
 private:
-		DrawableObjectHandler		myEntityHandler;
-		// empty shells of 2 backgrounds
-		// to take the incoming and outgoing backgrounds
-		Background					myBackground0;
-		Background					myBackground1;
+  DrawableObjectHandler myEntityHandler;
+  // empty shells of 2 backgrounds
+  // to take the incoming and outgoing backgrounds
+  Background myBackground0;
+  Background myBackground1;
 
-		
-	// so that i can index between the ingoing and outgoing
-	// backgrounds and flip them about of necessary
-	// the first is the incoming background
-	// the second is the outgoing background
-	std::vector<Background*>	myBackgrounds;
+  // so that i can index between the ingoing and outgoing
+  // backgrounds and flip them about of necessary
+  // the first is the incoming background
+  // the second is the outgoing background
+  std::vector<Background *> myBackgrounds;
 
 #ifdef C2E_SDL
-	SDL_Surface* mySurface;
+  SDL_Surface *mySurface;
 #else
-	IDirectDrawSurface4* mySurface;
+  IDirectDrawSurface4 *mySurface;
 #endif
 
-	RECT myViewArea;
+  RECT myViewArea;
 
-	RECT myScreenBound;
+  RECT myScreenBound;
 
-	float myOriginalViewToPhysicalHeightRatio;
-	float myOriginalViewToPhysicalWidthRatio;
-
+  float myOriginalViewToPhysicalHeightRatio;
+  float myOriginalViewToPhysicalWidthRatio;
 };
 
-#endif //CAMERA_SPRITE_H
-
+#endif // CAMERA_SPRITE_H

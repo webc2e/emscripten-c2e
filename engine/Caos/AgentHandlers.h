@@ -18,8 +18,8 @@
 #endif
 
 #include "../Agents/AgentHandle.h"
-#include "../FilePath.h"
 #include <string>
+#include "../FilePath.h"
 
 class CAOSMachine;
 class CAOSVar;

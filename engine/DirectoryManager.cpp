@@ -7,8 +7,8 @@
 #endif
 
 #include "../common/FileFuncs.h"
-#include "App.h"
 #include "Display/ErrorMessageHandler.h"
+#include "App.h"
 #include "World.h"
 
 #include "emscripten.h"

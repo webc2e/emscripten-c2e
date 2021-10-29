@@ -26,30 +26,35 @@
 
  ***************************************************************************/
 
-
 #ifndef INCLUDE_SDLSTRETCH
 #define INCLUDE_SDLSTRETCH
 
 #include <SDL/SDL.h>
 
-#define sign(x) ((x)>0 ? 1:-1)
+#define sign(x) ((x) > 0 ? 1 : -1)
 
 #ifdef _MSC_VER
-	// VC++
-	#ifndef SDL_STRETCH_DLL
-		// Main program
-		#define SDL_STRETCH_API __declspec(dllimport)
-	#else
-		// DLL
-		#define SDL_STRETCH_API __declspec(dllexport)
-	#endif
+// VC++
+#ifndef SDL_STRETCH_DLL
+// Main program
+#define SDL_STRETCH_API __declspec(dllimport)
 #else
-	#define SDL_STRETCH_API
+// DLL
+#define SDL_STRETCH_API __declspec(dllexport)
+#endif
+#else
+#define SDL_STRETCH_API
 #endif
 
-
-void SDL_STRETCH_API SDL_StretchSurface(SDL_Surface* src_surface, SDL_Rect* src_rect, SDL_Surface* dst_surface, SDL_Rect* dst_rect, Uint32* voiLUT = NULL);
-void SDL_STRETCH_API SDL_StretchSurface(SDL_Surface* src_surface, int xs1, int ys1, int xs2, int ys2, SDL_Surface* dst_surface, int xd1, int yd1, int xd2, int yd2, Uint32* voiLUT = NULL);
+void SDL_STRETCH_API SDL_StretchSurface(SDL_Surface *src_surface,
+                                        SDL_Rect *src_rect,
+                                        SDL_Surface *dst_surface,
+                                        SDL_Rect *dst_rect,
+                                        Uint32 *voiLUT = NULL);
+void SDL_STRETCH_API SDL_StretchSurface(SDL_Surface *src_surface, int xs1,
+                                        int ys1, int xs2, int ys2,
+                                        SDL_Surface *dst_surface, int xd1,
+                                        int yd1, int xd2, int yd2,
+                                        Uint32 *voiLUT = NULL);
 
 #endif
-

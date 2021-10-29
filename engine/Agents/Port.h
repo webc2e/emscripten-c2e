@@ -17,8 +17,8 @@
 
 #include "../../common/C2eTypes.h"
 #include "../PersistentObject.h"
-#include "AgentHandle.h"
 #include <string>
+#include "AgentHandle.h"
 
 class Agent;
 

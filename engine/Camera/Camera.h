@@ -29,11 +29,11 @@
 #pragma warning(disable : 4786 4503)
 #endif
 
+#include "../Display/Position.h"
+#include "../PersistentObject.h"
 #include "../../common/BasicException.h"
 #include "../Agents/AgentHandle.h"
-#include "../Display/Position.h"
 #include "../FilePath.h"
-#include "../PersistentObject.h"
 
 ////////////////////////////////////////////////////////////////////////////
 // typedefs

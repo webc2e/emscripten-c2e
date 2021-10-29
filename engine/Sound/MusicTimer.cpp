@@ -11,7 +11,7 @@
 // --------------------------------------------------------------------------
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786 4503)
+#pragma warning(disable : 4786 4503)
 #endif
 
 #include "MusicTimer.h"
@@ -30,19 +30,17 @@
 // Arguments:	None
 // Returns:		See below
 // Description:	The timeGetTime function retrieves the system time, in
-//				milliseconds. The system time is the time elapsed since 
-//				Windows was started. 
+//				milliseconds. The system time is the time
+//elapsed since 				Windows was started.
 // ----------------------------------------------------------------------
-int MusicGetTime()
-{
+int MusicGetTime() {
 #ifdef C2E_SDL
-	return (int)SDL_GetTicks();
+  return (int)SDL_GetTicks();
 #else
-	#ifdef _WIN32
-		return timeGetTime();
-	#else
-		#error Need timer function
-	#endif
+#ifdef _WIN32
+  return timeGetTime();
+#else
+#error Need timer function
+#endif
 #endif
 }
-

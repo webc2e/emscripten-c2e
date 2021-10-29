@@ -3761,6 +3761,9 @@ bool SkeletalCreature::CreateBodyPart(int sex, int age,TintManager& tinty)
 			std::string galleryName = GetMoniker() + buf;
 			
 			FilePath name(galleryName + ".c16",IMAGES_DIR );
+
+			std::cout << name.GetFullPath() << std::endl;
+
 #ifdef NETTY
 	theApp.Netty->TextOut("3",galleryName.c_str());
 #endif
