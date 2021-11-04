@@ -4,7 +4,6 @@ project(webc2e)
 
 add_definitions(
 	-g
-	# -DNOT_STRETCHING_AT_ALL
   -DC2E_NO_INLINE_ASM
   -DC2E_SDL
 	-DLINUX_PORT
@@ -209,7 +208,7 @@ add_executable(webc2e
   ${SOURCES}
 )
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -s INITIAL_MEMORY=536870912 -s CASE_INSENSITIVE_FS=1 -s USE_ZLIB -s USE_PTHREADS -s USE_SDL=1 -s USE_SDL_MIXER=1 -s ASSERTIONS=1 -s LLD_REPORT_UNDEFINED -s NO_DISABLE_EXCEPTION_CATCHING --preload-file '../../C2E/GAMES/Creatures\ 3@/' --preload-file '../../C2E/GAMES/Creatures\ 3@/'")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -s INITIAL_MEMORY=536870912 -s CASE_INSENSITIVE_FS=1 -s USE_ZLIB -s USE_PTHREADS -s USE_SDL=1 -s USE_SDL_MIXER=1 -s ASSERTIONS=1 -s LLD_REPORT_UNDEFINED -s NO_DISABLE_EXCEPTION_CATCHING --preload-file '../../C2E/GAMES/Creatures\ 3@/'")
 
 target_link_libraries(webc2e
 	unix

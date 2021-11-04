@@ -1803,28 +1803,42 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
   if (data_step == 0) {
     if (bitmapHeight == 0 || bitmapWidth == 0)
       return;
-#ifdef C2E_NASM_RENDERING
-    { NasmDrawCompressedSprite(); }
-#else
-// _asm
-// {
-// 	;pusha
 
-// 	mov esi,dword ptr [compressedData_ptr]
-// 	mov edi,dword ptr [screen_ptr]
-// 	mov edx,dword ptr [screen_step]
-// 	mov ebx,dword ptr [bitmapHeight]
+    ushort *puVar1;
+    ushort uVar2;
+    int iVar3;
+    uint uVar4;
+    int iVar5;
+    ushort *puVar6;
+    ushort *puVar7;
+    
+    iVar3 = screen_step;
+    iVar5 = bitmapHeight;
+    puVar6 = compressedData_ptr;
+    puVar7 = screen_ptr;
+    do {
+      while( true ) {
+        puVar1 = puVar6 + 1;
+        uVar2 = *puVar6;
+        puVar6 = puVar1;
+        if (uVar2 == 0) break;
+        if ((uVar2 & 1) == 0) {
+          puVar7 = (ushort *)((int)puVar7 + (uint)uVar2);
+        }
+        else {
+          uVar4 = (uint)(uVar2 >> 1);
+          while (uVar4 != 0) {
+            uVar4 = uVar4 - 1;
+            *puVar7 = *puVar6;
+            puVar6 = puVar6 + 1;
+            puVar7 = puVar7 + 1;
+          }
+        }
+      }
+      puVar7 = puVar7 + iVar3;
+      iVar5 = iVar5 + -1;
+    } while (iVar5 != 0);
 
-// topOfLineLoop:
-// 	lodsw ;Get tag and increment ptr lodsb 	and eax,0ffffh
-// ;0ffh 	test
-// eax,eax je lineLoopEpilogue 	test ax,1 	je skipCopy 	mov ecx,eax
-// shr ecx,1 	rep movsw ;dword ptr [edi],dword ptr [esi] 	jmp
-// topOfLineLoop skipCopy: 	lea edi,[edi+eax] 	jmp topOfLineLoop
-// lineLoopEpilogue: 	lea edi,[edi+edx*2] 	;sub ebx,1 	dec ebx
-// ;test ebx,ebx 	jne topOfLineLoop 	;popa
-// }
-#endif // C2E_NASM_RENDERING
     return;
     //		OutputDebugString("end no clip \n");*/
   }    // end if datastep ==0
