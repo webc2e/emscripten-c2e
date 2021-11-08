@@ -191,7 +191,7 @@ bool MusicManager::LoadScrambled()
 	bool success = Load(scrambled) == NULL;
 
 	// delete the script
-	delete scrambled;
+	// delete scrambled;
 
 	return success;
 

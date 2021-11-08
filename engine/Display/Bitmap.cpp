@@ -40,7 +40,7 @@
 int32 bitmapWidth;
 int32 bitmapHeight;
 uint16* data_ptr;
-uint16* screen_ptr;
+uint32* screen_ptr;
 uint32 data_step;
 uint32 screen_step;
 int dwordWidth;

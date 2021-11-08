@@ -110,7 +110,9 @@ void ErrorMessageHandler::ShowErrorMessage( const std::string& message,
 #endif
 	}
 #else
-	fprintf(stderr,"Something so very bad has happened");
+	// std::cerr << message << std::endl;
+	// std::cerr << source << std::endl;
+	std::cerr << "Something so very bad has happened" << std::endl;
 #endif
 }
 
@@ -134,7 +136,7 @@ void ErrorMessageHandler::SetWindow(HWND window)
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 void ErrorMessageHandler::Show(std::string baseTag, int offsetID, std::string source, ...)
 {
-#ifndef LINUX_PORT
+// #ifndef LINUX_PORT
 	// Read from catalogue
 	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
 	
@@ -150,14 +152,14 @@ void ErrorMessageHandler::Show(std::string baseTag, int offsetID, std::string so
 	std::string message(szBuffer);
 
 	theHandler().ShowErrorMessage(message, source);
-#endif
+// #endif
 }
 
 // Don't pass std::strings as the variable parameters to this -
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 std::string ErrorMessageHandler::Format(std::string baseTag, int offsetID, std::string source, ...)
 {
-#ifndef LINUX_PORT
+// #ifndef LINUX_PORT
 	// Read from catalogue
 	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
 
@@ -171,14 +173,14 @@ std::string ErrorMessageHandler::Format(std::string baseTag, int offsetID, std::
 	va_end(args);
 
 	return source + std::string("\n\n") + std::string(szBuffer);
-#endif
+// #endif
 }
 
 // Don't pass std::strings as the variable parameters to this -
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 void ErrorMessageHandler::Throw(std::string baseTag, int offsetID, std::string source, ...)
 {
-#ifndef LINUX_PORT
+// #ifndef LINUX_PORT
 	// Read from catalogue
 	std::string unformatted = theCatalogue.Get(baseTag, offsetID);
 
@@ -193,7 +195,7 @@ void ErrorMessageHandler::Throw(std::string baseTag, int offsetID, std::string s
 
 	std::string full = source + std::string("\n\n") + std::string(szBuffer);
 	throw BasicException(full.c_str());
-#endif
+// #endif
 }
 
 // This is for strings which are needed before the catalogues are initialised.
@@ -204,7 +206,7 @@ void ErrorMessageHandler::Throw(std::string baseTag, int offsetID, std::string s
 // do a .c_str() to make them char* first.  vsprintf only understands char*.
 void ErrorMessageHandler::NonLocalisable(std::string unformatted, std::string source, ...)
 {
-#ifndef LINUX_PORT
+// #ifndef LINUX_PORT
 	// Get variable argument list
 	va_list args;
 	va_start(args, source);
@@ -217,7 +219,7 @@ void ErrorMessageHandler::NonLocalisable(std::string unformatted, std::string so
 	std::string message(szBuffer);
 
 	theHandler().ShowErrorMessage(message, source);
-#endif
+// #endif
 }
 
 // Display message from exception

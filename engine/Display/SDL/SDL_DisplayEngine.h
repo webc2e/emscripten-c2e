@@ -187,7 +187,7 @@ public:
 
   void DrawMirroredSprite(Position &position, Bitmap &bitmap);
 
-  uint16 *GetBackBufferPtr() {
+  uint32 *GetBackBufferPtr() {
     if (myCurrentOffScreenBufferPtr)
       return myCurrentOffScreenBufferPtr;
     else
@@ -306,24 +306,24 @@ private:
 
   bool GetDrawingParameters(Position &position, Bitmap *bitmap,
                             uint32 &data_step, uint16 *&data_ptr,
-                            uint32 &screen_step, uint16 *&screen_ptr,
+                            uint32 &screen_step, uint32 *&screen_ptr,
                             int32 &bitmapWidth, int32 &bitmapHeight);
 
   bool GetCompressedDrawingParameters(
       Position &position, CompressedBitmap *bitmap, uint32 &data_step,
-      uint8 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+      uint8 *&compressedData_ptr, uint32 &screen_step, uint32 *&screen_ptr,
       int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip,
       bool &bottomClip, bool &topClip, bool &leftClip);
 
   bool GetCompressedDrawingParameters16Bit(
       Position &position, Bitmap *bitmap, uint32 &data_step,
-      uint16 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+      uint16 *&compressedData_ptr, uint32 &screen_step, uint32 *&screen_ptr,
       int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip,
       bool &bottomClip, bool &topClip);
 
   void CreateUserInterfaceGalleries();
 
-  uint16 *OpenBackBuffer(void);
+  uint32 *OpenBackBuffer(void);
   inline void CloseBackBuffer(void);
 
   // fills front and back buffers with black
@@ -355,7 +355,7 @@ private:
 
   // these 4 are set each Update()
   // pointer to the start of the back buffer surface
-  uint16 *myCurrentOffScreenBufferPtr;
+  uint32 *myCurrentOffScreenBufferPtr;
   int32 myPitch; // in 16bit pixels?
   int32 myPitchForBackgroundTiles;
   RECT mySurfaceArea; // tempory copy set during update (may not be main suface)

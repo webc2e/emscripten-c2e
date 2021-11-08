@@ -34,3 +34,10 @@ CMakeFiles
 *.out
 *.app
 *.data
+
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+webc2e.js
+webc2e.html
+webc2e.wasm
