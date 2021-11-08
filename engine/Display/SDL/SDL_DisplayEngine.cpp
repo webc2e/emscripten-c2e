@@ -19,7 +19,7 @@
 extern int32 bitmapHeight;
 extern int32 bitmapWidth;
 extern uint16 *data_ptr;
-extern uint16 *screen_ptr;
+extern uint32 *screen_ptr;
 extern uint32 data_step;
 extern uint32 screen_step;
 extern int dwordWidth;
@@ -156,38 +156,38 @@ bool DisplayEngine::Start(uint32 storedDisplayType,
 }
 
 void DisplayEngine::SussScreenModes() {
-  const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
+  // const SDL_VideoInfo *vidinfo = SDL_GetVideoInfo();
 
-  printf("\nVideo information:\n");
-  printf("  %d bits per pixel, ", vidinfo->vfmt->BitsPerPixel);
-  printf("%d bytes per pixel\n", vidinfo->vfmt->BytesPerPixel);
-  printf("  rmask: 0x%x ", vidinfo->vfmt->Rmask);
-  printf("gmask: 0x%x ", vidinfo->vfmt->Gmask);
-  printf("bmask: 0x%x\n", vidinfo->vfmt->Bmask);
+  // printf("\nVideo information:\n");
+  // printf("  %d bits per pixel, ", vidinfo->vfmt->BitsPerPixel);
+  // printf("%d bytes per pixel\n", vidinfo->vfmt->BytesPerPixel);
+  // printf("  rmask: 0x%x ", vidinfo->vfmt->Rmask);
+  // printf("gmask: 0x%x ", vidinfo->vfmt->Gmask);
+  // printf("bmask: 0x%x\n", vidinfo->vfmt->Bmask);
 
-  if (vidinfo->vfmt->BitsPerPixel == 16 && vidinfo->vfmt->BytesPerPixel == 2 &&
-      vidinfo->vfmt->Rmask == 0x7c00 && vidinfo->vfmt->Gmask == 0x03e0 &&
-      vidinfo->vfmt->Bmask == 0x001f) {
-    myPixelFormat = RGB_555;
-    printf("  Display 555 format, also known as 15 bit\n");
-  } else if (vidinfo->vfmt->BitsPerPixel == 16 &&
-             vidinfo->vfmt->BytesPerPixel == 2 &&
-             vidinfo->vfmt->Rmask == 0xf800 && vidinfo->vfmt->Gmask == 0x07e0 &&
-             vidinfo->vfmt->Bmask == 0x001f) {
+  // if (vidinfo->vfmt->BitsPerPixel == 16 && vidinfo->vfmt->BytesPerPixel == 2 &&
+  //     vidinfo->vfmt->Rmask == 0x7c00 && vidinfo->vfmt->Gmask == 0x03e0 &&
+  //     vidinfo->vfmt->Bmask == 0x001f) {
+  //   myPixelFormat = RGB_555;
+  //   printf("  Display 555 format, also known as 15 bit\n");
+  // } else if (vidinfo->vfmt->BitsPerPixel == 16 &&
+  //            vidinfo->vfmt->BytesPerPixel == 2 &&
+  //            vidinfo->vfmt->Rmask == 0xf800 && vidinfo->vfmt->Gmask == 0x07e0 &&
+  //            vidinfo->vfmt->Bmask == 0x001f) {
+  //   myPixelFormat = RGB_565;
+  //   printf("  Display 565 format\n");
+  // } else {
+  //   // for all other pixelformats, we just use 565.
+  //   // SDL will create a shadow surface and convert on the fly.
     myPixelFormat = RGB_565;
-    printf("  Display 565 format\n");
-  } else {
-    // for all other pixelformats, we just use 565.
-    // SDL will create a shadow surface and convert on the fly.
-    myPixelFormat = RGB_565;
-    printf("  Display is %d bit\n", vidinfo->vfmt->BitsPerPixel);
-    printf("  WARNING - there will be a performance hit.\n");
-    printf("            For best results, set your display depth\n");
-    printf("            to 16 (or 15) bits in X configuration.\n");
-  }
+    // printf("  Display is %d bit\n", vidinfo->vfmt->BitsPerPixel);
+    // printf("  WARNING - there will be a performance hit.\n");
+    // printf("            For best results, set your display depth\n");
+    // printf("            to 16 (or 15) bits in X configuration.\n");
+  // }
 
   // See what fullscreen resolutions we can run in
-  printf("  Available fullscreen modes: ");
+  // printf("  Available fullscreen modes: ");
   SDL_Rect **r;
   r = SDL_ListModes(NULL, SDL_FULLSCREEN);
   if (r && r != (SDL_Rect **)-1) {
@@ -197,7 +197,7 @@ void DisplayEngine::SussScreenModes() {
       ++r;
     }
   }
-  printf("\n");
+  // printf("\n");
 }
 
 bool DisplayEngine::SetModeWindowed(int w, int h) {
@@ -206,11 +206,13 @@ bool DisplayEngine::SetModeWindowed(int w, int h) {
 
   int bitdepth = (myPixelFormat == RGB_555) ? 15 : 16;
 
+  bitdepth = 32;
+
 #ifdef _WIN32
   //	myBackBuffer = SDL_SetVideoMode( w, h, 16, 0);
   myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_RESIZABLE);
 #else
-  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_RESIZABLE);
+  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_HWSURFACE | SDL_RESIZABLE);
 #endif
   if (!myBackBuffer) {
     // TODO: use logfile?
@@ -232,7 +234,7 @@ bool DisplayEngine::SetModeWindowed(int w, int h) {
 }
 
 bool DisplayEngine::SetMode(int modenum) {
-  //	printf("SetMode %d\n",modenum);
+  printf("SetMode %d\n",modenum);
 
   ASSERT(myPixelFormat == RGB_555 || myPixelFormat == RGB_565);
 
@@ -244,9 +246,9 @@ bool DisplayEngine::SetMode(int modenum) {
   int w = myFullScreenModes[modenum].w;
   int h = myFullScreenModes[modenum].h;
   int bitdepth = (myPixelFormat == RGB_555) ? 15 : 16;
-  bitdepth = 16;
+  // bitdepth = 16;
 
-  myBackBuffer = SDL_SetVideoMode(w, h, bitdepth, SDL_FULLSCREEN);
+  myBackBuffer = SDL_SetVideoMode(w, h, 32, SDL_HWSURFACE | SDL_RESIZABLE);
   if (!myBackBuffer) {
     // TODO: could return some meaningful SDL_GetError() text here...
     printf("SDL_SetVideoMode() failed: %s\n", SDL_GetError());
@@ -642,8 +644,8 @@ void DisplayEngine::Update(Background *background,
       return;
     }
 
-    myCurrentOffScreenBufferPtr = (uint16 *)surfaceToDrawOn->pixels;
-    myPitch = surfaceToDrawOn->pitch >> 1;
+    myCurrentOffScreenBufferPtr = (uint32 *)surfaceToDrawOn->pixels;
+    myPitch = surfaceToDrawOn->pitch >> 2;
     myPitchForBackgroundTiles = (myPitch - 128) * 2;
     mySurfaceArea.left = 0;
     mySurfaceArea.top = 0;
@@ -675,7 +677,7 @@ void DisplayEngine::Update(Background *background,
   }
 }
 
-uint16 *DisplayEngine::OpenBackBuffer(void) {
+uint32 *DisplayEngine::OpenBackBuffer(void) {
   // it could be that we are getting called
   // by update when we are in the midst of changing our
   // resolution
@@ -685,14 +687,33 @@ uint16 *DisplayEngine::OpenBackBuffer(void) {
       return NULL;
     }
 
-    myCurrentOffScreenBufferPtr = (uint16 *)myBackBuffer->pixels;
-    myPitch = myBackBuffer->pitch >> 1;
+    myCurrentOffScreenBufferPtr = (uint32 *)myBackBuffer->pixels;
+    myPitch = myBackBuffer->pitch >> 2;
     myPitchForBackgroundTiles = (myPitch - 128) * 2;
     return myCurrentOffScreenBufferPtr;
   } else {
     return NULL;
   }
 }
+
+// uint32 *DisplayEngine::OpenBackBuffer2(void) {
+//   // it could be that we are getting called
+//   // by update when we are in the midst of changing our
+//   // resolution
+//   if (myBackBuffer) {
+//     if (SDL_LockSurface(myBackBuffer) == -1) {
+//       ASSERT(false);
+//       return NULL;
+//     }
+
+//     backbuffer = myBackBuffer;
+   
+//     return backbuffer;
+//   } else {
+//     return NULL;
+//   }
+// }
+
 
 // ----------------------------------------------------------------------
 // Method:      DrawToFrontBuffer
@@ -715,10 +736,12 @@ void DisplayEngine::DrawToFrontBuffer() {
   // The pretty flashing rectangle in the corner
   // which shows you that SDL is working when
   // things look bad
+  // SDL_UnlockSurface(myBackBuffer);
   // SDL_Rect r;
   // r.x = r.y = 0;
   // r.w = r.h = 10;
   // SDL_FillRect(myBackBuffer, &r, rand());
+  // SDL_LockSurface(myBackBuffer);
 
   // BEGIN ROUND WORLD EASTER EGG
   if (myIsTheWorldRoundFlag || myDesiredWorldRoundness) {
@@ -776,13 +799,19 @@ void DisplayEngine::DrawSprite(Position &position, Bitmap &bitmap) {
   for (; bitmapHeight--;) {
     for (int32 k = bitmapWidth; k--;) {
       pixel = *data_ptr++;
-      if (pixel)
-        *screen_ptr = pixel;
+      int r = Get565Red(pixel);
+      int g = Get565Green(pixel);
+      int b = Get565Blue(pixel);
+
+      uint32 pixel32 = (b << 16) + (g << 8) + r;
+      if (pixel32)
+        *screen_ptr = pixel32;
       screen_ptr++;
     }
     data_ptr += data_step;
     screen_ptr += screen_step;
   }
+
 #else
 
   if (bitmapWidth < 1 || bitmapHeight < 1)
@@ -860,7 +889,7 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
   uint16 *data_ptr;
 
   uint32 screen_step;
-  uint16 *screen_ptr;
+  uint32 *screen_ptr;
 
   if (!GetDrawingParameters(position, &bitmap, data_step, data_ptr, screen_step,
                             screen_ptr, bitmapWidth, bitmapHeight))
@@ -883,8 +912,14 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
       dataLineStart++;
       // draw backwards
       pixel = *data_ptr--;
-      if (pixel)
-        *screen_ptr = pixel;
+      int r = Get565Red(pixel);
+      int g = Get565Green(pixel);
+      int b = Get565Blue(pixel);
+
+      uint32 pixel32 = (b << 16) + (g << 8) + r;
+      if (pixel32)
+        *screen_ptr = pixel32;
+
       screen_ptr++;
     }
     // get to the start of the next line
@@ -917,7 +952,7 @@ void DisplayEngine::DrawMirroredSprite(Position &position, Bitmap &bitmap) {
 // ----------------------------------------------------------------------
 bool DisplayEngine::GetCompressedDrawingParameters(
     Position &position, CompressedBitmap *bitmap, uint32 &data_step,
-    uint8 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+    uint8 *&compressedData_ptr, uint32 &screen_step, uint32 *&screen_ptr,
     int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip, bool &bottomClip,
     bool &topClip, bool &leftClip) {
 
@@ -1017,7 +1052,7 @@ bool DisplayEngine::GetCompressedDrawingParameters(
 bool DisplayEngine::GetDrawingParameters(Position &position, Bitmap *bitmap,
                                          uint32 &data_step, uint16 *&data_ptr,
                                          uint32 &screen_step,
-                                         uint16 *&screen_ptr,
+                                         uint32 *&screen_ptr,
                                          int32 &bitmapWidth,
                                          int32 &bitmapHeight) {
   int32 x = position.GetX();
@@ -1122,7 +1157,7 @@ bool DisplayEngine::GetDrawingParameters(Position &position, Bitmap *bitmap,
 // ----------------------------------------------------------------------
 bool DisplayEngine::GetCompressedDrawingParameters16Bit(
     Position &position, Bitmap *bitmap, uint32 &data_step,
-    uint16 *&compressedData_ptr, uint32 &screen_step, uint16 *&screen_ptr,
+    uint16 *&compressedData_ptr, uint32 &screen_step, uint32 *&screen_ptr,
     int32 &bitmapWidth, int32 &bitmapHeight, bool &rightClip, bool &bottomClip,
     bool &topClip) {
   int32 x = position.GetX();
@@ -1436,45 +1471,35 @@ bool DisplayEngine::RenderBitmapToFrontBuffer(Bitmap *bitmap) {
   // a temp SDL surface
   // TODO: allow for other pixelformats?
 
-  int bitdepth = 16;
-
   SDL_Surface *surface;
-  if (myPixelFormat == RGB_555) {
-    surface = SDL_CreateRGBSurface(SDL_HWSURFACE, bitmap->GetWidth(),
-                                   bitmap->GetHeight(), bitdepth, 0x7C00, 0x03E0,
-                                   0x001F, 0);
-  } else // 565
-  {
-    surface = SDL_CreateRGBSurface(SDL_HWSURFACE, bitmap->GetWidth(),
-                                   bitmap->GetHeight(), bitdepth, 0xF800, 0x07E0,
-                                   0x001F, 0);
-  }
+
+  surface = SDL_CreateRGBSurface(0, bitmap->GetWidth(), bitmap->GetHeight(), 32, 0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
 
   if (!surface)
     return false;
 
-  SDL_SetColorKey(surface, SDL_SRCCOLORKEY, 0);
+    // SDL_SetColorKey(surface, SDL_SRCCOLORKEY, 0);
 
-  const uint16 *sourcePtr = bitmap->GetData();
-  uint16 *destPtr = (uint16 *)surface->pixels;
+    // const uint16 *sourcePtr = bitmap->GetData();
+    // uint16 *destPtr = (uint16 *)surface->pixels;
 
-  int32 bitmapWidth = bitmap->GetWidth();
-  int32 bitmapHeight = bitmap->GetHeight();
+    // int32 bitmapWidth = bitmap->GetWidth();
+    // int32 bitmapHeight = bitmap->GetHeight();
 
-  // the surface is created to be the same
-  // size as the entity bounds
-  int32 destStep = (surface->pitch >> 1);
-  int32 sourceStep = 0;
-  destStep = destStep - bitmapWidth;
-  for (; bitmapHeight--;) {
-    for (int32 width = bitmapWidth; width--;)
-      *destPtr++ = *sourcePtr++;
+    // // the surface is created to be the same
+    // // size as the entity bounds
+    // int32 destStep = (surface->pitch >> 1);
+    // int32 sourceStep = 0;
+    // destStep = destStep - bitmapWidth;
+    // for (; bitmapHeight--;) {
+    //   for (int32 width = bitmapWidth; width--;)
+    //     *destPtr++ = *sourcePtr++;
 
-    destPtr += destStep;
-  }
+    //   destPtr += destStep;
+    // }
 
-  // render it
-  RECT clip;
+    // // render it
+    RECT clip;
 
   clip.left = 0;
   clip.top = 0;
@@ -1506,40 +1531,44 @@ bool DisplayEngine::BlitToFrontBuffer(RECT &destination, SDL_Surface *image,
                  destSDLRect.h);
 
   return res == 0;
+
+  // return true;
 }
 
 bool DisplayEngine::BlitToBackBuffer(RECT &destination, SDL_Surface *image,
                                      RECT &source, bool transparencyAware) {
-  SDL_Rect sourceSDLRect = ConvertRect(source);
-  SDL_Rect destSDLRect = ConvertRect(destination);
-#ifdef NOT_STRETCHING_AT_ALL
-  // A non stretched version for if we don't have SDL_StretchSurface.
-  // Since we do now, this may not be any use :-)
-  sourceSDLRect.w = destSDLRect.w;
-  sourceSDLRect.h = destSDLRect.h;
+  return DisplayEngine::BlitToFrontBuffer(destination, image, source, transparencyAware);
+  // return true;
+  //   SDL_Rect sourceSDLRect = ConvertRect(source);
+  //   SDL_Rect destSDLRect = ConvertRect(destination);
+  // #ifdef NOT_STRETCHING_AT_ALL
+  //   // A non stretched version for if we don't have SDL_StretchSurface.
+  //   // Since we do now, this may not be any use :-)
+  //   sourceSDLRect.w = destSDLRect.w;
+  //   sourceSDLRect.h = destSDLRect.h;
 
-  int res = SDL_BlitSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
-  ASSERT(res == 0);
-  return res == 0;
-#else
-  if (source.bottom <= source.top || source.top >= source.bottom ||
-      source.right <= source.left || source.left >= source.right ||
-      destination.bottom <= destination.top ||
-      destination.top >= destination.bottom ||
-      destination.right <= destination.left ||
-      destination.left >= destination.right) {
-    // std::cout << "Camera clipped..." << std::endl;
-    return false;
-  } else {
-    ASSERT(sourceSDLRect.x + sourceSDLRect.w <= image->w);
-    ASSERT(sourceSDLRect.x >= 0);
-    ASSERT(sourceSDLRect.y + sourceSDLRect.h <= image->h);
-    ASSERT(sourceSDLRect.y >= 0);
+  //   int res = SDL_BlitSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
+  //   ASSERT(res == 0);
+  //   return res == 0;
+  // #else
+  //   if (source.bottom <= source.top || source.top >= source.bottom ||
+  //       source.right <= source.left || source.left >= source.right ||
+  //       destination.bottom <= destination.top ||
+  //       destination.top >= destination.bottom ||
+  //       destination.right <= destination.left ||
+  //       destination.left >= destination.right) {
+  //     // std::cout << "Camera clipped..." << std::endl;
+  //     return false;
+  //   } else {
+  //     ASSERT(sourceSDLRect.x + sourceSDLRect.w <= image->w);
+  //     ASSERT(sourceSDLRect.x >= 0);
+  //     ASSERT(sourceSDLRect.y + sourceSDLRect.h <= image->h);
+  //     ASSERT(sourceSDLRect.y >= 0);
 
-    SDL_StretchSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
-    return true;
-  }
-#endif
+  //     SDL_StretchSurface(image, &sourceSDLRect, myBackBuffer, &destSDLRect);
+  //     return true;
+  //   }
+  // #endif
 }
 
 // for Rob
@@ -1607,12 +1636,12 @@ void DisplayEngine::DrawLine(
     }
   }
 
-  uint16 *screen_ptr = GetBackBufferPtr();
+  uint32 *screen_ptr = GetBackBufferPtr();
   ASSERT(screen_ptr);
 
   uint32 screen_step = myPitch;
 
-  uint16 *currentPixel = 0;
+  uint32 *currentPixel = 0;
 
   int32 xi, yi, dx, dy, i, j;
   if (x1 > x2)
@@ -1804,40 +1833,71 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
     if (bitmapHeight == 0 || bitmapWidth == 0)
       return;
 
-    ushort *puVar1;
-    ushort uVar2;
-    int iVar3;
-    uint uVar4;
-    int iVar5;
-    ushort *puVar6;
-    ushort *puVar7;
+    // ushort *puVar1;
+    // ushort uVar2;
+    // int iVar3;
+    // uint uVar4;
+    // int iVar5;
+    // uint16 *puVar6;
+    // uint32 *puVar7;
     
-    iVar3 = screen_step;
-    iVar5 = bitmapHeight;
-    puVar6 = compressedData_ptr;
-    puVar7 = screen_ptr;
-    do {
-      while( true ) {
-        puVar1 = puVar6 + 1;
-        uVar2 = *puVar6;
-        puVar6 = puVar1;
-        if (uVar2 == 0) break;
-        if ((uVar2 & 1) == 0) {
-          puVar7 = (ushort *)((int)puVar7 + (uint)uVar2);
-        }
-        else {
-          uVar4 = (uint)(uVar2 >> 1);
-          while (uVar4 != 0) {
-            uVar4 = uVar4 - 1;
-            *puVar7 = *puVar6;
-            puVar6 = puVar6 + 1;
-            puVar7 = puVar7 + 1;
+    // iVar3 = screen_step;
+    // iVar5 = bitmapHeight;
+    // puVar6 = compressedData_ptr;
+    // puVar7 = screen_ptr;
+    // do {
+    //   while( true ) {
+    //     puVar1 = puVar6 + 1;
+    //     uVar2 = *puVar6;
+    //     puVar6 = puVar1;
+    //     if (uVar2 == 0) break;
+    //     if ((uVar2 & 1) == 0) {
+    //       puVar7 = (uint32 *)((int)puVar7 + (uint)uVar2);
+    //     }
+    //     else {
+    //       uVar4 = (uint)(uVar2 >> 1);
+    //       while (uVar4 != 0) {
+    //         uVar4 = uVar4 - 1;
+    //         uint16 byte = *puVar6;
+    //         int r = Get565Red(byte);
+    //         int g = Get565Green(byte);
+    //         int b = Get565Blue(byte);
+    //         uint32 pixel = (b << 16) + (g << 8) + r;
+    //         *puVar7 = pixel;
+    //         puVar6 = puVar6 + 1;
+    //         puVar7 = puVar7 + 1;
+    //       }
+    //     }
+    //   }
+    //   puVar7 = puVar7 + iVar3;
+    //   iVar5 = iVar5 + -1;
+    // } while (iVar5 != 0);
+
+    for (; bitmapHeight--;) {
+      tag = *compressedData_ptr++;
+      while (tag) {
+        // find the number of colours to plot
+        count = tag >> 1;
+
+        // check whether the run is transparent or colour
+        if (tag & 0x01) {
+          for (uint32 i = count; i--;) {
+            uint16 byte = *compressedData_ptr++;
+            int r = Get565Red(byte);
+            int g = Get565Green(byte);
+            int b = Get565Blue(byte);
+
+            uint32 pixel = (b << 16) + (g << 8) + r;
+            *screen_ptr++ = pixel;
           }
+        } else {
+          screen_ptr += count;
         }
-      }
-      puVar7 = puVar7 + iVar3;
-      iVar5 = iVar5 + -1;
-    } while (iVar5 != 0);
+        tag = *compressedData_ptr++;
+      } // end  while tag
+      screen_ptr += screen_step;
+    }  // end for bitmap heigth--
+       // end if datastep ==0
 
     return;
     //		OutputDebugString("end no clip \n");*/
@@ -1872,9 +1932,16 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // line in which case there will be a tag
               // anyway
               bytes = count << 1;
-              memcpy(screen_ptr, compressedData_ptr, bytes);
-              compressedData_ptr += count;
-              screen_ptr += count;
+
+              for (uint32 i = count; i--;) {
+                uint16 byte = *compressedData_ptr++;
+                int r = Get565Red(byte);
+                int g = Get565Green(byte);
+                int b = Get565Blue(byte);
+
+                uint32 pixel = (b << 16) + (g << 8) + r;
+                *screen_ptr++ = pixel;
+              }
             } else // pixel count has over run
             {
               //	uint32 over = count - thisStep;
@@ -1883,9 +1950,15 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // draw all the colours
               // draw what you will
               bytes = thisStep << 1;
-              memcpy(screen_ptr, compressedData_ptr, bytes);
-              compressedData_ptr += thisStep;
-              screen_ptr += thisStep;
+              for (uint32 i = thisStep; i--;) {
+                uint16 byte = *compressedData_ptr++;
+                int r = Get565Red(byte);
+                int g = Get565Green(byte);
+                int b = Get565Blue(byte);
+
+                uint32 pixel = (b << 16) + (g << 8) + r;
+                *screen_ptr++ = pixel;
+              }
 
               // don't worry about moving past the overrun
               // in the data file
@@ -1985,9 +2058,17 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // if we are still supposed to be drawing pixels
               if (over + pixelsDrawnThisLine <= bitmapWidth) {
                 bytes = over << 1;
-                memcpy(screen_ptr, compressedData_ptr, bytes);
-                compressedData_ptr += over;
-                screen_ptr += over;
+                for (uint32 i = over; i >= 0; i--)
+                {
+                  uint16 byte = *compressedData_ptr;
+                  int r = Get565Red(byte);
+                  int g = Get565Green(byte);
+                  int b = Get565Blue(byte);
+
+                  uint32 pixel = (b << 16) + (g << 8) + r;
+                  *screen_ptr++ = pixel;
+                  compressedData_ptr++;
+                }
                 pixelsDrawnThisLine += over;
               } else {
                 // too many pixels in this run
@@ -1995,9 +2076,16 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
                 uint32 therest = bitmapWidth - pixelsDrawnThisLine;
                 if (therest) {
                   bytes = therest << 1;
-                  memcpy(screen_ptr, compressedData_ptr, bytes);
-                  compressedData_ptr += therest;
-                  screen_ptr += therest;
+                  for (uint32 i = therest; i--;) {
+                    uint16 byte = *compressedData_ptr;
+                    int r = Get565Red(byte);
+                    int g = Get565Green(byte);
+                    int b = Get565Blue(byte);
+
+                    uint32 pixel = (b << 16) + (g << 8) + r;
+                    *screen_ptr++ = pixel;
+                    compressedData_ptr++;
+                  }
                   pixelsDrawnThisLine += therest;
 
                   // now skip to the end of the bitmap data
@@ -2114,7 +2202,7 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
 
   uint32 screen_step = myPitch;
 
-  uint16 *screen_ptr = GetBackBufferPtr();
+  uint32 *screen_ptr = GetBackBufferPtr();
   ASSERT(screen_ptr);
 
   // determine whether we have to clip the
@@ -2196,7 +2284,7 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
   uint32 pixelsDrawnThisLine = 0;
 
   // keep a pointer to the start of the screen line
-  uint16 *screenLineStart = screen_ptr;
+  uint32 *screenLineStart = screen_ptr;
 
   // move the screen pointer to the end of the line so that we can
   // draw backwards
@@ -2217,7 +2305,13 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
           for (; count--;) {
             // move along the screen line
             screenLineStart++;
-            *screen_ptr-- = *compressedData_ptr;
+            uint16 byte = *compressedData_ptr;
+            int r = Get565Red(byte);
+            int g = Get565Green(byte);
+            int b = Get565Blue(byte);
+
+            uint32 pixel = (b << 16) + (g << 8) + r;
+            *screen_ptr-- = pixel;
             compressedData_ptr++; //=sizeof(uint16);
           }
         } else {
@@ -2279,10 +2373,18 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               // if we are still supposed to be drawing pixels
               if (over + pixelsDrawnThisLine <= bitmapWidth) {
                 // draw the amount we are over
-                for (uint32 i = over; i--;) {
+                for (uint32 i = over; i >= 0; i--)
+                {
                   // move along the screen line
                   screenLineStart++;
-                  *screen_ptr-- = *compressedData_ptr++;
+                  uint16 byte = *compressedData_ptr;
+                  int r = Get565Red(byte);
+                  int g = Get565Green(byte);
+                  int b = Get565Blue(byte);
+
+                  uint32 pixel = (b << 16) + (g << 8) + r;
+                  *screen_ptr-- = pixel;
+                  compressedData_ptr++;
                 }
 
                 pixelsDrawnThisLine += over;
@@ -2296,7 +2398,13 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
                   for (uint32 i = therest; i--;) {
                     // move along the screen line
                     screenLineStart++;
-                    *screen_ptr-- = *compressedData_ptr;
+                    uint16 byte = *compressedData_ptr;
+                    int r = Get565Red(byte);
+                    int g = Get565Green(byte);
+                    int b = Get565Blue(byte);
+
+                    uint32 pixel = (b << 16) + (g << 8) + r;
+                    *screen_ptr-- = pixel;
                     compressedData_ptr++;
                   }
                   pixelsDrawnThisLine += therest;
@@ -2403,7 +2511,13 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               for (uint32 i = count; i--;) {
                 // move along the screen line
                 screenLineStart++;
-                *screen_ptr-- = *compressedData_ptr++;
+                uint16 byte = *compressedData_ptr++;
+                int r = Get565Red(byte);
+                int g = Get565Green(byte);
+                int b = Get565Blue(byte);
+
+                uint32 pixel = (b << 16) + (g << 8) + r;
+                *screen_ptr-- = pixel;
               }
             } else // pixel count has over run
             {
@@ -2414,7 +2528,13 @@ void DisplayEngine::DrawMirroredCompressedSprite(Position &position,
               for (uint32 i = thisStep; i--;) {
                 // move along the screen line
                 screenLineStart++;
-                *screen_ptr-- = *compressedData_ptr++;
+                uint16 byte = *compressedData_ptr++;
+                int r = Get565Red(byte);
+                int g = Get565Green(byte);
+                int b = Get565Blue(byte);
+
+                uint32 pixel = (b << 16) + (g << 8) + r;
+                *screen_ptr-- = pixel;
               }
 
               // don't worry about moving past the overrun
@@ -2569,16 +2689,18 @@ SDL_Surface *DisplayEngine::CreateSurface(int32 width, int32 height,
                                           bool tryVideoFirst /*=false*/) {
   SDL_Surface *image;
 
-  int bitdepth = 16;
+  int bitdepth = 32;
 
-  if (myPixelFormat == RGB_555) {
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0x7C00,
-                                 0x03E0, 0x001F, 0);
-  } else // 565
-  {
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0xF800,
-                                 0x07E0, 0x001F, 0);
-  }
+  // if (myPixelFormat == RGB_555) {
+    
+  // } else // 565
+  // {
+  //   image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0xF800,
+  //                                0x07E0, 0x001F, 0);
+  // }
+
+  image = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCCOLORKEY, width, height, bitdepth, 0xff000000,
+                                 0x00ff0000, 0x0000ff00, 0);
 
   return image;
 }
@@ -2605,22 +2727,30 @@ bool DisplayEngine::CreateProgressBar(Bitmap *bitmap) {
   if (!myProgressSurface)
     return false;
 
-  SDL_SetColorKey(myProgressSurface, SDL_SRCCOLORKEY, 0);
+  // SDL_SetColorKey(myProgressSurface, SDL_SRCCOLORKEY, 0);
 
   const uint16 *sourcePtr = myProgressBitmap->GetData();
-  uint16 *destPtr = (uint16 *)myProgressSurface->pixels;
+  uint32 *destPtr = (uint32 *)myProgressSurface->pixels;
 
   int32 bitmapWidth = bitmap->GetWidth();
   int32 bitmapHeight = bitmap->GetHeight();
 
   // the surface is created to be the same
   // size as the entity bounds
-  int32 destStep = (myProgressSurface->pitch >> 1);
+  int32 destStep = (myProgressSurface->pitch >> 2);
   int32 sourceStep = 0;
   destStep = destStep - bitmapWidth;
   for (; bitmapHeight--;) {
-    for (int32 width = bitmapWidth; width--;)
-      *destPtr++ = *sourcePtr++;
+    for (int32 width = bitmapWidth; width--;) {
+       uint16 pixel = *sourcePtr++;
+       int r = Get565Red(pixel);
+       int g = Get565Green(pixel);
+       int b = Get565Blue(pixel);
+
+       uint32 pixel32 = (b << 16) + (g << 8) + r;
+       if (pixel32)
+         *destPtr++ = pixel;
+    }
 
     destPtr += destStep;
   }
@@ -2687,6 +2817,7 @@ uint16 DisplayEngine::ConvertRGB(int r, int g, int b) {
 
 void DisplayEngine::DrawGuttering(int width, int height) {
   SDL_Rect r;
+  // SDL_UnlockSurface(myBackBuffer);
   if (width < mySurfaceArea.right) {
     r.x = width;
     r.y = 0;
@@ -2701,4 +2832,5 @@ void DisplayEngine::DrawGuttering(int width, int height) {
     r.h = mySurfaceArea.bottom - height;
     // SDL_FillRect(myBackBuffer, &r, 0);
   }
+  // SDL_LockSurface(myBackBuffer);
 }

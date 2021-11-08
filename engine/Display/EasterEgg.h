@@ -9,8 +9,8 @@ class EasterEgg
 {
 public:
 	static void CunningBlit
-		(uint16* from, 
-		 uint16* to, 
+		(uint32* from, 
+		 uint32* to, 
 		 int width, 
 		 int height, 
 		 int fromPitch, 

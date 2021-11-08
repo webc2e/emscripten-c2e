@@ -93,6 +93,8 @@ self.onmessage = function(e) {
 
       Module['wasmMemory'] = e.data.wasmMemory;
 
+      Module['wasmOffsetData'] = e.data.wasmOffsetConverter;
+
       Module['buffer'] = Module['wasmMemory'].buffer;
 
       Module['ENVIRONMENT_IS_PTHREAD'] = true;

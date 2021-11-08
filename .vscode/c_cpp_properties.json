@@ -3,12 +3,19 @@
         {
             "name": "Mac",
             "includePath": [
+                "/Users/robin/srs/emsdk/upstream/emscripten/cache/sysroot/include/**",
                 "${workspaceFolder}/**"
             ],
-            "defines": [],
+            "defines": [
+                "-DC2E_SDL",
+                "-DC2E_NO_INLINE_ASM",
+                "-DLINUX_PORT"
+            ],
             "macFrameworkPath": [],
-            "compilerPath": "/usr/local/bin/gcc-11",
-            "configurationProvider": "ms-vscode.cmake-tools"
+            "compilerPath": "/Users/robin/srs/emsdk/upstream/emscripten/em++",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "c11",
+            "cppStandard": "c++11"
         }
     ],
     "version": 4

@@ -81,8 +81,10 @@ extern "C" int main(int argc, char *argv[]) {
     if (!theApp.ProcessCommandLine(commandLine))
       return 0;
 
-    if (!InitInstance())
+    if (!InitInstance()) {
+      std::cout << "Unable to load..." << std::endl;
       return 0;
+    }
 
     // Option to turn off all sound
     int disableSound = 0;
@@ -211,7 +213,8 @@ void mainloop() {
       theApp.GetInputManager().SysFlushEventBuffer();
     }
   } catch (std::exception &e) {
-    std::cout << "An error happened: " << e.what() << std::endl;
+    
+    std::cout << "An error happened" << std::endl;
     std::cout << "ticksSinceStart: " << ticksSinceStart << std::endl;
   } catch (...) {
     std::cout << "An error happened" << std::endl;
@@ -880,8 +883,10 @@ static bool InitInstance() {
   }
 
   // get the file paths from the registry
-  if (!theDirectoryManager.ReadFromConfigurationFiles())
+  if (!theDirectoryManager.ReadFromConfigurationFiles()) {
+    std::cout << "Unable to read from config files" << std::endl;
     return false;
+  }
 
   // set up the catalogue (localised stringtable) and any
   // other localisable stuff.

@@ -574,8 +574,11 @@ Mix_Chunk *SoundManager::LoadWAVFromMunged(DWORD wave) {
     return NULL;
   }
 
-  Mix_Chunk *mixChunk =
-      Mix_LoadWAV_RW(SDL_RWFromMem(myMungeBuf, myMungeBufSize), 1);
+  // Mix_Chunk *mixChunk =
+      // Mix_LoadWAV_RW(SDL_RWFromMem(myMungeBuf, myMungeBufSize), 1);
+
+  Mix_Chunk *mixChunk = Mix_QuickLoad_RAW(myMungeBuf, myMungeBufSize);
+
   if (!mixChunk)
     std::cerr << "Call to Mix_LoadWAV_RW in munge wav load failed" << std::endl;
   return mixChunk;

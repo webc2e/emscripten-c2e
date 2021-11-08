@@ -14,7 +14,7 @@
 // version - hopefully won't slow it down!
 extern int32 bitmapHeight;
 extern uint16* data_ptr;
-extern uint16* screen_ptr;
+extern uint32* screen_ptr;
 extern uint32 data_step;
 extern uint32 screen_step;
 extern int dwordWidth;
@@ -58,10 +58,12 @@ inline int Get565Blue(int colour)
 //			
 // ----------------------------------------------------------------------
 
-inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap)
-{
+inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap) {
 	int32 bitmapWidth = bitmap.GetWidth();
 	bitmapHeight = bitmap.GetHeight();
+
+	int32 originalBitmapWidth = bitmap.GetWidth();
+	int32 originalBitmapHeight = bitmap.GetHeight();
 
 	// work out how much to increase the data and screen pointers
 	// on when drawing
@@ -97,8 +99,8 @@ inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap)
 	}
 
 	
-//	int32 t=(x+bitmapWidth)-ourSurfaceArea.right;
-	int32 t=(x+bitmapWidth)-myPitch;
+	int32 t=(x+bitmapWidth)-ourSurfaceArea.right;
+	// int32 t=(x+bitmapWidth)-myPitch;
 
 	// if the bitmap needs clipping to the right
 	if (t>=0)
@@ -146,16 +148,29 @@ inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap)
 	// draw for your life
 #ifdef C2E_NO_INLINE_ASM
 
-    int widthinbytes = bitmapWidth << 1;
-	for (;bitmapHeight--;)
+	int i;
+	for( i=0; i<bitmapHeight; ++i )
 	{
+		int j;
+		for (j = 0; j < originalBitmapWidth; ++j) {
+			if (j < bitmapWidth) {
+				uint16 byte = *data_ptr;
 
-		memcpy(screen_ptr,data_ptr,widthinbytes);
+				int r = Get565Red(byte);
+				int g = Get565Green(byte);
+				int b = Get565Blue(byte);
 
-		// get the pointers back to the start of the next line of data
-		// and screen
-		data_ptr += data_step;
-		screen_ptr += myPitch;	//screen_step;
+				uint32 pixel = (b << 16) + (g << 8) + r;
+
+				*screen_ptr = pixel;
+				screen_ptr++;
+			}
+			data_ptr++;
+		} 
+			// memcpy(screen_ptr, data_ptr, 128 * (sizeof(uint32)));
+		// Additions to get to next row (pixels, not bytes!)
+		// data_ptr += 128;
+		screen_ptr += myPitch - bitmapWidth;	// screen_step;
 	}
 #else
 	// when using memcpy don't do this
@@ -251,10 +266,24 @@ inline void DisplayEngine::DrawWholeBitmapRegardless(Position& position,Bitmap& 
 	int i;
 	for( i=0; i<128; ++i )
 	{
-		memcpy( screen_ptr, data_ptr, 128*(sizeof(uint16) ) );
+		int j;
+		for (j = 0; j < 128; ++j) {
+			uint16 byte = *data_ptr;
+
+			int r = Get565Red(byte);
+			int g = Get565Green(byte);
+			int b = Get565Blue(byte);
+
+			uint32 pixel = (b << 16) + (g << 8) + r;
+
+			*screen_ptr = (uint32) pixel;
+			data_ptr++;
+			screen_ptr++;
+		} 
+			// memcpy(screen_ptr, data_ptr, 128 * (sizeof(uint32)));
 		// Additions to get to next row (pixels, not bytes!)
-		data_ptr += 128;
-		screen_ptr += myPitch;	// screen_step;
+		// data_ptr += 128;
+		screen_ptr += myPitch - 128;	// screen_step;
 	}
 
 #else

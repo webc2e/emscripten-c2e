@@ -579,12 +579,12 @@ void App::internalWindowHasResized() {
 #ifdef C2E_SDL
   // just refresh the screen directly - don't bother mucking around
   // with window redraw messages...
-  theMainView.Update(true, false);
+  // theMainView.Update(true, false);
 #else
   theMainView.ResizeWindow();
 #endif
-  theAgentManager.ExecuteScriptOnAllAgents(
-      SCRIPTWINDOWRESIZED, COASVARAGENTNULL, INTEGERZERO, INTEGERZERO);
+  // theAgentManager.ExecuteScriptOnAllAgents(
+  //     SCRIPTWINDOWRESIZED, COASVARAGENTNULL, INTEGERZERO, INTEGERZERO);
 }
 
 void App::internalWindowHasMoved() { theMainView.MoveWindow(); }
