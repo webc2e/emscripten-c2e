@@ -11,6 +11,8 @@
 
 #include "../../../common/C2eTypes.h"
 
+#include <emscripten.h>
+
 // Nasm declarations (the variables are
 // defined in Bitmap.cpp, the functions
 // in Plot.asm).  For now we use these
@@ -43,13 +45,14 @@ void NasmDrawCompressedSprite();
 #include "../ClonedGallery.h"
 #include "../CompressedBitmap.h"
 #include "../DisplayEngine.h"
+#include "../DisplayEnginePlotFunctions.h"
 #include "../DisplayErrorConstants.h"
 #include "../DrawableObjectHandler.h"
 #include "../EasterEgg.h"
 #include "../ErrorMessageHandler.h"
 #include "../SharedGallery.h"
 #include "../System.h"
-#include "SDLStretch/SDLStretch.h"
+// #include "SDLStretch/SDLStretch.h"
 #include <string>
 
 #include <algorithm>
@@ -1881,7 +1884,9 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
 
         // check whether the run is transparent or colour
         if (tag & 0x01) {
-          for (uint32 i = count; i--;) {
+
+          for (uint32 i = 0; i < count; i++)
+          {
             uint16 byte = *compressedData_ptr++;
             int r = Get565Red(byte);
             int g = Get565Green(byte);
@@ -1898,8 +1903,6 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
       screen_ptr += screen_step;
     }  // end for bitmap heigth--
        // end if datastep ==0
-
-    return;
     //		OutputDebugString("end no clip \n");*/
   }    // end if datastep ==0
   else // some clipping is required
@@ -1933,15 +1936,10 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // anyway
               bytes = count << 1;
 
-              for (uint32 i = count; i--;) {
-                uint16 byte = *compressedData_ptr++;
-                int r = Get565Red(byte);
-                int g = Get565Green(byte);
-                int b = Get565Blue(byte);
+              emscripten_memcpy_pixels(screen_ptr, compressedData_ptr, count);
 
-                uint32 pixel = (b << 16) + (g << 8) + r;
-                *screen_ptr++ = pixel;
-              }
+              compressedData_ptr+=count;
+							screen_ptr+=count;
             } else // pixel count has over run
             {
               //	uint32 over = count - thisStep;
@@ -1950,15 +1948,9 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // draw all the colours
               // draw what you will
               bytes = thisStep << 1;
-              for (uint32 i = thisStep; i--;) {
-                uint16 byte = *compressedData_ptr++;
-                int r = Get565Red(byte);
-                int g = Get565Green(byte);
-                int b = Get565Blue(byte);
-
-                uint32 pixel = (b << 16) + (g << 8) + r;
-                *screen_ptr++ = pixel;
-              }
+              emscripten_memcpy_pixels(screen_ptr, compressedData_ptr, thisStep);
+							compressedData_ptr+=thisStep;
+							screen_ptr+=thisStep;
 
               // don't worry about moving past the overrun
               // in the data file
@@ -2058,17 +2050,11 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
               // if we are still supposed to be drawing pixels
               if (over + pixelsDrawnThisLine <= bitmapWidth) {
                 bytes = over << 1;
-                for (uint32 i = over; i >= 0; i--)
-                {
-                  uint16 byte = *compressedData_ptr;
-                  int r = Get565Red(byte);
-                  int g = Get565Green(byte);
-                  int b = Get565Blue(byte);
+                
+                emscripten_memcpy_pixels(screen_ptr,compressedData_ptr,bytes);
+								compressedData_ptr+=over;
+								screen_ptr+=over;
 
-                  uint32 pixel = (b << 16) + (g << 8) + r;
-                  *screen_ptr++ = pixel;
-                  compressedData_ptr++;
-                }
                 pixelsDrawnThisLine += over;
               } else {
                 // too many pixels in this run
@@ -2076,17 +2062,10 @@ void DisplayEngine::DrawCompressedSprite(Position &position,
                 uint32 therest = bitmapWidth - pixelsDrawnThisLine;
                 if (therest) {
                   bytes = therest << 1;
-                  for (uint32 i = therest; i--;) {
-                    uint16 byte = *compressedData_ptr;
-                    int r = Get565Red(byte);
-                    int g = Get565Green(byte);
-                    int b = Get565Blue(byte);
-
-                    uint32 pixel = (b << 16) + (g << 8) + r;
-                    *screen_ptr++ = pixel;
-                    compressedData_ptr++;
-                  }
-                  pixelsDrawnThisLine += therest;
+									emscripten_memcpy_pixels(screen_ptr,compressedData_ptr,bytes);
+									compressedData_ptr+=therest;
+									screen_ptr+=therest;
+									pixelsDrawnThisLine += therest;
 
                   // now skip to the end of the bitmap data
                   compressedData_ptr = (uint16 *)bitmap->GetScanLine(nextline);
@@ -2751,7 +2730,7 @@ bool DisplayEngine::CreateProgressBar(Bitmap *bitmap) {
        if (pixel32)
          *destPtr++ = pixel;
     }
-
+  
     destPtr += destStep;
   }
 
@@ -2771,10 +2750,12 @@ void DisplayEngine::StartProgressBar(int updateIntervals) {
 void DisplayEngine::UpdateProgressBar(int amount) {
   if (!myProgressBitmap || !myProgressSurface)
     return;
+  std::cout << "Loading:" << int(100 *
+                   (double)myProgressCount / (double)myProgressMax) << std::endl;
 
   myProgressCount += amount;
   if (myProgressCount > myProgressMax)
-    myProgressMax = myProgressMax;
+    myProgressCount = myProgressMax;
 
   RECT clip;
 
@@ -2798,7 +2779,34 @@ void DisplayEngine::UpdateProgressBar(int amount) {
   source.right = source.left + clip.right;
   source.bottom = source.top + clip.bottom;
 
-  BlitToFrontBuffer(source, myProgressSurface, clip, true);
+  uint32 *screen_ptr = OpenBackBuffer();
+
+  screen_ptr += source.top * myPitch + source.left;
+  uint16 *source_ptr = (uint16 *)myProgressBitmap->GetData();
+  
+  for (uint32 i = clip.bottom; i--;) {
+    for (uint32 j = clip.right; j--;) {
+      uint16 pixel = *source_ptr++;
+      int r = Get565Red(pixel);
+      int g = Get565Green(pixel);
+      int b = Get565Blue(pixel);
+
+      r = 255;
+      g = 255;
+      b = 255;
+
+      uint32 pixel32 = (b << 16) + (g << 8) + r;
+      if (pixel32)
+        *screen_ptr = pixel;
+      screen_ptr++;
+    }
+
+    screen_ptr += myPitch;
+  }
+
+  CloseBackBuffer();
+
+  SDL_UpdateRect(myBackBuffer, 0, 0, 0, 0);
 }
 
 void DisplayEngine::EndProgressBar() {

@@ -424,8 +424,13 @@ void AgentManager::UpdateAllAgents()
 				#ifdef AGENT_PROFILER
 					int64 stamp1 = GetHighPerformanceTimeStamp();
 				#endif
-				if (!agentref.AreYouDoomed())
-					agentref.Update();
+				if (!agentref.AreYouDoomed()) {
+					try {
+						agentref.Update();
+					} catch(...) {
+						std::cout << "IsVehicle: " << agent.IsVehicle() << " " << "IsCreature: " << agent.IsCreature() << " " << std::endl;
+					}
+				}
 
 				#ifdef AGENT_PROFILER
 					if (!agentref.IsGarbage())

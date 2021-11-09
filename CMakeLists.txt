@@ -4,6 +4,8 @@ project(webc2e)
 
 add_definitions(
 	# -DNOT_STRETCHING_AT_ALL
+	-g
+	# -DAGENT_PROFILER
   -DC2E_NO_INLINE_ASM
   -DC2E_SDL
 	-DLINUX_PORT
@@ -210,25 +212,23 @@ set_target_properties(webc2e
 PROPERTIES
 COMPILE_FLAGS
 "-g \
+${SANITIZE} \
 -s USE_SDL=1 \
 -s USE_SDL_MIXER=1 \
 -s USE_BOOST_HEADERS=1 \
--s USE_ZLIB \
-${SANITIZE}"
+-s USE_ZLIB"
 LINK_FLAGS
 "-g \
--s ASSERTIONS=2 \
--s INITIAL_MEMORY=536870912 \
+${SANITIZE} \
 -s LLD_REPORT_UNDEFINED \
 -s NO_DISABLE_EXCEPTION_CATCHING \
--s INITIAL_MEMORY=536870912 \
+-s ALLOW_MEMORY_GROWTH=1 \
 -s CASE_INSENSITIVE_FS=1 \
 -s USE_BOOST_HEADERS=1 \
 -s USE_ZLIB \
-${SANITIZE} \
 --preload-file '../../C2E/GAMES/Creatures\ 3@/'"
 )
-
+# -s INITIAL_MEMORY=536870912 \
 target_link_libraries(webc2e
 	unix
 	unix_display

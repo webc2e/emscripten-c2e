@@ -7424,7 +7424,7 @@ Module.expectedDataFileDownloads++;
    "end": 261504012
   } ],
   "remote_package_size": 261504012,
-  "package_uuid": "fc9fcb4c-af74-42d1-8536-20e7dd3f3a34"
+  "package_uuid": "c98937f4-e662-4905-83ea-d68abff197fc"
  });
 })();
 
@@ -7866,9 +7866,6 @@ function addFunctionWasm(func, sig) {
  if (functionsInTableMap.has(func)) {
   return functionsInTableMap.get(func);
  }
- for (var i = 0; i < wasmTable.length; i++) {
-  assert(wasmTable.get(i) != func, "function in Table but not functionsInTableMap");
- }
  var ret = getEmptyTableSlot();
  try {
   wasmTable.set(ret, func);
@@ -7891,9 +7888,6 @@ function removeFunction(index) {
 
 function addFunction(func, sig) {
  assert(typeof func !== "undefined");
- if (typeof sig === "undefined") {
-  err("warning: addFunction(): You should provide a wasm function signature string as a second argument. This is not necessary for asm.js and asm2wasm, but can be required for the LLVM wasm backend, so it is recommended for full portability.");
- }
  return addFunctionWasm(func, sig);
 }
 
@@ -8440,7 +8434,7 @@ var TOTAL_STACK = 5242880;
 
 if (Module["TOTAL_STACK"]) assert(TOTAL_STACK === Module["TOTAL_STACK"], "the stack size can no longer be determined at runtime");
 
-var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 627638272;
+var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 308871168;
 
 if (!Object.getOwnPropertyDescriptor(Module, "INITIAL_MEMORY")) {
  Object.defineProperty(Module, "INITIAL_MEMORY", {
@@ -8457,7 +8451,7 @@ assert(typeof Int32Array !== "undefined" && typeof Float64Array !== "undefined" 
 
 assert(!Module["wasmMemory"], "Use of `wasmMemory` detected.  Use -s IMPORTED_MEMORY to define wasmMemory externally");
 
-assert(INITIAL_MEMORY == 627638272, "Detected runtime INITIAL_MEMORY setting.  Use -s IMPORTED_MEMORY to define wasmMemory dynamically");
+assert(INITIAL_MEMORY == 308871168, "Detected runtime INITIAL_MEMORY setting.  Use -s IMPORTED_MEMORY to define wasmMemory dynamically");
 
 var wasmTable;
 
@@ -8519,7 +8513,6 @@ function initRuntime() {
  checkStackCookie();
  assert(!runtimeInitialized);
  runtimeInitialized = true;
- ___set_stack_limits(_emscripten_stack_get_base(), _emscripten_stack_get_end());
  if (!Module["noFSInit"] && !FS.init.initialized) FS.init();
  FS.ignorePermissions = false;
  TTY.init();
@@ -8959,87 +8952,87 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 68256576: function() {
+ 269583168: function() {
   Module.logReadFiles = "true";
  },
- 68256610: function() {},
- 68256611: function() {},
- 68256612: function() {},
- 68256613: function() {},
- 68256614: function() {},
- 68256615: function() {},
- 68256616: function() {},
- 68256617: function() {},
- 68256618: function() {},
- 68256619: function() {},
- 68256620: function() {},
- 68256621: function() {},
- 68256622: function() {},
- 68256623: function() {},
- 68256624: function() {},
- 68256625: function() {},
- 68256626: function() {},
- 68256627: function() {},
- 68256628: function() {},
- 68256629: function() {},
- 68256630: function() {},
- 68256631: function() {},
- 68256632: function() {},
- 68256633: function() {},
- 68256634: function() {},
- 68256635: function() {},
- 68256636: function() {},
- 68256637: function() {},
- 68256638: function() {},
- 68256639: function() {},
- 68256640: function() {},
- 68256641: function() {},
- 68256642: function() {},
- 68256643: function() {},
- 68256644: function() {},
- 68256645: function() {},
- 68256646: function() {},
- 68256647: function() {},
- 68256648: function() {},
- 68256649: function() {},
- 68256650: function() {},
- 68256651: function() {},
- 68256652: function() {},
- 68256653: function() {},
- 68256654: function() {},
- 68256655: function() {},
- 68256656: function() {},
- 68256657: function() {},
- 68256658: function() {},
- 68256659: function() {},
- 68256660: function() {},
- 68256661: function() {},
- 68256662: function() {},
- 68256663: function() {},
- 68256664: function() {},
- 68256665: function() {},
- 68256666: function() {},
- 68256667: function() {},
- 68256668: function() {},
- 68256669: function() {},
- 68256670: function() {},
- 68256671: function() {},
- 68256672: function() {
+ 269583202: function() {},
+ 269583203: function() {},
+ 269583204: function() {},
+ 269583205: function() {},
+ 269583206: function() {},
+ 269583207: function() {},
+ 269583208: function() {},
+ 269583209: function() {},
+ 269583210: function() {},
+ 269583211: function() {},
+ 269583212: function() {},
+ 269583213: function() {},
+ 269583214: function() {},
+ 269583215: function() {},
+ 269583216: function() {},
+ 269583217: function() {},
+ 269583218: function() {},
+ 269583219: function() {},
+ 269583220: function() {},
+ 269583221: function() {},
+ 269583222: function() {},
+ 269583223: function() {},
+ 269583224: function() {},
+ 269583225: function() {},
+ 269583226: function() {},
+ 269583227: function() {},
+ 269583228: function() {},
+ 269583229: function() {},
+ 269583230: function() {},
+ 269583231: function() {},
+ 269583232: function() {},
+ 269583233: function() {},
+ 269583234: function() {},
+ 269583235: function() {},
+ 269583236: function() {},
+ 269583237: function() {},
+ 269583238: function() {},
+ 269583239: function() {},
+ 269583240: function() {},
+ 269583241: function() {},
+ 269583242: function() {},
+ 269583243: function() {},
+ 269583244: function() {},
+ 269583245: function() {},
+ 269583246: function() {},
+ 269583247: function() {},
+ 269583248: function() {},
+ 269583249: function() {},
+ 269583250: function() {},
+ 269583251: function() {},
+ 269583252: function() {},
+ 269583253: function() {},
+ 269583254: function() {},
+ 269583255: function() {},
+ 269583256: function() {},
+ 269583257: function() {},
+ 269583258: function() {},
+ 269583259: function() {},
+ 269583260: function() {},
+ 269583261: function() {},
+ 269583262: function() {},
+ 269583263: function() {},
+ 269583264: function() {
   return withBuiltinMalloc(function() {
    return allocateUTF8(Module["ASAN_OPTIONS"] || 0);
   });
  },
- 68256769: function() {
+ 269583361: function() {
   return withBuiltinMalloc(function() {
    return allocateUTF8(Module["LSAN_OPTIONS"] || 0);
   });
  },
- 68256866: function() {
+ 269583458: function() {
   return withBuiltinMalloc(function() {
    return allocateUTF8(Module["UBSAN_OPTIONS"] || 0);
   });
  },
- 68256964: function() {
+ 269583556: function() {
   var setting = Module["printWithColors"];
   if (setting != null) {
    return setting;
@@ -9627,6 +9620,9 @@ var MEMFS = {
   },
   write: function(stream, buffer, offset, length, position, canOwn) {
    assert(!(buffer instanceof ArrayBuffer));
+   if (buffer.buffer === HEAP8.buffer) {
+    canOwn = false;
+   }
    if (!length) return 0;
    var node = stream.node;
    node.timestamp = Date.now();
@@ -14315,10 +14311,6 @@ function ___cxa_uncaught_exceptions() {
  return uncaughtExceptionCount;
 }
 
-function ___handle_stack_overflow() {
- abort("stack overflow");
-}
-
 function _tzset_impl() {
  var currentYear = new Date().getFullYear();
  var winter = new Date(currentYear, 0, 1);
@@ -15810,7 +15802,7 @@ function _emscripten_cancel_main_loop() {
 }
 
 function _emscripten_get_heap_max() {
- return HEAPU8.length;
+ return 2147483648;
 }
 
 function _emscripten_get_module_name(buf, length) {
@@ -15902,14 +15894,36 @@ function _emscripten_pc_get_line(pc) {
  return result ? result.line : 0;
 }
 
-function abortOnCannotGrowMemory(requestedSize) {
- abort("Cannot enlarge memory arrays to size " + requestedSize + " bytes (OOM). Either (1) compile with  -s INITIAL_MEMORY=X  with X higher than the current value " + HEAP8.length + ", (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ");
+function emscripten_realloc_buffer(size) {
+ try {
+  wasmMemory.grow(size - buffer.byteLength + 65535 >>> 16);
+  updateGlobalBufferAndViews(wasmMemory.buffer);
+  return 1;
+ } catch (e) {
+  err("emscripten_realloc_buffer: Attempted to grow heap from " + buffer.byteLength + " bytes to " + size + " bytes, but got error: " + e);
+ }
 }
 
 function _emscripten_resize_heap(requestedSize) {
  var oldSize = HEAPU8.length;
  requestedSize = requestedSize >>> 0;
- abortOnCannotGrowMemory(requestedSize);
+ assert(requestedSize > oldSize);
+ var maxHeapSize = 2147483648;
+ if (requestedSize > maxHeapSize) {
+  err("Cannot enlarge memory, asked to go up to " + requestedSize + " bytes, but the limit is " + maxHeapSize + " bytes!");
+  return false;
+ }
+ for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
+  var overGrownHeapSize = oldSize * (1 + .2 / cutDown);
+  overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
+  var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+  var replacement = emscripten_realloc_buffer(newSize);
+  if (replacement) {
+   return true;
+  }
+ }
+ err("Failed to grow the heap from " + oldSize + " bytes to " + newSize + " bytes, not enough memory!");
+ return false;
 }
 
 function _emscripten_return_address(level) {
@@ -16759,7 +16773,6 @@ var asmLibraryArg = {
  "__cxa_rethrow": ___cxa_rethrow,
  "__cxa_throw": ___cxa_throw,
  "__cxa_uncaught_exceptions": ___cxa_uncaught_exceptions,
- "__handle_stack_overflow": ___handle_stack_overflow,
  "__localtime_r": ___localtime_r,
  "__resumeException": ___resumeException,
  "__sys_chdir": ___sys_chdir,
@@ -16893,10 +16906,6 @@ var _emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = function
  return (_emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = Module["asm"]["emscripten_stack_get_free"]).apply(null, arguments);
 };
 
-var _emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = function() {
- return (_emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = Module["asm"]["emscripten_stack_get_base"]).apply(null, arguments);
-};
-
 var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function() {
  return (_emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = Module["asm"]["emscripten_stack_get_end"]).apply(null, arguments);
 };
@@ -16951,8 +16960,6 @@ var _asan_c_store_f = Module["_asan_c_store_f"] = createExportWrapper("asan_c_st
 
 var _asan_c_store_d = Module["_asan_c_store_d"] = createExportWrapper("asan_c_store_d");
 
-var ___set_stack_limits = Module["___set_stack_limits"] = createExportWrapper("__set_stack_limits");
-
 var dynCall_j = Module["dynCall_j"] = createExportWrapper("dynCall_j");
 
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
@@ -16971,9 +16978,9 @@ var dynCall_viiijj = Module["dynCall_viiijj"] = createExportWrapper("dynCall_vii
 
 var dynCall_jii = Module["dynCall_jii"] = createExportWrapper("dynCall_jii");
 
-var ___heap_base = Module["___heap_base"] = 78221504;
+var ___heap_base = Module["___heap_base"] = 279548096;
 
-var ___global_base = Module["___global_base"] = 67108864;
+var ___global_base = Module["___global_base"] = 268435456;
 
 function invoke_vi(index, a1) {
  var sp = stackSave();
@@ -17429,10 +17436,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "stringToNewUTF8")) Module["stringT
 
 if (!Object.getOwnPropertyDescriptor(Module, "setFileTime")) Module["setFileTime"] = function() {
  abort("'setFileTime' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
-if (!Object.getOwnPropertyDescriptor(Module, "abortOnCannotGrowMemory")) Module["abortOnCannotGrowMemory"] = function() {
- abort("'abortOnCannotGrowMemory' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
 
 if (!Object.getOwnPropertyDescriptor(Module, "emscripten_realloc_buffer")) Module["emscripten_realloc_buffer"] = function() {

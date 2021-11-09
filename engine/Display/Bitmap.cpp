@@ -380,6 +380,10 @@ void Bitmap::SetData(uint8*& dataPtr)
 
 void Bitmap::InitHeader(MemoryMappedFile& file)
 {
+	if (!file.Valid()) {
+		return;
+	}
+	
 	myOffset = file.ReadUINT32();
 
 	myWidth = file.ReadUINT16();

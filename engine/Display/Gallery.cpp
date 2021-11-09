@@ -505,8 +505,13 @@ bool Gallery::InitialiseTiledBitmaps(bool writeAccess)
 #ifdef _DEBUG
 		myBitmaps[i].SetName(myName);
 #endif
-
+		try {
 		myBitmaps[i].InitHeader(myMemoryMappedFile);
+		} catch (BasicException &e) {
+			std::cout << "An error initing bitmap: " << myName << e.what() << std::endl;
+		} catch (...) {
+			std::cout << "An error initing bitmap: " << myName << std::endl;
+		}
 	}
 
 	//now point to your data in the sprite file

@@ -58,6 +58,21 @@ inline int Get565Blue(int colour)
 //			
 // ----------------------------------------------------------------------
 
+inline void * emscripten_memcpy_pixels(uint32 *dest, const uint16 *src, size_t len) {
+	uint32 *d = dest;
+	const uint16 *byte = src;
+	while(len--) {
+		int r = Get565Red((int) *byte);
+		int g = Get565Green((int) *byte);
+		int b = Get565Blue((int) *byte++);
+
+		uint32 pixel = (b << 16) + (g << 8) + r;
+		*d++ = pixel;
+	}
+
+	return dest;
+}
+
 inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap) {
 	int32 bitmapWidth = bitmap.GetWidth();
 	bitmapHeight = bitmap.GetHeight();
@@ -144,33 +159,18 @@ inline void DisplayEngine::DrawBitmap(Position& position,Bitmap& bitmap) {
 
 	screen_ptr+=(y*myPitch)+x;
 
-
 	// draw for your life
 #ifdef C2E_NO_INLINE_ASM
 
-	int i;
-	for( i=0; i<bitmapHeight; ++i )
+	for (;bitmapHeight--;)
 	{
-		int j;
-		for (j = 0; j < originalBitmapWidth; ++j) {
-			if (j < bitmapWidth) {
-				uint16 byte = *data_ptr;
 
-				int r = Get565Red(byte);
-				int g = Get565Green(byte);
-				int b = Get565Blue(byte);
+		emscripten_memcpy_pixels(screen_ptr,data_ptr,bitmapWidth);
 
-				uint32 pixel = (b << 16) + (g << 8) + r;
-
-				*screen_ptr = pixel;
-				screen_ptr++;
-			}
-			data_ptr++;
-		} 
-			// memcpy(screen_ptr, data_ptr, 128 * (sizeof(uint32)));
-		// Additions to get to next row (pixels, not bytes!)
-		// data_ptr += 128;
-		screen_ptr += myPitch - bitmapWidth;	// screen_step;
+		// get the pointers back to the start of the next line of data
+		// and screen
+		data_ptr += data_step;
+		screen_ptr += myPitch;	//screen_step;
 	}
 #else
 	// when using memcpy don't do this
@@ -266,24 +266,10 @@ inline void DisplayEngine::DrawWholeBitmapRegardless(Position& position,Bitmap& 
 	int i;
 	for( i=0; i<128; ++i )
 	{
-		int j;
-		for (j = 0; j < 128; ++j) {
-			uint16 byte = *data_ptr;
-
-			int r = Get565Red(byte);
-			int g = Get565Green(byte);
-			int b = Get565Blue(byte);
-
-			uint32 pixel = (b << 16) + (g << 8) + r;
-
-			*screen_ptr = (uint32) pixel;
-			data_ptr++;
-			screen_ptr++;
-		} 
-			// memcpy(screen_ptr, data_ptr, 128 * (sizeof(uint32)));
+		emscripten_memcpy_pixels( screen_ptr, data_ptr, 128 );
 		// Additions to get to next row (pixels, not bytes!)
-		// data_ptr += 128;
-		screen_ptr += myPitch - 128;	// screen_step;
+		data_ptr += 128;
+		screen_ptr += myPitch;	// screen_step;
 	}
 
 #else
